@@ -6,7 +6,7 @@ Official marketplace for the **rubot** Claude Code plugin.
 
 1. **Add the marketplace:**
    ```bash
-   /plugin marketplace add rulisme/rubot-marketplace
+   /plugin marketplace add bahrulbangsawan/rubot-marketplace
    ```
 
 2. **Install the plugin:**
