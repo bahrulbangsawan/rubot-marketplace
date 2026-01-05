@@ -1,0 +1,18 @@
+{
+  "name": "rubot-marketplace",
+  "owner": {
+    "name": "rulisme",
+    "email": "your-email@example.com"
+  },
+  "plugins": [
+    {
+      "name": "rubot",
+      "source": "./plugins/rubot",
+      "description": "Strict multi-agent orchestration governor with workflow commands (init, plan, execute, check, commit, PR, new-repo) and 15 specialist subagents",
+      "version": "2.6.0",
+      "author": {
+        "name": "growthacker"
+      }
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+	"$schema": "https://ui.shadcn.com/schema.json",
+	"style": "base-lyra",
+	"rsc": false,
+	"tsx": true,
+	"tailwind": {
+		"config": "",
+		"css": "src/index.css",
+		"baseColor": "neutral",
+		"cssVariables": true,
+		"prefix": ""
+	},
+	"iconLibrary": "lucide",
+	"menuColor": "default",
+	"menuAccent": "subtle",
+	"aliases": {
+		"components": "@/components",
+		"utils": "@/lib/utils",
+		"ui": "@/components/ui",
+		"lib": "@/lib",
+		"hooks": "@/hooks"
+	},
+	"registries": {
+		"@reui": "https://reui.io/r/{name}.json",
+		"@formcn": "https://formcn.dev/r/{name}.json",
+		"@abui": "https://abui.io/r/{name}.json",
+		"@better-upload": "https://better-upload.com/r/{name}.json",
+		"@assistant-ui": "https://r.assistant-ui.com/{name}.json",
+		"@billingsdk": "https://billingsdk.com/r/{name}.json",
+		"@coss": "https://coss.com/ui/r/{name}.json",
+		"@diceui": "https://diceui.com/r/{name}.json",
+		"@hextaui": "https://hextaui.com/r/{name}.json",
+		"@kibo-ui": "https://www.kibo-ui.com/r/{name}.json",
+		"@kokonutui": "https://kokonutui.com/r/{name}.json",
+		"@lucide-animated": "https://lucide-animated.com/r/{name}.json",
+		"@magicui": "https://magicui.design/r/{name}",
+		"@manifest": "https://ui.manifest.build/r/{name}.json",
+		"@plate": "https://platejs.org/r/{name}.json",
+		"@react-bits": "https://reactbits.dev/r/{name}.json",
+		"@shadcn-editor": "https://shadcn-editor.vercel.app/r/{name}.json",
+		"@tour": "https://onboarding-tour.vercel.app/r/{name}.json",
+		"@uitripled": "https://ui.tripled.work/r/{name}.json",
+		"@wandry-ui": "https://ui.wandry.com.ua/r/{name}.json"
+	}
+}

@@ -1,0 +1,322 @@
+{
+  "$schema": "https://claude.ai/schemas/plugin-marketplace.json",
+  "name": "rubot",
+  "displayName": "Rubot - Multi-Agent Orchestration Governor",
+  "version": "2.6.0",
+  "description": "Strict multi-agent orchestration governor with workflow commands and 15 specialist subagents for full-stack TanStack Start development",
+  "longDescription": "Rubot enforces deterministic, mandatory multi-agent consultation for all significant tasks in complex Claude Code projects. It acts as a project manager ensuring no decision is made without consensus from all relevant domain experts.\n\nFeatures:\n- 15 specialist subagents covering backend, frontend, database, deployment, testing, and more\n- 9 workflow commands (init, plan, execute, check, commit, PR, push-pr, new-repo)\n- 9 domain-specific skills with explicit agent mappings\n- Frontend ownership model with shadcn-ui-designer as team lead\n- Mandatory registry enforcement for 20 shadcn-compatible registries\n- Integrated validation scripts for CSS, responsiveness, SEO, and registry compliance",
+  "author": {
+    "name": "bahrulbangsawan",
+    "url": "https://github.com/bahrulbangsawan"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bahrulbangsawan/rubot"
+  },
+  "license": "MIT",
+  "categories": [
+    "orchestration",
+    "multi-agent",
+    "full-stack",
+    "tanstack",
+    "workflow"
+  ],
+  "tags": [
+    "orchestration",
+    "multi-agent",
+    "governance",
+    "workflow",
+    "tanstack",
+    "shadcn",
+    "tailwind",
+    "elysiajs",
+    "drizzle",
+    "neon",
+    "cloudflare",
+    "rbac",
+    "seo",
+    "responsive",
+    "theming"
+  ],
+  "compatibility": {
+    "claudeCode": ">=1.0.0"
+  },
+  "components": {
+    "agents": {
+      "count": 16,
+      "list": [
+        {
+          "name": "rubot",
+          "role": "orchestrator",
+          "description": "Main orchestration governor that coordinates all specialist agents"
+        },
+        {
+          "name": "backend-master",
+          "role": "independent",
+          "description": "ElysiaJS, tRPC, Drizzle, Zod backend implementation"
+        },
+        {
+          "name": "chart-master",
+          "role": "sub-agent",
+          "parent": "shadcn-ui-designer",
+          "description": "Apache ECharts data visualization"
+        },
+        {
+          "name": "cloudflare",
+          "role": "independent",
+          "description": "Workers, R2, D1, Wrangler deployment"
+        },
+        {
+          "name": "dashboard-master",
+          "role": "sub-agent",
+          "parent": "shadcn-ui-designer",
+          "description": "Dashboard architecture, sidebar-first design"
+        },
+        {
+          "name": "debug-master",
+          "role": "independent",
+          "required": true,
+          "description": "TypeScript debugging, Biome validation"
+        },
+        {
+          "name": "hydration-solver",
+          "role": "independent",
+          "description": "React SSR/hydration issues"
+        },
+        {
+          "name": "lazy-load-master",
+          "role": "independent",
+          "description": "Code splitting, lazy loading, dynamic imports"
+        },
+        {
+          "name": "neon-master",
+          "role": "independent",
+          "description": "PostgreSQL, NeonDB, schema design"
+        },
+        {
+          "name": "plan-supervisor",
+          "role": "independent",
+          "required": true,
+          "description": "Plan.md tracking, task completion verification"
+        },
+        {
+          "name": "qa-tester",
+          "role": "independent",
+          "required": true,
+          "description": "Playwright, Chrome DevTools testing"
+        },
+        {
+          "name": "responsive-master",
+          "role": "sub-agent",
+          "parent": "shadcn-ui-designer",
+          "description": "Tailwind responsive layouts"
+        },
+        {
+          "name": "seo-master",
+          "role": "independent",
+          "requiresConfirmation": true,
+          "description": "SEO, structured data, metadata"
+        },
+        {
+          "name": "shadcn-ui-designer",
+          "role": "team-lead",
+          "description": "UI components, design system (FRONTEND OWNER)"
+        },
+        {
+          "name": "tanstack",
+          "role": "independent",
+          "description": "TanStack Start/Router/Query full-stack"
+        },
+        {
+          "name": "theme-master",
+          "role": "sub-agent",
+          "parent": "shadcn-ui-designer",
+          "description": "Tailwind themes, OKLCH colors"
+        }
+      ]
+    },
+    "commands": {
+      "count": 9,
+      "list": [
+        {
+          "name": "rubot",
+          "description": "Invoke the main orchestration governor for multi-domain tasks"
+        },
+        {
+          "name": "rubot-init",
+          "description": "Initialize or sync the rubot workspace configuration"
+        },
+        {
+          "name": "rubot-plan",
+          "description": "Generate a structured execution plan with agent orchestration"
+        },
+        {
+          "name": "rubot-execute",
+          "description": "Execute the approved plan from the workspace"
+        },
+        {
+          "name": "rubot-check",
+          "description": "Run validation and invoke verification agents"
+        },
+        {
+          "name": "rubot-commit",
+          "description": "Create a git commit following project rules"
+        },
+        {
+          "name": "rubot-new-pr",
+          "description": "Create a new pull request using GitHub CLI"
+        },
+        {
+          "name": "rubot-push-pr",
+          "description": "Push commits to active PR and re-run validations"
+        },
+        {
+          "name": "rubot-new-repo",
+          "description": "Create a new GitHub repository with initial commit"
+        }
+      ]
+    },
+    "skills": {
+      "count": 9,
+      "list": [
+        {
+          "name": "orchestration",
+          "agents": ["rubot"],
+          "description": "Domain classification and agent coordination"
+        },
+        {
+          "name": "env-check",
+          "agents": ["cloudflare", "debug-master"],
+          "description": "Environment validation"
+        },
+        {
+          "name": "tanstack-router",
+          "agents": ["tanstack", "hydration-solver"],
+          "description": "TanStack Router patterns"
+        },
+        {
+          "name": "tanstack-query",
+          "agents": ["tanstack", "backend-master"],
+          "description": "TanStack Query patterns"
+        },
+        {
+          "name": "tanstack-form",
+          "agents": ["tanstack", "shadcn-ui-designer"],
+          "description": "TanStack Form patterns"
+        },
+        {
+          "name": "tanstack-table",
+          "agents": ["tanstack", "shadcn-ui-designer"],
+          "description": "TanStack Table patterns"
+        },
+        {
+          "name": "tanstack-db",
+          "agents": ["tanstack", "neon-master"],
+          "description": "TanStack DB local-first patterns"
+        },
+        {
+          "name": "rbac-auth",
+          "agents": ["backend-master", "neon-master", "tanstack"],
+          "description": "Role-based access control"
+        },
+        {
+          "name": "url-state-management",
+          "agents": ["tanstack", "shadcn-ui-designer", "hydration-solver"],
+          "description": "nuqs URL state management"
+        }
+      ]
+    },
+    "scripts": {
+      "count": 6,
+      "list": [
+        {
+          "name": "env_checker.sh",
+          "description": "Environment validation script"
+        },
+        {
+          "name": "css_validator.py",
+          "description": "CSS theme validation against OKLCH standards"
+        },
+        {
+          "name": "responsive_audit.py",
+          "description": "Tailwind responsive layout audit"
+        },
+        {
+          "name": "seo_audit.py",
+          "description": "Technical SEO audit"
+        },
+        {
+          "name": "registry_validator.py",
+          "description": "shadcn registry validation"
+        },
+        {
+          "name": "agent_manager.py",
+          "description": "Agent management utility"
+        }
+      ]
+    },
+    "templates": {
+      "count": 5,
+      "list": [
+        "rubot.local.md.template",
+        "plan.md.template",
+        "validation-report.md.template",
+        "README.md.template",
+        "components.json.template"
+      ]
+    }
+  },
+  "techStack": {
+    "frontend": {
+      "framework": "TanStack Start",
+      "router": "TanStack Router",
+      "query": "TanStack Query",
+      "form": "TanStack Form",
+      "table": "TanStack Table",
+      "ui": "shadcn/ui",
+      "styling": "Tailwind CSS"
+    },
+    "backend": {
+      "framework": "ElysiaJS",
+      "api": "tRPC",
+      "validation": "Zod",
+      "orm": "Drizzle ORM",
+      "auth": "better-auth"
+    },
+    "database": {
+      "provider": "Neon",
+      "engine": "PostgreSQL"
+    },
+    "deployment": {
+      "platform": "Cloudflare Workers",
+      "storage": "Cloudflare R2",
+      "cli": "Wrangler"
+    }
+  },
+  "registries": {
+    "mandatory": true,
+    "count": 20,
+    "list": [
+      "@reui",
+      "@formcn",
+      "@abui",
+      "@better-upload",
+      "@assistant-ui",
+      "@billingsdk",
+      "@coss",
+      "@diceui",
+      "@hextaui",
+      "@kibo-ui",
+      "@kokonutui",
+      "@lucide-animated",
+      "@magicui",
+      "@manifest",
+      "@plate",
+      "@react-bits",
+      "@shadcn-editor",
+      "@tour",
+      "@uitripled",
+      "@wandry-ui"
+    ]
+  }
+}

@@ -1,0 +1,127 @@
+# Rubot Validation Report
+
+> Generated: {{TIMESTAMP}}
+> Plan Reference: {{PLAN_FILE}}
+
+## Summary
+
+| Metric | Value |
+|--------|-------|
+| **Overall Status** | {{OVERALL_STATUS}} |
+| **Total Checks** | {{TOTAL_CHECKS}} |
+| **Passed** | {{PASSED_COUNT}} |
+| **Failed** | {{FAILED_COUNT}} |
+| **Warnings** | {{WARNING_COUNT}} |
+
+## Environment Validation
+
+| Check | Status | Details |
+|-------|--------|---------|
+| bun | {{BUN_STATUS}} | {{BUN_VERSION}} |
+| node | {{NODE_STATUS}} | {{NODE_VERSION}} |
+| git | {{GIT_STATUS}} | {{GIT_VERSION}} |
+| wrangler | {{WRANGLER_STATUS}} | {{WRANGLER_VERSION}} |
+| gh | {{GH_STATUS}} | {{GH_VERSION}} |
+
+**Environment Script Exit Code**: {{ENV_EXIT_CODE}}
+
+## Primary Validation (`bun run validate`)
+
+| Check | Status | Issues |
+|-------|--------|--------|
+| TypeScript | {{TS_STATUS}} | {{TS_ISSUES}} |
+| Biome Lint | {{LINT_STATUS}} | {{LINT_ISSUES}} |
+| Build | {{BUILD_STATUS}} | {{BUILD_ISSUES}} |
+
+### Issues Found
+
+{{VALIDATION_ISSUES_TABLE}}
+
+## CSS Theme Validation
+
+| Check | Status |
+|-------|--------|
+| Script Run | {{CSS_RUN_STATUS}} |
+| Three-Block Structure | {{CSS_STRUCTURE}} |
+| Light Mode Tokens | {{CSS_LIGHT}} |
+| Dark Mode Tokens | {{CSS_DARK}} |
+| OKLCH Compliance | {{CSS_OKLCH}} |
+| @theme inline | {{CSS_THEME}} |
+
+{{CSS_ISSUES}}
+
+## Registry Validation
+
+| Check | Status |
+|-------|--------|
+| Script Run | {{REGISTRY_RUN_STATUS}} |
+| components.json Found | {{REGISTRY_FILE_FOUND}} |
+| Mandatory Registries | {{REGISTRY_MANDATORY_COUNT}}/20 |
+| URL Correctness | {{REGISTRY_URL_STATUS}} |
+| Aliases | {{REGISTRY_ALIASES}} |
+
+{{REGISTRY_ISSUES}}
+
+## Responsive Audit
+
+| Metric | Value |
+|--------|-------|
+| Status | {{RESPONSIVE_STATUS}} |
+| Files Scanned | {{RESPONSIVE_FILES}} |
+| Critical Violations | {{RESPONSIVE_CRITICAL}} |
+| Warnings | {{RESPONSIVE_WARNINGS}} |
+
+### Violations
+
+{{RESPONSIVE_ISSUES_TABLE}}
+
+## SEO Audit
+
+> **Note**: SEO audit requires user confirmation. Dashboards, admin panels, and authenticated applications should NOT be indexed for security reasons.
+
+| Check | Status |
+|-------|--------|
+| **User Confirmed SEO Needed** | {{SEO_USER_CONFIRMED}} |
+| URL Audited | {{SEO_URL}} |
+| Page Accessible | {{SEO_ACCESSIBLE}} |
+| Title Tag | {{SEO_TITLE}} |
+| Meta Description | {{SEO_DESC}} |
+| Canonical | {{SEO_CANONICAL}} |
+| Open Graph | {{SEO_OG}} |
+| robots.txt | {{SEO_ROBOTS}} |
+| sitemap.xml | {{SEO_SITEMAP}} |
+
+{{SEO_ISSUES}}
+
+## Agent Verification
+
+### debug-master
+
+| Check | Status |
+|-------|--------|
+| Static Analysis | {{DEBUG_STATIC}} |
+| Type Safety | {{DEBUG_TYPES}} |
+| Lint Compliance | {{DEBUG_LINT}} |
+| Recommendation | {{DEBUG_RECOMMENDATION}} |
+
+{{DEBUG_NOTES}}
+
+### Domain-Specific Agents
+
+{{AGENT_VERIFICATION_TABLE}}
+
+## Blockers (Must Fix)
+
+{{BLOCKERS_LIST}}
+
+## Warnings (Should Fix)
+
+{{WARNINGS_LIST}}
+
+## Recommendation
+
+{{FINAL_RECOMMENDATION}}
+
+---
+
+**Next Step**: {{NEXT_STEP}}

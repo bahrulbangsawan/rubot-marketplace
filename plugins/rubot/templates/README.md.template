@@ -1,0 +1,87 @@
+# {{PROJECT_NAME}}
+
+## Overview
+
+{{PROJECT_DESCRIPTION}}
+
+## Tech Stack
+
+- **Framework**: {{FRAMEWORK}}
+- **Database**: {{DATABASE}}
+- **Styling**: {{STYLING}}
+- **Language**: TypeScript
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js 18+
+- Bun (recommended) or npm
+- Git
+
+### Installation
+
+```bash
+# Clone the repository
+git clone {{REPO_URL}}
+cd {{PROJECT_NAME}}
+
+# Install dependencies
+bun install
+
+# Set up environment variables
+cp .env.example .env.local
+
+# Start development server
+bun dev
+```
+
+### Environment Variables
+
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `DATABASE_URL` | NeonDB connection string | Yes |
+{{ENV_VARS}}
+
+## Development
+
+```bash
+# Run development server
+bun dev
+
+# Run validation (lint + typecheck)
+bun run validate
+
+# Run tests
+bun test
+
+# Build for production
+bun run build
+```
+
+## Project Structure
+
+```
+{{PROJECT_STRUCTURE}}
+```
+
+## Scripts
+
+| Script | Description |
+|--------|-------------|
+| `bun dev` | Start development server |
+| `bun run build` | Build for production |
+| `bun run validate` | Run linting and type checking |
+| `bun test` | Run tests |
+
+## Contributing
+
+1. Create a feature branch: `git checkout -b feature/your-feature`
+2. Make your changes
+3. Run validation: `bun run validate`
+4. Commit your changes following conventional commits
+5. Push and create a pull request
+
+## License
+
+{{LICENSE}}

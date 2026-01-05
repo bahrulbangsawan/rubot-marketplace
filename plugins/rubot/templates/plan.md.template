@@ -1,0 +1,83 @@
+# Rubot Execution Plan
+
+> Generated: {{TIMESTAMP}}
+> Status: **{{STATUS}}**
+
+## Task Summary
+
+- **Description**: {{TASK_DESCRIPTION}}
+- **Complexity**: {{COMPLEXITY}}
+- **Domains**: {{DOMAINS}}
+- **Estimated Steps**: {{STEP_COUNT}}
+
+## Agents Consulted
+
+| Agent | Domain | Recommendation Summary |
+|-------|--------|------------------------|
+{{AGENT_TABLE}}
+
+## Prerequisites
+
+{{PREREQUISITES}}
+
+## Implementation Checklist
+
+### Phase 1: Setup & Preparation
+
+{{PHASE_1_TASKS}}
+
+### Phase 2: Core Implementation
+
+{{PHASE_2_TASKS}}
+
+### Phase 3: Integration & Wiring
+
+{{PHASE_3_TASKS}}
+
+### Phase 4: Verification & Cleanup
+
+- [ ] Run `bun run validate` - ensure no type errors
+- [ ] Run `bun run build` - verify build succeeds
+- [ ] Test all affected routes/endpoints
+- [ ] Verify no console errors in browser
+- [ ] Review all changed files for cleanup
+
+## Files to Modify
+
+| File | Action | Agent |
+|------|--------|-------|
+{{FILES_TABLE}}
+
+## Files to Create
+
+| File | Purpose | Agent |
+|------|---------|-------|
+{{NEW_FILES_TABLE}}
+
+## Risks & Mitigations
+
+| Risk | Impact | Probability | Mitigation |
+|------|--------|-------------|------------|
+{{RISKS_TABLE}}
+
+## Conflicts Detected
+
+{{CONFLICTS}}
+
+## Rollback Plan
+
+If implementation fails:
+
+1. {{ROLLBACK_STEP_1}}
+2. {{ROLLBACK_STEP_2}}
+3. Run `git checkout .` to discard all changes (if uncommitted)
+
+## Approval
+
+- [ ] Plan reviewed by user
+- [ ] All questions/ambiguities resolved
+- [ ] Ready for execution
+
+---
+
+**Next Step**: Run `/rubot-execute` to implement this plan.

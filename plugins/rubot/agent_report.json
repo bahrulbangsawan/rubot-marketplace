@@ -1,0 +1,132 @@
+{
+  "generated": "2025-12-31 08:10:19",
+  "total_agents": 14,
+  "agents": [
+    {
+      "name": "backend-master",
+      "model": "opus",
+      "color": "red",
+      "permission_mode": "bypassPermissions",
+      "tools_count": 0,
+      "prompt_length": 4338,
+      "valid": true
+    },
+    {
+      "name": "chart-master",
+      "model": "opus",
+      "color": "orange",
+      "permission_mode": "bypassPermissions",
+      "tools_count": 0,
+      "prompt_length": 5766,
+      "valid": true
+    },
+    {
+      "name": "cloudflare",
+      "model": "opus",
+      "color": "cyan",
+      "permission_mode": "bypassPermissions",
+      "tools_count": 0,
+      "prompt_length": 16984,
+      "valid": true
+    },
+    {
+      "name": "dashboard-master",
+      "model": "opus",
+      "color": "blue",
+      "permission_mode": "",
+      "tools_count": 0,
+      "prompt_length": 5718,
+      "valid": true
+    },
+    {
+      "name": "debug-master",
+      "model": "opus",
+      "color": "cyan",
+      "permission_mode": "bypassPermissions",
+      "tools_count": 0,
+      "prompt_length": 4930,
+      "valid": true
+    },
+    {
+      "name": "hydration-solver",
+      "model": "opus",
+      "color": "red",
+      "permission_mode": "bypassPermissions",
+      "tools_count": 0,
+      "prompt_length": 5098,
+      "valid": true
+    },
+    {
+      "name": "neon-master",
+      "model": "opus",
+      "color": "green",
+      "permission_mode": "bypassPermissions",
+      "tools_count": 0,
+      "prompt_length": 4538,
+      "valid": true
+    },
+    {
+      "name": "qa-tester",
+      "model": "opus",
+      "color": "green",
+      "permission_mode": "bypassPermissions",
+      "tools_count": 0,
+      "prompt_length": 15406,
+      "valid": true
+    },
+    {
+      "name": "responsive-master",
+      "model": "opus",
+      "color": "red",
+      "permission_mode": "bypassPermissions",
+      "tools_count": 0,
+      "prompt_length": 4670,
+      "valid": true
+    },
+    {
+      "name": "rubot",
+      "model": "opus",
+      "color": "red",
+      "permission_mode": "",
+      "tools_count": 9,
+      "prompt_length": 6913,
+      "valid": true
+    },
+    {
+      "name": "seo-master",
+      "model": "opus",
+      "color": "pink",
+      "permission_mode": "",
+      "tools_count": 0,
+      "prompt_length": 7095,
+      "valid": true
+    },
+    {
+      "name": "shadcn-ui-designer",
+      "model": "opus",
+      "color": "blue",
+      "permission_mode": "bypassPermissions",
+      "tools_count": 15,
+      "prompt_length": 31945,
+      "valid": true
+    },
+    {
+      "name": "tanstack",
+      "model": "opus",
+      "color": "orange",
+      "permission_mode": "bypassPermissions",
+      "tools_count": 0,
+      "prompt_length": 11424,
+      "valid": true
+    },
+    {
+      "name": "theme-master",
+      "model": "opus",
+      "color": "purple",
+      "permission_mode": "",
+      "tools_count": 0,
+      "prompt_length": 3672,
+      "valid": true
+    }
+  ]
+}

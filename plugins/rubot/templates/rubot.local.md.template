@@ -1,0 +1,65 @@
+---
+version: 1.0.0
+last_synced:
+project_name:
+---
+
+# Rubot Workspace Configuration
+
+## Environment
+- **bun**:
+- **node**:
+- **wrangler**: Not installed
+- **git**:
+- **gh**: Not installed
+- **Status**: Ready
+
+## NeonDB
+- **Project ID**:
+- **Database**: neondb
+- **Tables**:
+  -
+
+## Wrangler
+- **Config File**: wrangler.toml
+- **Workers**:
+- **Bindings**:
+
+## Validation
+- **Command**: `bun run validate`
+- **Linter**: Biome
+- **Type Checker**: TypeScript
+- **Rules**:
+  - All TypeScript errors must be resolved
+  - All Biome lint violations must be fixed
+  - Build must complete without errors
+
+## Project Rules
+- Use TanStack Start for routing
+- Use shadcn/ui for UI components
+- Use Drizzle ORM for database access
+- Use tRPC for type-safe APIs
+- Follow OKLCH color system for theming
+
+## Git Rules
+- **Default Branch**: main
+- **Commit Convention**: Conventional Commits
+- **PR Template**: .github/PULL_REQUEST_TEMPLATE.md
+- **Branch Naming**: feature/, fix/, chore/
+
+## Registered Agents
+| Agent | Domain | Status |
+|-------|--------|--------|
+| backend-master | ElysiaJS, tRPC, Drizzle, Zod | Active |
+| chart-master | Apache ECharts | Active |
+| cloudflare | Workers, R2, D1, deployment | Active |
+| dashboard-master | Dashboard architecture | Active |
+| debug-master | TypeScript, Biome | Active |
+| hydration-solver | React SSR/hydration | Active |
+| neon-master | PostgreSQL, NeonDB | Active |
+| qa-tester | Playwright, DevTools | Active |
+| responsive-master | Tailwind responsive | Active |
+| seo-master | SEO, metadata (user-confirmed) | Active |
+| shadcn-ui-designer | UI components | Active |
+| tanstack | TanStack Start/Router/Query | Active |
+| theme-master | Tailwind themes | Active |
