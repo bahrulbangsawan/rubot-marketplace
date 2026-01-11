@@ -37,21 +37,29 @@ Validation report template: `~/.claude/plugins/rubot/templates/validation-report
 
 ### Step 1: Run Environment Check
 
-First, validate the development environment is properly configured:
+Validate the development environment is properly configured by running these commands:
 
 ```bash
-~/.claude/plugins/rubot/scripts/env_checker.sh .
+# Check critical tools
+command -v bun && bun --version
+command -v node && node --version
+command -v git && git --version
+
+# Check optional tools
+command -v wrangler && wrangler --version
+command -v gh && gh --version
+
+# Check wrangler authentication (if available)
+wrangler whoami 2>/dev/null || echo "Wrangler not authenticated"
 ```
 
-This validates:
-- Critical tooling (bun, node, git)
-- Optional tooling (wrangler, gh)
-- Version information
-- Wrangler readiness and authentication
-- Configuration files (package.json, lockfiles, env files)
-- Project stack (ElysiaJS, Drizzle, tRPC, Zod, Neon, TanStack)
+Verify these configuration files exist:
+- `package.json` (required)
+- `bun.lockb` or `bun.lock` (recommended)
+- `wrangler.toml` or `wrangler.jsonc` (if using Cloudflare)
+- `.env` or `.env.local` (recommended)
 
-Capture exit code and output for the report.
+Capture results for the report.
 
 ### Step 2: Run Primary Validation
 
@@ -69,57 +77,54 @@ Capture and analyze the output:
 
 ### Step 3: Run CSS Theme Validation
 
-If the project has an `index.css` theme file, validate it against theme-master rules:
+If the project has an `index.css` theme file with CSS custom properties, manually validate:
 
+1. **Check three-block structure**: `:root`, `.dark`, `@theme inline`
+2. **Verify color tokens**: All required light/dark mode tokens present
+3. **OKLCH format**: Colors use `oklch()` function
+4. **Typography tokens**: Font size, weight, line-height defined
+5. **Tailwind mappings**: `@theme inline` block maps tokens correctly
+
+Use Grep to find the file and Read to analyze:
 ```bash
-python3 ~/.claude/plugins/rubot/scripts/css_validator.py .
+# Find theme file
+find . -name "index.css" -path "*/app/*" -o -name "globals.css" | head -1
 ```
 
-This validates:
-- Three-block structure (`:root`, `.dark`, `@theme inline`)
-- All required color tokens in light/dark modes
-- OKLCH color format compliance
-- Typography, shadow, and radius tokens
-- `@theme inline` Tailwind mappings
-
-If the file doesn't exist, mark as "Skipped" in report.
+If no theme file exists, mark as "Skipped" in report.
 
 ### Step 4: Run Registry Validation
 
-If the project has a `components.json` file (shadcn/ui projects), validate it against the mandatory registry template:
+If the project has a `components.json` file (shadcn/ui projects), validate it manually:
 
+1. **Check for mandatory registries**: Verify shadcn-compatible registries are present
+2. **Registry URL correctness**: URLs point to valid registries
+3. **Basic structure**: schema, style, tsx, tailwind, aliases configured
+4. **Alias configuration**: Component aliases properly set up
+
+Use Read tool to examine `components.json`:
 ```bash
-python3 ~/.claude/plugins/rubot/scripts/registry_validator.py .
+cat components.json 2>/dev/null || echo "No components.json found"
 ```
 
-This validates:
-- All 20 mandatory shadcn-compatible registries are present
-- Registry URL correctness
-- Basic structure (schema, style, tsx, tailwind, aliases)
-- Recommended alias configuration
-
-If the file doesn't exist, mark as "Skipped" in report (not all projects use shadcn/ui).
-
-Exit codes: 0 (pass), 1 (missing/misconfigured registries)
+If the file doesn't exist, mark as "Skipped" in report.
 
 ### Step 5: Run Responsive Audit
 
-Run static responsive audit on Tailwind CSS usage:
+Perform static responsive audit on Tailwind CSS usage by scanning source files:
 
+1. **Breakpoint compliance**: Only use allowed breakpoints (sm, md, lg, xl)
+2. **Mobile-first order**: Breakpoints applied in correct order
+3. **Hardcoded pixels**: Flag fixed pixel values that should be responsive
+4. **Layout patterns**: Check grid/flex usage has responsive variants
+
+Use Grep to find issues:
 ```bash
-python3 ~/.claude/plugins/rubot/scripts/responsive_audit.py .
+# Find potentially problematic patterns in TSX/JSX files
+grep -r "className=" --include="*.tsx" --include="*.jsx" src/ app/ 2>/dev/null | head -50
 ```
 
-This audits:
-- Breakpoint compliance (only sm, md, lg, xl allowed)
-- Breakpoint order violations (mobile-first)
-- Hardcoded pixel values
-- Layout anti-patterns (absolute/fixed without responsive)
-- Responsive coverage gaps (grid/flex without variants)
-- Flex/Grid pattern enforcement
-- Inline style violations
-
-Exit codes: 0 (pass), 1 (warnings), 2 (critical violations)
+Analyze for responsive compliance and document findings.
 
 ### Step 6: Run SEO Audit (User-Confirmed)
 
@@ -160,25 +165,23 @@ AskUserQuestion({
   ```
 
 **If user selects "Yes"**:
-If the project has a deployed URL or local dev server, run technical SEO audit:
+If the project has a deployed URL or local dev server, perform SEO audit using the seo-master agent:
 
-```bash
-python3 ~/.claude/plugins/rubot/scripts/seo_audit.py <url>
 ```
+Task tool:
+  subagent_type: "seo-master"
+  prompt: |
+    ## SEO Audit Request
 
-This audits:
-- Page accessibility and HTTP status
-- Metadata (title, description, robots)
-- Canonical link verification
-- Open Graph and Twitter Card tags
-- robots.txt analysis and syntax
-- sitemap.xml validation
-- Redirect chain detection
-- Noindex directive detection
+    Perform a technical SEO audit on this project:
+    1. Check metadata (title, description, robots)
+    2. Verify canonical links
+    3. Check Open Graph and Twitter Card tags
+    4. Analyze robots.txt (if exists)
+    5. Validate sitemap.xml (if exists)
 
-Exit codes: 0 (pass), 1 (critical SEO issues), 2 (execution error)
-
-**Note**: Requires `requests` and `beautifulsoup4` packages. Skip if no URL available.
+    Return: Pass/fail with specific recommendations
+```
 
 ### Step 7: Invoke debug-master Agent
 

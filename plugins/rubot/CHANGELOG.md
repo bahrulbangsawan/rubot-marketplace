@@ -5,6 +5,27 @@ All notable changes to the rubot plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.7.0] - 2025-01-11
+
+### Removed
+
+- **All scripts from `scripts/` directory** - Scripts have been removed in favor of inline validation instructions
+  - Removed `env_checker.sh` - Environment checks now inline in commands
+  - Removed `css_validator.py` - CSS validation now handled by theme-master agent
+  - Removed `responsive_audit.py` - Responsive audits now handled by responsive-master agent
+  - Removed `seo_audit.py` - SEO audits now handled by seo-master agent
+  - Removed `registry_validator.py` - Registry validation now inline in rubot-check
+  - Removed `agent_manager.py` - Agent management now manual
+  - Removed `generate_agents_md.py` - Workspace generation now inline in rubot-init
+
+### Changed
+
+- **`/rubot-check`** - Rewritten to use inline bash commands and agent invocations instead of external scripts
+- **`/rubot-init`** - Rewritten with inline file generation instructions instead of Python script
+- **`env-check` skill** - Updated to provide inline bash commands for environment validation
+- Updated README.md to remove scripts documentation section
+- Updated marketplace.json to remove scripts component
+
 ## [2.6.0] - 2024-12-31
 
 ### Added

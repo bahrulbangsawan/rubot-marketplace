@@ -5,115 +5,216 @@ allowed-tools:
   - Bash
   - Read
   - Write
-  - Edit
   - Glob
   - Grep
-  - LS
   - AskUserQuestion
   - mcp__neon__list_projects
   - mcp__neon__get_database_tables
-  - Skill
-  - WebFetch
-  - WebSearch
 ---
 
 You are initializing or syncing the rubot workspace for this project.
 
-## Templates
+## Initialization Process
 
-Templates are located at `~/.claude/plugins/rubot/templates/`:
-- `rubot.local.md.template` - Workspace configuration
-- `README.md.template` - Project README for boilerplate cleanup
+### Step 1: Detect Project Information
 
-## Pre-flight Environment Check
-
-Before initializing, validate the development environment:
+Gather project information by examining:
 
 ```bash
-~/.claude/plugins/rubot/scripts/env_checker.sh .
+# Get project name from package.json
+cat package.json 2>/dev/null | grep '"name"' | head -1
+
+# Check for project type indicators
+ls -la package.json tsconfig.json wrangler.toml 2>/dev/null
+
+# Detect framework/stack
+cat package.json 2>/dev/null | grep -E "(elysia|drizzle|trpc|tanstack|react|next|vue)" | head -10
 ```
 
-**Exit Code Handling:**
-- **Exit 0**: Environment ready, proceed with initialization
-- **Exit 1**: Critical failure (missing bun/node/git) - STOP and inform user
-- **Exit 2**: Non-critical warnings - proceed but note missing components
+### Step 2: Scan Directory Structure
 
-If critical tooling is missing, display the remediation hints from the script output and ask the user to install the required tools before continuing.
+Map the project structure:
 
-## Workspace Setup
+```bash
+# List top-level directories
+ls -d */ 2>/dev/null
 
-1. **Ensure workspace directory exists**:
-   ```bash
-   mkdir -p .claude/rubot
-   ```
+# Find key configuration files
+find . -maxdepth 2 -name "*.config.*" -o -name "*.json" 2>/dev/null | head -20
 
-2. **Check for existing configuration**:
-   - Read `.claude/rubot/rubot.local.md` if it exists
-   - If it exists, this is a SYNC operation (update existing config)
-   - If it doesn't exist, this is an INIT operation (create new config)
+# Check for existing CLAUDE.md or AGENTS.md
+ls -la CLAUDE.md AGENTS.md 2>/dev/null
+```
 
-## Configuration Discovery
+### Step 3: Create Workspace Directory
 
-Gather the following information from the project:
+```bash
+mkdir -p .claude/rubot
+```
 
-### NeonDB Configuration
-- Use `mcp__neon__list_projects` to find available Neon projects
-- Use `mcp__neon__get_database_tables` to list all tables in the database
-- Ask user to confirm/select the correct project if multiple exist
+### Step 4: Generate CLAUDE.md
 
-### Wrangler Configuration
-- Search for `wrangler.toml` or `wrangler.json` in project root
-- Extract bindings, environment variables, and deployment settings
-- If not found, note that Wrangler is not configured
+Create or update `CLAUDE.md` in the project root with:
 
-### Validation Rules
-- Search for `package.json` and check for `validate` script
-- Look for Biome configuration (`biome.json`, `biome.jsonc`)
-- Document the validation command (typically `bun run validate`)
+```markdown
+# Project: {PROJECT_NAME}
 
-### Project Rules
-- Read existing `.claude/settings.local.json` if present
-- Read existing `CLAUDE.md` or project documentation
-- Extract any project-specific conventions
+## Quick Reference
 
-### Git Rules
-- Check for `.gitignore`, `.github/` workflows
-- Read commit conventions from `CONTRIBUTING.md` if present
-- Check for branch protection patterns
+- **Install**: `bun install`
+- **Dev**: `bun run dev`
+- **Build**: `bun run build`
+- **Validate**: `bun run validate`
 
-### Registered Agents
-List all agents from the rubot plugin:
-- backend-master
-- chart-master
-- cloudflare
-- dashboard-master
-- debug-master
-- hydration-solver
-- lazy-load-master
-- neon-master
-- plan-supervisor
-- qa-tester
-- responsive-master
-- seo-master (requires user confirmation - not for dashboards/internal apps)
-- shadcn-ui-designer
-- tanstack
-- theme-master
+## Stack
 
-## Output Format
+{Detected stack components from package.json}
 
-Create or update `.claude/rubot/rubot.local.md` using the template structure from `~/.claude/plugins/rubot/templates/rubot.local.md.template`.
+## Key Directories
 
-Fill in all discovered values:
-- Environment versions
-- NeonDB project and tables
-- Wrangler configuration
-- Validation rules
-- Project and Git rules
-- Agent status table
+| Path | Purpose |
+|------|---------|
+| `src/` | Source code |
+| `app/` | Application routes (if TanStack/Next) |
+| `components/` | UI components |
+| `lib/` | Utilities and helpers |
+
+## Code Style
+
+- Formatter: Biome
+- Naming: camelCase for functions, PascalCase for components
+- Imports: Use path aliases (@/ prefix)
+
+## Before Committing
+
+Always run: `bun run validate`
+```
+
+Customize based on detected project structure.
+
+### Step 5: Generate AGENTS.md
+
+Create or update `AGENTS.md` in the project root with:
+
+```markdown
+# AGENTS.md (Root)
+
+> **Purpose**: Universal guidance for AI agents. Keep this lightweight.
+> **Hierarchy**: Nearest AGENTS.md wins. Check subdirectories for specific guidance.
+
+## Project Overview
+
+**Name**: {PROJECT_NAME}
+**Type**: {PROJECT_TYPE}
+**Stack**: {PRIMARY_STACK}
+
+## Quick Start
+
+\`\`\`bash
+bun install      # Install dependencies
+bun run dev      # Start development
+bun run build    # Build for production
+bun run validate # Lint & typecheck
+\`\`\`
+
+## Directory Map
+
+| Path | Purpose | Has AGENTS.md |
+|------|---------|---------------|
+| `src/` | Source code | No |
+| `app/` | Routes/pages | No |
+| `components/` | UI components | No |
+| `lib/` | Utilities | No |
+
+> **Rule**: Always check for `AGENTS.md` in the directory you're working in.
+
+## Universal Rules
+
+### DO
+- Read nearest `AGENTS.md` before making changes
+- Run `bun run validate` before committing
+- Follow existing patterns in the file you're editing
+
+### DON'T
+- Create new files without checking existing structure
+- Add dependencies without checking package.json
+- Ignore TypeScript/linter errors
+- Over-engineer simple solutions
+
+## Code Style
+
+- **Formatting**: Biome
+- **Naming**: camelCase for functions, PascalCase for components
+```
+
+### Step 6: Generate rubot.local.md
+
+Read the template and customize it for the project:
+
+```bash
+# Read template
+cat ~/.claude/plugins/rubot/templates/rubot.local.md.template
+```
+
+Create `.claude/rubot/rubot.local.md` with:
+
+1. **Project metadata**: name, type, repository
+2. **Environment**: bun/node versions, tooling
+3. **Stack detection**: frameworks and libraries found
+4. **Database tables**: if using Neon MCP, query actual tables
+5. **Registered agents**: list of applicable agents
+6. **Validation rules**: project-specific constraints
+
+### Step 7: NeonDB Integration (Optional)
+
+If the Neon MCP server is available:
+
+```
+mcp__neon__list_projects
+mcp__neon__get_database_tables
+```
+
+Update `.claude/rubot/rubot.local.md` with discovered tables.
+
+### Step 8: Verify Environment
+
+Confirm the detected environment:
+
+```bash
+# Check tool versions
+bun --version
+node --version
+wrangler --version 2>/dev/null || echo "wrangler not installed"
+
+# Verify validate command exists
+cat package.json | grep '"validate"'
+```
+
+### Step 9: Review Agent Applicability
+
+Use AskUserQuestion to confirm agent configuration:
+
+```
+AskUserQuestion({
+  questions: [{
+    question: "Which of these agents should be INACTIVE for this project?",
+    header: "Agents",
+    options: [
+      { label: "seo-master", description: "Skip if this is a dashboard/internal app (not public-facing)" },
+      { label: "cloudflare", description: "Skip if not deploying to Cloudflare Workers" },
+      { label: "chart-master", description: "Skip if project has no data visualizations" },
+      { label: "All agents active", description: "Keep all agents active for this project" }
+    ],
+    multiSelect: true
+  }]
+})
+```
+
+Update `.claude/rubot/rubot.local.md` with inactive agents.
 
 ## Boilerplate Cleanup (Optional)
 
-After configuration discovery, use the `AskUserQuestion` tool to ask the user about boilerplate cleanup:
+After initialization, ask the user if they want boilerplate cleanup:
 
 ```
 AskUserQuestion({
@@ -121,174 +222,35 @@ AskUserQuestion({
     question: "Would you like to clean up template boilerplate from this project?",
     header: "Cleanup",
     options: [
-      {
-        label: "Yes, clean up boilerplate (Recommended)",
-        description: "Remove ASCII art, rename auth routes (sign-in → login, sign-up → register), simplify index page, and rewrite README.md"
-      },
-      {
-        label: "No, skip cleanup",
-        description: "Keep all existing template content and structure unchanged"
-      }
+      { label: "Yes - full cleanup", description: "Rename auth routes, remove ASCII art, simplify README" },
+      { label: "No - keep as is", description: "Leave all boilerplate in place" }
     ],
     multiSelect: false
   }]
 })
 ```
 
-If the user selects "Yes, clean up boilerplate", perform the following steps:
-
-### 1. Scan for Boilerplate Patterns
-
-Search for common boilerplate indicators:
-
-```bash
-# Find potential boilerplate files
-find . -type f \( -name "*.tsx" -o -name "*.ts" -o -name "*.jsx" -o -name "*.js" \) \
-  -not -path "./node_modules/*" -not -path "./.git/*" | head -50
-```
-
-Look for these patterns using Grep:
-- ASCII art in index/home pages (patterns: `╔`, `║`, `╚`, `███`, `┌`, `│`, `└`, figlet-style text)
-- Template navbar/header components
-- Demo/example content
-- Placeholder text ("Lorem ipsum", "Welcome to", "Get started")
-
-### 2. Route Renaming
-
-Search for authentication routes and rename:
-
-| Original Route | New Route |
-|---------------|-----------|
-| `/sign-in` | `/login` |
-| `/sign-up` | `/register` |
-| `/signin` | `/login` |
-| `/signup` | `/register` |
-
-**Steps:**
-1. Find route definitions in:
-   - `app/routes/` (TanStack Router)
-   - `src/routes/` or `src/pages/`
-   - Router configuration files
-2. Rename route files/folders
-3. Update all internal links and redirects
-4. Update any auth configuration referencing old routes
-
-```bash
-# Find sign-in/sign-up references
-grep -rn "sign-in\|sign-up\|signin\|signup" --include="*.ts" --include="*.tsx" --include="*.js" --include="*.jsx" . 2>/dev/null | grep -v node_modules
-```
-
-### 3. Component Cleanup
-
-Remove or simplify these common boilerplate components:
-
-**Layout Grid Wrapper:**
-- Remove the template layout wrapper element matching:
-  ```css
-  body > div.grid.h-svh.grid-rows-\[auto_1fr\] > div:nth-child(1) > div
-  ```
-- This is typically a nested container in the root layout that should be simplified
-
-**Navbar/Header:**
-- Search for: `navbar`, `header`, `nav-bar`, `navigation` components
-- If found, either delete or replace with minimal placeholder
-
-**ASCII Art/Hero Sections:**
-- Search index/home pages for ASCII art patterns
-- Remove ASCII blocks entirely from the index page
-- Replace hero sections with simple text
-
-**Index Page ASCII Removal:**
-- Specifically target and remove all ASCII art from `routes/index.tsx` or equivalent
-- Common patterns: `╔`, `║`, `╚`, `███`, `┌`, `│`, `└`, figlet-style text blocks
-- Replace with minimal welcome text
-
-**Footer:**
-- Search for footer components with template content
-- Simplify to minimal or remove
-
-### 4. Index/Home Page Simplification
-
-Transform the main index page to text-only:
-
-```tsx
-export default function HomePage() {
-  return (
-    <main className="container mx-auto p-8">
-      <h1 className="text-2xl font-bold mb-4">Welcome</h1>
-      <p className="text-muted-foreground">
-        Your application is ready for development.
-      </p>
-    </main>
-  )
-}
-```
-
-### 5. README.md Rewrite
-
-Use the template from `~/.claude/plugins/rubot/templates/README.md.template`.
-
-Replace placeholders with discovered project information:
-- `{{PROJECT_NAME}}` - from package.json name field
-- `{{PROJECT_DESCRIPTION}}` - from package.json description or ask user
-- `{{FRAMEWORK}}` - detected framework (TanStack Start, etc.)
-- `{{DATABASE}}` - NeonDB / PostgreSQL
-- `{{STYLING}}` - Tailwind CSS + shadcn/ui
-- `{{REPO_URL}}` - from git remote
-- `{{ENV_VARS}}` - discovered environment variables
-- `{{PROJECT_STRUCTURE}}` - actual project structure
-- `{{LICENSE}}` - from package.json or LICENSE file
-
-### 6. Cleanup Verification
-
-After cleanup, verify:
-1. Run `bun run validate` to ensure no broken imports
-2. Check that the dev server starts without errors
-3. Verify routes are accessible at new paths
-
-### 7. Git Commit (Optional)
-
-After cleanup verification, use `AskUserQuestion` to ask about committing:
-
-```
-AskUserQuestion({
-  questions: [{
-    question: "Would you like to commit the boilerplate cleanup changes?",
-    header: "Commit",
-    options: [
-      {
-        label: "Yes, commit changes (Recommended)",
-        description: "Create a git commit with all boilerplate cleanup changes"
-      },
-      {
-        label: "No, skip commit",
-        description: "Keep changes uncommitted for manual review"
-      }
-    ],
-    multiSelect: false
-  }]
-})
-```
-
-If user approves, create a cleanup commit:
-```bash
-git add -A
-git commit -m "chore: remove template boilerplate and simplify initial setup
-
-- Remove ASCII art and demo content from index page
+If yes:
 - Rename auth routes: sign-in → login, sign-up → register
-- Simplify navbar/header components
-- Rewrite README.md with project-specific content
-
-🤖 Generated with [Claude Code](https://claude.com/claude-code)
-
-Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"
-```
+- Remove ASCII art from index page
+- Simplify README.md
 
 ## Completion
 
-After creating/updating the configuration:
-1. Confirm to user what was discovered
-2. Highlight any missing configurations
-3. Suggest next steps if configuration is incomplete
-4. Proceed to the Boilerplate Cleanup section (which uses `AskUserQuestion` to get user consent)
+After initialization:
+
+1. Confirm files were created:
+   - `CLAUDE.md`
+   - `AGENTS.md`
+   - `.claude/rubot/rubot.local.md`
+
+2. Highlight any missing configurations:
+   - NeonDB connection (if applicable)
+   - Wrangler setup (if deploying to Cloudflare)
+   - Environment variables
+
+3. Suggest next steps:
+   ```
+   Run `bun run validate` to verify the setup
+   Then use `/rubot-plan` to start planning your first task
+   ```

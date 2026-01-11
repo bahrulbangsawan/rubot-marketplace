@@ -2,9 +2,9 @@
   "$schema": "https://claude.ai/schemas/plugin-marketplace.json",
   "name": "rubot",
   "displayName": "Rubot - Multi-Agent Orchestration Governor",
-  "version": "2.6.0",
+  "version": "2.7.0",
   "description": "Strict multi-agent orchestration governor with workflow commands and 15 specialist subagents for full-stack TanStack Start development",
-  "longDescription": "Rubot enforces deterministic, mandatory multi-agent consultation for all significant tasks in complex Claude Code projects. It acts as a project manager ensuring no decision is made without consensus from all relevant domain experts.\n\nFeatures:\n- 15 specialist subagents covering backend, frontend, database, deployment, testing, and more\n- 9 workflow commands (init, plan, execute, check, commit, PR, push-pr, new-repo)\n- 9 domain-specific skills with explicit agent mappings\n- Frontend ownership model with shadcn-ui-designer as team lead\n- Mandatory registry enforcement for 20 shadcn-compatible registries\n- Integrated validation scripts for CSS, responsiveness, SEO, and registry compliance",
+  "longDescription": "Rubot enforces deterministic, mandatory multi-agent consultation for all significant tasks in complex Claude Code projects. It acts as a project manager ensuring no decision is made without consensus from all relevant domain experts.\n\nFeatures:\n- 15 specialist subagents covering backend, frontend, database, deployment, testing, and more\n- 9 workflow commands (init, plan, execute, check, commit, PR, push-pr, new-repo)\n- 9 domain-specific skills with explicit agent mappings\n- Frontend ownership model with shadcn-ui-designer as team lead\n- Mandatory registry enforcement for 20 shadcn-compatible registries",
   "author": {
     "name": "bahrulbangsawan",
     "url": "https://github.com/bahrulbangsawan"
@@ -223,35 +223,6 @@
           "name": "url-state-management",
           "agents": ["tanstack", "shadcn-ui-designer", "hydration-solver"],
           "description": "nuqs URL state management"
-        }
-      ]
-    },
-    "scripts": {
-      "count": 6,
-      "list": [
-        {
-          "name": "env_checker.sh",
-          "description": "Environment validation script"
-        },
-        {
-          "name": "css_validator.py",
-          "description": "CSS theme validation against OKLCH standards"
-        },
-        {
-          "name": "responsive_audit.py",
-          "description": "Tailwind responsive layout audit"
-        },
-        {
-          "name": "seo_audit.py",
-          "description": "Technical SEO audit"
-        },
-        {
-          "name": "registry_validator.py",
-          "description": "shadcn registry validation"
-        },
-        {
-          "name": "agent_manager.py",
-          "description": "Agent management utility"
         }
       ]
     },

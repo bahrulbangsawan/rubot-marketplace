@@ -31,19 +31,34 @@ Before running environment checks or troubleshooting:
 
 ## Usage
 
-Run the environment checker script:
+Run environment checks using these bash commands:
 
 ```bash
-~/.claude/plugins/rubot/scripts/env_checker.sh [project_path]
-```
+# Check critical tools
+echo "=== Critical Tools ===" && \
+command -v bun && bun --version || echo "[FAIL] bun not found" && \
+command -v node && node --version || echo "[FAIL] node not found" && \
+command -v git && git --version || echo "[FAIL] git not found"
 
-If no project path is provided, it defaults to the current working directory.
+# Check optional tools
+echo "=== Optional Tools ===" && \
+command -v wrangler && wrangler --version || echo "[WARN] wrangler not installed" && \
+command -v gh && gh --version || echo "[WARN] gh CLI not installed"
+
+# Check wrangler authentication
+echo "=== Wrangler Auth ===" && \
+wrangler whoami 2>/dev/null || echo "[WARN] Wrangler not authenticated"
+
+# Check configuration files
+echo "=== Config Files ===" && \
+ls -la package.json bun.lockb bun.lock wrangler.toml .env .env.local 2>/dev/null
+```
 
 ## Validation Categories
 
 ### 1. Tool Availability (Critical)
 
-These tools are **required** - the script will fail fast if missing:
+These tools are **required** - validation will fail if missing:
 
 | Tool | Purpose | Installation |
 |------|---------|--------------|
@@ -60,34 +75,41 @@ These tools are **optional** but recommended:
 
 ### 2. Version Information
 
-Displays detected versions for:
-- bun (e.g., v1.3.0)
-- node (e.g., v24.10.0)
-- wrangler (e.g., 4.42.2)
+Check versions with:
+```bash
+bun --version   # e.g., 1.3.0
+node --version  # e.g., v24.10.0
+wrangler --version 2>/dev/null  # e.g., 4.42.2
+```
 
 ### 3. Wrangler Readiness
 
-Checks for Cloudflare Workers deployment readiness:
+Check Cloudflare Workers deployment readiness:
 
-| Check | Pass Condition |
-|-------|----------------|
-| Installation | `wrangler` command available |
-| Authentication | `wrangler whoami` succeeds |
-| Configuration | `wrangler.toml`, `.jsonc`, or `.json` exists |
+| Check | Command | Pass Condition |
+|-------|---------|----------------|
+| Installation | `command -v wrangler` | Command exists |
+| Authentication | `wrangler whoami` | Returns account info |
+| Configuration | `ls wrangler.toml wrangler.jsonc wrangler.json` | At least one exists |
 
 ### 4. Configuration Files
 
-| File | Purpose | Required |
-|------|---------|----------|
-| `package.json` | Project manifest | Yes |
-| `bun.lockb` / `bun.lock` | Dependency lockfile | Recommended |
-| `wrangler.toml` | Cloudflare config | If deploying to CF |
-| `drizzle.config.*` | Drizzle ORM config | If using Drizzle |
-| `.env` / `.env.local` | Environment variables | Recommended |
+| File | Purpose | Check Command |
+|------|---------|---------------|
+| `package.json` | Project manifest | `test -f package.json` |
+| `bun.lockb` / `bun.lock` | Dependency lockfile | `ls bun.lock* 2>/dev/null` |
+| `wrangler.toml` | Cloudflare config | `test -f wrangler.toml` |
+| `drizzle.config.*` | Drizzle ORM config | `ls drizzle.config.* 2>/dev/null` |
+| `.env` / `.env.local` | Environment variables | `ls .env* 2>/dev/null` |
 
 ### 5. Project Stack Detection
 
-Detects presence of rubot-standard stack components in `package.json`:
+Detect rubot-standard stack components in `package.json`:
+
+```bash
+# Check for stack components
+cat package.json | grep -E '"(elysia|drizzle-orm|@trpc/|zod|@neondatabase/|@tanstack/)"' | head -10
+```
 
 | Component | Package Pattern |
 |-----------|-----------------|
@@ -98,47 +120,49 @@ Detects presence of rubot-standard stack components in `package.json`:
 | Neon/PostgreSQL | `"@neondatabase/serverless"`, `"pg"`, `"postgres"` |
 | TanStack | `"@tanstack/*"` |
 
-Also checks for database connection environment variables (`DATABASE_URL`, `NEON_*`, `POSTGRES_*`).
+Also check for database connection environment variables:
+```bash
+grep -E "^(DATABASE_URL|NEON_|POSTGRES_)" .env .env.local 2>/dev/null
+```
 
 ### 6. Validate Command
 
-If `package.json` defines a `validate` script, the checker:
-1. Detects its presence
-2. Displays the command definition
-3. Executes `bun run validate`
-4. Reports pass/fail status
+Check if `package.json` defines a `validate` script:
 
-## Exit Codes
+```bash
+# Check for validate script
+cat package.json | grep '"validate"'
 
-| Code | Meaning |
-|------|---------|
-| `0` | All checks passed |
-| `1` | Critical failure (missing bun/node/git) |
-| `2` | Non-critical failures (missing optional components) |
+# Run validation
+bun run validate
+```
+
+## Exit Criteria
+
+| Status | Meaning |
+|--------|---------|
+| Pass | All critical tools present, configuration valid |
+| Fail | Missing bun/node/git or critical configuration |
+| Warn | Missing optional components (wrangler, gh) |
 
 ## Output Format
 
-The script produces structured CLI output with colored status indicators:
+Use these status indicators in reports:
 
 ```
 [PASS] Check passed successfully
 [FAIL] Check failed - must be resolved
 [WARN] Warning - recommended to address
 [INFO] Informational message
-       → Remediation hint for failures/warnings
 ```
 
 ## Integration with Rubot Workflow
 
 ### In `/rubot-init`
 
-Run env_checker first to ensure the development environment is ready:
+Run environment check first to ensure the development environment is ready.
 
-```bash
-~/.claude/plugins/rubot/scripts/env_checker.sh .
-```
-
-If exit code is 1 (critical failure), abort initialization.
+If critical tools are missing, abort initialization and provide remediation steps.
 
 ### In `/rubot-check`
 
@@ -146,7 +170,6 @@ Include environment validation in the comprehensive check:
 
 ```markdown
 ## Environment Validation
-- **Command**: `env_checker.sh`
 - **Result**: [pass/fail]
 - **Critical Issues**: [count]
 - **Warnings**: [count]
@@ -154,11 +177,15 @@ Include environment validation in the comprehensive check:
 
 ### In CI Pipelines
 
-Add to CI workflow for pre-deployment validation:
+Add environment checks to CI workflow:
 
 ```yaml
 - name: Validate Environment
-  run: ~/.claude/plugins/rubot/scripts/env_checker.sh .
+  run: |
+    command -v bun || exit 1
+    command -v node || exit 1
+    bun --version
+    node --version
 ```
 
 ## Remediation Reference
