@@ -4,6 +4,22 @@
 
 `rubot` enforces deterministic, mandatory multi-agent consultation for all significant tasks in complex Claude Code projects. It acts as a project manager ensuring no decision is made without consensus from all relevant domain experts.
 
+## Installation
+
+Install the rubot plugin directly from the Claude Code marketplace:
+
+```bash
+claude plugins add rubot
+```
+
+Or install from this repository:
+
+```bash
+claude plugins add https://github.com/bahrulbangsawan/rubot-marketplace
+```
+
+After installation, restart Claude Code or run `/rubot-init` to initialize the plugin workspace.
+
 ## Problem Solved
 
 In multi-domain projects (backend, database, SSR, hydration, performance, responsiveness, QA, SEO, theming), decisions and implementations are often made without enforcing input from all required expert agents. This leads to:
