@@ -3,79 +3,47 @@
     "PreToolUse": [
       {
         "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "prompt",
-            "prompt": "PRE-COMMIT VALIDATION: If this command contains 'git commit', check if .claude/rubot/validation-report.md exists and shows PASS status. If validation FAILED, BLOCK the commit and instruct user to run /rubot-check first. If no rubot workspace exists, allow the commit."
-          }
-        ]
+        "type": "prompt",
+        "prompt": "PRE-COMMIT VALIDATION: If this command contains 'git commit', check if .claude/rubot/validation-report.md exists and shows PASS status. If validation FAILED, BLOCK the commit and instruct user to run /rubot-check first. If no rubot workspace exists, allow the commit."
       },
       {
         "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "prompt",
-            "prompt": "DANGEROUS COMMAND GUARD: Check for dangerous patterns: git push --force/-f (CRITICAL), git reset --hard (HIGH), rm -rf / or ~ or * (CRITICAL), DROP DATABASE/TABLE (CRITICAL), TRUNCATE (HIGH). For CRITICAL/HIGH risk commands, BLOCK and require explicit user confirmation. For git push --force to main/master, ALWAYS block and suggest --force-with-lease."
-          }
-        ]
+        "type": "prompt",
+        "prompt": "DANGEROUS COMMAND GUARD: Check for dangerous patterns: git push --force/-f (CRITICAL), git reset --hard (HIGH), rm -rf / or ~ or * (CRITICAL), DROP DATABASE/TABLE (CRITICAL), TRUNCATE (HIGH). For CRITICAL/HIGH risk commands, BLOCK and require explicit user confirmation. For git push --force to main/master, ALWAYS block and suggest --force-with-lease."
       },
       {
         "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "prompt",
-            "prompt": "SEO BUILD CHECK: If command is build/deploy (bun run build, npm run build, wrangler deploy, git push to main/master), provide advisory reminder to verify: SEO audit passed, robots.txt exists, sitemap.xml exists, Core Web Vitals meet thresholds. This is non-blocking - just a reminder."
-          }
-        ]
+        "type": "prompt",
+        "prompt": "SEO BUILD CHECK: If command is build/deploy (bun run build, npm run build, wrangler deploy, git push to main/master), provide advisory reminder to verify: SEO audit passed, robots.txt exists, sitemap.xml exists, Core Web Vitals meet thresholds. This is non-blocking - just a reminder."
       }
     ],
     "PostToolUse": [
       {
         "matcher": "Edit|Write",
-        "hooks": [
-          {
-            "type": "prompt",
-            "prompt": "AUTO PLAN UPDATE: If .claude/rubot/plan.md exists with unchecked tasks, and the modified file matches a planned task, suggest notifying plan-supervisor. Skip for node_modules, .git, lock files, build outputs, and .claude workspace files."
-          }
-        ]
+        "type": "prompt",
+        "prompt": "AUTO PLAN UPDATE: If .claude/rubot/plan.md exists with unchecked tasks, and the modified file matches a planned task, suggest notifying plan-supervisor. Skip for node_modules, .git, lock files, build outputs, and .claude workspace files."
       },
       {
         "matcher": "Write",
-        "hooks": [
-          {
-            "type": "prompt",
-            "prompt": "SEO META CHECK: If a route file (.tsx in routes/) was written, verify it has SEO meta tags (title, description). For TanStack Start, check for head() function with meta array. If missing on public pages, provide gentle reminder to add meta tags. Skip API routes, layouts, admin/dashboard pages."
-          }
-        ]
+        "type": "prompt",
+        "prompt": "SEO META CHECK: If a route file (.tsx in routes/) was written, verify it has SEO meta tags (title, description). For TanStack Start, check for head() function with meta array. If missing on public pages, provide gentle reminder to add meta tags. Skip API routes, layouts, admin/dashboard pages."
       },
       {
         "matcher": "Write",
-        "hooks": [
-          {
-            "type": "prompt",
-            "prompt": "SEO IMAGE CHECK: If file contains <img> tags, verify: 1) All images have alt text (flag if missing), 2) Images have width/height or aspect-ratio to prevent CLS. Provide warnings for accessibility and Core Web Vitals. Skip SVGs, CSS backgrounds, icons."
-          }
-        ]
+        "type": "prompt",
+        "prompt": "SEO IMAGE CHECK: If file contains <img> tags, verify: 1) All images have alt text (flag if missing), 2) Images have width/height or aspect-ratio to prevent CLS. Provide warnings for accessibility and Core Web Vitals. Skip SVGs, CSS backgrounds, icons."
       }
     ],
     "SessionStart": [
       {
-        "hooks": [
-          {
-            "type": "prompt",
-            "prompt": "SESSION CONTEXT LOADER: If .claude/rubot/rubot.local.md exists, load and display: Project name, stack, active plan status (tasks remaining), last validation status. Show quick commands: /rubot-status, /rubot-plan, /rubot-execute, /rubot-check, /rubot-commit. Keep summary to 10-15 lines max."
-          }
-        ]
+        "type": "prompt",
+        "prompt": "SESSION CONTEXT LOADER: If .claude/rubot/rubot.local.md exists, load and display: Project name, stack, active plan status (tasks remaining), last validation status. Show quick commands: /rubot-status, /rubot-plan, /rubot-execute, /rubot-check, /rubot-commit. Keep summary to 10-15 lines max."
       }
     ],
     "Stop": [
       {
-        "hooks": [
-          {
-            "type": "prompt",
-            "prompt": "VALIDATION REMINDER: If .claude/rubot/ exists and there are uncommitted changes (git status --porcelain), remind user: If validation passed, suggest /rubot-commit. If validation failed, strongly recommend fixing issues first. If no recent validation, suggest running /rubot-check. Skip if no uncommitted changes or changes only to .claude/ files."
-          }
-        ]
+        "type": "prompt",
+        "prompt": "VALIDATION REMINDER: If .claude/rubot/ exists and there are uncommitted changes (git status --porcelain), remind user: If validation passed, suggest /rubot-commit. If validation failed, strongly recommend fixing issues first. If no recent validation, suggest running /rubot-check. Skip if no uncommitted changes or changes only to .claude/ files."
       }
     ]
   }
