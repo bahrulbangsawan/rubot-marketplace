@@ -1,0 +1,112 @@
+# AGENTS.md (Root)
+
+> **Purpose**: Universal guidance for AI agents. Keep this lightweight.
+> **Hierarchy**: Nearest AGENTS.md wins. Check subdirectories for specific guidance.
+
+## Project Overview
+
+**Name**: {PROJECT_NAME}
+**Type**: {PROJECT_TYPE} <!-- e.g., Web App, CLI Tool, Library, Monorepo -->
+**Stack**: {PRIMARY_STACK} <!-- e.g., TypeScript, React, Node.js -->
+
+## Quick Start
+
+```bash
+{INSTALL_COMMAND}    # Install dependencies
+{DEV_COMMAND}        # Start development
+{BUILD_COMMAND}      # Build for production
+{TEST_COMMAND}       # Run tests
+{LINT_COMMAND}       # Lint & format
+```
+
+## Directory Map
+
+| Path | Purpose | Has AGENTS.md |
+|------|---------|---------------|
+| `src/` | Source code | {YES/NO} |
+| `tests/` | Test files | {YES/NO} |
+| `docs/` | Documentation | {YES/NO} |
+| `scripts/` | Build/deploy scripts | {YES/NO} |
+
+> **Rule**: Always check for `AGENTS.md` in the directory you're working in.
+
+## Universal Rules
+
+### DO
+- [ ] Read nearest `AGENTS.md` before making changes
+- [ ] Run `{LINT_COMMAND}` before committing
+- [ ] Follow existing patterns in the file you're editing
+- [ ] Check `{CONFIG_FILE}` for project-specific settings
+
+### DON'T
+- [ ] Create new files without checking existing structure
+- [ ] Add dependencies without checking `{PACKAGE_FILE}`
+- [ ] Ignore TypeScript/linter errors
+- [ ] Over-engineer simple solutions
+
+## Key Files
+
+| File | Purpose | Read When |
+|------|---------|-----------|
+| `{CONFIG_FILE}` | Project config | Setting up or configuring |
+| `{PACKAGE_FILE}` | Dependencies | Adding packages |
+| `{ENV_EXAMPLE}` | Environment vars | Configuring secrets |
+| `{SCHEMA_FILE}` | Data models | Working with data |
+
+## Code Style
+
+- **Formatting**: {FORMATTER} <!-- e.g., Prettier, Biome -->
+- **Linting**: {LINTER} <!-- e.g., ESLint, Biome -->
+- **Naming**: {NAMING_CONVENTION} <!-- e.g., camelCase for functions, PascalCase for components -->
+
+```bash
+# Auto-fix formatting
+{FORMAT_FIX_COMMAND}
+```
+
+## Commit Convention
+
+```
+{TYPE}({SCOPE}): {DESCRIPTION}
+
+# Types: feat | fix | docs | style | refactor | test | chore
+# Example: feat(auth): add OAuth2 login flow
+```
+
+## Finding Things
+
+```bash
+# Find component/module
+{FIND_COMMAND} "{PATTERN}"
+
+# Search code
+{SEARCH_COMMAND} "{PATTERN}"
+
+# List files by type
+{LIST_COMMAND}
+```
+
+## Sub-Agents Index
+
+<!-- Link to subfolder AGENTS.md files -->
+
+| Domain | Path | Description |
+|--------|------|-------------|
+| {DOMAIN_1} | `{PATH_1}/AGENTS.md` | {DESCRIPTION_1} |
+| {DOMAIN_2} | `{PATH_2}/AGENTS.md` | {DESCRIPTION_2} |
+| {DOMAIN_3} | `{PATH_3}/AGENTS.md` | {DESCRIPTION_3} |
+
+## Validation Checklist
+
+Before completing any task:
+
+```bash
+{TYPECHECK_COMMAND}   # Type checking passes
+{LINT_COMMAND}        # No lint errors
+{TEST_COMMAND}        # Tests pass
+{BUILD_COMMAND}       # Build succeeds
+```
+
+---
+
+> **Token Budget**: This file should stay under 200 lines. Move details to sub-AGENTS.md files.

@@ -2,74 +2,133 @@
 
 > Generated: {{TIMESTAMP}}
 > Plan Reference: {{PLAN_FILE}}
+> Run ID: {{RUN_ID}}
+
+## Timestamps
+
+| Event | Time | Duration |
+|-------|------|----------|
+| **Started** | {{START_TIME}} | - |
+| Environment Check | {{ENV_CHECK_TIME}} | {{ENV_CHECK_DURATION}} |
+| Primary Validation | {{PRIMARY_VALIDATION_TIME}} | {{PRIMARY_VALIDATION_DURATION}} |
+| CSS Theme Validation | {{CSS_VALIDATION_TIME}} | {{CSS_VALIDATION_DURATION}} |
+| Registry Validation | {{REGISTRY_VALIDATION_TIME}} | {{REGISTRY_VALIDATION_DURATION}} |
+| Responsive Audit | {{RESPONSIVE_AUDIT_TIME}} | {{RESPONSIVE_AUDIT_DURATION}} |
+| SEO Audit | {{SEO_AUDIT_TIME}} | {{SEO_AUDIT_DURATION}} |
+| Agent Verification | {{AGENT_VERIFICATION_TIME}} | {{AGENT_VERIFICATION_DURATION}} |
+| **Completed** | {{END_TIME}} | **{{TOTAL_DURATION}}** |
 
 ## Summary
 
-| Metric | Value |
-|--------|-------|
-| **Overall Status** | {{OVERALL_STATUS}} |
-| **Total Checks** | {{TOTAL_CHECKS}} |
-| **Passed** | {{PASSED_COUNT}} |
-| **Failed** | {{FAILED_COUNT}} |
-| **Warnings** | {{WARNING_COUNT}} |
+| Metric | Value | Trend |
+|--------|-------|-------|
+| **Overall Status** | {{OVERALL_STATUS}} | {{STATUS_TREND}} |
+| **Total Checks** | {{TOTAL_CHECKS}} | {{CHECKS_TREND}} |
+| **Passed** | {{PASSED_COUNT}} | {{PASSED_TREND}} |
+| **Failed** | {{FAILED_COUNT}} | {{FAILED_TREND}} |
+| **Warnings** | {{WARNING_COUNT}} | {{WARNING_TREND}} |
+
+### Status History (Last 5 Runs)
+
+| Run | Date | Status | Errors | Warnings |
+|-----|------|--------|--------|----------|
+{{STATUS_HISTORY_TABLE}}
+
+### Quick Status
+
+```
+{{STATUS_BAR}}
+```
 
 ## Environment Validation
 
-| Check | Status | Details |
-|-------|--------|---------|
-| bun | {{BUN_STATUS}} | {{BUN_VERSION}} |
-| node | {{NODE_STATUS}} | {{NODE_VERSION}} |
-| git | {{GIT_STATUS}} | {{GIT_VERSION}} |
-| wrangler | {{WRANGLER_STATUS}} | {{WRANGLER_VERSION}} |
-| gh | {{GH_STATUS}} | {{GH_VERSION}} |
+| Check | Status | Details | Version Required |
+|-------|--------|---------|------------------|
+| bun | {{BUN_STATUS}} | {{BUN_VERSION}} | >=1.0.0 |
+| node | {{NODE_STATUS}} | {{NODE_VERSION}} | >=18.0.0 |
+| git | {{GIT_STATUS}} | {{GIT_VERSION}} | >=2.0.0 |
+| wrangler | {{WRANGLER_STATUS}} | {{WRANGLER_VERSION}} | >=3.0.0 |
+| gh | {{GH_STATUS}} | {{GH_VERSION}} | >=2.0.0 |
 
 **Environment Script Exit Code**: {{ENV_EXIT_CODE}}
+**Environment Check Duration**: {{ENV_CHECK_DURATION}}
 
 ## Primary Validation (`bun run validate`)
 
-| Check | Status | Issues |
-|-------|--------|--------|
-| TypeScript | {{TS_STATUS}} | {{TS_ISSUES}} |
-| Biome Lint | {{LINT_STATUS}} | {{LINT_ISSUES}} |
-| Build | {{BUILD_STATUS}} | {{BUILD_ISSUES}} |
+**Started**: {{PRIMARY_START_TIME}}
+**Completed**: {{PRIMARY_END_TIME}}
+**Duration**: {{PRIMARY_VALIDATION_DURATION}}
+
+| Check | Status | Issues | Time |
+|-------|--------|--------|------|
+| TypeScript | {{TS_STATUS}} | {{TS_ISSUES}} | {{TS_DURATION}} |
+| Biome Lint | {{LINT_STATUS}} | {{LINT_ISSUES}} | {{LINT_DURATION}} |
+| Build | {{BUILD_STATUS}} | {{BUILD_ISSUES}} | {{BUILD_DURATION}} |
 
 ### Issues Found
 
 {{VALIDATION_ISSUES_TABLE}}
 
+### Issue Breakdown by Type
+
+| Type | Count | Files Affected |
+|------|-------|----------------|
+| Type Errors | {{TYPE_ERROR_COUNT}} | {{TYPE_ERROR_FILES}} |
+| Lint Errors | {{LINT_ERROR_COUNT}} | {{LINT_ERROR_FILES}} |
+| Lint Warnings | {{LINT_WARNING_COUNT}} | {{LINT_WARNING_FILES}} |
+| Build Errors | {{BUILD_ERROR_COUNT}} | {{BUILD_ERROR_FILES}} |
+
 ## CSS Theme Validation
 
-| Check | Status |
-|-------|--------|
-| Script Run | {{CSS_RUN_STATUS}} |
-| Three-Block Structure | {{CSS_STRUCTURE}} |
-| Light Mode Tokens | {{CSS_LIGHT}} |
-| Dark Mode Tokens | {{CSS_DARK}} |
-| OKLCH Compliance | {{CSS_OKLCH}} |
-| @theme inline | {{CSS_THEME}} |
+**Started**: {{CSS_START_TIME}}
+**Duration**: {{CSS_VALIDATION_DURATION}}
+
+| Check | Status | Details |
+|-------|--------|---------|
+| Script Run | {{CSS_RUN_STATUS}} | {{CSS_RUN_DETAILS}} |
+| Three-Block Structure | {{CSS_STRUCTURE}} | {{CSS_STRUCTURE_DETAILS}} |
+| Light Mode Tokens | {{CSS_LIGHT}} | {{CSS_LIGHT_COUNT}} tokens |
+| Dark Mode Tokens | {{CSS_DARK}} | {{CSS_DARK_COUNT}} tokens |
+| OKLCH Compliance | {{CSS_OKLCH}} | {{CSS_OKLCH_PERCENT}}% compliant |
+| @theme inline | {{CSS_THEME}} | {{CSS_THEME_DETAILS}} |
 
 {{CSS_ISSUES}}
 
 ## Registry Validation
 
-| Check | Status |
-|-------|--------|
-| Script Run | {{REGISTRY_RUN_STATUS}} |
-| components.json Found | {{REGISTRY_FILE_FOUND}} |
-| Mandatory Registries | {{REGISTRY_MANDATORY_COUNT}}/20 |
-| URL Correctness | {{REGISTRY_URL_STATUS}} |
-| Aliases | {{REGISTRY_ALIASES}} |
+**Started**: {{REGISTRY_START_TIME}}
+**Duration**: {{REGISTRY_VALIDATION_DURATION}}
+
+| Check | Status | Details |
+|-------|--------|---------|
+| Script Run | {{REGISTRY_RUN_STATUS}} | - |
+| components.json Found | {{REGISTRY_FILE_FOUND}} | {{REGISTRY_FILE_PATH}} |
+| Mandatory Registries | {{REGISTRY_MANDATORY_COUNT}}/20 | {{REGISTRY_MISSING}} missing |
+| URL Correctness | {{REGISTRY_URL_STATUS}} | {{REGISTRY_URL_ISSUES}} issues |
+| Aliases | {{REGISTRY_ALIASES}} | {{REGISTRY_ALIAS_COUNT}} defined |
 
 {{REGISTRY_ISSUES}}
 
 ## Responsive Audit
 
-| Metric | Value |
-|--------|-------|
-| Status | {{RESPONSIVE_STATUS}} |
-| Files Scanned | {{RESPONSIVE_FILES}} |
-| Critical Violations | {{RESPONSIVE_CRITICAL}} |
-| Warnings | {{RESPONSIVE_WARNINGS}} |
+**Started**: {{RESPONSIVE_START_TIME}}
+**Duration**: {{RESPONSIVE_AUDIT_DURATION}}
+
+| Metric | Value | Threshold |
+|--------|-------|-----------|
+| Status | {{RESPONSIVE_STATUS}} | - |
+| Files Scanned | {{RESPONSIVE_FILES}} | - |
+| Critical Violations | {{RESPONSIVE_CRITICAL}} | 0 |
+| Warnings | {{RESPONSIVE_WARNINGS}} | <5 |
+
+### Breakpoint Coverage
+
+| Breakpoint | Coverage | Issues |
+|------------|----------|--------|
+| Mobile (320-480px) | {{MOBILE_COVERAGE}} | {{MOBILE_ISSUES}} |
+| Tablet (481-992px) | {{TABLET_COVERAGE}} | {{TABLET_ISSUES}} |
+| Desktop (992-1200px) | {{DESKTOP_COVERAGE}} | {{DESKTOP_ISSUES}} |
+| Widescreen (1200px+) | {{WIDESCREEN_COVERAGE}} | {{WIDESCREEN_ISSUES}} |
 
 ### Violations
 
@@ -77,32 +136,38 @@
 
 ## SEO Audit
 
+**Started**: {{SEO_START_TIME}}
+**Duration**: {{SEO_AUDIT_DURATION}}
+
 > **Note**: SEO audit requires user confirmation. Dashboards, admin panels, and authenticated applications should NOT be indexed for security reasons.
 
-| Check | Status |
-|-------|--------|
-| **User Confirmed SEO Needed** | {{SEO_USER_CONFIRMED}} |
-| URL Audited | {{SEO_URL}} |
-| Page Accessible | {{SEO_ACCESSIBLE}} |
-| Title Tag | {{SEO_TITLE}} |
-| Meta Description | {{SEO_DESC}} |
-| Canonical | {{SEO_CANONICAL}} |
-| Open Graph | {{SEO_OG}} |
-| robots.txt | {{SEO_ROBOTS}} |
-| sitemap.xml | {{SEO_SITEMAP}} |
+| Check | Status | Details |
+|-------|--------|---------|
+| **User Confirmed SEO Needed** | {{SEO_USER_CONFIRMED}} | - |
+| URL Audited | {{SEO_URL}} | {{SEO_URL_DETAILS}} |
+| Page Accessible | {{SEO_ACCESSIBLE}} | HTTP {{SEO_HTTP_STATUS}} |
+| Title Tag | {{SEO_TITLE}} | {{SEO_TITLE_LENGTH}} chars |
+| Meta Description | {{SEO_DESC}} | {{SEO_DESC_LENGTH}} chars |
+| Canonical | {{SEO_CANONICAL}} | {{SEO_CANONICAL_URL}} |
+| Open Graph | {{SEO_OG}} | {{SEO_OG_COUNT}} tags |
+| robots.txt | {{SEO_ROBOTS}} | {{SEO_ROBOTS_DETAILS}} |
+| sitemap.xml | {{SEO_SITEMAP}} | {{SEO_SITEMAP_ENTRIES}} entries |
 
 {{SEO_ISSUES}}
 
 ## Agent Verification
 
+**Started**: {{AGENT_START_TIME}}
+**Duration**: {{AGENT_VERIFICATION_DURATION}}
+
 ### debug-master
 
-| Check | Status |
-|-------|--------|
-| Static Analysis | {{DEBUG_STATIC}} |
-| Type Safety | {{DEBUG_TYPES}} |
-| Lint Compliance | {{DEBUG_LINT}} |
-| Recommendation | {{DEBUG_RECOMMENDATION}} |
+| Check | Status | Time |
+|-------|--------|------|
+| Static Analysis | {{DEBUG_STATIC}} | {{DEBUG_STATIC_TIME}} |
+| Type Safety | {{DEBUG_TYPES}} | {{DEBUG_TYPES_TIME}} |
+| Lint Compliance | {{DEBUG_LINT}} | {{DEBUG_LINT_TIME}} |
+| Recommendation | {{DEBUG_RECOMMENDATION}} | - |
 
 {{DEBUG_NOTES}}
 
@@ -110,11 +175,29 @@
 
 {{AGENT_VERIFICATION_TABLE}}
 
+### Agent Consultation Summary
+
+| Agent | Consulted | Passed | Issues | Duration |
+|-------|-----------|--------|--------|----------|
+{{AGENT_SUMMARY_TABLE}}
+
 ## Blockers (Must Fix)
+
+**Count**: {{BLOCKER_COUNT}}
 
 {{BLOCKERS_LIST}}
 
+### Blocker Priority
+
+| Priority | Count | Description |
+|----------|-------|-------------|
+| Critical | {{CRITICAL_BLOCKER_COUNT}} | Breaks build/deploy |
+| High | {{HIGH_BLOCKER_COUNT}} | Breaks functionality |
+| Medium | {{MEDIUM_BLOCKER_COUNT}} | Quality issues |
+
 ## Warnings (Should Fix)
+
+**Count**: {{WARNING_COUNT}}
 
 {{WARNINGS_LIST}}
 
@@ -122,6 +205,28 @@
 
 {{FINAL_RECOMMENDATION}}
 
+### Next Actions
+
+1. {{NEXT_ACTION_1}}
+2. {{NEXT_ACTION_2}}
+3. {{NEXT_ACTION_3}}
+
 ---
 
+## Metadata
+
+| Field | Value |
+|-------|-------|
+| **Run ID** | {{RUN_ID}} |
+| **Trigger** | {{TRIGGER}} |
+| **Branch** | {{GIT_BRANCH}} |
+| **Commit** | {{GIT_COMMIT}} |
+| **Previous Run** | {{PREVIOUS_RUN_ID}} |
+| **Comparison** | {{COMPARISON_SUMMARY}} |
+
 **Next Step**: {{NEXT_STEP}}
+
+**Commands Available**:
+- `/rubot-check` - Re-run validation
+- `/rubot-commit` - Commit if validation passed
+- `/rubot-status` - View overall status

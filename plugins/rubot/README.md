@@ -1,6 +1,6 @@
 # rubot
 
-**Strict Multi-Agent Orchestration Governor v2.6.0**
+**Strict Multi-Agent Orchestration Governor v2.9.0**
 
 `rubot` enforces deterministic, mandatory multi-agent consultation for all significant tasks in complex Claude Code projects. It acts as a project manager ensuring no decision is made without consensus from all relevant domain experts.
 
@@ -19,7 +19,7 @@ In multi-domain projects (backend, database, SSR, hydration, performance, respon
 
 `rubot` acts as a **strict execution governor** that enforces deterministic, mandatory multi-agent orchestration before any solution is accepted.
 
-## Registered Subagents (15 Total)
+## Registered Subagents (16 Total)
 
 | Agent | Domain | Role |
 |-------|--------|------|
@@ -34,7 +34,7 @@ In multi-domain projects (backend, database, SSR, hydration, performance, respon
 | plan-supervisor | Plan.md tracking, task completion verification | Independent (always required) |
 | qa-tester | Playwright, Chrome DevTools testing | Independent (always required) |
 | responsive-master | Tailwind responsive layouts | **Sub-agent of shadcn-ui-designer** |
-| seo-master | SEO, structured data, metadata (user-confirmed) | Independent |
+| seo-master | SEO, Chrome DevTools auditing, Core Web Vitals | Independent (user-confirmed) |
 | **shadcn-ui-designer** | **UI components, design system (FRONTEND OWNER)** | **Team Lead** |
 | tanstack | TanStack Start/Router/Query full-stack | Independent |
 | theme-master | Tailwind themes, OKLCH colors | **Sub-agent of shadcn-ui-designer** |
@@ -62,6 +62,22 @@ In multi-domain projects (backend, database, SSR, hydration, performance, respon
 | `/rubot-new-pr` | Create a new pull request using GitHub CLI |
 | `/rubot-push-pr` | Push commits to active PR and re-run validations |
 | `/rubot-new-repo` | Create a new GitHub repository with initial commit |
+| `/rubot-status` | View current rubot workspace status and workflow progress |
+| `/rubot-reset` | Reset rubot workspace to clean state |
+| `/rubot-help` | Display rubot plugin help and available commands |
+| `/rubot-review` | Autonomous code review, codebase analysis, and bug fix workflow |
+
+### SEO Commands
+
+| Command | Description |
+|---------|-------------|
+| `/seo-audit` | Comprehensive SEO audit with Chrome DevTools live inspection |
+| `/seo-check-schema` | Validate structured data and JSON-LD schema markup |
+| `/seo-check-og` | Check Open Graph and Twitter Card meta tags |
+| `/seo-check-vitals` | Audit Core Web Vitals (LCP, INP, CLS) |
+| `/seo-generate-robots` | Generate robots.txt with proper directives |
+| `/seo-generate-sitemap` | Generate sitemap.xml from project routes |
+| `/seo-generate-favicons` | Set up complete favicon structure and meta tags |
 
 ### Workflow
 
@@ -135,7 +151,7 @@ Every rubot orchestration produces:
 
 ## Components
 
-- **Commands**: 9 slash commands for complete workflow orchestration
+- **Commands**: 20 slash commands for complete workflow orchestration
   - `/rubot` - Main orchestration entry point
   - `/rubot-init` - Workspace initialization
   - `/rubot-plan` - Execution planning
@@ -145,8 +161,28 @@ Every rubot orchestration produces:
   - `/rubot-new-pr` - PR creation
   - `/rubot-push-pr` - PR update
   - `/rubot-new-repo` - Repository creation
-- **Agent**: `rubot` - Proactive orchestrator that coordinates all subagents
-- **Skills**: 11 domain-specific skill sets
+  - `/rubot-status` - Workspace status
+  - `/rubot-reset` - Workspace reset
+  - `/rubot-help` - Help documentation
+  - `/rubot-review` - Code review workflow
+  - `/seo-audit` - SEO audit
+  - `/seo-check-schema` - Schema validation
+  - `/seo-check-og` - Open Graph validation
+  - `/seo-check-vitals` - Core Web Vitals
+  - `/seo-generate-robots` - robots.txt generation
+  - `/seo-generate-sitemap` - sitemap.xml generation
+  - `/seo-generate-favicons` - Favicon setup
+- **Hooks**: 8 lifecycle hooks
+  - `pre-commit-validation` - Blocks commits without validation
+  - `dangerous-command-guard` - Guards destructive commands
+  - `seo-build-check` - Pre-deployment SEO reminder
+  - `auto-plan-update` - Suggests plan updates after edits
+  - `seo-meta-check` - Validates SEO meta after page creation
+  - `seo-image-check` - Checks image alt text and dimensions
+  - `session-context-loader` - Loads workspace at session start
+  - `validation-reminder` - Reminds about uncommitted changes
+- **Agent**: `rubot` - Proactive orchestrator that coordinates all 16 subagents
+- **Skills**: 18 domain-specific skill sets
   - `orchestration` - Domain classification and coordination knowledge
   - `env-check` - Environment validation
   - `rbac-auth` - Role-based access control implementation
@@ -155,7 +191,16 @@ Every rubot orchestration produces:
   - `tanstack-form` - TanStack Form patterns
   - `tanstack-table` - TanStack Table patterns
   - `tanstack-db` - TanStack DB / local-first patterns
-  - `url-state-management` - URL state with nuqs (tabs, filters, pagination, sorting)
+  - `url-state-management` - URL state with nuqs
+  - `drizzle-orm` - Type-safe database operations
+  - `elysiajs` - High-performance HTTP servers
+  - `biome` - Fast linting and formatting
+  - `cloudflare-workers` - Edge computing
+  - `seo-audit` - Comprehensive SEO auditing with Chrome DevTools
+  - `schema-markup` - Schema.org JSON-LD implementation
+  - `core-web-vitals` - LCP, INP, CLS optimization
+  - `social-sharing` - Open Graph and Twitter Cards
+  - `crawl-config` - robots.txt and sitemap.xml
 - **Templates**: Markdown templates for generated documents
 
 ## Templates

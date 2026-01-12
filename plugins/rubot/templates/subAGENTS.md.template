@@ -1,0 +1,213 @@
+# AGENTS.md ({FOLDER_NAME})
+
+> **Scope**: {FOLDER_PATH}/**
+> **Parent**: See `../AGENTS.md` for universal rules
+> **Purpose**: {FOLDER_PURPOSE}
+
+## Overview
+
+This directory contains: {BRIEF_DESCRIPTION}
+
+**Owner Domain**: {DOMAIN} <!-- e.g., Authentication, Data Layer, UI Components -->
+**Primary Language**: {LANGUAGE}
+**Key Patterns**: {PATTERNS} <!-- e.g., React Hooks, Repository Pattern, Factory -->
+
+## File Structure
+
+```
+{FOLDER_NAME}/
+├── {SUBFOLDER_1}/     # {PURPOSE_1}
+├── {SUBFOLDER_2}/     # {PURPOSE_2}
+├── {FILE_1}           # {PURPOSE_3}
+├── {FILE_2}           # {PURPOSE_4}
+└── index.{EXT}        # Public exports
+```
+
+## Naming Conventions
+
+| Type | Pattern | Example |
+|------|---------|---------|
+| {TYPE_1} | `{PATTERN_1}` | `{EXAMPLE_1}` |
+| {TYPE_2} | `{PATTERN_2}` | `{EXAMPLE_2}` |
+| {TYPE_3} | `{PATTERN_3}` | `{EXAMPLE_3}` |
+| Tests | `{TEST_PATTERN}` | `{TEST_EXAMPLE}` |
+
+## Creating New Files
+
+### {FILE_TYPE_1}
+
+```bash
+# Location
+{FOLDER_PATH}/{SUBPATH}/{filename}.{EXT}
+```
+
+```{LANGUAGE}
+{CODE_TEMPLATE_1}
+```
+
+### {FILE_TYPE_2}
+
+```bash
+# Location
+{FOLDER_PATH}/{SUBPATH}/{filename}.{EXT}
+```
+
+```{LANGUAGE}
+{CODE_TEMPLATE_2}
+```
+
+## Common Patterns
+
+### Pattern: {PATTERN_NAME_1}
+
+**When**: {WHEN_TO_USE_1}
+**Where**: `{FILE_GLOB_1}`
+
+```{LANGUAGE}
+{PATTERN_CODE_1}
+```
+
+### Pattern: {PATTERN_NAME_2}
+
+**When**: {WHEN_TO_USE_2}
+**Where**: `{FILE_GLOB_2}`
+
+```{LANGUAGE}
+{PATTERN_CODE_2}
+```
+
+## Dependencies & Imports
+
+### Internal Imports
+
+```{LANGUAGE}
+// Prefer absolute imports from this folder
+import { {EXPORT} } from '{IMPORT_PATH}'
+
+// Relative imports only within same subfolder
+import { {LOCAL_EXPORT} } from './{LOCAL_FILE}'
+```
+
+### External Dependencies
+
+| Package | Usage | Docs |
+|---------|-------|------|
+| `{PACKAGE_1}` | {USAGE_1} | {DOCS_LINK_1} |
+| `{PACKAGE_2}` | {USAGE_2} | {DOCS_LINK_2} |
+
+### Forbidden Imports
+
+```{LANGUAGE}
+// DO NOT import these in this folder
+// {FORBIDDEN_1} - Reason: {REASON_1}
+// {FORBIDDEN_2} - Reason: {REASON_2}
+```
+
+## Commands
+
+```bash
+# Run tests for this folder
+{TEST_FOLDER_COMMAND}
+
+# Type check this folder
+{TYPECHECK_FOLDER_COMMAND}
+
+# Lint this folder
+{LINT_FOLDER_COMMAND}
+
+# Generate {ARTIFACT}
+{GENERATE_COMMAND}
+```
+
+## Error Handling
+
+```{LANGUAGE}
+{ERROR_HANDLING_PATTERN}
+```
+
+## Testing
+
+### Test Location
+```
+{TEST_LOCATION}
+```
+
+### Test Template
+
+```{LANGUAGE}
+{TEST_TEMPLATE}
+```
+
+### Running Tests
+
+```bash
+# All tests in this folder
+{TEST_ALL_COMMAND}
+
+# Single file
+{TEST_SINGLE_COMMAND}
+
+# Watch mode
+{TEST_WATCH_COMMAND}
+```
+
+## Common Tasks
+
+### Task: {TASK_1}
+
+1. {STEP_1}
+2. {STEP_2}
+3. {STEP_3}
+
+```bash
+{TASK_1_COMMAND}
+```
+
+### Task: {TASK_2}
+
+1. {STEP_1}
+2. {STEP_2}
+3. {STEP_3}
+
+```bash
+{TASK_2_COMMAND}
+```
+
+## Anti-Patterns
+
+| Don't | Do Instead | Why |
+|-------|------------|-----|
+| {ANTIPATTERN_1} | {CORRECT_1} | {REASON_1} |
+| {ANTIPATTERN_2} | {CORRECT_2} | {REASON_2} |
+| {ANTIPATTERN_3} | {CORRECT_3} | {REASON_3} |
+
+## Related Files
+
+| File | Relationship |
+|------|--------------|
+| `{RELATED_FILE_1}` | {RELATIONSHIP_1} |
+| `{RELATED_FILE_2}` | {RELATIONSHIP_2} |
+| `{RELATED_FILE_3}` | {RELATIONSHIP_3} |
+
+## Validation Before Commit
+
+```bash
+# Run these from {FOLDER_PATH}
+{VALIDATION_COMMAND_1}  # {VALIDATION_DESC_1}
+{VALIDATION_COMMAND_2}  # {VALIDATION_DESC_2}
+{VALIDATION_COMMAND_3}  # {VALIDATION_DESC_3}
+```
+
+## Quick Reference
+
+| Action | Command/Path |
+|--------|--------------|
+| New {TYPE_1} | `{PATH_1}` |
+| New {TYPE_2} | `{PATH_2}` |
+| Find {THING} | `{FIND_COMMAND}` |
+| Debug {ISSUE} | `{DEBUG_COMMAND}` |
+
+---
+
+> **Scope Reminder**: This AGENTS.md only applies to `{FOLDER_PATH}/**`
+> **Escalation**: For cross-cutting concerns, see `../AGENTS.md`

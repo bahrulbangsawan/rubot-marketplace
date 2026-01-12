@@ -8,10 +8,10 @@
     {
       "name": "rubot",
       "source": "./plugins/rubot",
-      "description": "Strict multi-agent orchestration governor with workflow commands (init, plan, execute, check, commit, PR, new-repo) and 15 specialist subagents",
-      "version": "2.6.0",
+      "description": "Strict multi-agent orchestration governor with 20 workflow commands, 8 hooks, 16 specialist subagents, and 18 domain skills including comprehensive SEO toolkit",
+      "version": "2.9.0",
       "author": {
-        "name": "growthacker"
+        "name": "bahrulbangsawan"
       }
     }
   ]

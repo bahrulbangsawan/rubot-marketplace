@@ -1,9 +1,9 @@
 {
   "name": "rubot",
-  "version": "2.6.0",
-  "description": "Strict multi-agent orchestration governor with workflow commands (init, plan, execute, check, commit, PR, new-repo) and 15 specialist subagents",
+  "version": "2.9.0",
+  "description": "Strict multi-agent orchestration governor with 20 workflow commands, 8 hooks, 16 specialist subagents, and 18 domain skills including comprehensive SEO toolkit",
   "author": {
-    "name": "growthacker"
+    "name": "bahrulbangsawan"
   },
   "keywords": [
     "orchestration",
@@ -11,6 +11,7 @@
     "governance",
     "enforcement",
     "workflow",
+    "hooks",
     "plan-supervisor",
     "plan-tracking",
     "task-completion",
@@ -19,8 +20,21 @@
     "dynamic-imports",
     "theme",
     "seo",
+    "seo-audit",
+    "structured-data",
+    "schema-markup",
+    "json-ld",
+    "core-web-vitals",
+    "open-graph",
+    "twitter-cards",
+    "robots-txt",
+    "sitemap-xml",
+    "favicons",
+    "crawl-optimization",
+    "rich-results",
     "debug",
     "cloudflare",
+    "cloudflare-workers",
     "dashboard",
     "shadcn-registries",
     "frontend-ownership",
@@ -67,6 +81,15 @@
     "electric-sql",
     "powersync",
     "offline-first",
-    "real-time-sync"
+    "real-time-sync",
+    "drizzle-orm",
+    "elysiajs",
+    "biome",
+    "linting",
+    "formatting",
+    "code-review",
+    "devtools",
+    "pre-commit",
+    "session-context"
   ]
 }

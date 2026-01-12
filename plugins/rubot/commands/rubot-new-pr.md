@@ -93,19 +93,56 @@ Create PR title and body:
 
 ### Step 4: Confirm with User
 
-Present PR details:
+Present PR details and use AskUserQuestion for confirmation:
+
 ```
-Branch: feature/auth-system
-Base: main
-Title: feat(auth): add user authentication flow
-
-Body preview:
-[summary of PR body]
-
-Create this PR?
+AskUserQuestion({
+  questions: [{
+    question: "Ready to create this pull request?",
+    header: "Create PR",
+    options: [
+      {
+        label: "Yes, create PR (Recommended)",
+        description: "Create the PR with the generated title and body"
+      },
+      {
+        label: "Edit title",
+        description: "Modify the PR title before creating"
+      },
+      {
+        label: "Edit body",
+        description: "Modify the PR description before creating"
+      },
+      {
+        label: "Change base branch",
+        description: "Target a different branch instead of main"
+      }
+    ],
+    multiSelect: false
+  }]
+})
 ```
 
-Use AskUserQuestion for any modifications.
+**Based on user response:**
+
+- **"Yes, create PR"**: Proceed to Step 5
+- **"Edit title"**: Ask user for new title, update, then ask again
+- **"Edit body"**: Show current body, ask for modifications, then ask again
+- **"Change base branch"**:
+  ```
+  AskUserQuestion({
+    questions: [{
+      question: "Which branch should this PR target?",
+      header: "Base Branch",
+      options: [
+        { label: "main", description: "Default main branch" },
+        { label: "develop", description: "Development branch" },
+        { label: "staging", description: "Staging branch" }
+      ],
+      multiSelect: false
+    }]
+  })
+  ```
 
 ### Step 5: Push Branch
 
@@ -147,6 +184,43 @@ If `.github/PULL_REQUEST_TEMPLATE.md` exists, incorporate its structure.
 If `rubot.local.md` specifies PR conventions, follow them.
 
 ## After PR Creation
+
+**ALWAYS** use AskUserQuestion after successful PR creation:
+
+```
+AskUserQuestion({
+  questions: [{
+    question: "Pull request created successfully! What would you like to do next?",
+    header: "Next Step",
+    options: [
+      {
+        label: "Open PR in browser (Recommended)",
+        description: "View the PR on GitHub to review and request reviewers"
+      },
+      {
+        label: "Request reviewers",
+        description: "Add reviewers to the pull request"
+      },
+      {
+        label: "Continue working",
+        description: "Keep working on more changes"
+      },
+      {
+        label: "Done for now",
+        description: "End here - I'll handle the rest manually"
+      }
+    ],
+    multiSelect: false
+  }]
+})
+```
+
+**Based on user response:**
+
+- **"Open PR in browser"**: Run `gh pr view --web`
+- **"Request reviewers"**: Ask for reviewer usernames and run `gh pr edit --add-reviewer`
+- **"Continue working"**: Inform user they can push more commits with `/rubot-push-pr`
+- **"Done for now"**: Display PR URL and exit
 
 Provide user with:
 - PR URL

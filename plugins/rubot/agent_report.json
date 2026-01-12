@@ -1,6 +1,6 @@
 {
-  "generated": "2025-12-31 08:10:19",
-  "total_agents": 14,
+  "generated": "2025-01-12 10:30:00",
+  "total_agents": 16,
   "agents": [
     {
       "name": "backend-master",
@@ -57,12 +57,30 @@
       "valid": true
     },
     {
+      "name": "lazy-load-master",
+      "model": "opus",
+      "color": "yellow",
+      "permission_mode": "bypassPermissions",
+      "tools_count": 0,
+      "prompt_length": 4200,
+      "valid": true
+    },
+    {
       "name": "neon-master",
       "model": "opus",
       "color": "green",
       "permission_mode": "bypassPermissions",
       "tools_count": 0,
       "prompt_length": 4538,
+      "valid": true
+    },
+    {
+      "name": "plan-supervisor",
+      "model": "haiku",
+      "color": "gray",
+      "permission_mode": "",
+      "tools_count": 4,
+      "prompt_length": 2500,
       "valid": true
     },
     {
@@ -97,8 +115,8 @@
       "model": "opus",
       "color": "pink",
       "permission_mode": "",
-      "tools_count": 0,
-      "prompt_length": 7095,
+      "tools_count": 6,
+      "prompt_length": 10500,
       "valid": true
     },
     {

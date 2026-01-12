@@ -2,9 +2,9 @@
   "$schema": "https://claude.ai/schemas/plugin-marketplace.json",
   "name": "rubot",
   "displayName": "Rubot - Multi-Agent Orchestration Governor",
-  "version": "2.7.0",
-  "description": "Strict multi-agent orchestration governor with workflow commands and 15 specialist subagents for full-stack TanStack Start development",
-  "longDescription": "Rubot enforces deterministic, mandatory multi-agent consultation for all significant tasks in complex Claude Code projects. It acts as a project manager ensuring no decision is made without consensus from all relevant domain experts.\n\nFeatures:\n- 15 specialist subagents covering backend, frontend, database, deployment, testing, and more\n- 9 workflow commands (init, plan, execute, check, commit, PR, push-pr, new-repo)\n- 9 domain-specific skills with explicit agent mappings\n- Frontend ownership model with shadcn-ui-designer as team lead\n- Mandatory registry enforcement for 20 shadcn-compatible registries",
+  "version": "2.9.0",
+  "description": "Strict multi-agent orchestration governor with 20 workflow commands, 8 hooks, 16 specialist subagents, and 18 domain skills for full-stack TanStack Start development",
+  "longDescription": "Rubot enforces deterministic, mandatory multi-agent consultation for all significant tasks in complex Claude Code projects. It acts as a project manager ensuring no decision is made without consensus from all relevant domain experts.\n\nFeatures:\n- 16 specialist subagents covering backend, frontend, database, deployment, testing, SEO, and more\n- 20 workflow commands including 7 SEO commands (audit, check-schema, check-og, check-vitals, generate-robots, generate-sitemap, generate-favicons)\n- 8 lifecycle hooks including 3 SEO hooks (meta-check, image-check, build-check)\n- 18 domain-specific skills including 5 SEO skills (seo-audit, schema-markup, core-web-vitals, social-sharing, crawl-config)\n- Frontend ownership model with shadcn-ui-designer as team lead\n- Mandatory registry enforcement for 20 shadcn-compatible registries\n- Chrome DevTools MCP integration for live SEO auditing",
   "author": {
     "name": "bahrulbangsawan",
     "url": "https://github.com/bahrulbangsawan"
@@ -26,6 +26,7 @@
     "multi-agent",
     "governance",
     "workflow",
+    "hooks",
     "tanstack",
     "shadcn",
     "tailwind",
@@ -36,7 +37,9 @@
     "rbac",
     "seo",
     "responsive",
-    "theming"
+    "theming",
+    "biome",
+    "code-review"
   ],
   "compatibility": {
     "claudeCode": ">=1.0.0"
@@ -115,7 +118,7 @@
           "name": "seo-master",
           "role": "independent",
           "requiresConfirmation": true,
-          "description": "SEO, structured data, metadata"
+          "description": "SEO with Chrome DevTools live auditing, structured data, Core Web Vitals"
         },
         {
           "name": "shadcn-ui-designer",
@@ -136,7 +139,7 @@
       ]
     },
     "commands": {
-      "count": 9,
+      "count": 20,
       "list": [
         {
           "name": "rubot",
@@ -173,11 +176,106 @@
         {
           "name": "rubot-new-repo",
           "description": "Create a new GitHub repository with initial commit"
+        },
+        {
+          "name": "rubot-status",
+          "description": "View current rubot workspace status and workflow progress"
+        },
+        {
+          "name": "rubot-reset",
+          "description": "Reset rubot workspace to clean state"
+        },
+        {
+          "name": "rubot-help",
+          "description": "Display rubot plugin help and available commands"
+        },
+        {
+          "name": "rubot-review",
+          "description": "Autonomous code review, codebase analysis, and bug fix workflow"
+        },
+        {
+          "name": "seo-audit",
+          "description": "Comprehensive SEO audit with Chrome DevTools live inspection"
+        },
+        {
+          "name": "seo-check-schema",
+          "description": "Validate structured data and JSON-LD schema markup"
+        },
+        {
+          "name": "seo-check-og",
+          "description": "Check Open Graph and Twitter Card meta tags"
+        },
+        {
+          "name": "seo-check-vitals",
+          "description": "Audit Core Web Vitals (LCP, INP, CLS)"
+        },
+        {
+          "name": "seo-generate-robots",
+          "description": "Generate robots.txt with proper directives"
+        },
+        {
+          "name": "seo-generate-sitemap",
+          "description": "Generate sitemap.xml from project routes"
+        },
+        {
+          "name": "seo-generate-favicons",
+          "description": "Set up complete favicon structure and meta tags"
+        }
+      ]
+    },
+    "hooks": {
+      "count": 8,
+      "list": [
+        {
+          "name": "pre-commit-validation",
+          "event": "PreToolUse",
+          "tools": ["Bash"],
+          "description": "Blocks commits if validation has not passed"
+        },
+        {
+          "name": "dangerous-command-guard",
+          "event": "PreToolUse",
+          "tools": ["Bash"],
+          "description": "Guards against destructive git/system commands"
+        },
+        {
+          "name": "seo-build-check",
+          "event": "PreToolUse",
+          "tools": ["Bash"],
+          "description": "Pre-deployment SEO checklist reminder before build/deploy commands"
+        },
+        {
+          "name": "auto-plan-update",
+          "event": "PostToolUse",
+          "tools": ["Edit", "Write"],
+          "description": "Suggests plan updates after file modifications"
+        },
+        {
+          "name": "seo-meta-check",
+          "event": "PostToolUse",
+          "tools": ["Write"],
+          "description": "Validates SEO meta tags after page/route creation"
+        },
+        {
+          "name": "seo-image-check",
+          "event": "PostToolUse",
+          "tools": ["Write"],
+          "description": "Checks image alt text and dimensions for accessibility"
+        },
+        {
+          "name": "session-context-loader",
+          "event": "SessionStart",
+          "description": "Loads rubot workspace context at session start"
+        },
+        {
+          "name": "validation-reminder",
+          "event": "Stop",
+          "description": "Reminds about uncommitted changes before session end"
         }
       ]
     },
     "skills": {
-      "count": 9,
+      "count": 18,
       "list": [
         {
           "name": "orchestration",
@@ -223,17 +321,63 @@
           "name": "url-state-management",
           "agents": ["tanstack", "shadcn-ui-designer", "hydration-solver"],
           "description": "nuqs URL state management"
+        },
+        {
+          "name": "drizzle-orm",
+          "agents": ["neon-master", "backend-master"],
+          "description": "Type-safe database operations with Drizzle ORM"
+        },
+        {
+          "name": "elysiajs",
+          "agents": ["backend-master"],
+          "description": "High-performance HTTP servers with ElysiaJS"
+        },
+        {
+          "name": "biome",
+          "agents": ["debug-master"],
+          "description": "Fast linting and formatting with Biome"
+        },
+        {
+          "name": "cloudflare-workers",
+          "agents": ["cloudflare"],
+          "description": "Edge computing with Cloudflare Workers"
+        },
+        {
+          "name": "seo-audit",
+          "agents": ["seo-master", "qa-tester"],
+          "description": "Comprehensive SEO auditing with Chrome DevTools"
+        },
+        {
+          "name": "schema-markup",
+          "agents": ["seo-master"],
+          "description": "Schema.org JSON-LD structured data implementation"
+        },
+        {
+          "name": "core-web-vitals",
+          "agents": ["seo-master", "responsive-master"],
+          "description": "LCP, INP, CLS measurement and optimization"
+        },
+        {
+          "name": "social-sharing",
+          "agents": ["seo-master", "shadcn-ui-designer"],
+          "description": "Open Graph and Twitter Card meta tags"
+        },
+        {
+          "name": "crawl-config",
+          "agents": ["seo-master"],
+          "description": "robots.txt and sitemap.xml generation"
         }
       ]
     },
     "templates": {
-      "count": 5,
+      "count": 6,
       "list": [
         "rubot.local.md.template",
         "plan.md.template",
         "validation-report.md.template",
         "README.md.template",
-        "components.json.template"
+        "components.json.template",
+        "commit-message.template"
       ]
     }
   },
@@ -262,6 +406,11 @@
       "platform": "Cloudflare Workers",
       "storage": "Cloudflare R2",
       "cli": "Wrangler"
+    },
+    "tooling": {
+      "linter": "Biome",
+      "formatter": "Biome",
+      "runtime": "Bun"
     }
   },
   "registries": {

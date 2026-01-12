@@ -5,6 +5,75 @@ All notable changes to the rubot plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.9.0] - 2025-01-12
+
+### Added
+
+- **Comprehensive SEO Toolkit** - Full SEO implementation with Chrome DevTools MCP integration
+  - 5 new SEO skills: `seo-audit`, `schema-markup`, `core-web-vitals`, `social-sharing`, `crawl-config`
+  - 7 new SEO commands for auditing and generation
+  - 3 new SEO hooks for automated validation
+
+- **New SEO Skills (5)**:
+  - `seo-audit` - Comprehensive SEO auditing methodology with Chrome DevTools integration
+  - `schema-markup` - Schema.org JSON-LD implementation patterns for all content types
+  - `core-web-vitals` - LCP, INP, CLS measurement and optimization strategies
+  - `social-sharing` - Open Graph and Twitter Card meta tag implementation
+  - `crawl-config` - robots.txt and sitemap.xml generation patterns
+
+- **New SEO Commands (7)**:
+  - `/seo-audit` - Full SEO audit with Chrome DevTools live inspection
+  - `/seo-check-schema` - Validate structured data and JSON-LD markup
+  - `/seo-check-og` - Check Open Graph and Twitter Card meta tags
+  - `/seo-check-vitals` - Audit Core Web Vitals with performance tracing
+  - `/seo-generate-robots` - Generate robots.txt with environment awareness
+  - `/seo-generate-sitemap` - Generate sitemap.xml from project routes
+  - `/seo-generate-favicons` - Set up complete favicon structure and meta tags
+
+- **New SEO Hooks (3)**:
+  - `seo-meta-check` (PostToolUse/Write) - Validates SEO meta tags after page/route creation
+  - `seo-image-check` (PostToolUse/Write) - Checks image alt text and dimensions for accessibility
+  - `seo-build-check` (PreToolUse/Bash) - Pre-deployment SEO checklist reminder
+
+- **Chrome DevTools MCP Integration** for seo-master agent:
+  - Live page navigation and snapshot capture
+  - JavaScript evaluation for SEO data extraction
+  - Performance tracing for Core Web Vitals measurement
+  - Network request analysis
+  - Console message monitoring
+
+### Changed
+
+- Updated plugin version to 2.9.0
+- Updated command count from 13 to 20
+- Updated hook count from 5 to 8
+- Updated skill count from 13 to 18
+- Enhanced seo-master agent with Chrome DevTools MCP tools
+- Added comprehensive SEO keywords to plugin.json
+
+## [2.8.0] - 2025-01-11
+
+### Added
+
+- **New Commands (4)**:
+  - `/rubot-status` - View current rubot workspace status and workflow progress
+  - `/rubot-reset` - Reset rubot workspace to clean state
+  - `/rubot-help` - Display rubot plugin help and available commands
+  - `/rubot-review` - Autonomous code review, codebase analysis, and bug fix workflow
+
+- **New Skills (4)**:
+  - `drizzle-orm` - Type-safe database operations with Drizzle ORM
+  - `elysiajs` - High-performance HTTP servers with ElysiaJS
+  - `biome` - Fast linting and formatting with Biome
+  - `cloudflare-workers` - Edge computing with Cloudflare Workers
+
+### Changed
+
+- Updated plugin version to 2.8.0
+- Updated command count from 9 to 13
+- Updated skill count from 9 to 13
+- Enhanced marketplace.json with comprehensive component listings
+
 ## [2.7.0] - 2025-01-11
 
 ### Removed

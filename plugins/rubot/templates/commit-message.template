@@ -1,0 +1,198 @@
+# Commit Message Template
+
+This template defines the format for git commit messages created by the rubot workflow.
+
+## Commit Message Format
+
+```
+{{TYPE}}({{SCOPE}}): {{SUBJECT}}
+
+{{BODY}}
+
+{{FOOTER}}
+```
+
+## Components
+
+### Type (Required)
+
+| Type | Description | Example |
+|------|-------------|---------|
+| `feat` | New feature | `feat(auth): add OAuth2 login` |
+| `fix` | Bug fix | `fix(api): resolve null pointer in user fetch` |
+| `refactor` | Code restructuring | `refactor(db): simplify query builder` |
+| `perf` | Performance improvement | `perf(render): optimize list virtualization` |
+| `style` | Code style changes | `style(lint): apply biome formatting` |
+| `docs` | Documentation | `docs(readme): update installation guide` |
+| `test` | Test changes | `test(auth): add login flow tests` |
+| `chore` | Maintenance | `chore(deps): upgrade dependencies` |
+| `build` | Build system | `build(vite): update config for SSR` |
+| `ci` | CI/CD changes | `ci(github): add validation workflow` |
+
+### Scope (Optional but Recommended)
+
+The scope provides context for where the change was made:
+
+- **Component name**: `button`, `modal`, `sidebar`
+- **Feature area**: `auth`, `dashboard`, `settings`
+- **Layer**: `api`, `db`, `ui`, `router`
+- **Package**: `core`, `utils`, `types`
+
+### Subject (Required)
+
+- Use imperative mood: "add" not "added" or "adds"
+- Don't capitalize first letter
+- No period at the end
+- Max 50 characters
+
+**Good subjects:**
+- `add user authentication flow`
+- `fix responsive layout on mobile`
+- `update schema for soft delete`
+
+**Bad subjects:**
+- `Added user authentication flow` (past tense)
+- `Add User Authentication Flow.` (capitalized, period)
+- `fix bug` (too vague)
+
+### Body (Optional)
+
+- Wrap at 72 characters
+- Explain **what** and **why**, not **how**
+- Use bullet points for multiple items
+- Reference issues or tasks when relevant
+
+```
+This change introduces OAuth2 authentication to support
+single sign-on with external identity providers.
+
+- Add Google OAuth2 provider
+- Add GitHub OAuth2 provider
+- Update user schema for external IDs
+- Add callback route handlers
+
+Related to plan task: Implement user authentication
+```
+
+### Footer (Required for rubot)
+
+The footer must always include the generation attribution:
+
+```
+Generated with AI
+
+Co-Authored-By: RuBot <https://github.com/bahrulbangsawan/rubot-marketplace>
+```
+
+Additional footers can include:
+
+```
+Refs: #123, #456
+Closes: #789
+Breaking-Change: API signature changed for getUserById
+```
+
+## Complete Examples
+
+### Feature Commit
+
+```
+feat(dashboard): add analytics chart component
+
+Implement a new analytics chart component using Apache ECharts
+for displaying user engagement metrics on the dashboard.
+
+- Create AnalyticsChart component with SSR safety
+- Add chart data fetching with TanStack Query
+- Implement responsive breakpoints for mobile/tablet
+- Add loading skeleton state
+
+Plan task: Add analytics visualization to dashboard
+
+Generated with AI
+
+Co-Authored-By: RuBot <https://github.com/bahrulbangsawan/rubot-marketplace>
+```
+
+### Bug Fix Commit
+
+```
+fix(auth): resolve session expiry race condition
+
+Fix issue where concurrent requests could use expired tokens
+due to a race condition in the token refresh logic.
+
+The refresh mechanism now uses a mutex to prevent multiple
+simultaneous refresh attempts.
+
+Closes: #234
+
+Generated with AI
+
+Co-Authored-By: RuBot <https://github.com/bahrulbangsawan/rubot-marketplace>
+```
+
+### Refactor Commit
+
+```
+refactor(db): migrate queries to Drizzle ORM
+
+Replace raw SQL queries with type-safe Drizzle ORM calls
+for improved type safety and maintainability.
+
+- Convert user queries to Drizzle
+- Convert post queries to Drizzle
+- Add proper TypeScript types for all models
+- Remove deprecated query utilities
+
+Generated with AI
+
+Co-Authored-By: RuBot <https://github.com/bahrulbangsawan/rubot-marketplace>
+```
+
+### Simple Fix Commit
+
+```
+fix(ui): correct button alignment on mobile
+
+Generated with AI
+
+Co-Authored-By: RuBot <https://github.com/bahrulbangsawan/rubot-marketplace>
+```
+
+## Template Placeholders
+
+When generating commit messages, replace these placeholders:
+
+| Placeholder | Description |
+|-------------|-------------|
+| `{{TYPE}}` | Commit type (feat, fix, etc.) |
+| `{{SCOPE}}` | Affected area/component |
+| `{{SUBJECT}}` | Brief description |
+| `{{BODY}}` | Detailed explanation (optional) |
+| `{{FOOTER}}` | Attribution and references |
+| `{{FILES_CHANGED}}` | List of modified files |
+| `{{PLAN_TASK}}` | Related task from plan.md |
+| `{{ISSUE_REFS}}` | GitHub issue references |
+
+## Validation Rules
+
+Before committing, ensure:
+
+1. **Type is valid**: Must be one of the defined types
+2. **Subject is present**: Cannot be empty
+3. **Subject length**: Max 50 characters
+4. **Footer present**: Must include AI attribution
+5. **No secrets**: No API keys, passwords, or tokens
+6. **Files reviewed**: All changed files intentional
+
+## rubot-commit Integration
+
+The `/rubot-commit` command will:
+
+1. Analyze staged changes
+2. Determine appropriate type and scope
+3. Generate subject from changes
+4. Include body for significant changes
+5. Add required footer
+6. Present to user for confirmation/editing

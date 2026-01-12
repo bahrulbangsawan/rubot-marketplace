@@ -20,7 +20,83 @@ When requirements are unclear, ambiguous, or missing critical details:
   - Ambiguous indexing requirements
   - Content freshness/update frequency not specified
 
-### 2. Context7 MCP - ALWAYS CHECK DOCUMENTATION
+### 2. Chrome DevTools MCP - LIVE SEO AUDITING
+For real-time SEO analysis of running applications:
+- **Use `mcp__chrome-devtools__navigate_page`** to load pages for auditing
+- **Use `mcp__chrome-devtools__take_snapshot`** to capture page structure and SEO elements
+- **Use `mcp__chrome-devtools__evaluate_script`** to extract SEO data from the DOM
+- **Use `mcp__chrome-devtools__performance_start_trace`** to measure Core Web Vitals
+- **Use `mcp__chrome-devtools__list_network_requests`** to analyze resource loading
+- **Use `mcp__chrome-devtools__list_console_messages`** to check for SEO-related warnings
+
+#### SEO Data Extraction Scripts
+```javascript
+// Extract all SEO meta tags
+() => {
+  const meta = {};
+  meta.title = document.title;
+  meta.description = document.querySelector('meta[name="description"]')?.content;
+  meta.canonical = document.querySelector('link[rel="canonical"]')?.href;
+  meta.robots = document.querySelector('meta[name="robots"]')?.content;
+  meta.ogTitle = document.querySelector('meta[property="og:title"]')?.content;
+  meta.ogDescription = document.querySelector('meta[property="og:description"]')?.content;
+  meta.ogImage = document.querySelector('meta[property="og:image"]')?.content;
+  meta.twitterCard = document.querySelector('meta[name="twitter:card"]')?.content;
+  return meta;
+}
+
+// Extract structured data
+() => {
+  const scripts = document.querySelectorAll('script[type="application/ld+json"]');
+  return Array.from(scripts).map(s => {
+    try { return JSON.parse(s.textContent); }
+    catch { return { error: 'Invalid JSON-LD' }; }
+  });
+}
+
+// Check image accessibility
+() => {
+  const images = document.querySelectorAll('img');
+  return Array.from(images).map(img => ({
+    src: img.src?.substring(0, 100),
+    alt: img.alt || null,
+    hasAlt: img.hasAttribute('alt'),
+    width: img.width,
+    height: img.height,
+    loading: img.loading
+  }));
+}
+
+// Analyze heading structure
+() => {
+  const headings = [];
+  document.querySelectorAll('h1, h2, h3, h4, h5, h6').forEach(h => {
+    headings.push({
+      tag: h.tagName,
+      text: h.textContent?.trim().substring(0, 100)
+    });
+  });
+  return { headings, h1Count: document.querySelectorAll('h1').length };
+}
+
+// Check internal/external links
+() => {
+  const links = document.querySelectorAll('a[href]');
+  const baseHost = window.location.host;
+  let internal = 0, external = 0, nofollow = 0;
+  links.forEach(a => {
+    try {
+      const url = new URL(a.href, window.location.origin);
+      if (url.host === baseHost) internal++;
+      else external++;
+      if (a.rel?.includes('nofollow')) nofollow++;
+    } catch {}
+  });
+  return { internal, external, nofollow, total: links.length };
+}
+```
+
+### 3. Context7 MCP - ALWAYS CHECK DOCUMENTATION
 Before implementing any SEO feature:
 - **ALWAYS use `mcp__context7__resolve-library-id`** to find the library
 - **ALWAYS use `mcp__context7__query-docs`** to get documentation
@@ -31,7 +107,7 @@ Before implementing any SEO feature:
   - "Open Graph meta tags"
   - "robots.txt directives"
 
-### 3. Exa MCP - SEARCH FOR LATEST PATTERNS
+### 4. Exa MCP - SEARCH FOR LATEST PATTERNS
 When documentation is insufficient or you need real-world examples:
 - **Use `mcp__exa__web_search_exa`** to search for latest SEO practices
 - **Use `mcp__exa__get_code_context_exa`** for implementation examples

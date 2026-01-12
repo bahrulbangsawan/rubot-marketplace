@@ -2,67 +2,167 @@
 
 > Generated: {{TIMESTAMP}}
 > Status: **{{STATUS}}**
+> Last Updated: {{LAST_UPDATED}}
 
 ## Task Summary
 
 - **Description**: {{TASK_DESCRIPTION}}
-- **Complexity**: {{COMPLEXITY}}
 - **Domains**: {{DOMAINS}}
 - **Estimated Steps**: {{STEP_COUNT}}
 
+## Complexity Analysis
+
+### Overall Complexity Score: {{COMPLEXITY_SCORE}}/10
+
+| Dimension | Score | Rationale |
+|-----------|-------|-----------|
+| Scope | {{SCOPE_SCORE}}/10 | {{SCOPE_RATIONALE}} |
+| Technical | {{TECHNICAL_SCORE}}/10 | {{TECHNICAL_RATIONALE}} |
+| Risk | {{RISK_SCORE}}/10 | {{RISK_RATIONALE}} |
+| Dependencies | {{DEPENDENCY_SCORE}}/10 | {{DEPENDENCY_RATIONALE}} |
+
+### Complexity Breakdown
+
+```
+Complexity Legend:
+  1-3:  Simple     - Single file, straightforward changes
+  4-5:  Moderate   - Multiple files, standard patterns
+  6-7:  Complex    - Cross-cutting, architectural decisions
+  8-10: High       - System-wide impact, significant risk
+```
+
+**Factors Considered:**
+- {{COMPLEXITY_FACTOR_1}}
+- {{COMPLEXITY_FACTOR_2}}
+- {{COMPLEXITY_FACTOR_3}}
+
 ## Agents Consulted
 
-| Agent | Domain | Recommendation Summary |
-|-------|--------|------------------------|
+| Agent | Domain | Status | Recommendation Summary |
+|-------|--------|--------|------------------------|
 {{AGENT_TABLE}}
+
+### Agent Consultation Notes
+
+{{AGENT_NOTES}}
 
 ## Prerequisites
 
-{{PREREQUISITES}}
+### Environment Requirements
+
+{{ENVIRONMENT_PREREQUISITES}}
+
+### Dependencies
+
+{{DEPENDENCY_PREREQUISITES}}
+
+### Pre-Conditions
+
+{{PRECONDITION_PREREQUISITES}}
 
 ## Implementation Checklist
 
 ### Phase 1: Setup & Preparation
 
+**Goal**: {{PHASE_1_GOAL}}
+**Complexity**: {{PHASE_1_COMPLEXITY}}
+
 {{PHASE_1_TASKS}}
 
 ### Phase 2: Core Implementation
+
+**Goal**: {{PHASE_2_GOAL}}
+**Complexity**: {{PHASE_2_COMPLEXITY}}
 
 {{PHASE_2_TASKS}}
 
 ### Phase 3: Integration & Wiring
 
+**Goal**: {{PHASE_3_GOAL}}
+**Complexity**: {{PHASE_3_COMPLEXITY}}
+
 {{PHASE_3_TASKS}}
 
 ### Phase 4: Verification & Cleanup
+
+**Goal**: Ensure implementation is correct and production-ready
+**Complexity**: Low
 
 - [ ] Run `bun run validate` - ensure no type errors
 - [ ] Run `bun run build` - verify build succeeds
 - [ ] Test all affected routes/endpoints
 - [ ] Verify no console errors in browser
+- [ ] Run responsive checks on modified UI
 - [ ] Review all changed files for cleanup
+- [ ] Remove any debug code or console.logs
+
+## Progress Tracking
+
+### Completion Status
+
+```
+Phase 1: [{{PHASE_1_PROGRESS}}] {{PHASE_1_PERCENT}}%
+Phase 2: [{{PHASE_2_PROGRESS}}] {{PHASE_2_PERCENT}}%
+Phase 3: [{{PHASE_3_PROGRESS}}] {{PHASE_3_PERCENT}}%
+Phase 4: [{{PHASE_4_PROGRESS}}] {{PHASE_4_PERCENT}}%
+─────────────────────────────────
+Overall: [{{OVERALL_PROGRESS}}] {{OVERALL_PERCENT}}%
+```
+
+### Time Tracking
+
+| Phase | Started | Completed | Duration |
+|-------|---------|-----------|----------|
+| Setup | {{PHASE_1_START}} | {{PHASE_1_END}} | {{PHASE_1_DURATION}} |
+| Core | {{PHASE_2_START}} | {{PHASE_2_END}} | {{PHASE_2_DURATION}} |
+| Integration | {{PHASE_3_START}} | {{PHASE_3_END}} | {{PHASE_3_DURATION}} |
+| Verification | {{PHASE_4_START}} | {{PHASE_4_END}} | {{PHASE_4_DURATION}} |
 
 ## Files to Modify
 
-| File | Action | Agent |
-|------|--------|-------|
+| File | Action | Agent | Complexity |
+|------|--------|-------|------------|
 {{FILES_TABLE}}
 
 ## Files to Create
 
-| File | Purpose | Agent |
-|------|---------|-------|
+| File | Purpose | Agent | Lines Est. |
+|------|---------|-------|------------|
 {{NEW_FILES_TABLE}}
 
 ## Risks & Mitigations
 
-| Risk | Impact | Probability | Mitigation |
-|------|--------|-------------|------------|
+| Risk | Impact | Probability | Mitigation | Owner |
+|------|--------|-------------|------------|-------|
 {{RISKS_TABLE}}
+
+### Risk Score Summary
+
+- **Total Risks Identified**: {{RISK_COUNT}}
+- **High Impact Risks**: {{HIGH_RISK_COUNT}}
+- **Mitigations Defined**: {{MITIGATION_COUNT}}
 
 ## Conflicts Detected
 
 {{CONFLICTS}}
+
+### Conflict Resolution Status
+
+| Conflict | Status | Resolution |
+|----------|--------|------------|
+{{CONFLICT_TABLE}}
+
+## Dependencies
+
+### External Dependencies
+
+{{EXTERNAL_DEPENDENCIES}}
+
+### Internal Dependencies (Task Order)
+
+```
+{{DEPENDENCY_GRAPH}}
+```
 
 ## Rollback Plan
 
@@ -70,14 +170,38 @@ If implementation fails:
 
 1. {{ROLLBACK_STEP_1}}
 2. {{ROLLBACK_STEP_2}}
-3. Run `git checkout .` to discard all changes (if uncommitted)
+3. {{ROLLBACK_STEP_3}}
+4. Run `git checkout .` to discard all changes (if uncommitted)
+5. Restore any backed-up configurations
+
+### Rollback Triggers
+
+- Build failure after Phase 2
+- Critical validation errors
+- Breaking changes to existing functionality
+- User-requested abort
 
 ## Approval
 
+### Pre-Execution Checklist
+
 - [ ] Plan reviewed by user
 - [ ] All questions/ambiguities resolved
+- [ ] Prerequisites verified
+- [ ] Risk mitigations acceptable
 - [ ] Ready for execution
+
+### Sign-Off
+
+- **Approved By**: {{APPROVED_BY}}
+- **Approved At**: {{APPROVED_AT}}
+- **Notes**: {{APPROVAL_NOTES}}
 
 ---
 
 **Next Step**: Run `/rubot-execute` to implement this plan.
+
+**Commands Available**:
+- `/rubot-execute` - Start implementation
+- `/rubot-status` - View current progress
+- `/rubot-reset` - Clear plan and start over

@@ -150,6 +150,48 @@ git push --force-with-lease
 
 ## After Push
 
+**ALWAYS** use AskUserQuestion after successful push:
+
+```
+AskUserQuestion({
+  questions: [{
+    question: "Push successful! [X] commit(s) pushed to PR #[number]. What would you like to do next?",
+    header: "Next Step",
+    options: [
+      {
+        label: "View PR in browser (Recommended)",
+        description: "Open the PR on GitHub to check CI status and reviews"
+      },
+      {
+        label: "Check CI status",
+        description: "Run gh pr checks to see current CI status"
+      },
+      {
+        label: "View review comments",
+        description: "Check if there are any review comments to address"
+      },
+      {
+        label: "Continue working",
+        description: "Make more changes and push again later"
+      },
+      {
+        label: "Done for now",
+        description: "End here - I'll monitor the PR manually"
+      }
+    ],
+    multiSelect: false
+  }]
+})
+```
+
+**Based on user response:**
+
+- **"View PR in browser"**: Run `gh pr view --web`
+- **"Check CI status"**: Run `gh pr checks` and display results
+- **"View review comments"**: Run `gh pr view --comments` and summarize
+- **"Continue working"**: Inform user they can push more commits with `/rubot-push-pr`
+- **"Done for now"**: Display PR URL and exit
+
 Provide user with:
 - Updated commit count
 - CI status

@@ -16,24 +16,36 @@ Official marketplace for the **rubot** Claude Code plugin.
 
 ## Available Plugins
 
-### rubot (v2.6.0)
+### rubot (v2.9.0)
 
-Strict multi-agent orchestration governor with workflow commands and 15 specialist subagents.
+Strict multi-agent orchestration governor with 20 workflow commands, 8 hooks, 16 specialist subagents, and 18 domain skills.
 
 **Features:**
 - Multi-agent orchestration with mandatory specialist consultation
-- Workflow commands: `/rubot-init`, `/rubot-plan`, `/rubot-execute`, `/rubot-check`, `/rubot-commit`, `/rubot-new-pr`, `/rubot-new-repo`
-- 15 specialist subagents for TanStack, backend, frontend, SEO, debugging, and more
+- 20 workflow commands including 7 SEO commands
+- 8 lifecycle hooks including 3 SEO automation hooks
+- 16 specialist subagents for TanStack, backend, frontend, SEO, debugging, and more
 - Cross-agent risk matrix and unified execution plans
 - Validation checklists and quality enforcement
+- Chrome DevTools MCP integration for live SEO auditing
 
-**Skills:**
+**Skills (18 total):**
 - TanStack Router, Query, Form, Table, DB
 - RBAC & Authorization
 - URL State Management
 - Backend Master (ElysiaJS, Drizzle, tRPC)
-- SEO, Theming, Dashboard, Charts
+- SEO Audit, Schema Markup, Core Web Vitals, Social Sharing, Crawl Config
+- Theming, Dashboard, Charts
 - Debug & QA Testing
+
+**SEO Commands:**
+- `/seo-audit` - Comprehensive SEO audit with Chrome DevTools
+- `/seo-check-schema` - Structured data validation
+- `/seo-check-og` - Open Graph and Twitter Card validation
+- `/seo-check-vitals` - Core Web Vitals audit
+- `/seo-generate-robots` - Generate robots.txt
+- `/seo-generate-sitemap` - Generate sitemap.xml
+- `/seo-generate-favicons` - Complete favicon setup
 
 ## Requirements
 
