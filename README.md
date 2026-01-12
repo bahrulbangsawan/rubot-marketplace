@@ -8,14 +8,14 @@
 
 Install the rubot plugin directly from the Claude Code marketplace:
 
-```bash
-claude plugins add rubot
+```
+/plugin add rubot
 ```
 
 Or install from this repository:
 
-```bash
-claude plugins add https://github.com/bahrulbangsawan/rubot-marketplace
+```
+/plugin add https://github.com/bahrulbangsawan/rubot-marketplace
 ```
 
 After installation, restart Claude Code or run `/rubot-init` to initialize the plugin workspace.
