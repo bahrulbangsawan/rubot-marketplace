@@ -9,7 +9,7 @@
 First, add this marketplace to Claude Code:
 
 ```
-/plugin marketplace add https://github.com/bahrulbangsawan/rubot-marketplace
+/plugin marketplace add bahrulbangsawan/rubot-marketplace
 ```
 
 Then install the rubot plugin:
