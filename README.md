@@ -6,16 +6,16 @@
 
 ## Installation
 
-Install the rubot plugin directly from the Claude Code marketplace:
+First, add this marketplace to Claude Code:
 
 ```
-/plugin add rubot
+/plugin marketplace add https://github.com/bahrulbangsawan/rubot-marketplace
 ```
 
-Or install from this repository:
+Then install the rubot plugin:
 
 ```
-/plugin add https://github.com/bahrulbangsawan/rubot-marketplace
+/plugin install rubot@rubot-marketplace
 ```
 
 After installation, restart Claude Code or run `/rubot-init` to initialize the plugin workspace.
