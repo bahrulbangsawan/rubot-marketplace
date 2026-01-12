@@ -1,12 +1,14 @@
+---
+name: crawl-config
+description: |
+  Generate and configure crawl directives for search engines and AI crawlers. Use when setting up robots.txt, generating sitemap.xml from routes, configuring AI bot policies, or optimizing crawl budget.
+
+  Covers: robots.txt templates, sitemap.xml generation, AI crawler directives, TanStack Start API routes, and Cloudflare Workers integration.
+---
+
 # Crawl Configuration Skill
 
 > robots.txt and sitemap.xml generation
-
-## Skill Metadata
-
-- **Name**: crawl-config
-- **Agents**: seo-master, cloudflare
-- **Description**: Generate and configure crawl directives for search engines and AI crawlers
 
 ## When to Use
 

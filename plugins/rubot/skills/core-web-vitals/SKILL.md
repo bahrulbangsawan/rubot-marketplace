@@ -1,12 +1,14 @@
+---
+name: core-web-vitals
+description: |
+  Measure and optimize LCP, INP, and CLS for better search rankings. Use when analyzing Core Web Vitals metrics, optimizing performance for SEO, or debugging performance issues affecting search rankings.
+
+  Covers: LCP optimization, INP optimization, CLS optimization, Chrome DevTools performance tracing, and TanStack Start optimizations.
+---
+
 # Core Web Vitals Skill
 
 > Performance optimization for SEO ranking signals
-
-## Skill Metadata
-
-- **Name**: core-web-vitals
-- **Agents**: seo-master, debug-master
-- **Description**: Measure and optimize LCP, INP, and CLS for better search rankings
 
 ## When to Use
 

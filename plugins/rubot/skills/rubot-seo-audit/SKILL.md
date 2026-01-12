@@ -1,12 +1,14 @@
+---
+name: rubot-seo-audit
+description: |
+  Full-stack SEO audit using Chrome DevTools MCP for live page analysis. Use when performing comprehensive SEO audits, analyzing page performance and SEO metrics, or auditing before production deployment.
+
+  Covers: performance tracing, DOM inspection for SEO, network analysis, technical SEO, on-page SEO, structured data, and social sharing validation.
+---
+
 # SEO Audit Skill
 
 > Comprehensive SEO auditing with Chrome DevTools integration
-
-## Skill Metadata
-
-- **Name**: rubot-seo-audit
-- **Agents**: seo-master, qa-tester
-- **Description**: Full-stack SEO audit using Chrome DevTools MCP for live page analysis
 
 ## When to Use
 

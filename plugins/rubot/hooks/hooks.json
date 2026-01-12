@@ -1,62 +1,50 @@
 {
-  "hooks": [
-    {
-      "matcher": "PreToolUse",
-      "hooks": [
-        {
-          "type": "prompt",
-          "path": "${CLAUDE_PLUGIN_ROOT}/hooks/prompts/pre-commit-validation.md",
-          "toolNames": ["Bash"]
-        },
-        {
-          "type": "prompt",
-          "path": "${CLAUDE_PLUGIN_ROOT}/hooks/prompts/dangerous-command-guard.md",
-          "toolNames": ["Bash"]
-        },
-        {
-          "type": "prompt",
-          "path": "${CLAUDE_PLUGIN_ROOT}/hooks/prompts/seo-build-check.md",
-          "toolNames": ["Bash"]
-        }
-      ]
-    },
-    {
-      "matcher": "PostToolUse",
-      "hooks": [
-        {
-          "type": "prompt",
-          "path": "${CLAUDE_PLUGIN_ROOT}/hooks/prompts/auto-plan-update.md",
-          "toolNames": ["Edit", "Write"]
-        },
-        {
-          "type": "prompt",
-          "path": "${CLAUDE_PLUGIN_ROOT}/hooks/prompts/seo-meta-check.md",
-          "toolNames": ["Write"]
-        },
-        {
-          "type": "prompt",
-          "path": "${CLAUDE_PLUGIN_ROOT}/hooks/prompts/seo-image-check.md",
-          "toolNames": ["Write"]
-        }
-      ]
-    },
-    {
-      "matcher": "SessionStart",
-      "hooks": [
-        {
-          "type": "prompt",
-          "path": "${CLAUDE_PLUGIN_ROOT}/hooks/prompts/session-context-loader.md"
-        }
-      ]
-    },
-    {
-      "matcher": "Stop",
-      "hooks": [
-        {
-          "type": "prompt",
-          "path": "${CLAUDE_PLUGIN_ROOT}/hooks/prompts/validation-reminder.md"
-        }
-      ]
-    }
-  ]
+  "hooks": {
+    "PreToolUse": [
+      {
+        "type": "prompt",
+        "path": "${CLAUDE_PLUGIN_ROOT}/hooks/prompts/pre-commit-validation.md",
+        "toolNames": ["Bash"]
+      },
+      {
+        "type": "prompt",
+        "path": "${CLAUDE_PLUGIN_ROOT}/hooks/prompts/dangerous-command-guard.md",
+        "toolNames": ["Bash"]
+      },
+      {
+        "type": "prompt",
+        "path": "${CLAUDE_PLUGIN_ROOT}/hooks/prompts/seo-build-check.md",
+        "toolNames": ["Bash"]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "type": "prompt",
+        "path": "${CLAUDE_PLUGIN_ROOT}/hooks/prompts/auto-plan-update.md",
+        "toolNames": ["Edit", "Write"]
+      },
+      {
+        "type": "prompt",
+        "path": "${CLAUDE_PLUGIN_ROOT}/hooks/prompts/seo-meta-check.md",
+        "toolNames": ["Write"]
+      },
+      {
+        "type": "prompt",
+        "path": "${CLAUDE_PLUGIN_ROOT}/hooks/prompts/seo-image-check.md",
+        "toolNames": ["Write"]
+      }
+    ],
+    "SessionStart": [
+      {
+        "type": "prompt",
+        "path": "${CLAUDE_PLUGIN_ROOT}/hooks/prompts/session-context-loader.md"
+      }
+    ],
+    "Stop": [
+      {
+        "type": "prompt",
+        "path": "${CLAUDE_PLUGIN_ROOT}/hooks/prompts/validation-reminder.md"
+      }
+    ]
+  }
 }

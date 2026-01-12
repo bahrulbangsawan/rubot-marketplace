@@ -1,12 +1,14 @@
+---
+name: social-sharing
+description: |
+  Implement Open Graph Protocol and Twitter Cards for social media previews. Use when setting up social sharing meta tags, creating OG images, implementing Twitter Cards, or debugging social media preview issues.
+
+  Covers: Open Graph tags, Twitter Cards, image requirements, TanStack Start integration, and dynamic OG image generation.
+---
+
 # Social Sharing Skill
 
 > Open Graph and Twitter Cards implementation
-
-## Skill Metadata
-
-- **Name**: social-sharing
-- **Agents**: seo-master, shadcn-ui-designer
-- **Description**: Implement Open Graph Protocol and Twitter Cards for social media previews
 
 ## When to Use
 

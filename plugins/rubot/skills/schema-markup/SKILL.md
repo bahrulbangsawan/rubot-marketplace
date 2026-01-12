@@ -1,12 +1,14 @@
+---
+name: schema-markup
+description: |
+  Implement and validate Schema.org structured data for Google Rich Results. Use when adding JSON-LD schemas to pages, preparing for rich snippets, or fixing structured data errors.
+
+  Covers: Organization, WebSite, BreadcrumbList, Article, Product, FAQPage, HowTo, LocalBusiness, Event schemas, and TanStack Start implementation.
+---
+
 # Schema Markup Skill
 
 > Structured data implementation with JSON-LD
-
-## Skill Metadata
-
-- **Name**: schema-markup
-- **Agents**: seo-master
-- **Description**: Implement and validate Schema.org structured data for Google Rich Results
 
 ## When to Use
 
