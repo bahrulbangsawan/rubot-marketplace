@@ -1,5 +1,5 @@
 ---
-name: seo-generate-favicons
+name: rubot-seo-generate-favicons
 description: Set up favicon structure and meta tags for the project
 ---
 
@@ -301,8 +301,8 @@ Save as `public/favicon.svg`
 
 ## Related Commands
 
-- `/seo-audit` - Full SEO audit
-- `/seo-generate-robots` - Generate robots.txt
+- `/rubot-seo-audit` - Full SEO audit
+- `/rubot-seo-generate-robots` - Generate robots.txt
 
 ## Related Skills
 

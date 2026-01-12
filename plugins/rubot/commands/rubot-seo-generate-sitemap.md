@@ -1,5 +1,5 @@
 ---
-name: seo-generate-sitemap
+name: rubot-seo-generate-sitemap
 description: Generate sitemap.xml from project routes
 ---
 
@@ -253,7 +253,7 @@ Ensure robots.txt includes:
 Sitemap: [SITE_URL]/sitemap.xml
 ```
 
-Run `/seo-generate-robots` if not already done.
+Run `/rubot-seo-generate-robots` if not already done.
 
 ### Monitoring
 
@@ -292,8 +292,8 @@ Check indexing status in:
 
 ## Related Commands
 
-- `/seo-generate-robots` - Generate robots.txt
-- `/seo-audit` - Full SEO audit
+- `/rubot-seo-generate-robots` - Generate robots.txt
+- `/rubot-seo-audit` - Full SEO audit
 
 ## Related Skills
 

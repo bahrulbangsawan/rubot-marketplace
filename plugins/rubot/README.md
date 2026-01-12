@@ -71,13 +71,13 @@ In multi-domain projects (backend, database, SSR, hydration, performance, respon
 
 | Command | Description |
 |---------|-------------|
-| `/seo-audit` | Comprehensive SEO audit with Chrome DevTools live inspection |
-| `/seo-check-schema` | Validate structured data and JSON-LD schema markup |
-| `/seo-check-og` | Check Open Graph and Twitter Card meta tags |
-| `/seo-check-vitals` | Audit Core Web Vitals (LCP, INP, CLS) |
-| `/seo-generate-robots` | Generate robots.txt with proper directives |
-| `/seo-generate-sitemap` | Generate sitemap.xml from project routes |
-| `/seo-generate-favicons` | Set up complete favicon structure and meta tags |
+| `/rubot-seo-audit` | Comprehensive SEO audit with Chrome DevTools live inspection |
+| `/rubot-seo-check-schema` | Validate structured data and JSON-LD schema markup |
+| `/rubot-seo-check-og` | Check Open Graph and Twitter Card meta tags |
+| `/rubot-seo-check-vitals` | Audit Core Web Vitals (LCP, INP, CLS) |
+| `/rubot-seo-generate-robots` | Generate robots.txt with proper directives |
+| `/rubot-seo-generate-sitemap` | Generate sitemap.xml from project routes |
+| `/rubot-seo-generate-favicons` | Set up complete favicon structure and meta tags |
 
 ## Command Examples
 
@@ -594,13 +594,13 @@ Show available commands and usage information.
 ### SEO Commands
 | Command | Description |
 |---------|-------------|
-| /seo-audit | Full SEO audit with Chrome DevTools |
-| /seo-check-schema | Validate JSON-LD markup |
-| /seo-check-og | Check Open Graph tags |
-| /seo-check-vitals | Audit Core Web Vitals |
-| /seo-generate-robots | Generate robots.txt |
-| /seo-generate-sitemap | Generate sitemap.xml |
-| /seo-generate-favicons | Set up favicons |
+| /rubot-seo-audit | Full SEO audit with Chrome DevTools |
+| /rubot-seo-check-schema | Validate JSON-LD markup |
+| /rubot-seo-check-og | Check Open Graph tags |
+| /rubot-seo-check-vitals | Audit Core Web Vitals |
+| /rubot-seo-generate-robots | Generate robots.txt |
+| /rubot-seo-generate-sitemap | Generate sitemap.xml |
+| /rubot-seo-generate-favicons | Set up favicons |
 
 ### Recommended Workflow
 1. /rubot-init → Initialize (once)
@@ -674,13 +674,13 @@ Would you like to automatically fix the 2 critical issues?
 
 ### SEO Commands
 
-#### `/seo-audit` - Comprehensive SEO Audit
+#### `/rubot-seo-audit` - Comprehensive SEO Audit
 
 Perform full SEO audit using Chrome DevTools.
 
 **Example:**
 ```
-/seo-audit https://localhost:3000
+/rubot-seo-audit https://localhost:3000
 ```
 
 **Expected Result:**
@@ -738,13 +738,13 @@ Perform full SEO audit using Chrome DevTools.
 
 ---
 
-#### `/seo-check-schema` - Validate Structured Data
+#### `/rubot-seo-check-schema` - Validate Structured Data
 
 Check JSON-LD schema markup on pages.
 
 **Example:**
 ```
-/seo-check-schema https://localhost:3000/blog/hello-world
+/rubot-seo-check-schema https://localhost:3000/blog/hello-world
 ```
 
 **Expected Result:**
@@ -792,13 +792,13 @@ Check JSON-LD schema markup on pages.
 
 ---
 
-#### `/seo-check-og` - Check Open Graph Tags
+#### `/rubot-seo-check-og` - Check Open Graph Tags
 
 Validate social sharing meta tags.
 
 **Example:**
 ```
-/seo-check-og https://localhost:3000
+/rubot-seo-check-og https://localhost:3000
 ```
 
 **Expected Result:**
@@ -846,13 +846,13 @@ No Twitter Card configured
 
 ---
 
-#### `/seo-check-vitals` - Audit Core Web Vitals
+#### `/rubot-seo-check-vitals` - Audit Core Web Vitals
 
 Measure and analyze Core Web Vitals performance.
 
 **Example:**
 ```
-/seo-check-vitals https://localhost:3000
+/rubot-seo-check-vitals https://localhost:3000
 ```
 
 **Expected Result:**
@@ -907,13 +907,13 @@ Sources:
 
 ---
 
-#### `/seo-generate-robots` - Generate robots.txt
+#### `/rubot-seo-generate-robots` - Generate robots.txt
 
 Create robots.txt with proper directives.
 
 **Example:**
 ```
-/seo-generate-robots
+/rubot-seo-generate-robots
 ```
 
 **Expected Result:**
@@ -968,13 +968,13 @@ Disallow: /
 
 ---
 
-#### `/seo-generate-sitemap` - Generate sitemap.xml
+#### `/rubot-seo-generate-sitemap` - Generate sitemap.xml
 
 Create sitemap from project routes.
 
 **Example:**
 ```
-/seo-generate-sitemap
+/rubot-seo-generate-sitemap
 ```
 
 **Expected Result:**
@@ -1040,13 +1040,13 @@ Would you like to generate a dynamic sitemap route?
 
 ---
 
-#### `/seo-generate-favicons` - Set Up Favicons
+#### `/rubot-seo-generate-favicons` - Set Up Favicons
 
 Create complete favicon structure.
 
 **Example:**
 ```
-/seo-generate-favicons
+/rubot-seo-generate-favicons
 ```
 
 **Expected Result:**
@@ -1200,13 +1200,13 @@ Every rubot orchestration produces:
   - `/rubot-reset` - Workspace reset
   - `/rubot-help` - Help documentation
   - `/rubot-review` - Code review workflow
-  - `/seo-audit` - SEO audit
-  - `/seo-check-schema` - Schema validation
-  - `/seo-check-og` - Open Graph validation
-  - `/seo-check-vitals` - Core Web Vitals
-  - `/seo-generate-robots` - robots.txt generation
-  - `/seo-generate-sitemap` - sitemap.xml generation
-  - `/seo-generate-favicons` - Favicon setup
+  - `/rubot-seo-audit` - SEO audit
+  - `/rubot-seo-check-schema` - Schema validation
+  - `/rubot-seo-check-og` - Open Graph validation
+  - `/rubot-seo-check-vitals` - Core Web Vitals
+  - `/rubot-seo-generate-robots` - robots.txt generation
+  - `/rubot-seo-generate-sitemap` - sitemap.xml generation
+  - `/rubot-seo-generate-favicons` - Favicon setup
 - **Hooks**: 8 lifecycle hooks
   - `pre-commit-validation` - Blocks commits without validation
   - `dangerous-command-guard` - Guards destructive commands
@@ -1231,7 +1231,7 @@ Every rubot orchestration produces:
   - `elysiajs` - High-performance HTTP servers
   - `biome` - Fast linting and formatting
   - `cloudflare-workers` - Edge computing
-  - `seo-audit` - Comprehensive SEO auditing with Chrome DevTools
+  - `rubot-seo-audit` - Comprehensive SEO auditing with Chrome DevTools
   - `schema-markup` - Schema.org JSON-LD implementation
   - `core-web-vitals` - LCP, INP, CLS optimization
   - `social-sharing` - Open Graph and Twitter Cards

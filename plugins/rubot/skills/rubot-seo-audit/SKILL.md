@@ -4,7 +4,7 @@
 
 ## Skill Metadata
 
-- **Name**: seo-audit
+- **Name**: rubot-seo-audit
 - **Agents**: seo-master, qa-tester
 - **Description**: Full-stack SEO audit using Chrome DevTools MCP for live page analysis
 

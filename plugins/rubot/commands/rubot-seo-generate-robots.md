@@ -1,5 +1,5 @@
 ---
-name: seo-generate-robots
+name: rubot-seo-generate-robots
 description: Generate robots.txt file for the project
 ---
 
@@ -301,9 +301,9 @@ After deployment:
 
 ### Next Steps
 
-1. Run `/seo-generate-sitemap` to create sitemap.xml
+1. Run `/rubot-seo-generate-sitemap` to create sitemap.xml
 2. Submit sitemap to Google Search Console
-3. Test with `/seo-audit` command
+3. Test with `/rubot-seo-audit` command
 ```
 
 ## Common Directives Reference
@@ -329,8 +329,8 @@ After deployment:
 
 ## Related Commands
 
-- `/seo-generate-sitemap` - Generate sitemap.xml
-- `/seo-audit` - Full SEO audit
+- `/rubot-seo-generate-sitemap` - Generate sitemap.xml
+- `/rubot-seo-audit` - Full SEO audit
 
 ## Related Skills
 

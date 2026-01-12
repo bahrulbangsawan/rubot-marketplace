@@ -55,7 +55,7 @@ head: () => ({
 }),
 ```
 
-Run `/seo-audit` to perform a comprehensive SEO check.
+Run `/rubot-seo-audit` to perform a comprehensive SEO check.
 ```
 
 ### If SEO Meta is Present
@@ -74,5 +74,5 @@ Do NOT trigger warnings for:
 
 This hook works with:
 - `seo-master` agent for detailed recommendations
-- `/seo-audit` command for comprehensive audits
+- `/rubot-seo-audit` command for comprehensive audits
 - `schema-markup` skill for structured data guidance

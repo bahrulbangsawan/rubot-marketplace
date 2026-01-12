@@ -1,5 +1,5 @@
 ---
-name: seo-check-og
+name: rubot-seo-check-og
 description: Validate Open Graph and Twitter Card meta tags
 ---
 
@@ -340,8 +340,8 @@ questions:
 
 ## Related Commands
 
-- `/seo-audit` - Full SEO audit
-- `/seo-check-schema` - Validate structured data
+- `/rubot-seo-audit` - Full SEO audit
+- `/rubot-seo-check-schema` - Validate structured data
 
 ## Related Skills
 

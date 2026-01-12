@@ -1,5 +1,5 @@
 ---
-name: seo-audit
+name: rubot-seo-audit
 description: Run a comprehensive SEO audit with Chrome DevTools integration
 ---
 
@@ -260,15 +260,15 @@ Compile all findings into the validation report format:
 
 ## Related Commands
 
-- `/seo-check-schema` - Validate structured data only
-- `/seo-check-og` - Validate Open Graph only
-- `/seo-check-vitals` - Audit Core Web Vitals only
-- `/seo-generate-robots` - Generate robots.txt
-- `/seo-generate-sitemap` - Generate sitemap.xml
+- `/rubot-seo-check-schema` - Validate structured data only
+- `/rubot-seo-check-og` - Validate Open Graph only
+- `/rubot-seo-check-vitals` - Audit Core Web Vitals only
+- `/rubot-seo-generate-robots` - Generate robots.txt
+- `/rubot-seo-generate-sitemap` - Generate sitemap.xml
 
 ## Related Skills
 
-- `seo-audit` - Comprehensive audit methodology
+- `rubot-seo-audit` - Comprehensive audit methodology
 - `core-web-vitals` - Performance optimization
 - `schema-markup` - Structured data implementation
 - `social-sharing` - Open Graph and Twitter Cards

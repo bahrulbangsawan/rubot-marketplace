@@ -1,5 +1,5 @@
 ---
-name: seo-check-schema
+name: rubot-seo-check-schema
 description: Validate structured data (JSON-LD) on a page
 ---
 
@@ -216,8 +216,8 @@ questions:
 
 ## Related Commands
 
-- `/seo-audit` - Full SEO audit
-- `/seo-check-og` - Validate Open Graph tags
+- `/rubot-seo-audit` - Full SEO audit
+- `/rubot-seo-check-og` - Validate Open Graph tags
 
 ## Related Skills
 

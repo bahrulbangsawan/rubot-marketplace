@@ -10,25 +10,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - **Comprehensive SEO Toolkit** - Full SEO implementation with Chrome DevTools MCP integration
-  - 5 new SEO skills: `seo-audit`, `schema-markup`, `core-web-vitals`, `social-sharing`, `crawl-config`
+  - 5 new SEO skills: `rubot-seo-audit`, `schema-markup`, `core-web-vitals`, `social-sharing`, `crawl-config`
   - 7 new SEO commands for auditing and generation
   - 3 new SEO hooks for automated validation
 
 - **New SEO Skills (5)**:
-  - `seo-audit` - Comprehensive SEO auditing methodology with Chrome DevTools integration
+  - `rubot-seo-audit` - Comprehensive SEO auditing methodology with Chrome DevTools integration
   - `schema-markup` - Schema.org JSON-LD implementation patterns for all content types
   - `core-web-vitals` - LCP, INP, CLS measurement and optimization strategies
   - `social-sharing` - Open Graph and Twitter Card meta tag implementation
   - `crawl-config` - robots.txt and sitemap.xml generation patterns
 
 - **New SEO Commands (7)**:
-  - `/seo-audit` - Full SEO audit with Chrome DevTools live inspection
-  - `/seo-check-schema` - Validate structured data and JSON-LD markup
-  - `/seo-check-og` - Check Open Graph and Twitter Card meta tags
-  - `/seo-check-vitals` - Audit Core Web Vitals with performance tracing
-  - `/seo-generate-robots` - Generate robots.txt with environment awareness
-  - `/seo-generate-sitemap` - Generate sitemap.xml from project routes
-  - `/seo-generate-favicons` - Set up complete favicon structure and meta tags
+  - `/rubot-seo-audit` - Full SEO audit with Chrome DevTools live inspection
+  - `/rubot-seo-check-schema` - Validate structured data and JSON-LD markup
+  - `/rubot-seo-check-og` - Check Open Graph and Twitter Card meta tags
+  - `/rubot-seo-check-vitals` - Audit Core Web Vitals with performance tracing
+  - `/rubot-seo-generate-robots` - Generate robots.txt with environment awareness
+  - `/rubot-seo-generate-sitemap` - Generate sitemap.xml from project routes
+  - `/rubot-seo-generate-favicons` - Set up complete favicon structure and meta tags
 
 - **New SEO Hooks (3)**:
   - `seo-meta-check` (PostToolUse/Write) - Validates SEO meta tags after page/route creation

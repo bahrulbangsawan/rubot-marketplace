@@ -126,4 +126,4 @@ This hook works with:
 - `seo-master` agent for image SEO recommendations
 - `responsive-master` for responsive image patterns
 - `core-web-vitals` skill for CLS optimization
-- `/seo-check-vitals` command for CLS auditing
+- `/rubot-seo-check-vitals` command for CLS auditing

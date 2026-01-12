@@ -4,7 +4,7 @@
   "displayName": "Rubot - Multi-Agent Orchestration Governor",
   "version": "2.9.0",
   "description": "Strict multi-agent orchestration governor with 20 workflow commands, 8 hooks, 16 specialist subagents, and 18 domain skills for full-stack TanStack Start development",
-  "longDescription": "Rubot enforces deterministic, mandatory multi-agent consultation for all significant tasks in complex Claude Code projects. It acts as a project manager ensuring no decision is made without consensus from all relevant domain experts.\n\nFeatures:\n- 16 specialist subagents covering backend, frontend, database, deployment, testing, SEO, and more\n- 20 workflow commands including 7 SEO commands (audit, check-schema, check-og, check-vitals, generate-robots, generate-sitemap, generate-favicons)\n- 8 lifecycle hooks including 3 SEO hooks (meta-check, image-check, build-check)\n- 18 domain-specific skills including 5 SEO skills (seo-audit, schema-markup, core-web-vitals, social-sharing, crawl-config)\n- Frontend ownership model with shadcn-ui-designer as team lead\n- Mandatory registry enforcement for 20 shadcn-compatible registries\n- Chrome DevTools MCP integration for live SEO auditing",
+  "longDescription": "Rubot enforces deterministic, mandatory multi-agent consultation for all significant tasks in complex Claude Code projects. It acts as a project manager ensuring no decision is made without consensus from all relevant domain experts.\n\nFeatures:\n- 16 specialist subagents covering backend, frontend, database, deployment, testing, SEO, and more\n- 20 workflow commands including 7 SEO commands (rubot-seo-audit, rubot-seo-check-schema, rubot-seo-check-og, rubot-seo-check-vitals, rubot-seo-generate-robots, rubot-seo-generate-sitemap, rubot-seo-generate-favicons)\n- 8 lifecycle hooks including 3 SEO hooks (meta-check, image-check, build-check)\n- 18 domain-specific skills including 5 SEO skills (rubot-seo-audit, schema-markup, core-web-vitals, social-sharing, crawl-config)\n- Frontend ownership model with shadcn-ui-designer as team lead\n- Mandatory registry enforcement for 20 shadcn-compatible registries\n- Chrome DevTools MCP integration for live SEO auditing",
   "author": {
     "name": "bahrulbangsawan",
     "url": "https://github.com/bahrulbangsawan"
@@ -194,31 +194,31 @@
           "description": "Autonomous code review, codebase analysis, and bug fix workflow"
         },
         {
-          "name": "seo-audit",
+          "name": "rubot-seo-audit",
           "description": "Comprehensive SEO audit with Chrome DevTools live inspection"
         },
         {
-          "name": "seo-check-schema",
+          "name": "rubot-seo-check-schema",
           "description": "Validate structured data and JSON-LD schema markup"
         },
         {
-          "name": "seo-check-og",
+          "name": "rubot-seo-check-og",
           "description": "Check Open Graph and Twitter Card meta tags"
         },
         {
-          "name": "seo-check-vitals",
+          "name": "rubot-seo-check-vitals",
           "description": "Audit Core Web Vitals (LCP, INP, CLS)"
         },
         {
-          "name": "seo-generate-robots",
+          "name": "rubot-seo-generate-robots",
           "description": "Generate robots.txt with proper directives"
         },
         {
-          "name": "seo-generate-sitemap",
+          "name": "rubot-seo-generate-sitemap",
           "description": "Generate sitemap.xml from project routes"
         },
         {
-          "name": "seo-generate-favicons",
+          "name": "rubot-seo-generate-favicons",
           "description": "Set up complete favicon structure and meta tags"
         }
       ]
@@ -343,7 +343,7 @@
           "description": "Edge computing with Cloudflare Workers"
         },
         {
-          "name": "seo-audit",
+          "name": "rubot-seo-audit",
           "agents": ["seo-master", "qa-tester"],
           "description": "Comprehensive SEO auditing with Chrome DevTools"
         },

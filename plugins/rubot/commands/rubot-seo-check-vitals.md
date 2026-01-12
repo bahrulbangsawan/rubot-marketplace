@@ -1,5 +1,5 @@
 ---
-name: seo-check-vitals
+name: rubot-seo-check-vitals
 description: Audit Core Web Vitals (LCP, INP, CLS) using Chrome DevTools
 ---
 
@@ -328,8 +328,8 @@ mcp__chrome-devtools__emulate({
 
 ## Related Commands
 
-- `/seo-audit` - Full SEO audit including vitals
-- `/seo-check-schema` - Validate structured data
+- `/rubot-seo-audit` - Full SEO audit including vitals
+- `/rubot-seo-check-schema` - Validate structured data
 
 ## Related Skills
 
