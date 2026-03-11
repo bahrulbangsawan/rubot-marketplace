@@ -41,6 +41,9 @@ setup_npm_prefix() {
   NPM_GLOBAL_DIR="${HOME}/.npm-global"
   CURRENT_PREFIX=$(npm config get prefix 2>/dev/null || echo "")
 
+  # Always ensure npm global bin is in this script's PATH
+  export PATH="${NPM_GLOBAL_DIR}/bin:$PATH"
+
   # Already configured to a user-writable location
   if [ -w "${CURRENT_PREFIX}/bin" ] 2>/dev/null; then
     return 0
@@ -107,10 +110,25 @@ do_install() {
     printf "    ${DIM}rubot list${RESET}               Show installed skills\n"
     printf "    ${DIM}rubot --help${RESET}             Full command reference\n"
   else
-    printf "\n"
-    warn "rubot was installed but is not in your current PATH"
-    printf "  Restart your terminal or run:\n"
-    printf "    source $(detect_profile)\n"
+    NPM_BIN=$(npm config get prefix 2>/dev/null)/bin
+    export PATH="${NPM_BIN}:$PATH"
+    if command -v rubot >/dev/null 2>&1; then
+      VERSION=$(rubot --version 2>/dev/null || echo "unknown")
+      printf "\n"
+      info "rubot v${VERSION} installed successfully!"
+      printf "\n  To start using rubot, restart your terminal or run:\n"
+      printf "    ${DIM}exec \$SHELL${RESET}\n"
+      printf "\n  Get started:\n"
+      printf "    ${DIM}rubot search${RESET}              Browse available skills\n"
+      printf "    ${DIM}rubot add --skill drizzle-orm${RESET}  Install a skill\n"
+      printf "    ${DIM}rubot list${RESET}               Show installed skills\n"
+      printf "    ${DIM}rubot --help${RESET}             Full command reference\n"
+    else
+      printf "\n"
+      warn "rubot was installed but could not be found"
+      printf "  Restart your terminal or run:\n"
+      printf "    source $(detect_profile)\n"
+    fi
   fi
 
   printf "\n"

@@ -7,10 +7,10 @@ CLI tool to install and manage skills from [rubot-marketplace](https://github.co
 ### One-line install (recommended)
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/bahrulbangsawan/rubot-marketplace/main/cli/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/bahrulbangsawan/rubot-marketplace/main/cli/install.sh | sh && exec $SHELL
 ```
 
-This automatically handles permissions, sets up your PATH, and installs `rubot` globally — no `sudo` needed.
+This automatically handles permissions, sets up your PATH, and installs `rubot` globally — no `sudo` needed. The `exec $SHELL` reloads your terminal so `rubot` is available immediately.
 
 ### Run directly with npx (no install needed)
 

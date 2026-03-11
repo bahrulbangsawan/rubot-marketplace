@@ -1,6 +1,6 @@
 {
   "name": "@bahrulbangsawan/rubot",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Install and manage skills from rubot-marketplace",
   "type": "module",
   "bin": {
