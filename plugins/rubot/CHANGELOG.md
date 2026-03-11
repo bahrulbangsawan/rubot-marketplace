@@ -5,6 +5,41 @@ All notable changes to the rubot plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.14.0] - 2026-03-11
+
+### Added
+
+- **New Command (1)**:
+  - `/rubot-security-audit` - Run comprehensive OWASP ASVS 5.0.0 security audit with scored compliance reporting
+
+- **New Skills (18)** - Complete OWASP ASVS 5.0.0 security audit coverage:
+  - `owasp-asvs-audit` - Master OWASP ASVS 5.0.0 audit orchestration across all 17 chapters
+  - `owasp-encoding-sanitization` - V1: Encoding, sanitization, and injection prevention
+  - `owasp-validation-logic` - V2: Input validation and business logic security
+  - `owasp-web-frontend-security` - V3: Web frontend security (CSP, CORS, cookies, headers)
+  - `owasp-api-security` - V4: API and web service security (GraphQL, WebSocket, HTTP)
+  - `owasp-file-handling` - V5: File upload, storage, and download security
+  - `owasp-authentication` - V6: Authentication (passwords, MFA, FIDO, IdP)
+  - `owasp-session-management` - V7: Session management (timeouts, termination, abuse)
+  - `owasp-authorization` - V8: Authorization (RBAC, ABAC, least privilege, multi-tenant)
+  - `owasp-self-contained-tokens` - V9: Self-contained token (JWT/SAML) security
+  - `owasp-oauth-oidc` - V10: OAuth 2.0 and OpenID Connect security
+  - `owasp-cryptography` - V11: Cryptography (algorithms, hashing, key management, PQC)
+  - `owasp-secure-communication` - V12: Secure communication (TLS, HTTPS, mTLS, certificates)
+  - `owasp-configuration-security` - V13: Configuration (secret management, information leakage)
+  - `owasp-data-protection` - V14: Data protection (classification, encryption at rest)
+  - `owasp-secure-coding` - V15: Secure coding (dependencies, SBOM, concurrency)
+  - `owasp-security-logging` - V16: Security logging and error handling
+  - `owasp-webrtc-security` - V17: WebRTC security (TURN servers, media encryption)
+
+- **CLI scaffolding** - Added `rubot-security-audit` command with level and chapter selection arguments
+
+### Changed
+
+- Updated plugin version to 2.14.0
+- Updated command count from 32 to 33
+- Updated skill count from 26 to 44
+
 ## [2.13.0] - 2026-03-11
 
 ### Added

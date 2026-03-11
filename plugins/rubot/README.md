@@ -1,6 +1,6 @@
 # rubot
 
-**Strict Multi-Agent Orchestration Governor v2.13.0**
+**Strict Multi-Agent Orchestration Governor v2.14.0**
 
 `rubot` enforces deterministic, mandatory multi-agent consultation for all significant tasks in complex Claude Code projects. It acts as a project manager ensuring no decision is made without consensus from all relevant domain experts.
 
@@ -120,6 +120,7 @@ In multi-domain projects (backend, database, SSR, hydration, performance, respon
 | Command | Description |
 |---------|-------------|
 | `/rubot-skills-security-check` | Run ClawSec security advisory scan, skill integrity verification, and guarded install checks |
+| `/rubot-security-audit` | Run comprehensive OWASP ASVS 5.0.0 security audit with scored compliance reporting |
 
 ## Command Examples
 
@@ -1232,7 +1233,7 @@ Every rubot orchestration produces:
 
 ## Components
 
-- **Commands**: 32 slash commands for complete workflow orchestration
+- **Commands**: 33 slash commands for complete workflow orchestration
   - `/rubot` - Main orchestration entry point
   - `/rubot-init` - Workspace initialization
   - `/rubot-plan` - Execution planning
@@ -1265,6 +1266,7 @@ Every rubot orchestration produces:
   - `/rubot-global-layout` - Global layout with Navbar/Footer
   - `/rubot-multilanguage` - Multilingual i18n implementation
   - `/rubot-skills-security-check` - ClawSec security scanning
+  - `/rubot-security-audit` - OWASP ASVS 5.0.0 security audit
 - **Hooks**: 8 lifecycle hooks
   - `pre-commit-validation` - Blocks commits without validation
   - `dangerous-command-guard` - Guards destructive commands
@@ -1275,7 +1277,7 @@ Every rubot orchestration produces:
   - `session-context-loader` - Loads workspace at session start
   - `validation-reminder` - Reminds about uncommitted changes
 - **Agent**: `rubot` - Proactive orchestrator that coordinates all 16 subagents
-- **Skills**: 26 domain-specific skill sets
+- **Skills**: 44 domain-specific skill sets
   - `orchestration` - Domain classification and coordination knowledge
   - `env-check` - Environment validation
   - `rbac-auth` - Role-based access control implementation
@@ -1302,6 +1304,24 @@ Every rubot orchestration produces:
   - `wcag-audit` - WCAG 2.2 accessibility auditing
   - `wcag-fix` - Accessible component patterns
   - `multilanguage` - Full i18n implementation
+  - `owasp-asvs-audit` - Master OWASP ASVS 5.0.0 audit orchestration
+  - `owasp-encoding-sanitization` - ASVS V1: Encoding and injection prevention
+  - `owasp-validation-logic` - ASVS V2: Input validation and business logic
+  - `owasp-web-frontend-security` - ASVS V3: CSP, CORS, cookies, headers
+  - `owasp-api-security` - ASVS V4: API and web service security
+  - `owasp-file-handling` - ASVS V5: File upload and storage security
+  - `owasp-authentication` - ASVS V6: Passwords, MFA, FIDO, IdP
+  - `owasp-session-management` - ASVS V7: Session timeouts and termination
+  - `owasp-authorization` - ASVS V8: RBAC, ABAC, least privilege
+  - `owasp-self-contained-tokens` - ASVS V9: JWT/SAML token security
+  - `owasp-oauth-oidc` - ASVS V10: OAuth 2.0 and OIDC security
+  - `owasp-cryptography` - ASVS V11: Algorithms, hashing, key management
+  - `owasp-secure-communication` - ASVS V12: TLS, HTTPS, mTLS
+  - `owasp-configuration-security` - ASVS V13: Secret management, hardening
+  - `owasp-data-protection` - ASVS V14: Data classification, encryption at rest
+  - `owasp-secure-coding` - ASVS V15: Dependencies, SBOM, concurrency
+  - `owasp-security-logging` - ASVS V16: Structured logs, event capture
+  - `owasp-webrtc-security` - ASVS V17: WebRTC, TURN, media encryption
 - **Templates**: 9 templates for generated documents
 
 ## Templates
