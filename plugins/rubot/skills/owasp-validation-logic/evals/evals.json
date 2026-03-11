@@ -1,0 +1,17 @@
+{
+  "skill_name": "owasp-validation-logic",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "We have a multi-step checkout flow in our e-commerce app built with Next.js and a Node.js backend. Users add items to cart, enter shipping info, then pay. We've had reports of users getting items for $0 by manipulating the checkout request. Can you audit our business logic and input validation for ASVS V2 compliance?",
+      "expected_output": "The audit should check that prices and totals are recalculated server-side from database values and never trusted from client requests, verify the checkout flow enforces sequential steps that cannot be skipped, look for race conditions in inventory and balance updates using database transactions with row-level locking, confirm all input fields (quantities, addresses, coupon codes) have type/length/range validation using a schema library like Zod, check for negative quantity or price manipulation, and verify that the payment amount matches the server-calculated total. Should include specific grep patterns to find where req.body.price or req.body.total is used directly.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Our SaaS platform's login endpoint is getting hammered with credential stuffing attacks. We also have a public registration form that bots are abusing. Review our anti-automation controls and input validation against ASVS V2.4 requirements and suggest improvements.",
+      "expected_output": "The audit should verify rate limiting is applied to login, registration, and password reset endpoints with appropriate window sizes and attempt limits, check that rate limiting keys use appropriate identifiers beyond just IP addresses, look for account lockout or progressive delay mechanisms after failed attempts, evaluate CAPTCHA or challenge integration, check for breached password detection (e.g., HaveIBeenPwned API), verify registration forms have bot detection, and confirm email/username validation prevents enumeration. Should provide specific express-rate-limit or equivalent configuration examples and reference ASVS V2.4.1 through V2.4.7.",
+      "files": []
+    }
+  ]
+}

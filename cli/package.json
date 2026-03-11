@@ -1,0 +1,29 @@
+{
+  "name": "@bahrulbangsawan/rubot",
+  "version": "1.0.0",
+  "description": "Install and manage skills from rubot-marketplace",
+  "type": "module",
+  "bin": {
+    "rubot": "bin/cli.mjs"
+  },
+  "files": [
+    "bin/",
+    "lib/"
+  ],
+  "keywords": [
+    "rubot",
+    "skills",
+    "claude-code",
+    "ai-agent",
+    "cli"
+  ],
+  "author": "bahrulbangsawan",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bahrulbangsawan/rubot-marketplace"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

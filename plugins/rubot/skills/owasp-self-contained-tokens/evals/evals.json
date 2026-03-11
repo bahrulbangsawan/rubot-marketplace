@@ -1,0 +1,17 @@
+{
+  "skill_name": "owasp-self-contained-tokens",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Audit the JWT implementation in our Node.js API. We use the jsonwebtoken library to issue and verify access tokens. Our tokens use HS256 with a secret stored in an environment variable. We've heard about algorithm confusion attacks and want to make sure we're not vulnerable. Check against ASVS V9 requirements.",
+      "expected_output": "An audit report covering V9.1 token integrity (algorithm restriction to prevent alg:none and RS256-to-HS256 confusion attacks, secret key strength assessment, signature verification before claim processing) and V9.2 token content (exp validation, aud/iss claims, token lifetime appropriateness). Should identify whether HS256 is appropriate for the use case, check for jwt.decode() without verification, verify algorithm is hardcoded in verify options, assess secret strength, and provide remediation code for migrating to RS256 or strengthening HS256 usage.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "We have a microservices architecture where Service A issues JWTs that are accepted by Services B, C, and D. We're concerned about cross-service token reuse -- a token meant for Service B being used to access Service C. Also, we need to implement token revocation for when users are deactivated. Review against OWASP ASVS V9.2.",
+      "expected_output": "An audit report covering V9.2.7 cross-service token reuse prevention (audience claim per service, scope restrictions), V9.2.3 audience validation (each service must validate aud matches its own identifier), V9.2.8 token lifetime (short-lived access tokens), and V9.2.10 JTI-based revocation. Should include architecture-specific guidance for JWKS-based key distribution, per-service audience configuration, a Redis-based revocation list implementation, and a token lifecycle diagram.",
+      "files": []
+    }
+  ]
+}

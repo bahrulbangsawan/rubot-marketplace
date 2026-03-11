@@ -2,9 +2,9 @@
   "$schema": "https://claude.ai/schemas/plugin-marketplace.json",
   "name": "rubot",
   "displayName": "Rubot - Multi-Agent Orchestration Governor",
-  "version": "2.13.0",
-  "description": "Strict multi-agent orchestration governor with 32 workflow commands, 8 hooks, 16 specialist subagents, and 26 domain skills for full-stack TanStack Start development",
-  "longDescription": "Rubot enforces deterministic, mandatory multi-agent consultation for all significant tasks in complex Claude Code projects. It acts as a project manager ensuring no decision is made without consensus from all relevant domain experts.\n\nFeatures:\n- 16 specialist subagents covering backend, frontend, database, deployment, testing, SEO, and more\n- 32 workflow commands including 7 SEO commands, 5 setup commands, testing/QA, WCAG accessibility, responsive audit, global layout, multilanguage, security scanning, and full git/PR workflow\n- 8 lifecycle hooks including 3 SEO hooks (meta-check, image-check, build-check)\n- 26 domain-specific skills including 5 SEO skills, responsive design system, global layout, multilanguage i18n, WCAG accessibility (audit + fix), react-grab element inspection, agent-browser CLI reference, and CF Workers setup\n- ClawSec Suite integration for security advisory monitoring, skill integrity verification, and guarded install checks\n- Frontend ownership model with shadcn-ui-designer as team lead\n- Mandatory registry enforcement for 20 shadcn-compatible registries\n- agent-browser CLI integration for live browser automation and E2E testing",
+  "version": "2.14.0",
+  "description": "Strict multi-agent orchestration governor with 33 workflow commands, 8 hooks, 16 specialist subagents, and 44 domain skills for full-stack TanStack Start development with comprehensive OWASP ASVS 5.0.0 security auditing",
+  "longDescription": "Rubot enforces deterministic, mandatory multi-agent consultation for all significant tasks in complex Claude Code projects. It acts as a project manager ensuring no decision is made without consensus from all relevant domain experts.\n\nFeatures:\n- 16 specialist subagents covering backend, frontend, database, deployment, testing, SEO, and more\n- 33 workflow commands including 7 SEO commands, 5 setup commands, testing/QA, WCAG accessibility, responsive audit, global layout, multilanguage, security scanning, OWASP security audit, and full git/PR workflow\n- 8 lifecycle hooks including 3 SEO hooks (meta-check, image-check, build-check)\n- 44 domain-specific skills including 18 OWASP ASVS 5.0.0 security skills (covering all 17 chapters plus master audit orchestration), 5 SEO skills, responsive design system, global layout, multilanguage i18n, WCAG accessibility (audit + fix), react-grab element inspection, agent-browser CLI reference, and CF Workers setup\n- Comprehensive OWASP ASVS 5.0.0 security auditing with ~350 verification requirements across 17 chapters at 3 assurance levels (L1/L2/L3)\n- ClawSec Suite integration for security advisory monitoring, skill integrity verification, and guarded install checks\n- Frontend ownership model with shadcn-ui-designer as team lead\n- Mandatory registry enforcement for 20 shadcn-compatible registries\n- agent-browser CLI integration for live browser automation and E2E testing",
   "author": {
     "name": "bahrulbangsawan",
     "url": "https://github.com/bahrulbangsawan"
@@ -19,7 +19,8 @@
     "multi-agent",
     "full-stack",
     "tanstack",
-    "workflow"
+    "workflow",
+    "security"
   ],
   "tags": [
     "orchestration",
@@ -43,7 +44,11 @@
     "i18n",
     "multilanguage",
     "security",
-    "clawsec"
+    "clawsec",
+    "owasp",
+    "asvs",
+    "web-security",
+    "vulnerability-assessment"
   ],
   "compatibility": {
     "claudeCode": ">=1.0.0"
@@ -143,7 +148,7 @@
       ]
     },
     "commands": {
-      "count": 32,
+      "count": 33,
       "list": [
         {
           "name": "rubot",
@@ -272,6 +277,10 @@
         {
           "name": "rubot-skills-security-check",
           "description": "Run ClawSec security advisory scan, skill integrity verification, and guarded install checks"
+        },
+        {
+          "name": "rubot-security-audit",
+          "description": "Run comprehensive OWASP ASVS 5.0.0 security audit with scored compliance reporting"
         }
       ]
     },
@@ -327,7 +336,7 @@
       ]
     },
     "skills": {
-      "count": 26,
+      "count": 44,
       "list": [
         {
           "name": "orchestration",
@@ -458,6 +467,96 @@
           "name": "multilanguage",
           "agents": ["shadcn-ui-designer", "seo-master", "responsive-master", "tanstack"],
           "description": "Full i18n implementation with localized routing, translation system, and language switcher"
+        },
+        {
+          "name": "owasp-asvs-audit",
+          "agents": ["debug-master", "backend-master"],
+          "description": "Master OWASP ASVS 5.0.0 audit orchestration across all 17 chapters"
+        },
+        {
+          "name": "owasp-encoding-sanitization",
+          "agents": ["debug-master"],
+          "description": "ASVS V1: Encoding, sanitization, and injection prevention verification"
+        },
+        {
+          "name": "owasp-validation-logic",
+          "agents": ["debug-master"],
+          "description": "ASVS V2: Input validation and business logic security verification"
+        },
+        {
+          "name": "owasp-web-frontend-security",
+          "agents": ["debug-master"],
+          "description": "ASVS V3: Web frontend security — CSP, CORS, cookies, security headers"
+        },
+        {
+          "name": "owasp-api-security",
+          "agents": ["debug-master"],
+          "description": "ASVS V4: API and web service security — GraphQL, WebSocket, HTTP validation"
+        },
+        {
+          "name": "owasp-file-handling",
+          "agents": ["debug-master"],
+          "description": "ASVS V5: File upload, storage, and download security verification"
+        },
+        {
+          "name": "owasp-authentication",
+          "agents": ["debug-master"],
+          "description": "ASVS V6: Authentication — passwords, MFA, FIDO, IdP integration"
+        },
+        {
+          "name": "owasp-session-management",
+          "agents": ["debug-master"],
+          "description": "ASVS V7: Session management — timeouts, termination, abuse prevention"
+        },
+        {
+          "name": "owasp-authorization",
+          "agents": ["debug-master"],
+          "description": "ASVS V8: Authorization — RBAC, ABAC, least privilege, multi-tenant isolation"
+        },
+        {
+          "name": "owasp-self-contained-tokens",
+          "agents": ["debug-master"],
+          "description": "ASVS V9: Self-contained token (JWT/SAML) security verification"
+        },
+        {
+          "name": "owasp-oauth-oidc",
+          "agents": ["debug-master"],
+          "description": "ASVS V10: OAuth 2.0 and OpenID Connect security verification"
+        },
+        {
+          "name": "owasp-cryptography",
+          "agents": ["debug-master"],
+          "description": "ASVS V11: Cryptography — algorithms, hashing, key management, PQC readiness"
+        },
+        {
+          "name": "owasp-secure-communication",
+          "agents": ["debug-master"],
+          "description": "ASVS V12: Secure communication — TLS, HTTPS, mTLS, certificate management"
+        },
+        {
+          "name": "owasp-configuration-security",
+          "agents": ["debug-master"],
+          "description": "ASVS V13: Configuration — secret management, information leakage, hardening"
+        },
+        {
+          "name": "owasp-data-protection",
+          "agents": ["debug-master"],
+          "description": "ASVS V14: Data protection — classification, encryption at rest, client-side storage"
+        },
+        {
+          "name": "owasp-secure-coding",
+          "agents": ["debug-master"],
+          "description": "ASVS V15: Secure coding — dependencies, SBOM, defensive coding, concurrency"
+        },
+        {
+          "name": "owasp-security-logging",
+          "agents": ["debug-master"],
+          "description": "ASVS V16: Security logging and error handling — structured logs, event capture"
+        },
+        {
+          "name": "owasp-webrtc-security",
+          "agents": ["debug-master"],
+          "description": "ASVS V17: WebRTC security — TURN servers, media encryption, signaling"
         }
       ]
     },

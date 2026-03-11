@@ -1,0 +1,17 @@
+{
+  "skill_name": "owasp-configuration-security",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Scan our Express.js application for hardcoded secrets and configuration security issues. We have API keys directly in our source files, .env files committed to git, and X-Powered-By header enabled. Check against ASVS V13.",
+      "expected_output": "The audit should flag: (1) Hardcoded API keys violate V13.3.1 -- must move to environment variables or a secrets manager like HashiCorp Vault or AWS Secrets Manager, (2) .env files in version control violate V13.3.5 -- must add .env to .gitignore and rotate any exposed secrets immediately, (3) X-Powered-By header leaks framework info violating V13.4.1 -- use app.disable('x-powered-by') or helmet middleware. Should provide grep patterns for detecting additional secrets and remediation code.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Review our Django production deployment for information leakage and debug settings. DEBUG is set to True, error pages show full stack traces with file paths, and our server returns detailed version headers. Assess against OWASP configuration security standards.",
+      "expected_output": "The audit should identify: (1) DEBUG=True in production is a critical V13.4.4 violation -- must set DEBUG=False and configure ALLOWED_HOSTS, (2) Stack traces in error pages violate V13.4.2/V13.4.9 -- implement custom error handlers returning generic messages with correlation IDs, (3) Server version headers violate V13.4.1 -- configure web server to suppress Server and X-Powered-By headers. Should provide Django settings.py remediation and nginx server_tokens off configuration.",
+      "files": []
+    }
+  ]
+}

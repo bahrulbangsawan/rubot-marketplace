@@ -1,0 +1,17 @@
+{
+  "skill_name": "owasp-data-protection",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Audit our React SPA for client-side data protection. We store JWT tokens in localStorage, include user email in URL query parameters for profile pages, and our API responses for account data have no Cache-Control headers. Check ASVS V14 compliance.",
+      "expected_output": "The audit should flag: (1) JWT tokens in localStorage violate V14.3.1 -- must use HttpOnly secure cookies instead, as localStorage is accessible to XSS attacks, (2) Email in URL parameters violates V14.3.5/V14.3.6 -- sensitive data must be sent via POST body or path parameters that don't expose PII, (3) Missing Cache-Control headers on account endpoints violate V14.3.2 -- must set no-store, no-cache, must-revalidate. Should also recommend Clear-Site-Data header on logout per V14.3.3. Provide React and Express remediation code.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Review our e-commerce platform's data handling. We store credit card numbers in plain text in the database, use production customer data in our staging environment, and have no automated data retention or deletion policy. Assess against OWASP data protection requirements.",
+      "expected_output": "The audit should identify: (1) Plaintext credit card storage violates V14.2.1 and PCI DSS -- must implement field-level encryption or tokenization, (2) Production data in staging violates V14.2.5 -- must use anonymized or synthetic data, (3) Missing retention policy violates V14.2.3 and potentially GDPR Article 5 -- implement automated data deletion schedules. Should provide field-level encryption code examples, data anonymization strategies, and cron-based retention cleanup implementation.",
+      "files": []
+    }
+  ]
+}

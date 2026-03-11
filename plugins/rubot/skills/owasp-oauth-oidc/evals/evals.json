@@ -1,0 +1,17 @@
+{
+  "skill_name": "owasp-oauth-oidc",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Audit the OAuth 2.0 implementation in our React SPA that uses Auth0 as the authorization server. We use the @auth0/auth0-spa-js library with authorization code flow. We store the access token in localStorage and use it to call our Express.js API. Check if our client-side and server-side implementation meets ASVS V10 Level 2 requirements, especially PKCE, token storage, and redirect URI handling.",
+      "expected_output": "An audit report covering V10.1 generic security (token storage -- localStorage is insecure, recommend BFF pattern or in-memory), V10.2 client (PKCE with S256, state parameter, redirect URI exact match, no implicit flow), V10.3 resource server (access token validation, scope enforcement, tokens only in Authorization header). Should flag localStorage token storage as a critical finding, verify PKCE configuration in Auth0 SDK, check redirect URI configuration for open redirect risks, and provide remediation code for BFF pattern or secure in-memory storage.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "We run our own Keycloak instance as an OAuth 2.0 authorization server for our microservices architecture. Multiple internal services and two third-party integrations use it. We need to review our authorization server configuration against ASVS V10.4 and our consent management against V10.7. We've also heard we should implement refresh token rotation.",
+      "expected_output": "An audit report covering V10.4 authorization server (client authentication enforcement, PKCE requirement, redirect URI exact match, authorization code lifetime, implicit/ROPC disabled, refresh token rotation and reuse detection, dynamic client registration security) and V10.7 consent management (consent display for third-party clients, scope descriptions, consent revocation, first-party skip consent). Should include Keycloak-specific configuration guidance, realm and client settings to verify, and a refresh token rotation implementation pattern with reuse detection.",
+      "files": []
+    }
+  ]
+}

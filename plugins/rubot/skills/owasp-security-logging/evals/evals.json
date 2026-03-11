@@ -1,0 +1,17 @@
+{
+  "skill_name": "owasp-security-logging",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Audit our Node.js API for security logging issues. We use console.log for all logging, error responses include full stack traces and SQL queries, and we log the complete req.body which includes passwords and credit card numbers. Check against ASVS V16.",
+      "expected_output": "The audit should flag: (1) console.log is unstructured logging violating V16.2.1 -- must migrate to structured logging with pino or winston using JSON format with timestamp, severity, and correlation ID, (2) Stack traces and SQL queries in error responses violate V16.5.2/V16.5.3 -- implement centralized error handler returning generic messages with error IDs while logging details internally, (3) Logging req.body with passwords and credit cards violates V16.2.5 -- must implement automatic PII redaction using pino's redact option for sensitive field patterns. Should provide pino configuration with redaction and secure error handler code.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Review our authentication system's security event logging. Failed login attempts are not logged, there is no audit trail for admin actions like user role changes, and our permission check function returns true (grants access) when database errors occur. Assess against OWASP security logging requirements.",
+      "expected_output": "The audit should identify: (1) Missing failed login logging violates V16.3.1 -- must log all authentication events including failures with IP, username, and failure reason for brute force detection, (2) No admin action audit trail violates V16.3.5 -- must log all administrative operations (role changes, user creation/deletion, permission modifications) with actor ID and target, (3) Fail-open permission check violates V16.5.1 -- must implement fail-secure pattern that denies access on error. Should provide SecurityLogger class implementation and fail-secure checkPermission example.",
+      "files": []
+    }
+  ]
+}

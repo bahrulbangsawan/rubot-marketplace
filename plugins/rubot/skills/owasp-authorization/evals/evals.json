@@ -1,0 +1,17 @@
+{
+  "skill_name": "owasp-authorization",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Audit the authorization in our Express.js REST API. We have three roles: user, manager, and admin. Some endpoints don't seem to have any access control middleware, and we suspect there might be IDOR vulnerabilities in our document and project endpoints. Check against ASVS V8 Level 2 requirements.",
+      "expected_output": "An audit report covering V8.2 general design (deny-by-default, function-level controls on all endpoints, data-level ownership checks), V8.3 operation-level auth (real-time permission checks, no stale caches), and V8.4 IDOR testing (identifying endpoints with direct ID parameters lacking ownership verification). Should include specific grep patterns to find unprotected routes, a list of endpoints missing authorization middleware, IDOR test cases, and remediation code with centralized middleware pattern.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "We run a multi-tenant SaaS application built with Django. Each customer (tenant) should only see their own data. Recently a customer reported seeing another tenant's data in a report. Also, our admin dashboard at /admin is accessible to anyone who knows the URL. Audit against OWASP ASVS V8.4.",
+      "expected_output": "An audit report covering V8.4.2 multi-tenant isolation (tenant ID enforcement in all queries, missing tenant filters in ORM calls, shared database isolation patterns), V8.4.1 admin interface protection (additional auth controls, MFA requirement, IP allowlisting), and V8.4.3 horizontal privilege escalation (cross-tenant data access). Should include Django-specific grep patterns for missing tenant filters, Django admin hardening configuration, and a tenant isolation middleware implementation.",
+      "files": []
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "skill_name": "owasp-web-frontend-security",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "We just deployed a React SPA with a Node.js Express backend. Our security scanner flagged missing security headers and insecure cookie configuration. Can you audit our frontend security setup against ASVS V3? We use a CDN for some JavaScript libraries and have a CORS setup for our API.",
+      "expected_output": "The audit should check for the presence and correctness of all security headers (CSP, HSTS, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy), verify session cookies have Secure, HttpOnly, and SameSite flags set with __Host- prefix recommended, evaluate the CSP for unsafe-inline or unsafe-eval directives and recommend nonce-based script loading, check CORS configuration for wildcard origins especially with credentials, verify all CDN-loaded scripts and stylesheets have SRI integrity attributes, and check that auth tokens are not stored in localStorage. Should recommend Helmet.js for Express header management and provide specific configuration examples.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Our web application loads user-generated content including rich text, uploaded images, and embedded iframes. We've had a report of a clickjacking vulnerability and want to make sure our CORS and content isolation are properly configured. Audit our frontend against ASVS V3.4 and V3.5 requirements.",
+      "expected_output": "The audit should verify X-Frame-Options DENY or CSP frame-ancestors 'none' is set to prevent clickjacking, check that user-uploaded content (especially SVG and HTML) is served from a separate domain or with Content-Disposition: attachment, evaluate CORS Access-Control-Allow-Origin for overly permissive configuration and ensure origin validation uses exact matching not substring matching, verify CSRF protection is implemented on all state-changing endpoints, check SameSite cookie attributes for defense-in-depth against CSRF, and review iframe sandboxing for embedded content. Should provide specific header configurations and CORS allowlist validation code examples.",
+      "files": []
+    }
+  ]
+}

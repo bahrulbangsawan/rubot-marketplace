@@ -1,0 +1,17 @@
+{
+  "skill_name": "owasp-api-security",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "We're running a GraphQL API with Apollo Server behind an Nginx reverse proxy. We've noticed some unusual queries that seem to be trying to pull our entire schema. Can you audit our GraphQL setup for ASVS V4.3 compliance and check if our Nginx configuration is vulnerable to request smuggling?",
+      "expected_output": "The audit should verify that introspection is disabled in production by checking the Apollo Server introspection option, confirm query depth limiting is configured (recommend graphql-depth-limit with a max depth of 5-10), check for query complexity analysis limits, verify batching is disabled or limited via allowBatchedHttpRequests, test for circular fragment detection, check field-level authorization on sensitive fields, review Nginx proxy configuration for request smuggling vectors (proxy_http_version 1.1, consistent Content-Length/Transfer-Encoding handling), verify request body and header size limits in both Nginx and Apollo, and check error responses for schema information leakage. Should provide specific Apollo Server and Nginx configuration examples.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Our application uses WebSocket connections for a real-time chat feature and a REST API for everything else. We want to make sure our WebSocket implementation is secure -- especially authentication and preventing abuse. Review against ASVS V4.4 and V4.1 requirements.",
+      "expected_output": "The audit should verify WebSocket connections use WSS (TLS), check that authentication is required during the WebSocket handshake via verifyClient or equivalent before any data exchange, confirm Origin header validation against an allowlist of trusted domains, check for message size limits (maxPayload configuration), verify rate limiting is applied to WebSocket messages to prevent flooding, test that authorization is checked per-message not just at connection time, check for idle connection timeout implementation, verify WebSocket message content is validated and sanitized like REST input, and ensure the REST API has consistent security mechanisms including Content-Type enforcement and safe error handling. Should provide WebSocket server configuration examples with all security controls.",
+      "files": []
+    }
+  ]
+}

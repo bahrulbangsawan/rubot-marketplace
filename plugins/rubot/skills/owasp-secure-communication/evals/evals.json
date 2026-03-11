@@ -1,0 +1,17 @@
+{
+  "skill_name": "owasp-secure-communication",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Audit our nginx configuration and Node.js backend for transport security. Our nginx allows TLSv1.0 through TLSv1.3, we don't have HSTS headers, and our internal microservices communicate over plain HTTP on the private network. Check against ASVS V12.",
+      "expected_output": "The audit should flag: (1) TLSv1.0 and TLSv1.1 must be disabled per V12.1.1/V12.1.2 -- only TLSv1.2 and TLSv1.3 should be enabled, (2) Missing HSTS header violates V12.2.3 -- recommend adding Strict-Transport-Security with max-age=31536000 and includeSubDomains, (3) Internal HTTP communication violates V12.3.4 -- recommend implementing mTLS or service mesh for inter-service encryption. Should provide nginx configuration examples and Express.js HSTS middleware code.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Review our Python microservice that connects to PostgreSQL without SSL, uses requests with verify=False for external API calls, and connects to Redis over an unencrypted connection. Assess against OWASP secure communication standards.",
+      "expected_output": "The audit should identify: (1) PostgreSQL connection without SSL violates V12.3.2 -- must enable sslmode=verify-full with CA certificate, (2) requests verify=False disables certificate validation violating V12.3.5 -- remove this and use proper CA bundle, (3) Unencrypted Redis connection violates V12.3.2/V12.3.4 -- enable TLS for Redis connections. Should provide Python remediation code showing psycopg2 SSL configuration, proper requests usage, and redis-py TLS setup.",
+      "files": []
+    }
+  ]
+}

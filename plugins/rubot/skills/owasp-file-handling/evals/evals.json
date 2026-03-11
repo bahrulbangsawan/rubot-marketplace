@@ -1,0 +1,17 @@
+{
+  "skill_name": "owasp-file-handling",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Our Node.js app lets users upload profile pictures and PDF documents. We're using Multer for handling uploads and storing files in a /public/uploads directory. Recently a penetration tester was able to upload a PHP web shell disguised as a .jpg file. Audit our file upload and storage against ASVS V5 and help us fix the vulnerabilities.",
+      "expected_output": "The audit should identify multiple critical issues: files stored under the web root (/public/uploads) allowing direct access and potential execution, missing magic byte validation (only checking file extension not actual content), no image re-encoding to strip embedded payloads, and user-supplied filenames used for storage enabling path traversal. Remediation should include moving storage outside web root, implementing file-type library for magic byte validation, using crypto.randomUUID() for stored filenames, disabling script execution in the upload directory via Nginx/server configuration, re-encoding images with Sharp to strip payloads, and adding Content-Disposition: attachment headers. Should reference ASVS V5.2.2, V5.3.1, V5.3.2, V5.3.3.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "We have a document management system where users can upload ZIP archives containing multiple files, and a download API where users can retrieve files by providing a file path parameter. We've had reports of users being able to download files from outside the intended directory. Review our file download and archive handling for ASVS V5.3 and V5.4 compliance.",
+      "expected_output": "The audit should check for path traversal in the download endpoint by verifying file paths are constructed from database lookups by ID rather than user-supplied paths, confirm that path.resolve() is used with a startsWith check against the base directory, test for encoded traversal sequences (%2e%2e%2f, ..%5c), verify Content-Disposition headers sanitize filenames to prevent header injection, check ZIP extraction for zip slip vulnerability (entries with ../ in paths escaping the destination), verify compression ratio and total size limits to prevent zip bombs, verify extracted file count limits, and confirm Content-Type is set based on server-side detection. Should provide specific code examples for safe path resolution and safe ZIP extraction using yauzl.",
+      "files": []
+    }
+  ]
+}

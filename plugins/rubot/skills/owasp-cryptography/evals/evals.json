@@ -1,0 +1,17 @@
+{
+  "skill_name": "owasp-cryptography",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Review our Node.js payment service for cryptographic security. We use AES-CBC for encrypting card data, MD5 for checksums, and Math.random() to generate transaction IDs. Are there any ASVS V11 issues?",
+      "expected_output": "The audit should flag three critical issues: (1) AES-CBC lacks authenticated encryption -- recommend migrating to AES-256-GCM or ChaCha20-Poly1305 per V11.3, (2) MD5 is a broken hash function prohibited for any security purpose per V11.4 -- recommend SHA-256 or stronger, (3) Math.random() is not a CSPRNG and must not be used for transaction IDs per V11.5 -- recommend crypto.randomBytes(). Should provide remediation code examples and reference specific ASVS requirement IDs.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Audit our Python API for password hashing and key management. Passwords are hashed with SHA-256 plus a salt, RSA keys are 1024-bit, and we store the private key in a config.py file. Check against OWASP ASVS cryptography requirements.",
+      "expected_output": "The audit should identify: (1) SHA-256 is not suitable for password hashing per V11.4.3 -- recommend Argon2id with appropriate work factors (memoryCost 64MB, timeCost 3), (2) 1024-bit RSA is far below the minimum 2048-bit requirement per V11.6.1 -- recommend 3072-bit or larger, (3) Private key stored in source code violates V11.6.5 -- recommend secure key storage via vault or HSM. Should provide Python remediation examples using argon2-cffi and proper key generation.",
+      "files": []
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "skill_name": "owasp-webrtc-security",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Audit our WebRTC video conferencing setup. Our coturn TURN server has no address filtering and allows relay to any IP including private networks, uses static hardcoded credentials in the frontend code, and runs on plain TURN (port 3478) without TLS. Check against ASVS V17.",
+      "expected_output": "The audit should flag: (1) Missing address filtering allows TURN relay to internal networks violating V17.1.1/V17.1.8 -- must configure denied-peer-ip ranges for RFC 1918 addresses (10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16), loopback, and link-local, (2) Static hardcoded TURN credentials violate V17.1.4 -- must implement time-limited HMAC-based credential generation via an authenticated API endpoint, (3) Plain TURN without TLS violates V17.1.7 -- must enable TURNS on port 5349 with valid certificates. Should provide coturn configuration with denied-peer-ip directives and Node.js HMAC credential generation code.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Review our WebRTC signaling server for security issues. It uses plain WebSocket (ws://), does not validate SDP content before calling setRemoteDescription, has no message size limits, and does not verify session ownership when forwarding messages. Assess against OWASP WebRTC security standards.",
+      "expected_output": "The audit should identify: (1) Plain WebSocket (ws://) violates V17.3.1 -- must use WSS (WebSocket Secure) for all signaling, (2) Missing SDP validation before setRemoteDescription violates V17.3.2/V17.3.6 -- must validate SDP structure, check for DTLS fingerprint presence, verify SRTP usage (RTP/SAVPF), and limit media line count, (3) No message size limit allows memory exhaustion violating V17.3.10 -- must set maxPayload on WebSocket server, (4) Missing session ownership check violates V17.3.8 -- must verify user owns the session before forwarding. Should provide SDP validation function and secure signaling server setup with rate limiting.",
+      "files": []
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "skill_name": "owasp-session-management",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Review the session management in our Express.js application. We use express-session with a Redis store. Check our session cookie configuration, timeout policies, and logout implementation against ASVS V7 Level 2 requirements. We've had reports that users stay logged in indefinitely and that logging out on one device doesn't affect other devices.",
+      "expected_output": "An audit report covering V7.2 fundamentals (CSPRNG token generation, HttpOnly/Secure/SameSite cookie flags), V7.3 timeout (idle and absolute timeout configuration and enforcement), V7.4 session termination (server-side session destruction, cookie clearing, invalidation of all sessions on logout), and V7.5 concurrent session management. Should identify the infinite session and cross-device logout issues with specific remediation code using express-session and Redis.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "We have a Django application with SSO via Google Workspace. Users complain that after changing their password, they remain logged in on other browsers. Also, when they log out of our app, they're still logged in via Google. Audit our session lifecycle against OWASP ASVS V7.4 and V7.6.",
+      "expected_output": "An audit report covering V7.4 session termination (password change should invalidate all other sessions, backend session store cleanup) and V7.6 federated re-authentication (implementing prompt=login for sensitive actions, validating auth_time claims, front/back-channel logout with Google). Should include Django-specific session invalidation code, Google OIDC logout integration patterns, and a compliance checklist.",
+      "files": []
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "skill_name": "owasp-encoding-sanitization",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I have a Node.js Express app that renders user comments using EJS templates. Some comments contain HTML that users submit via a rich text editor. Can you audit the output encoding and sanitization to make sure we're not vulnerable to XSS? We also store comments in PostgreSQL and I want to make sure our queries are safe from SQL injection.",
+      "expected_output": "The audit should check EJS templates for unescaped output (<%- vs <%=), verify that rich HTML content is sanitized with DOMPurify or sanitize-html before storage or rendering, confirm PostgreSQL queries use parameterized statements ($1, $2 placeholders) rather than string concatenation, check for innerHTML usage in any client-side JavaScript, and provide specific grep patterns to locate vulnerable code. Remediation examples should be included for any issues found.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "We're building a Python Flask API that accepts YAML configuration files from users, processes XML reports from a partner system, and invokes some shell utilities for file conversion. Review our deserialization and command injection attack surface against ASVS V1 requirements.",
+      "expected_output": "The audit should identify that yaml.load() without SafeLoader is dangerous and recommend yaml.safe_load(), verify XML parsing disables external entities (XXE prevention) by checking parser configuration, review subprocess invocations for command injection by ensuring user input is never interpolated into shell strings, recommend using subprocess with list arguments instead of shell=True, and check that any deserialized data is validated against a schema before use. Should reference ASVS V1.2.7 for OS commands, V1.5.1 for deserialization, and V1.5.3 for XXE.",
+      "files": []
+    }
+  ]
+}

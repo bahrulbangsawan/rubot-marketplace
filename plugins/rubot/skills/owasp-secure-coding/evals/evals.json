@@ -1,0 +1,17 @@
+{
+  "skill_name": "owasp-secure-coding",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Audit our Express.js API for defensive coding issues. We use Object.assign to merge user input into database objects, have loose equality checks (==) in authentication middleware, and our package.json has unpinned dependencies with caret ranges. Check against ASVS V15.",
+      "expected_output": "The audit should flag: (1) Object.assign with req.body enables mass assignment per V15.3.3 -- must use explicit field allowlisting or Zod schema validation to pick only permitted fields, (2) Loose equality (==) in auth middleware creates type juggling vulnerabilities per V15.3.1 -- must use strict equality (===) throughout, (3) Unpinned dependencies with caret (^) ranges violate V15.2.6 -- must use exact versions or lock files, and run npm audit for known CVEs per V15.2.2. Should provide Zod DTO pattern and recommend SCA integration in CI/CD.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Review our financial transaction API for concurrency and race condition issues. The balance check and deduction happen in separate database queries without transactions, we use fs.existsSync before reading config files, and user-submitted regex patterns are compiled directly. Assess against OWASP secure coding standards.",
+      "expected_output": "The audit should identify: (1) Separate balance check and deduction without transactions is a critical race condition violating V15.4.1 -- must use SELECT FOR UPDATE within a transaction or atomic UPDATE with WHERE clause, (2) fs.existsSync followed by read is a TOCTOU vulnerability per V15.4.2 -- use try/catch with direct fs.readFileSync instead, (3) User-submitted regex without validation creates ReDoS risk per V15.3.9 -- must validate with safe-regex library and impose execution timeout. Should provide transaction-based transfer code and atomic file operation examples.",
+      "files": []
+    }
+  ]
+}

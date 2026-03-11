@@ -1,0 +1,17 @@
+{
+  "skill_name": "owasp-authentication",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Audit the authentication system in our Node.js Express app. We use bcrypt for password hashing, have a login endpoint at /api/auth/login, and recently added TOTP-based MFA. Check if our implementation meets ASVS V6 Level 2 requirements, especially around password policies, brute-force protection, and MFA enforcement.",
+      "expected_output": "A comprehensive audit report covering V6.2 password security (minimum length, no max below 64, no composition rules, breach password checking, bcrypt cost factor), V6.3 brute-force protection (rate limiting, account lockout, generic error messages), V6.5 TOTP validation (drift window, single-use enforcement), and V6.3.1 MFA enforcement for all users at L2. Should include specific grep patterns used, findings with severity, and remediation code examples.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "We're implementing a password reset flow and account recovery for our Python Django application. The current flow sends an email with a reset link. We also have Google SSO as an IdP. Review our recovery flow and IdP integration against OWASP ASVS V6.4 and V6.8 requirements.",
+      "expected_output": "An audit report covering V6.4 lifecycle and recovery (time-limited single-use tokens, recovery not bypassing MFA, user notification on credential changes) and V6.8 IdP integration (OIDC assertion validation including signature, expiry, audience, nonce; TLS enforcement; spoofing prevention). Should identify specific code locations to review, provide Django-specific remediation patterns, and produce a compliance checklist against L2 requirements.",
+      "files": []
+    }
+  ]
+}
