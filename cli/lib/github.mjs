@@ -1,4 +1,5 @@
 import { request } from 'node:https'
+import { execFileSync } from 'node:child_process'
 
 const REPO_OWNER = 'bahrulbangsawan'
 const REPO_NAME = 'rubot-marketplace'
@@ -14,23 +15,46 @@ const COMPONENT_PATHS = {
 
 const MARKETPLACE_PATH = 'plugins/rubot/.claude-plugin/marketplace.json'
 
-function fetch(url) {
+let _token = undefined // lazy-initialized
+
+function getGitHubToken() {
+  if (_token !== undefined) return _token
+
+  // Check environment variables first
+  _token = process.env.GITHUB_TOKEN || process.env.GH_TOKEN || null
+  if (_token) return _token
+
+  // Fall back to gh CLI auth
+  try {
+    _token = execFileSync('gh', ['auth', 'token'], { encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'] }).trim()
+  } catch {
+    _token = null
+  }
+  return _token
+}
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms))
+}
+
+function fetchOnce(url) {
   return new Promise((resolve, reject) => {
-    const options = {
-      headers: {
-        'User-Agent': 'rubot-cli',
-        Accept: 'application/vnd.github.v3+json',
-      },
+    const headers = {
+      'User-Agent': 'rubot-cli',
+      Accept: 'application/vnd.github.v3+json',
     }
-    request(url, options, (res) => {
+    const token = getGitHubToken()
+    if (token) headers.Authorization = `token ${token}`
+
+    request(url, { headers }, (res) => {
       if (res.statusCode === 301 || res.statusCode === 302) {
-        return fetch(res.headers.location).then(resolve, reject)
+        return fetchOnce(res.headers.location).then(resolve, reject)
       }
       let data = ''
       res.on('data', (chunk) => (data += chunk))
       res.on('end', () => {
         if (res.statusCode !== 200) {
-          reject(new Error(`HTTP ${res.statusCode}: ${url}`))
+          reject(Object.assign(new Error(`HTTP ${res.statusCode}: ${url}`), { statusCode: res.statusCode, headers: res.headers }))
           return
         }
         resolve(data)
@@ -40,6 +64,20 @@ function fetch(url) {
       .on('error', reject)
       .end()
   })
+}
+
+async function fetch(url, retries = 3) {
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    try {
+      return await fetchOnce(url)
+    } catch (err) {
+      const isRateLimit = err.statusCode === 403 || err.statusCode === 429
+      if (!isRateLimit || attempt === retries) throw err
+      // Exponential backoff: 1s, 2s, 4s
+      const delay = 1000 * Math.pow(2, attempt - 1)
+      await sleep(delay)
+    }
+  }
 }
 
 // ── Marketplace metadata ──

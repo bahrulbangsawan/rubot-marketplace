@@ -1,6 +1,6 @@
 {
   "name": "@bahrulbangsawan/rubot",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "Install and manage components from rubot-marketplace",
   "type": "module",
   "bin": {
