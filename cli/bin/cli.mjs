@@ -131,8 +131,14 @@ if (!loader) {
 const mod = await loader()
 await mod.run({ flags, positional })
 
-// Show update notification after commands (skip for 'update' itself)
+// Show update notifications after commands (skip component check for 'update' itself)
 if (command !== 'update') {
-  const { notifyUpdates } = await import('../lib/update-notifier.mjs')
-  await notifyUpdates()
+  const { readFileSync } = await import('node:fs')
+  const { fileURLToPath } = await import('node:url')
+  const { dirname, join } = await import('node:path')
+  const __dirname = dirname(fileURLToPath(import.meta.url))
+  const pkg = JSON.parse(readFileSync(join(__dirname, '..', 'package.json'), 'utf8'))
+
+  const { notifyUpdates, notifyCliUpdate } = await import('../lib/update-notifier.mjs')
+  await Promise.all([notifyUpdates(), notifyCliUpdate(pkg.version)])
 }
