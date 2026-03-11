@@ -1,24 +1,12 @@
 ---
 name: owasp-authorization
-version: 1.0.0
+version: 1.1.0
 description: |
-  Audits authorization implementations against OWASP ASVS v5.0
-  Chapter V8. Covers access control policies (RBAC/ABAC), principle
-  of least privilege, deny-by-default, function/data/field-level
-  controls, IDOR prevention, multi-tenant isolation, and admin
-  interface protection. Produces verification checklists, identifies
-  insecure patterns, and provides remediation guidance.
-
-  Trigger on: "authorization audit", "access control review",
-  "RBAC review", "ABAC review", "IDOR testing", "privilege escalation",
-  "ASVS V8", "permission check", "role-based access", "admin protection",
-  "multi-tenant security", "horizontal privilege", "vertical privilege",
-  "least privilege review", "deny by default"
-
-  DO NOT trigger for: authentication (use owasp-authentication),
-  session management (use owasp-session-management), OAuth scopes
-  (use owasp-oauth-oidc), JWT claims (use owasp-self-contained-tokens),
-  general RBAC setup (use rbac-auth)
+  Audits authorization implementations against OWASP ASVS v5.0 Chapter V8 covering access control policies (RBAC/ABAC), principle of least privilege, deny-by-default, function/data/field-level controls, IDOR prevention, multi-tenant isolation, and admin interface protection.
+  MUST activate for: authorization audit, access control review, RBAC review, ABAC review, IDOR testing, privilege escalation, ASVS V8, permission check, role-based access, admin protection, multi-tenant security, horizontal privilege, vertical privilege, least privilege review, deny by default.
+  Also activate when: user asks to check if API endpoints enforce authorization, test for IDOR vulnerabilities, review admin panel access controls, audit multi-tenant data isolation, find routes missing permission middleware, check for client-side-only access control, review role assignment endpoints for escalation, or verify deny-by-default configuration.
+  Do NOT activate for: authentication (use owasp-authentication), session management (use owasp-session-management), OAuth scopes (use owasp-oauth-oidc), JWT claims (use owasp-self-contained-tokens), general RBAC setup (use rbac-auth).
+  Covers: access control model documentation (RBAC, ABAC, ReBAC), roles and permissions matrix, decision factor documentation, environmental context (IP, time, device), principle of least privilege, deny-by-default enforcement, function-level access control on every endpoint, data-level access control (ownership filtering), field-level access control (sensitive field hiding by role), consistent cross-layer authorization (API, service, DB), server-side enforcement, centralized authorization logic, real-time permission checking (no stale cache), immediate permission revocation, batch/bulk operation authorization, admin interface MFA/VPN/IP protection, multi-tenant data isolation, horizontal privilege escalation prevention, vertical privilege escalation prevention, directory traversal prevention, rate limiting on authorization-sensitive operations, IDOR testing methodology.
 agents:
   - debug-master
 ---

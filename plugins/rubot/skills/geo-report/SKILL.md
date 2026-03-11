@@ -1,9 +1,14 @@
 ---
 name: geo-report
-description: Generate a professional, client-facing GEO report combining all audit results into a single deliverable with scores, findings, and prioritized actions
-version: 1.0.0
-author: geo-seo-claude
-tags: [geo, report, client-deliverable, executive-summary, action-plan]
+version: 1.1.0
+description: |
+  Generates a professional client-facing GEO report combining all audit results into a single Markdown deliverable with scores, findings, and prioritized actions.
+  MUST activate for: /geo-report, "GEO client report", "generate GEO report", "GEO readiness report", "compile GEO audit report", "client-facing GEO deliverable".
+  Also activate when: user wants to compile GEO audit data into a single professional report, needs a business-friendly summary of GEO findings, or asks for a GEO readiness score with action plan.
+  Do NOT activate for: full GEO audit data collection (use geo-audit), PDF report generation with charts and gauges (use geo-report-pdf), individual audit dimensions like schema or technical (use the specific geo-* skill), traditional SEO reporting (use rubot-seo-audit).
+  Covers: GEO Readiness Score calculation, executive summary, AI visibility dashboard, AI crawler access status, brand authority analysis, citability analysis, technical health summary, schema and structured data summary, llms.txt status, prioritized action plan (quick wins, medium-term, strategic), competitor comparison, appendix with methodology and glossary, dollar-value impact framing.
+agents:
+  - seo-master
 ---
 
 # GEO Client Report Generator

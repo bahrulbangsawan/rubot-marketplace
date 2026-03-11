@@ -1,24 +1,12 @@
 ---
 name: owasp-authentication
-version: 1.0.0
+version: 1.1.0
 description: |
-  Audits authentication mechanisms against OWASP ASVS v5.0 Chapter V6.
-  Covers password security, MFA, credential lifecycle, out-of-band auth,
-  cryptographic authentication (FIDO/WebAuthn), and IdP integration.
-  Produces verification checklists, identifies insecure patterns, and
-  provides remediation guidance with code examples.
-
-  Trigger on: "authentication audit", "password security review",
-  "MFA review", "login security", "credential management audit",
-  "ASVS V6", "brute force protection", "account lockout review",
-  "WebAuthn audit", "FIDO review", "IdP integration review",
-  "password policy review", "authentication bypass"
-
-  DO NOT trigger for: session management (use owasp-session-management),
-  OAuth/OIDC flows (use owasp-oauth-oidc), JWT token validation
-  (use owasp-self-contained-tokens), authorization/RBAC
-  (use owasp-authorization), general secure coding patterns
-  (use owasp-secure-coding)
+  Audits authentication mechanisms against OWASP ASVS v5.0 Chapter V6 covering password security, MFA, credential lifecycle, out-of-band auth, cryptographic authentication (FIDO/WebAuthn), and IdP integration.
+  MUST activate for: authentication audit, password security review, MFA review, login security, credential management audit, ASVS V6, brute force protection, account lockout review, WebAuthn audit, FIDO review, IdP integration review, password policy review, authentication bypass.
+  Also activate when: user asks to review login or registration code, check password hashing algorithm, audit MFA enrollment flow, verify brute-force protections on login endpoint, check for default credentials, review password reset token expiration, assess better-auth configuration, or evaluate TOTP drift window settings.
+  Do NOT activate for: session management (use owasp-session-management), OAuth/OIDC flows (use owasp-oauth-oidc), JWT token validation (use owasp-self-contained-tokens), authorization/RBAC (use owasp-authorization), general secure coding patterns (use owasp-secure-coding).
+  Covers: authentication documentation, password length/complexity policy (NIST-aligned), breach password list checking, password hashing (bcrypt, scrypt, Argon2id), password hints prohibition, password change verification, MFA enforcement, account lockout and progressive delays, credential stuffing prevention, default credential detection, generic authentication error messages, anti-automation (CAPTCHA), secure enrollment and identity verification, time-limited single-use reset tokens, recovery notification, TOTP drift and single-use validation, backup codes entropy, SMS/email OTP expiration, push notification context, WebAuthn/FIDO challenge-response, attestation verification, IdP assertion validation (SAML/OIDC), assertion replay prevention, better-auth integration audit.
 agents:
   - debug-master
 ---

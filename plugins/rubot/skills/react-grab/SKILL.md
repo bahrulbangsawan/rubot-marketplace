@@ -2,11 +2,11 @@
 name: react-grab
 version: 1.1.0
 description: |
-  AI-assisted element inspection for React apps using react-grab. Hover over any UI element and press Cmd+C to copy component name, file path, and HTML source to clipboard so AI coding agents know which file to edit. ACTIVATE THIS SKILL when the user wants to: identify which .tsx file renders a specific UI element, hover-inspect components, point at UI to get component file path, set up react-grab, install element inspector, configure MCP bridge for react-grab, freeze page state to inspect tooltips or hover states, fix "Anonymous" component names, fix "unknown" file paths after HMR/hot module reload, disable the react-grab overlay, or use import.meta.env.DEV conditional loading.
-
-  Also trigger for: "which file renders this", "find component file", "element picker", "copy component context", "locate this component", "grab element info", "hover to copy", "where is this component", window.__REACT_GRAB__ flag.
-
-  DO NOT trigger for: Chrome DevTools inspection, React DevTools Profiler, Playwright/testing, drag-and-drop, clipboard hooks, or general DOM debugging unrelated to react-grab.
+  AI-assisted element inspection for React apps using react-grab. Hover over any UI element and press Cmd+C to copy component name, file path, and HTML source to clipboard so AI coding agents know which file to edit.
+  MUST activate for: identify which .tsx file renders a specific UI element, hover-inspect components, point at UI to get component file path, set up react-grab, install element inspector, configure MCP bridge for react-grab, freeze page state to inspect tooltips or hover states, fix Anonymous component names, fix unknown file paths after HMR/hot module reload, disable the react-grab overlay, use import.meta.env.DEV conditional loading.
+  Also activate when: which file renders this, find component file, element picker, copy component context, locate this component, grab element info, hover to copy, where is this component, window.__REACT_GRAB__ flag, user wants to onboard onto an unfamiliar React codebase by exploring the component tree visually.
+  Do NOT activate for: Chrome DevTools inspection, React DevTools Profiler, Playwright/testing, drag-and-drop, clipboard hooks, or general DOM debugging unrelated to react-grab.
+  Covers: react-grab installation and setup, framework integration (Next.js App/Pages Router, Vite, Webpack, TanStack Start), Cmd+C element copying (component name, file path, HTML source), page freezing for transient UI states, MCP bridge for AI agent communication, dev-only conditional loading, fiber tree traversal, disable flag (window.__REACT_GRAB_DISABLED__).
 agents:
   - qa-tester
   - shadcn-ui-designer

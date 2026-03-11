@@ -3,8 +3,10 @@ name: prompt-fixer
 version: 1.0.0
 description: |
   Rewrites vague, ambiguous prompts into specific, actionable Claude Code instructions using official best practices. Analyzes the user's intent, scans the codebase for relevant context (file paths, patterns, frameworks), and produces a copy-ready prompt with verification criteria, scoped file references, and phased execution steps.
-  MUST activate when user says: "fix my prompt", "improve this prompt", "rewrite this prompt", "make this prompt better", "this prompt is too vague", "help me write a better prompt", "prompt engineering", "how should I ask Claude to", "rephrase this for Claude", or when the user provides a clearly vague instruction and asks for help making it more specific. Also activate when: user says "Claude keeps doing the wrong thing", "Claude doesn't understand what I want", "how do I get better results", "why does Claude keep failing", or references the `/rubot-fix-prompt` command.
+  MUST activate for: "fix my prompt", "improve this prompt", "rewrite this prompt", "make this prompt better", "this prompt is too vague", "help me write a better prompt", "prompt engineering", "how should I ask Claude to", "rephrase this for Claude", or when the user provides a clearly vague instruction and asks for help making it more specific.
+  Also activate when: "Claude keeps doing the wrong thing", "Claude doesn't understand what I want", "how do I get better results", "why does Claude keep failing", or the user references the `/rubot-fix-prompt` command.
   Do NOT activate for: actually executing the rewritten prompt, general coding tasks, SEO audits, design audits, security audits, environment checks, or any task where the user wants implementation rather than prompt improvement.
+  Covers: prompt rewriting, prompt engineering, vague-to-specific transformation, verification criteria injection, file path scoping, phased execution planning, and codebase-aware context enrichment.
 agents:
   - debug-master
 ---

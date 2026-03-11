@@ -1,13 +1,14 @@
 ---
 name: geo-brand-mentions
-description: Brand mention and authority scanner for AI visibility. Analyzes brand presence across platforms that AI models rely on for entity recognition and citation decisions. Produces a Brand Authority Score (0-100) with platform-specific recommendations.
-allowed-tools:
-  - Read
-  - Grep
-  - Glob
-  - Bash
-  - WebFetch
-  - Write
+version: 1.1.0
+description: |
+  Brand mention and authority scanner measuring presence on YouTube, Reddit, Wikipedia, LinkedIn, and other platforms AI models use for entity recognition.
+  MUST activate for: /geo-brand-mentions, "brand authority score", "brand mentions for AI", "AI entity recognition", "YouTube brand presence", "Reddit brand mentions", "Wikipedia brand check".
+  Also activate when: user wants to know how recognizable their brand is to AI systems, asks about unlinked brand mentions, or needs a cross-platform brand authority assessment for GEO.
+  Do NOT activate for: full GEO audit (use geo-audit), platform-specific optimization checklists (use geo-platform-optimizer), traditional backlink analysis without AI focus (use rubot-seo-audit), content quality assessment (use geo-content).
+  Covers: YouTube mentions and channel analysis, Reddit presence and sentiment, Wikipedia and Wikidata entity checks, LinkedIn authority signals, Quora, Stack Overflow, GitHub, Hacker News, news and press coverage, podcast mentions, composite Brand Authority Score (0-100), competitive comparison, platform-specific tips.
+agents:
+  - seo-master
 ---
 
 # Brand Mention Scanner Skill

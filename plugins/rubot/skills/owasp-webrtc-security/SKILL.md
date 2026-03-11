@@ -1,22 +1,12 @@
 ---
 name: owasp-webrtc-security
-version: 1.0.0
+version: 1.1.0
 description: |
   Audits WebRTC implementations against OWASP ASVS V17 requirements.
-  Covers TURN server security including address filtering and resource
-  exhaustion prevention, media security with DTLS/SRTP encryption and
-  flood protection, and signaling server security including input
-  validation and availability under load.
-
-  Trigger on: "WebRTC audit", "TURN server review", "WebRTC security",
-  "ASVS V17", "DTLS/SRTP check", "signaling server security",
-  "media server review", "peer connection security", "ICE security",
-  "STUN/TURN audit"
-
-  DO NOT trigger for: general TLS/HTTPS configuration
-  (use owasp-secure-communication), API security
-  (use owasp-api-security), general application authentication
-  (use owasp-authentication)
+  MUST activate for: WebRTC audit, TURN server review, WebRTC security, ASVS V17, DTLS/SRTP check, signaling server security, media server review, peer connection security, ICE security, STUN/TURN audit.
+  Also activate when: user asks to review video call security, check coturn configuration, audit real-time communication encryption, verify TURN credential rotation, review SDP validation, check for IP address leakage in peer connections, assess WebSocket signaling security, review SFU/MCU media forwarding, check ICE candidate filtering for privacy.
+  Do NOT activate for: general TLS/HTTPS configuration (use owasp-secure-communication), API security (use owasp-api-security), general application authentication (use owasp-authentication).
+  Covers: TURN server security (address filtering, resource exhaustion prevention, authentication, short-lived HMAC credentials, relay port range, TURNS over TLS, loopback/link-local blocking, rate limiting, bandwidth limits), media security (DTLS 1.2+ key exchange, SRTP encryption enforcement, flood attack protection, malformed RTP/RTCP handling, buffer overflow prevention, DTLS fingerprint verification, encryption downgrade prevention, RTP header extension validation, SFU/MCU stream validation), signaling server security (WSS encrypted transport, SDP validation, ICE candidate validation, load resilience, session authentication, SDP injection prevention, ICE candidate IP filtering, session ownership validation, re-INVITE attack prevention, message size limits, WebSocket connection limits).
 agents:
   - debug-master
 ---

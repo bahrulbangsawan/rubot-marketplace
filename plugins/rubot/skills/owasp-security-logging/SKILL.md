@@ -1,21 +1,12 @@
 ---
 name: owasp-security-logging
-version: 1.0.0
+version: 1.1.0
 description: |
-  Audits security logging and error handling practices against OWASP ASVS
-  V16 requirements. Covers logging documentation, structured logging
-  implementation, security event capture, log protection and integrity,
-  and secure error handling. Detects missing audit trails, sensitive
-  data in logs, exposed stack traces, and insecure log storage.
-
-  Trigger on: "security logging audit", "logging review", "error handling review",
-  "ASVS V16", "audit trail check", "log integrity", "structured logging",
-  "security events", "error handling security", "log protection",
-  "sensitive data in logs"
-
-  DO NOT trigger for: application performance monitoring (APM),
-  business analytics logging, general debugging without security context,
-  configuration security (use owasp-configuration-security)
+  Audits security logging and error handling practices against OWASP ASVS V16 requirements.
+  MUST activate for: security logging audit, logging review, error handling review, ASVS V16, audit trail check, log integrity, structured logging, security events, error handling security, log protection, sensitive data in logs.
+  Also activate when: user asks to check if login failures are logged, review error responses for stack trace leaks, audit log storage for tampering protection, verify PII is not written to logs, review centralized error handling, check if security alerts are configured, assess log injection risks, review correlation ID implementation, verify fail-secure error behavior.
+  Do NOT activate for: application performance monitoring (APM), business analytics logging, general debugging without security context, configuration security (use owasp-configuration-security).
+  Covers: logging architecture documentation, structured logging (JSON format), log metadata (timestamp, source, severity, event type, user/session ID), UTC timestamps, sensitive data redaction in logs, log injection prevention, log level management, correlation IDs, log volume management, security event capture (authentication, authorization, validation failures, admin actions, data access, session events, API abuse), log integrity protection (append-only, checksums, signing), immutable log storage, log access control, secure log transmission (TLS), log isolation, NTP synchronization, error handling (fail-secure, stack trace suppression, generic error messages, centralized exception handling, consistent error format, third-party error tracking data safety).
 agents:
   - debug-master
 ---

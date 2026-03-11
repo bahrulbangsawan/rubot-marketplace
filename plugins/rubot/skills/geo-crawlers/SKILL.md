@@ -1,13 +1,14 @@
 ---
 name: geo-crawlers
-description: AI crawler access analysis. Checks robots.txt, meta tags, and HTTP headers to determine which AI crawlers can access the site. Provides a complete access map and recommendations for maximizing AI visibility while maintaining appropriate control.
-allowed-tools:
-  - Read
-  - Grep
-  - Glob
-  - Bash
-  - WebFetch
-  - Write
+version: 1.1.0
+description: |
+  AI crawler access analysis covering robots.txt, meta robots tags, and HTTP headers for GPTBot, ClaudeBot, PerplexityBot, and 11 other AI crawlers.
+  MUST activate for: /geo-crawlers, "AI crawler access", "robots.txt AI audit", "which AI bots can crawl my site", "GPTBot blocked", "ClaudeBot access", "PerplexityBot check".
+  Also activate when: user asks about AI bot blocking, wants to know if their site is visible to AI search engines, or needs a robots.txt configuration for AI crawlers.
+  Do NOT activate for: full GEO audit (use geo-audit), llms.txt analysis or generation (use geo-llmstxt), traditional SEO crawl audit without AI focus (use rubot-seo-audit), technical SEO performance checks (use geo-technical).
+  Covers: GPTBot, OAI-SearchBot, ChatGPT-User, ClaudeBot, PerplexityBot, Google-Extended, GoogleOther, Applebot-Extended, Amazonbot, FacebookBot, CCBot, anthropic-ai, Bytespider, cohere-ai, robots.txt parsing, meta robots tags, X-Robots-Tag headers, AI-specific files, JavaScript rendering assessment, crawler access scoring.
+agents:
+  - seo-master
 ---
 
 # AI Crawler Access Analysis Skill

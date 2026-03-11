@@ -1,9 +1,14 @@
 ---
 name: geo-report-pdf
-description: Generate a professional PDF report from GEO audit data using ReportLab. Creates a polished, client-ready PDF with score gauges, bar charts, platform readiness visualizations, color-coded tables, and prioritized action plans.
-version: 1.0.0
-author: geo-seo-claude
-tags: [geo, pdf, report, client-deliverable, professional]
+version: 1.1.0
+description: |
+  Generates a professional PDF report from GEO audit data using ReportLab with score gauges, bar charts, and color-coded tables.
+  MUST activate for: /geo-report-pdf, "GEO PDF report", "generate GEO PDF", "export GEO report as PDF", "PDF audit report", "client PDF deliverable".
+  Also activate when: user wants a polished visual PDF of their GEO audit results, needs a printable report with charts and gauges, or asks to export GEO findings to PDF.
+  Do NOT activate for: full GEO audit data collection (use geo-audit), Markdown-only client report (use geo-report), individual audit dimensions (use the specific geo-* skill), traditional SEO reporting (use rubot-seo-audit).
+  Covers: ReportLab PDF generation, cover page with GEO score gauge, executive summary, score breakdown bar charts, AI platform readiness visualization, AI crawler access color-coded table, severity-coded findings list, prioritized action plan, appendix with methodology, JSON data schema for audit input, Markdown report parsing.
+agents:
+  - seo-master
 ---
 
 # GEO PDF Report Generator

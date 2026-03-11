@@ -1,26 +1,12 @@
 ---
 name: owasp-oauth-oidc
-version: 1.0.0
+version: 1.1.0
 description: |
-  Audits OAuth 2.0 and OpenID Connect implementations against OWASP
-  ASVS v5.0 Chapter V10. Covers generic OAuth/OIDC security, client
-  configuration, resource server validation, authorization server
-  hardening, OIDC client and provider security, and consent management.
-  Includes PKCE, state parameter, redirect URI validation, token
-  binding, refresh token rotation, and ID token verification.
-
-  Trigger on: "OAuth audit", "OIDC review", "OAuth security",
-  "OpenID Connect security", "ASVS V10", "PKCE review",
-  "redirect URI validation", "OAuth client security",
-  "authorization server review", "resource server security",
-  "refresh token rotation", "OAuth implicit flow",
-  "consent management", "OAuth scope review", "ID token validation",
-  "better-auth social providers", "better-auth OAuth"
-
-  DO NOT trigger for: JWT/token format validation (use owasp-self-contained-tokens),
-  general authentication (use owasp-authentication), session management
-  (use owasp-session-management), general API security
-  (use owasp-api-security)
+  Audits OAuth 2.0 and OpenID Connect implementations against OWASP ASVS v5.0 Chapter V10.
+  MUST activate for: OAuth audit, OIDC review, OAuth security, OpenID Connect security, ASVS V10, PKCE review, redirect URI validation, OAuth client security, authorization server review, resource server security, refresh token rotation, OAuth implicit flow, consent management, OAuth scope review, ID token validation, better-auth social providers, better-auth OAuth.
+  Also activate when: user asks to review social login setup, check OAuth token storage, audit third-party login providers, verify PKCE implementation, review callback URL handling, assess OAuth consent flow, check for deprecated OAuth flows, review OpenID discovery configuration.
+  Do NOT activate for: JWT/token format validation (use owasp-self-contained-tokens), general authentication (use owasp-authentication), session management (use owasp-session-management), general API security (use owasp-api-security).
+  Covers: generic OAuth/OIDC security, OAuth client configuration, resource server token validation, authorization server hardening, OIDC relying party security, OpenID Provider security, consent management, PKCE with S256, state parameter CSRF protection, redirect URI exact-match validation, token binding (DPoP/mTLS), refresh token rotation and reuse detection, ID token signature and claims verification, implicit flow deprecation, scope least-privilege enforcement.
 agents:
   - debug-master
 ---

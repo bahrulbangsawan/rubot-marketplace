@@ -1,25 +1,12 @@
 ---
 name: owasp-self-contained-tokens
-version: 1.0.0
+version: 1.1.0
 description: |
-  Audits self-contained token implementations (JWT, PASETO, etc.)
-  against OWASP ASVS v5.0 Chapter V9. Covers token source
-  verification, signature validation, algorithm restrictions, key
-  management, expiration, audience/issuer/scope validation, and
-  cross-service token reuse prevention. Includes JWT-specific attack
-  patterns such as algorithm confusion (alg:none), weak signing keys,
-  and JOSE header attacks.
-
-  Trigger on: "JWT security audit", "token validation review",
-  "JWT best practices", "ASVS V9", "self-contained token",
-  "JWT algorithm confusion", "alg none attack", "JWT signing key",
-  "token expiration review", "JWT claims validation",
-  "JOSE header security", "PASETO review", "token reuse prevention"
-
-  DO NOT trigger for: session tokens / cookies (use owasp-session-management),
-  OAuth/OIDC flows (use owasp-oauth-oidc), authentication mechanisms
-  (use owasp-authentication), general cryptography
-  (use owasp-cryptography)
+  Audits self-contained token implementations (JWT, PASETO, etc.) against OWASP ASVS v5.0 Chapter V9 covering token source verification, signature validation, algorithm restrictions, key management, expiration, audience/issuer/scope validation, and cross-service token reuse prevention.
+  MUST activate for: JWT security audit, token validation review, JWT best practices, ASVS V9, self-contained token, JWT algorithm confusion, alg none attack, JWT signing key, token expiration review, JWT claims validation, JOSE header security, PASETO review, token reuse prevention.
+  Also activate when: user asks to review jwt.verify or jwt.decode calls, check if JWT algorithm is hardcoded, audit token expiration and lifetime settings, find hardcoded JWT secrets, verify audience and issuer claims are validated, review JWKS endpoint configuration, assess token refresh and rotation strategy, or check for sensitive data stored in JWT payloads.
+  Do NOT activate for: session tokens / cookies (use owasp-session-management), OAuth/OIDC flows (use owasp-oauth-oidc), authentication mechanisms (use owasp-authentication), general cryptography (use owasp-cryptography).
+  Covers: trusted issuer (iss) verification, token signature validation, algorithm restriction (no alg:none, no algorithm switching), approved algorithms (RS256, ES256, EdDSA), strong signing keys (RSA >= 2048-bit, EC P-256+), key rotation and JWKS endpoint, integrity-before-claims processing, expiration (exp) and not-before (nbf) enforcement, audience (aud) and issuer (iss) claim validation, subject (sub) identification, scope/permissions claim validation, cross-service reuse prevention, short token lifetimes (access 5-15 min), no sensitive data in payload, JTI-based revocation and replay prevention, algorithm none attack, RS256-to-HS256 confusion, weak HMAC secret brute-forcing, JWKS spoofing/JKU injection, kid injection, token lifetime abuse, jsonwebtoken/jose/PyJWT library patterns.
 agents:
   - debug-master
 ---

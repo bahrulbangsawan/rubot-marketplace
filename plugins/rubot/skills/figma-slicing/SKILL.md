@@ -1,11 +1,12 @@
 ---
 name: figma-slicing
-version: 1.0.0
+version: 1.1.0
 description: |
   Pixel-perfect Figma-to-code implementation using Figma MCP tools to extract design context, tokens, and screenshots from Figma node links and build production-ready, responsive UI sections with a complete design system.
-  TRIGGER when: user mentions Figma slicing, Figma-to-code, implementing a Figma design, design handoff, design implementation, pixel-perfect from Figma, extracting design tokens from Figma, building sections from Figma nodes, or references a section-figma.yaml file.
-  Also TRIGGER when: user runs /rubot-implement-figma with a YAML file, wants to convert Figma frames into code, asks about design-to-code workflow, or mentions Figma node URLs.
-  DO NOT TRIGGER when: user is designing IN Figma (not implementing from it), asking about Figma plugin development, or working with non-Figma design tools like Sketch or Adobe XD.
+  MUST activate for: user mentions Figma slicing, Figma-to-code, implementing a Figma design, design handoff, design implementation, pixel-perfect from Figma, extracting design tokens from Figma, building sections from Figma nodes, or references a section-figma.yaml file.
+  Also activate when: user runs /rubot-implement-figma with a YAML file, wants to convert Figma frames into code, asks about design-to-code workflow, or mentions Figma node URLs.
+  Do NOT activate for: user is designing IN Figma (not implementing from it), asking about Figma plugin development, or working with non-Figma design tools like Sketch or Adobe XD.
+  Covers: Figma MCP extraction, design token setup (colors, typography, spacing, shadows, radius), section-by-section responsive implementation, SSR compliance, SEO best practices, pixel-perfect design-to-code workflow.
 agents:
   - shadcn-ui-designer
   - frontend

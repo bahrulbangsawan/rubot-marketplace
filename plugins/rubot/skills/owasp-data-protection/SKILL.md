@@ -1,23 +1,12 @@
 ---
 name: owasp-data-protection
-version: 1.0.0
+version: 1.1.0
 description: |
   Audits data protection practices against OWASP ASVS V14 requirements.
-  Covers data classification and documentation, general data protection
-  including encryption at rest and data minimization, and client-side
-  data protection including localStorage security, cache control,
-  and prevention of sensitive data exposure in URLs and browser storage.
-
-  Trigger on: "data protection audit", "PII handling review",
-  "data classification", "ASVS V14", "GDPR compliance check",
-  "localStorage security", "cache control review", "data minimization",
-  "sensitive data exposure", "client-side storage audit",
-  "data retention review"
-
-  DO NOT trigger for: cryptographic implementation details
-  (use owasp-cryptography), transport-layer security
-  (use owasp-secure-communication), file upload handling
-  (use owasp-file-handling), input validation (use owasp-validation-logic)
+  MUST activate for: data protection audit, PII handling review, data classification, ASVS V14, GDPR compliance check, localStorage security, cache control review, data minimization, sensitive data exposure, client-side storage audit, data retention review.
+  Also activate when: user asks to check if PII is stored securely, review browser storage for sensitive data, verify cache-control headers on sensitive endpoints, audit data retention policies, check for sensitive data in URLs, review cookie security attributes, assess CCPA/HIPAA data handling, check autocomplete on sensitive form fields, review Clear-Site-Data on logout.
+  Do NOT activate for: cryptographic implementation details (use owasp-cryptography), transport-layer security (use owasp-secure-communication), file upload handling (use owasp-file-handling), input validation (use owasp-validation-logic).
+  Covers: data classification and sensitivity documentation, data flow mapping, encryption at rest, data minimization, data retention and automated deletion, PII handling (GDPR/CCPA/HIPAA), data masking in non-production environments, field-level encryption and tokenization, backup encryption, right to deletion, client-side data protection, localStorage/sessionStorage/IndexedDB security, cache-control headers, Clear-Site-Data on logout, autocomplete for sensitive fields, sensitive data in URL parameters, cookie Secure/HttpOnly/SameSite attributes, service worker cache protection, clipboard access control.
 agents:
   - debug-master
 ---

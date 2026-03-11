@@ -1,13 +1,14 @@
 ---
 name: geo-audit
-description: Full website GEO+SEO audit with parallel subagent delegation. Orchestrates a comprehensive Generative Engine Optimization audit across AI citability, platform analysis, technical infrastructure, content quality, and schema markup. Produces a composite GEO Score (0-100) with prioritized action plan.
-allowed-tools:
-  - Read
-  - Grep
-  - Glob
-  - Bash
-  - WebFetch
-  - Write
+version: 1.1.0
+description: |
+  Full-site GEO audit orchestrator with parallel subagent delegation producing a composite GEO Score (0-100).
+  MUST activate for: /geo-audit, "GEO audit", "AI search audit", "generative engine optimization audit", "AI visibility audit", "full GEO analysis".
+  Also activate when: user asks to audit a website for AI citability across all dimensions, requests a comprehensive AI search readiness assessment, or needs a complete GEO score with prioritized action plan.
+  Do NOT activate for: single-dimension audits like citability only (use geo-citability), crawler access only (use geo-crawlers), schema only (use geo-schema), traditional SEO audit without AI focus (use rubot-seo-audit), PDF report generation (use geo-report-pdf).
+  Covers: composite GEO scoring, parallel subagent orchestration, AI citability analysis, brand authority scanning, technical GEO infrastructure, content E-E-A-T quality, schema and structured data, platform optimization, business type detection, crawl discovery, issue severity classification, 30-day action plans.
+agents:
+  - seo-master
 ---
 
 # GEO Audit Orchestration Skill

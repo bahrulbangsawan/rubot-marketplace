@@ -2,7 +2,11 @@
 name: cloudflare-workers
 version: 1.1.0
 description: |
-  Implements Cloudflare Workers for serverless edge computing, APIs, and storage. Use when deploying to Cloudflare Workers, configuring wrangler.toml, setting up KV namespace bindings, D1 database (migrations, SQL, bindings), R2 object storage (file uploads, buckets), implementing Workers secrets with wrangler secret, creating cron trigger schedules, or deploying to staging/production environments. Also use when working with Durable Objects, Cache API, environment bindings, CORS middleware for Workers, V8 runtime errors like "Buffer is not defined", bundle size limits, Worker bundle optimization, tree-shaking dependencies, or "wrangler deploy --env". Use for multipart form data handling in Workers, WebSocket connections via Durable Objects, or edge-served sitemaps from KV. NOT for: Cloudflare Pages static sites, Cloudflare DNS records, Cloudflare CDN page rules, Cloudflare WAF firewall rules, Vercel/Next.js edge runtime, Nginx reverse proxy, Node.js WebSocket servers, or browser service workers for PWA offline caching.
+  Implements Cloudflare Workers for serverless edge computing, APIs, and storage.
+  MUST activate for: deploying to Cloudflare Workers, configuring wrangler.toml, setting up KV namespace bindings, D1 database (migrations, SQL, bindings), R2 object storage (file uploads, buckets), implementing Workers secrets with wrangler secret, creating cron trigger schedules, or deploying to staging/production environments.
+  Also activate when: working with Durable Objects, Cache API, environment bindings, CORS middleware for Workers, V8 runtime errors like "Buffer is not defined", bundle size limits, Worker bundle optimization, tree-shaking dependencies, "wrangler deploy --env", multipart form data handling in Workers, WebSocket connections via Durable Objects, or edge-served sitemaps from KV.
+  Do NOT activate for: Cloudflare Pages static sites, Cloudflare DNS records, Cloudflare CDN page rules, Cloudflare WAF firewall rules, Vercel/Next.js edge runtime, Nginx reverse proxy, Node.js WebSocket servers, or browser service workers for PWA offline caching.
+  Covers: Cloudflare Workers deployment, wrangler.toml configuration, KV storage, D1 database, R2 object storage, Durable Objects, Cache API, cron triggers, secrets management, CORS handling, bundle optimization, and environment-based deploys.
 agents:
   - cloudflare
 ---

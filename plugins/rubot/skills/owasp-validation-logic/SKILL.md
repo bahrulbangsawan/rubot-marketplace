@@ -1,20 +1,12 @@
 ---
 name: owasp-validation-logic
-version: 1.0.0
+version: 1.1.0
 description: |
-  Audits application code for OWASP ASVS V2 compliance covering input validation, business
-  logic security, anti-automation, and validation documentation. Provides verification
-  checklists, code review patterns, and remediation guidance for type/length/range validation,
-  schema validation, business logic bypass prevention, rate limiting, and bot detection.
-
-  Trigger on: "input validation audit", "business logic security", "validation review",
-  "ASVS V2", "schema validation", "rate limiting", "anti-automation", "bot detection",
-  "CAPTCHA review", "JSON Schema validation", "allowlist validation", "business logic bypass",
-  "credential stuffing prevention", "anti-tampering"
-
-  DO NOT trigger for: output encoding or sanitization (use owasp-encoding-sanitization),
-  authentication mechanisms (use owasp-authentication), session management,
-  file upload validation (use owasp-file-handling), API structure validation (use owasp-api-security)
+  Audits application code for OWASP ASVS V2 compliance covering input validation, business logic security, anti-automation, and validation documentation.
+  MUST activate for: input validation audit, business logic security, validation review, ASVS V2, schema validation, rate limiting, anti-automation, bot detection, CAPTCHA review, JSON Schema validation, allowlist validation, business logic bypass, credential stuffing prevention, anti-tampering.
+  Also activate when: user asks to check if form inputs are validated, review Zod or Joi schemas, find endpoints missing validation middleware, audit checkout or payment flows for tampering, test for race conditions in balance updates, check for open redirect vulnerabilities, or review ReDoS-safe regex patterns.
+  Do NOT activate for: output encoding or sanitization (use owasp-encoding-sanitization), authentication mechanisms (use owasp-authentication), session management (use owasp-session-management), file upload validation (use owasp-file-handling), API structure validation (use owasp-api-security).
+  Covers: validation documentation, type/length/range validation, allowlist validation, email/URL format validation, JSON Schema and OpenAPI validation, redirect URL allowlists, ReDoS-safe regex, multi-step workflow enforcement, server-side business logic limits, price/quantity tampering prevention, race condition prevention (TOCTOU), negative value handling, integer overflow, rate limiting on auth and sensitive endpoints, CAPTCHA integration, account lockout, progressive delays, bot detection, credential stuffing mitigation, API rate limiting keys.
 agents:
   - debug-master
 ---

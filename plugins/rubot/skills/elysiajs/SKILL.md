@@ -2,11 +2,11 @@
 name: elysiajs
 version: 1.1.0
 description: |
-  Build high-performance, type-safe HTTP servers and REST APIs with ElysiaJS on Bun. ACTIVATE THIS SKILL when the user wants to: create Elysia routes with Typebox validation (t.Object, t.Numeric, t.File), build auth plugins using derive/macro, add @elysiajs/swagger for OpenAPI docs, wire up Eden treaty client for end-to-end type-safe API calls, implement WebSocket with pub/sub channels, handle file uploads with t.File validation, fix plugin ordering issues (.use(authPlugin) before routes), set up route groups and guards for API versioning, add custom error handling with onError hooks, configure CORS, fix t.Numeric() param coercion, fix type inference breaking with intermediate variables, or set up lifecycle hooks (onRequest, onBeforeHandle, onAfterHandle).
-
-  Trigger on: "Elysia", "ElysiaJS", "Eden treaty", "Eden client", "Typebox validation", "@elysiajs/swagger", "Bun HTTP server", "Elysia plugin", "Elysia WebSocket", "Elysia route", "Elysia error handling", "Elysia guard", "Elysia derive", "Elysia macro".
-
-  DO NOT trigger for: Express.js, Fastify, Hono.js, tRPC with Next.js, Apollo GraphQL, Drizzle ORM schema, AWS Lambda, or generic Node.js HTTP servers.
+  Build high-performance, type-safe HTTP servers and REST APIs with ElysiaJS on Bun.
+  MUST activate for: create Elysia routes with Typebox validation (t.Object, t.Numeric, t.File), build auth plugins using derive/macro, add @elysiajs/swagger for OpenAPI docs, wire up Eden treaty client for end-to-end type-safe API calls, implement WebSocket with pub/sub channels, handle file uploads with t.File validation, fix plugin ordering issues (.use(authPlugin) before routes), set up route groups and guards for API versioning, add custom error handling with onError hooks, configure CORS, fix t.Numeric() param coercion, fix type inference breaking with intermediate variables, set up lifecycle hooks (onRequest, onBeforeHandle, onAfterHandle), Elysia, ElysiaJS, Eden treaty, Eden client, Typebox validation, @elysiajs/swagger, Bun HTTP server, Elysia plugin, Elysia WebSocket, Elysia route, Elysia error handling, Elysia guard, Elysia derive, Elysia macro.
+  Also activate when: user is building a new REST API or HTTP server with Bun, user asks about type-safe API endpoints with request/response validation, user wants to set up middleware or lifecycle hooks in Elysia.
+  Do NOT activate for: Express.js, Fastify, Hono.js, tRPC with Next.js, Apollo GraphQL, Drizzle ORM schema, AWS Lambda, or generic Node.js HTTP servers.
+  Covers: Elysia routing (basic routes, route groups, guards), Typebox validation (body, params, query, response), plugin system (derive, macro, state, decorate), lifecycle hooks (onRequest, onBeforeHandle, onAfterHandle, onError), Eden client (type-safe HTTP client), WebSocket with pub/sub, file uploads, CORS, Swagger/OpenAPI generation, tRPC integration, Bun-native patterns.
 agents:
   - backend-master
 ---

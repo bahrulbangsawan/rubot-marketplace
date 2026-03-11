@@ -3,8 +3,9 @@ name: env-check
 version: 1.1.0
 description: |
   Validates local development tooling, CLI versions, and stack readiness. Checks bun, node, wrangler, git, gh availability, version compatibility, lockfile format, Wrangler auth, and project dependency detection.
-  MUST activate when user says: "check my setup", "is bun installed", "what version", "prerequisites check", "verify my tools", "which tools do I need", "environment setup", "dev environment ready", "setup not working", "can't find command", "command not found" (bun/node/wrangler/git). Also activate for: "bun: command not found", "lockfile version mismatch", "bun.lockb not working", "MODULE_NOT_FOUND but it's in package.json", "wrangler whoami returns error", "expired token", "node version is 20+", "bun 1.1+", "fresh Mac setup", "CI pipeline validate runner tools", "before running /rubot-init", and "why won't it build" when the root cause might be missing/outdated CLI tools. Do NOT activate for: adding env vars to wrangler.toml, writing health check endpoints, setting up biome.json, running drizzle-kit, deploying workers, checking .env variable values, installing npm packages, or responsive layout audits.
-
+  MUST activate for: "check my setup", "is bun installed", "what version", "prerequisites check", "verify my tools", "which tools do I need", "environment setup", "dev environment ready", "setup not working", "can't find command", "command not found" (bun/node/wrangler/git).
+  Also activate when: "bun: command not found", "lockfile version mismatch", "bun.lockb not working", "MODULE_NOT_FOUND but it's in package.json", "wrangler whoami returns error", "expired token", "node version is 20+", "bun 1.1+", "fresh Mac setup", "CI pipeline validate runner tools", "before running /rubot-init", or "why won't it build" when the root cause might be missing/outdated CLI tools.
+  Do NOT activate for: adding env vars to wrangler.toml, writing health check endpoints, setting up biome.json, running drizzle-kit, deploying workers, checking .env variable values, installing npm packages, or responsive layout audits.
   Covers: tool availability, version checks (bun 1.1+, node 20+, wrangler 3/4), lockfile migration (bun.lockb to bun.lock), Wrangler auth readiness, stack detection, config file presence, and CI environment validation.
 agents:
   - cloudflare

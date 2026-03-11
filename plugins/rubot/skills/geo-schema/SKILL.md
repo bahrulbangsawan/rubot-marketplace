@@ -1,9 +1,14 @@
 ---
 name: geo-schema
-description: Schema.org structured data audit and generation optimized for AI discoverability — detect, validate, and generate JSON-LD markup
-version: 1.0.0
-author: geo-seo-claude
-tags: [geo, schema, structured-data, json-ld, entity-recognition, ai-discoverability]
+version: 1.1.0
+description: |
+  Schema.org structured data audit and JSON-LD generation optimized for AI entity recognition and discoverability.
+  MUST activate for: /geo-schema, "schema audit", "structured data audit", "JSON-LD audit", "schema.org markup", "sameAs audit", "entity graph", "generate JSON-LD".
+  Also activate when: user asks about structured data for AI visibility, wants to validate existing schema markup, needs JSON-LD code generated for their site, or asks about sameAs links for entity recognition.
+  Do NOT activate for: full GEO audit (use geo-audit), technical SEO checks beyond schema (use geo-technical), content quality assessment (use geo-content), traditional SEO schema without AI focus (use rubot-seo-audit).
+  Covers: JSON-LD detection and validation, Microdata and RDFa migration, Organization schema, LocalBusiness, Article and Author schemas, Product, FAQPage, SoftwareApplication, WebSite with SearchAction, Person, speakable property, deprecated schema flagging, sameAs strategy for entity recognition, JSON-LD code generation, scoring rubric (0-100).
+agents:
+  - seo-master
 ---
 
 # GEO Schema & Structured Data

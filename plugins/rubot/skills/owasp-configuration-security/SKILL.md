@@ -1,21 +1,12 @@
 ---
 name: owasp-configuration-security
-version: 1.0.0
+version: 1.1.0
 description: |
-  Audits application configuration security against OWASP ASVS V13
-  requirements. Covers configuration documentation, backend communication
-  security, secret management, and prevention of unintended information
-  leakage. Detects hardcoded secrets, insecure defaults, missing key
-  rotation, exposed debug endpoints, and server information disclosure.
-
-  Trigger on: "configuration audit", "secret management review",
-  "hardcoded secrets", "ASVS V13", "information leakage", "server hardening",
-  "debug mode check", "environment variable security", ".env review",
-  "key rotation audit", "vault configuration"
-
-  DO NOT trigger for: cryptographic algorithm selection (use owasp-cryptography),
-  authentication configuration (use owasp-authentication), TLS/certificate
-  config (use owasp-secure-communication)
+  Audits application configuration security against OWASP ASVS V13 requirements.
+  MUST activate for: configuration audit, secret management review, hardcoded secrets, ASVS V13, information leakage, server hardening, debug mode check, environment variable security, .env review, key rotation audit, vault configuration.
+  Also activate when: user asks to scan for leaked API keys, check if debug mode is off in production, review error page information disclosure, audit server headers, check .gitignore for secret files, review HashiCorp Vault setup, verify default credentials are changed, check for stack trace exposure, review source map accessibility.
+  Do NOT activate for: cryptographic algorithm selection (use owasp-cryptography), authentication configuration (use owasp-authentication), TLS/certificate config (use owasp-secure-communication).
+  Covers: configuration documentation, service communication architecture, backend communication security, database connection least privilege, internal service authentication, secret management (hardcoded secrets, vault/KMS integration, key rotation, .env handling), environment variable security, default credential detection, unintended information leakage, server version header removal, stack trace suppression, directory listing prevention, debug mode detection, source map exposure, HTTP response header hardening, error handling for information disclosure.
 agents:
   - debug-master
 ---

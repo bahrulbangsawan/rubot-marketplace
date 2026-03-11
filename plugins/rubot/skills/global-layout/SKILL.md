@@ -2,11 +2,11 @@
 name: global-layout
 version: 1.1.0
 description: |
-  Build persistent global layouts with shared Navbar and Footer components in __root.tsx. ACTIVATE THIS SKILL when the user wants to: add a navbar or footer that appears on every page, build a sticky/fixed header, create an app shell or page wrapper with flex min-h-dvh layout, fix a footer floating in the middle of short-content pages, refactor per-route Navbar/Footer imports into a centralized root layout, build a multi-column responsive footer grid, add a hamburger menu / mobile drawer navigation, fix navbar remounting on route navigation, switch between fixed and sticky header positioning, add responsive mobile navigation with aria-expanded/aria-controls, or create a site-wide navigation bar component.
-
-  Trigger on: "navbar", "footer", "site header", "site footer", "navigation bar", "app shell", "root layout", "global layout", "shared layout", "persistent navigation", "page wrapper", "header and footer", "sticky header", "fixed header", "hamburger menu", "mobile drawer", "nav bar".
-
-  DO NOT trigger for: sidebar navigation, breadcrumbs, tab navigation, bottom nav bar, scroll-to-top buttons, pagination, command palettes, or content grid layouts.
+  Build persistent global layouts with shared Navbar and Footer components in __root.tsx.
+  MUST activate for: add a navbar or footer that appears on every page, build a sticky/fixed header, create an app shell or page wrapper with flex min-h-dvh layout, fix a footer floating in the middle of short-content pages, refactor per-route Navbar/Footer imports into a centralized root layout, build a multi-column responsive footer grid, add a hamburger menu / mobile drawer navigation, fix navbar remounting on route navigation, switch between fixed and sticky header positioning, add responsive mobile navigation with aria-expanded/aria-controls, create a site-wide navigation bar component, navbar, footer, site header, site footer, navigation bar, app shell, root layout, global layout, shared layout, persistent navigation, page wrapper, header and footer, sticky header, fixed header, hamburger menu, mobile drawer, nav bar.
+  Also activate when: user asks for site navigation, page wrapper, or shared layout across all pages, user is migrating from per-page Navbar/Footer imports to a centralized layout, user mentions layout shifts or flicker during client-side navigation caused by remounting layout components.
+  Do NOT activate for: sidebar navigation, breadcrumbs, tab navigation, bottom nav bar, scroll-to-top buttons, pagination, command palettes, or content grid layouts.
+  Covers: root layout integration (__root.tsx with Outlet), Navbar patterns (simple, mobile drawer, sticky vs fixed), Footer patterns (simple, multi-column grid), flex min-h-dvh layout for footer pinning, semantic HTML landmarks (header, nav, main, footer), responsive mobile navigation with ARIA, touch target sizing (44px minimum), TanStack Start/Router integration.
 agents:
   - shadcn-ui-designer
   - responsive-master

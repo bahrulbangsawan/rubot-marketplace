@@ -2,11 +2,11 @@
 name: tanstack-form
 version: 1.1.0
 description: |
-  Implements TanStack Form (@tanstack/react-form) for type-safe, headless form management in React. ACTIVATE THIS SKILL when the user wants to: build forms with useForm, use form.Field with children render prop, add Zod validation via zodValidator adapter, create dynamic field arrays with pushValue/removeValue, build multi-step wizard forms with per-step validation, add async validation with onChangeAsyncDebounceMs, display field errors via field.state.meta.errors, disable submit with form.Subscribe watching form.state.canSubmit, convert manual useState-based forms to TanStack Form, wire forms to TanStack Query useMutation, fix field.handleChange not triggering re-renders, fix TypeScript errors on nested field names like 'address.city', fix double submission (missing e.preventDefault), or fix missing validatorAdapter: zodValidator().
-
-  Trigger on: "useForm", "form.Field", "zodValidator", "field.handleChange", "form.Subscribe", "field array", "multi-step form", "wizard form", "async validation on blur", "TanStack Form", "form state management", "form error display".
-
-  DO NOT trigger for: React Hook Form, Formik, Zod-only schemas, Typebox/Elysia validation, vanilla HTML forms, TanStack Table, or search bar debouncing.
+  Implements TanStack Form (@tanstack/react-form) for type-safe, headless form management in React.
+  MUST activate for: build forms with useForm, use form.Field with children render prop, add Zod validation via zodValidator adapter, create dynamic field arrays with pushValue/removeValue, build multi-step wizard forms with per-step validation, add async validation with onChangeAsyncDebounceMs, display field errors via field.state.meta.errors, disable submit with form.Subscribe watching form.state.canSubmit, convert manual useState-based forms to TanStack Form, wire forms to TanStack Query useMutation, fix field.handleChange not triggering re-renders, fix TypeScript errors on nested field names like address.city, fix double submission (missing e.preventDefault), fix missing validatorAdapter: zodValidator(), useForm, form.Field, zodValidator, field.handleChange, form.Subscribe, field array, multi-step form, wizard form, async validation on blur, TanStack Form, form state management, form error display.
+  Also activate when: user is building any form that needs validation (login, registration, settings, checkout), user wants to replace manual useState-based form management, user asks about connecting forms to TanStack Query mutations for API submission.
+  Do NOT activate for: React Hook Form, Formik, Zod-only schemas, Typebox/Elysia validation, vanilla HTML forms, TanStack Table, or search bar debouncing.
+  Covers: useForm hook with typed state, form.Field render-prop component, Zod validation via zodValidator adapter, field arrays (pushValue, removeValue, swap), multi-step wizard forms with per-step validation, async validation with debounce, form.Subscribe for conditional rendering, TanStack Query integration (useMutation, useQuery), form state management (values, errors, isSubmitting, isDirty), shadcn/ui component integration.
 agents:
   - tanstack
   - shadcn-ui-designer

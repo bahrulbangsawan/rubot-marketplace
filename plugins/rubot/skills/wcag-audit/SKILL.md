@@ -2,11 +2,11 @@
 name: wcag-audit
 version: 1.1.0
 description: |
-  Audit websites, pages, and components for WCAG 2.2 Level AA accessibility compliance, producing scored reports with prioritized remediation plans. ACTIVATE THIS SKILL when the user wants to: run an accessibility audit, check WCAG 2.2 compliance, assess ADA/Section 508 compliance, generate an accessibility report, audit forms for missing labels/ARIA attributes/error announcements, check color contrast ratios against 4.5:1 AA threshold, audit data tables for th scope/caption/keyboard navigation, evaluate focus management (2.4.11 Focus Not Obscured, 2.4.3 Focus Order), run axe-core or Lighthouse accessibility scans, perform manual keyboard navigation testing, investigate screen reader issues, or do a pre-launch accessibility check.
-
-  Trigger on: "WCAG", "accessibility audit", "a11y audit", "ADA compliance", "Section 508", "screen reader issues", "is my site accessible", "accessibility compliance", "accessibility score", "Lighthouse accessibility", "keyboard navigation problems", "contrast ratio check", "focus trap issues", "assistive technology".
-
-  DO NOT trigger for: fixing individual accessibility issues (use wcag-fix), adding specific ARIA attributes, implementing skip-to-content links, adding alt text, setting up eslint-plugin-jsx-a11y, or adding prefers-reduced-motion. Those are implementation tasks, not auditing.
+  Audit websites, pages, and components for WCAG 2.2 Level AA accessibility compliance, producing scored reports with prioritized remediation plans.
+  MUST activate for: run an accessibility audit, check WCAG 2.2 compliance, assess ADA/Section 508 compliance, generate an accessibility report, audit forms for missing labels/ARIA attributes/error announcements, check color contrast ratios against 4.5:1 AA threshold, audit data tables for th scope/caption/keyboard navigation, evaluate focus management (2.4.11 Focus Not Obscured, 2.4.3 Focus Order), run axe-core or Lighthouse accessibility scans, perform manual keyboard navigation testing, investigate screen reader issues, do a pre-launch accessibility check, WCAG, accessibility audit, a11y audit, ADA compliance, Section 508, screen reader issues, is my site accessible, accessibility compliance, accessibility score, Lighthouse accessibility, keyboard navigation problems, contrast ratio check, focus trap issues, assistive technology.
+  Also activate when: user asks for a WCAG compliance report with severity-based prioritization, user wants to validate fixes against WCAG 2.2 success criteria, user needs to evaluate ADA or Section 508 compliance requirements for a public-facing site.
+  Do NOT activate for: fixing individual accessibility issues (use wcag-fix), adding specific ARIA attributes, implementing skip-to-content links, adding alt text, setting up eslint-plugin-jsx-a11y, or adding prefers-reduced-motion. Those are implementation tasks, not auditing.
+  Covers: automated testing (axe-core, Lighthouse), semi-automated codebase scanning (anti-patterns), manual keyboard navigation testing, screen reader testing (VoiceOver, NVDA, JAWS), visual testing (contrast, zoom, reflow, reduced motion), WCAG 2.2 AA success criteria (Perceivable, Operable, Understandable, Robust), severity-based scoring system, scored audit reports with phased remediation plans.
 agents:
   - seo-master
   - responsive-master

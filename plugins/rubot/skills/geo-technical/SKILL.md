@@ -1,9 +1,14 @@
 ---
 name: geo-technical
-description: Technical SEO audit with GEO-specific checks — crawlability, indexability, security, performance, SSR, and AI crawler access
-version: 1.0.0
-author: geo-seo-claude
-tags: [geo, technical-seo, core-web-vitals, ssr, crawlability, security, performance]
+version: 1.1.0
+description: |
+  Technical SEO audit with GEO-specific checks across crawlability, indexability, security, performance, SSR, Core Web Vitals, and AI crawler access.
+  MUST activate for: /geo-technical, "technical GEO audit", "GEO technical check", "SSR check for AI", "Core Web Vitals audit", "AI crawlability check", "IndexNow setup".
+  Also activate when: user asks about server-side rendering for AI crawlers, needs a technical infrastructure audit for AI search readiness, or wants to check page speed and security headers affecting GEO.
+  Do NOT activate for: full GEO audit (use geo-audit), AI crawler robots.txt analysis only (use geo-crawlers), schema and structured data audit (use geo-schema), content quality assessment (use geo-content), traditional SEO technical audit without AI focus (use rubot-seo-audit).
+  Covers: robots.txt validity, AI crawler access, XML sitemaps, crawl depth, noindex management, canonical tags, duplicate content, pagination, hreflang, HTTPS enforcement, security headers, URL structure, mobile optimization, Core Web Vitals (LCP, INP, CLS), server-side rendering detection, TTFB, resource optimization, image optimization, caching, CDN usage, IndexNow protocol.
+agents:
+  - seo-master
 ---
 
 # GEO Technical SEO Audit

@@ -1,21 +1,12 @@
 ---
 name: owasp-cryptography
-version: 1.0.0
+version: 1.1.0
 description: |
   Audits cryptographic implementations against OWASP ASVS V11 requirements.
-  Covers crypto inventory and documentation, algorithm selection, encryption,
-  hashing, random value generation, public key cryptography, and in-use data
-  protection. Detects insecure algorithms, weak key sizes, missing authenticated
-  encryption, improper random number generation, and post-quantum readiness gaps.
-
-  Trigger on: "cryptography audit", "crypto review", "encryption check",
-  "hashing review", "ASVS V11", "random number security", "key management",
-  "PQC readiness", "algorithm audit", "cipher review"
-
-  DO NOT trigger for: general code review without crypto context,
-  password policy review (use owasp-authentication), TLS/certificate
-  configuration (use owasp-secure-communication), secret management
-  (use owasp-configuration-security)
+  MUST activate for: cryptography audit, crypto review, encryption check, hashing review, ASVS V11, random number security, key management, PQC readiness, algorithm audit, cipher review.
+  Also activate when: user asks to check if encryption is secure, review password hashing strength, audit random token generation, verify AES/RSA key sizes, check for use of MD5 or SHA-1, assess post-quantum migration readiness, review HMAC usage, find hardcoded cryptographic keys.
+  Do NOT activate for: general code review without crypto context, password policy review (use owasp-authentication), TLS/certificate configuration (use owasp-secure-communication), secret management (use owasp-configuration-security).
+  Covers: crypto inventory and documentation, algorithm selection, symmetric encryption (AES-GCM, ChaCha20-Poly1305), AEAD enforcement, ECB mode detection, hashing (SHA-256+), password hashing (Argon2id, bcrypt, scrypt), HMAC, CSPRNG vs weak PRNG, UUID version security, RSA/ECDSA/EdDSA key sizes, elliptic curve selection, forward secrecy, private key protection, in-use data cryptography, memory zeroization, post-quantum cryptography readiness.
 agents:
   - debug-master
 ---

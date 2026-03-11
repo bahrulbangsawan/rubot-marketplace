@@ -1,13 +1,14 @@
 ---
 name: geo-llmstxt
-description: Analyzes and generates llms.txt files -- the emerging standard for helping AI systems understand website structure and content. Can validate existing llms.txt files or generate new ones from scratch by crawling the site.
-allowed-tools:
-  - Read
-  - Grep
-  - Glob
-  - Bash
-  - WebFetch
-  - Write
+version: 1.1.0
+description: |
+  Analyzes, validates, and generates llms.txt files following the emerging standard for AI-readable site summaries.
+  MUST activate for: /geo-llmstxt, "llms.txt", "llms-full.txt", "create llms.txt", "validate llms.txt", "generate llms.txt", "AI site summary file".
+  Also activate when: user wants to help AI systems understand their site structure, asks about the llms.txt standard, or needs to create a machine-readable site guide for LLMs.
+  Do NOT activate for: full GEO audit (use geo-audit), AI crawler access in robots.txt (use geo-crawlers), schema.org structured data (use geo-schema), traditional SEO sitemap issues (use rubot-seo-audit).
+  Covers: llms.txt specification, llms-full.txt extended format, format validation, completeness scoring, accuracy scoring, usefulness scoring, page prioritization, description writing, key facts compilation, generation from scratch, site discovery and crawling, best practices reference.
+agents:
+  - seo-master
 ---
 
 # llms.txt Standard Analysis and Generation Skill

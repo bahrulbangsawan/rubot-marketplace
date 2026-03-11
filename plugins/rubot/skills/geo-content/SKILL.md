@@ -1,9 +1,14 @@
 ---
 name: geo-content
-description: Content quality and E-E-A-T assessment for AI citability — evaluate experience, expertise, authoritativeness, trustworthiness, and content structure
-version: 1.0.0
-author: geo-seo-claude
-tags: [geo, content-quality, eeat, citability, ai-content, topical-authority]
+version: 1.1.0
+description: |
+  Content quality and E-E-A-T assessment for AI citability, evaluating experience, expertise, authoritativeness, and trustworthiness signals.
+  MUST activate for: /geo-content, "E-E-A-T audit", "content quality for AI", "EEAT assessment", "content citability", "topical authority check", "AI content quality".
+  Also activate when: user asks whether their content demonstrates expertise and trust for AI platforms, needs an E-E-A-T evaluation, or wants to assess content freshness and readability for AI citation.
+  Do NOT activate for: full GEO audit (use geo-audit), passage-level citability scoring with rewrite suggestions (use geo-citability), schema and structured data audit (use geo-schema), technical SEO checks (use geo-technical), traditional content SEO without AI focus (use rubot-seo-audit).
+  Covers: Experience signals (first-person accounts, original research, case studies), Expertise signals (author credentials, technical depth, methodology), Authoritativeness signals (inbound citations, media mentions, awards, topical authority), Trustworthiness signals (contact info, privacy policy, editorial standards, accuracy), content freshness, readability assessment, AI-generated content detection, paragraph and heading structure, internal linking, word count benchmarks.
+agents:
+  - seo-master
 ---
 
 # GEO Content Quality & E-E-A-T Assessment

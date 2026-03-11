@@ -1,22 +1,12 @@
 ---
 name: owasp-file-handling
-version: 1.0.0
+version: 1.1.0
 description: |
-  Audits application code for OWASP ASVS V5 compliance covering file upload validation,
-  file storage security, file download protection, and file handling documentation. Provides
-  verification checklists, code review patterns, and remediation guidance for file type
-  validation, magic byte checking, size limits, antivirus scanning, path traversal prevention,
-  and secure file serving.
-
-  Trigger on: "file upload security", "file handling audit", "ASVS V5", "file type validation",
-  "magic bytes", "file size limit", "antivirus scanning", "path traversal", "file download security",
-  "Content-Disposition", "upload restriction", "file storage security", "file execution prevention",
-  "web shell prevention", "zip bomb", "file upload vulnerability"
-
-  DO NOT trigger for: input validation logic (use owasp-validation-logic),
-  encoding and sanitization (use owasp-encoding-sanitization), API structure validation
-  (use owasp-api-security), general authentication (use owasp-authentication),
-  data protection at rest (use owasp-data-protection)
+  Audits application code for OWASP ASVS V5 compliance covering file upload validation, file storage security, file download protection, and file handling documentation.
+  MUST activate for: file upload security, file handling audit, ASVS V5, file type validation, magic bytes, file size limit, antivirus scanning, path traversal, file download security, Content-Disposition, upload restriction, file storage security, file execution prevention, web shell prevention, zip bomb, file upload vulnerability.
+  Also activate when: user asks to review multer or formidable upload configuration, check if uploaded files are stored outside the web root, audit file download endpoints for directory traversal, verify SVG uploads are sanitized, check for double extension bypasses, review S3 presigned URL expiration, or assess image re-encoding for EXIF payload stripping.
+  Do NOT activate for: input validation logic (use owasp-validation-logic), encoding and sanitization (use owasp-encoding-sanitization), API structure validation (use owasp-api-security), general authentication (use owasp-authentication), data protection at rest (use owasp-data-protection).
+  Covers: file type/extension allowlist validation, magic byte/file signature checking, file size limits (streaming enforcement), per-user upload quotas, image re-encoding to strip payloads, zip bomb detection (compression ratio limits), antivirus/malware scanning, double extension and null byte rejection, SVG sanitization, server-side MIME detection, storage outside web root, randomized filenames, script execution prevention in upload directories, file metadata in database, Content-Disposition for dangerous types, cloud storage signed URLs with expiration, temporary file cleanup, file permissions, path traversal prevention, safe Content-Disposition with sanitized filenames, server-side Content-Type, dedicated file-serving domains, zip slip prevention, range request safety.
 agents:
   - debug-master
 ---

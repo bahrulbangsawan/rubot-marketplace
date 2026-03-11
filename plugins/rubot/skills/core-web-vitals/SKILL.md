@@ -2,13 +2,11 @@
 name: core-web-vitals
 version: 1.1.0
 description: |
-  Diagnose and fix Core Web Vitals — LCP, INP, and CLS — for better real-world performance and search rankings. ACTIVATE THIS SKILL when the user mentions: slow LCP, high CLS, poor INP, PageSpeed Insights score dropped, Lighthouse performance score low, TTFB slow, hero image loading too slow, layout shifts from fonts/ads/consent banners, laggy interactions on mobile, fetchPriority="high", critical CSS inlining, responsive srcset, WebP conversion, preload hints, render-blocking resources, task chunking / yield to main thread, performance budgets, CrUX field data vs lab data, content jumps, or third-party script lazy loading.
-
-  Trigger on: "LCP", "INP", "CLS", "TTFB", "PageSpeed score", "Lighthouse performance", "page is slow", "content jumps", "laggy interactions", "mobile speed", "render blocking", "performance budget", "why is my site slow", "optimize loading", "Core Web Vitals".
-
+  Diagnose and fix Core Web Vitals — LCP, INP, and CLS — for better real-world performance and search rankings.
+  MUST activate for: slow LCP, high CLS, poor INP, PageSpeed Insights score dropped, Lighthouse performance score low, TTFB slow, hero image loading too slow, layout shifts from fonts/ads/consent banners, laggy interactions on mobile, fetchPriority=high, critical CSS inlining, responsive srcset, WebP conversion, preload hints, render-blocking resources, task chunking / yield to main thread, performance budgets, CrUX field data vs lab data, content jumps, third-party script lazy loading, LCP, INP, CLS, TTFB, PageSpeed score, Lighthouse performance, page is slow, content jumps, laggy interactions, mobile speed, render blocking, performance budget, why is my site slow, optimize loading, Core Web Vitals.
+  Also activate when: user reports poor real-world page performance, user asks about lab data vs field data discrepancies, user wants to set up performance budgets to prevent regressions.
+  Do NOT activate for: full SEO audits, WCAG accessibility audits, API/database query performance, Docker image size, React re-render optimization, nginx caching, bundle analysis tools, or TanStack Table virtualization.
   Covers: LCP (preloading, image optimization, critical CSS, SSR), INP (task chunking, debouncing, virtualization, web workers), CLS (image dimensions, skeleton loaders, font-display, transform animations), performance budgets, and TanStack Start patterns.
-
-  DO NOT trigger for: full SEO audits, WCAG accessibility audits, API/database query performance, Docker image size, React re-render optimization, nginx caching, bundle analysis tools, or TanStack Table virtualization.
 agents:
   - seo-master
   - responsive-master
@@ -260,8 +258,8 @@ worker.onmessage = (e) => setResult(e.data);
 function ContentSkeleton() {
   return (
     <div className="animate-pulse">
-      <div className="h-4 bg-gray-200 rounded w-3/4 mb-2" />
-      <div className="h-4 bg-gray-200 rounded w-1/2" />
+      <div className="h-4 bg-muted rounded w-3/4 mb-2" />
+      <div className="h-4 bg-muted rounded w-1/2" />
     </div>
   );
 }

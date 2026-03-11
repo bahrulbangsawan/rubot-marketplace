@@ -1,19 +1,12 @@
 ---
 name: owasp-secure-communication
-version: 1.0.0
+version: 1.1.0
 description: |
-  Audits secure communication configurations against OWASP ASVS V12
-  requirements. Covers TLS configuration, HTTPS enforcement, HSTS,
-  certificate management, mTLS for service-to-service communication,
-  cipher suite selection, and elimination of plaintext protocols.
-
-  Trigger on: "TLS audit", "HTTPS review", "secure communication",
-  "certificate check", "ASVS V12", "cipher suite review", "HSTS",
-  "mTLS review", "SSL configuration", "transport security"
-
-  DO NOT trigger for: application-layer encryption (use owasp-cryptography),
-  API security logic (use owasp-api-security), WebRTC communication
-  (use owasp-webrtc-security)
+  Audits secure communication configurations against OWASP ASVS V12 requirements.
+  MUST activate for: TLS audit, HTTPS review, secure communication, certificate check, ASVS V12, cipher suite review, HSTS, mTLS review, SSL configuration, transport security.
+  Also activate when: user asks to check TLS setup, verify HTTPS enforcement, review SSL certificate expiry, audit database connection encryption, check for mixed content, review nginx/Apache TLS config, verify service-to-service encryption, check for plaintext protocols, review OCSP stapling.
+  Do NOT activate for: application-layer encryption (use owasp-cryptography), API security logic (use owasp-api-security), WebRTC communication (use owasp-webrtc-security).
+  Covers: TLS 1.2/1.3 configuration, deprecated protocol detection (SSL 2.0/3.0, TLS 1.0/1.1), cipher suite selection, forward secrecy (ECDHE/DHE), certificate management and renewal, wildcard certificate risks, OCSP stapling, HTTPS enforcement, HTTP-to-HTTPS redirects, HSTS with includeSubDomains and preload, mixed content prevention, mTLS for internal services, database connection TLS, message queue encryption, plaintext protocol elimination (FTP, telnet, unencrypted SMTP), TLS verification bypass detection, gRPC/GraphQL/WebSocket TLS.
 agents:
   - debug-master
 ---

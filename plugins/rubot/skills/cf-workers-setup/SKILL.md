@@ -2,11 +2,11 @@
 name: cf-workers-setup
 version: 1.1.0
 description: |
-  Sets up Cloudflare Workers deployment for any web project. Detects framework (TanStack Start, Vite, Remix, Astro, or vanilla), installs wrangler, generates wrangler.jsonc/wrangler.toml with compatibility_date and nodejs_compat flag, configures the cloudflare() Vite plugin, adds deploy scripts, and verifies the build output. ACTIVATE THIS SKILL when the user wants to: deploy to Cloudflare Workers, add Workers support to an existing project, set up wrangler for the first time, run wrangler init, configure edge deployment, do a first production deploy, migrate from Vercel/other hosting to Cloudflare Workers, fix "Node.js built-in module not found" errors, fix empty dist/server/ after vite build, fix cloudflare() plugin ordering in Vite config, authenticate with wrangler deploy, or set up SSR deployment on Cloudflare.
-
-  Trigger on: "deploy to cloudflare", "wrangler setup", "wrangler init", "add workers", "edge deployment", "cloudflare workers setup", "first deploy to cloudflare", "wrangler.jsonc", "wrangler.toml", "cloudflare vite plugin".
-
-  DO NOT trigger for: KV/R2/Durable Objects/D1 bindings, Cloudflare Pages, writing Worker request handlers, Cloudflare DNS config, or deploying to non-Cloudflare platforms.
+  Sets up Cloudflare Workers deployment for any web project. Detects framework (TanStack Start, Vite, Remix, Astro, or vanilla), installs wrangler, generates wrangler.jsonc/wrangler.toml with compatibility_date and nodejs_compat flag, configures the cloudflare() Vite plugin, adds deploy scripts, and verifies the build output.
+  MUST activate for: deploy to Cloudflare Workers, add Workers support to an existing project, set up wrangler for the first time, run wrangler init, configure edge deployment, do a first production deploy, migrate from Vercel/other hosting to Cloudflare Workers, fix Node.js built-in module not found errors, fix empty dist/server/ after vite build, fix cloudflare() plugin ordering in Vite config, authenticate with wrangler deploy, set up SSR deployment on Cloudflare, deploy to cloudflare, wrangler setup, wrangler init, add workers, edge deployment, cloudflare workers setup, first deploy to cloudflare, wrangler.jsonc, wrangler.toml, cloudflare vite plugin.
+  Also activate when: user has a Vite/TanStack/Astro/Remix app and asks about edge or serverless deployment, user needs help fixing a broken Cloudflare Workers setup, user mentions production deployment targeting Cloudflare.
+  Do NOT activate for: KV/R2/Durable Objects/D1 bindings, Cloudflare Pages, writing Worker request handlers, Cloudflare DNS config, or deploying to non-Cloudflare platforms.
+  Covers: framework detection (TanStack Start, Vite, Remix, Astro, vanilla), wrangler installation and configuration, wrangler.jsonc/wrangler.toml generation, compatibility_date and nodejs_compat setup, cloudflare() Vite plugin integration, deploy script generation, build output verification, monorepo support, package manager detection.
 agents:
   - rubot
   - cloudflare

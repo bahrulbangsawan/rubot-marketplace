@@ -1,15 +1,14 @@
 ---
 name: geo
-description: >
-  GEO-first SEO analysis tool. Optimizes websites for AI-powered search engines
-  (ChatGPT, Claude, Perplexity, Gemini, Google AI Overviews) while maintaining
-  traditional SEO foundations. Performs full GEO audits, citability scoring,
-  AI crawler analysis, llms.txt generation, brand mention scanning, platform-specific
-  optimization, schema markup, technical SEO, content quality (E-E-A-T), and
-  client-ready GEO report generation. Use when user says "geo", "seo", "audit",
-  "AI search", "AI visibility", "optimize", "citability", "llms.txt", "schema",
-  "brand mentions", "GEO report", or any URL for analysis.
-allowed-tools: Read, Grep, Glob, Bash, WebFetch, Write
+version: 2.16.0
+description: |
+  GEO-first SEO analysis tool that optimizes websites for AI-powered search engines (ChatGPT, Claude, Perplexity, Gemini, Google AI Overviews) while maintaining traditional SEO foundations.
+  MUST activate for: /geo commands, /rubot-geo-audit, "geo audit", "seo audit", "geo score", "citability", "llms.txt", "AI visibility", "geo report", "geo report-pdf".
+  Also activate when: user mentions "seo", "AI search", "optimize for AI", "brand mentions", "schema markup", "E-E-A-T", "content quality", "technical seo", "AI crawlers", or provides a URL for analysis.
+  Do NOT activate for: paid search/PPC campaigns, social media marketing, email marketing, Google Ads, non-web content optimization.
+  Covers: full GEO audits, citability scoring, AI crawler analysis, llms.txt generation, brand mention scanning, platform-specific optimization, schema markup, technical SEO, content quality (E-E-A-T), client-ready GEO report and PDF generation.
+agents:
+  - seo-master
 ---
 
 # GEO-SEO Analysis Tool — Claude Code Skill (February 2026)

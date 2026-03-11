@@ -6,7 +6,7 @@ description: |
 
   MUST activate for: design token audits, token consistency checks, CSS variable enforcement, arbitrary value cleanup, "magic number" elimination, design system compliance, reusable token creation, theme variable validation, and any request to make styling consistent or token-based.
 
-  Also activate when users mention: "design tokens", "CSS variables", "inconsistent colors", "hardcoded values", "arbitrary Tailwind values", "text-[15px]", "bg-[#f5f5f5]", "p-[13px]", "magic numbers in CSS", "style consistency", "token system", "reusable styles", "design system tokens", "color tokens", "spacing tokens", "typography tokens", "shadow tokens", "radius tokens", "--font-sans", "--radius", "--spacing", "oklch variables", "theme variables", "index.css variables", "centralize styles", "remove arbitrary values", "tailwind arbitrary cleanup".
+  Also activate when: "design tokens", "CSS variables", "inconsistent colors", "hardcoded values", "arbitrary Tailwind values", "text-[15px]", "bg-[#f5f5f5]", "p-[13px]", "magic numbers in CSS", "style consistency", "token system", "reusable styles", "design system tokens", "color tokens", "spacing tokens", "typography tokens", "shadow tokens", "radius tokens", "--font-sans", "--radius", "--spacing", "oklch variables", "theme variables", "index.css variables", "centralize styles", "remove arbitrary values", "tailwind arbitrary cleanup".
 
   Do NOT activate for: responsive layout issues (use responsive-design), WCAG accessibility audits (use wcag-audit), SEO metadata, API or backend logic, database schemas, deployment configs, hydration issues, or chart-specific styling (use chart-master).
 

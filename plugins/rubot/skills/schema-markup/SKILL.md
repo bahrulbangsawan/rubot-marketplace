@@ -2,9 +2,11 @@
 name: schema-markup
 version: 1.1.0
 description: |
-  Implement and validate Schema.org structured data (JSON-LD) for Google Rich Results, rich snippets, and AI discoverability. ACTIVATE THIS SKILL when the user wants to add, fix, or validate structured data in any form: JSON-LD script tags, schema.org types, BreadcrumbList, Article, Product with offers/price/aggregateRating, FAQPage with mainEntity, Recipe with recipeIngredient/recipeInstructions/HowToStep, LocalBusiness with address/geo/openingHours, SoftwareApplication, VideoObject, Event, Review, Person, or Organization schemas. Also trigger when: user mentions "rich results", "Google snippets", "star ratings in search results", "knowledge graph", "Rich Results Test errors", "missing field" errors from Google Search Console, price as string vs number issues, or wants a reusable JsonLd component. Covers TanStack Start head() integration and dynamic JSON-LD generation.
-
-  DO NOT trigger for: database schemas (Drizzle, Prisma, GraphQL), Zod/Typebox validation schemas, TypeScript interfaces, robots.txt, sitemap.xml, og:tags/meta tags, or SEO audits. Those are different skills.
+  Implement and validate Schema.org structured data (JSON-LD) for Google Rich Results, rich snippets, and AI discoverability.
+  MUST activate for: add, fix, or validate structured data in any form, JSON-LD script tags, schema.org types, BreadcrumbList, Article, Product with offers/price/aggregateRating, FAQPage with mainEntity, Recipe with recipeIngredient/recipeInstructions/HowToStep, LocalBusiness with address/geo/openingHours, SoftwareApplication, VideoObject, Event, Review, Person, or Organization schemas.
+  Also activate when: user mentions rich results, Google snippets, star ratings in search results, knowledge graph, Rich Results Test errors, missing field errors from Google Search Console, price as string vs number issues, wants a reusable JsonLd component, user is preparing pages for AI-powered search engines and answer engines.
+  Do NOT activate for: database schemas (Drizzle, Prisma, GraphQL), Zod/Typebox validation schemas, TypeScript interfaces, robots.txt, sitemap.xml, og:tags/meta tags, or SEO audits. Those are different skills.
+  Covers: JSON-LD implementation and validation, schema.org types (Organization, WebSite, BreadcrumbList, Article, Product, FAQPage, HowTo, Recipe, LocalBusiness, Event, SoftwareApplication, VideoObject, Review, Person), TanStack Start head() integration, dynamic JSON-LD generation, reusable JsonLd component, Google Rich Results testing, common mistakes (missing @context, wrong nesting, invalid dates, relative URLs, headline length, price types).
 agents:
   - seo-master
 ---

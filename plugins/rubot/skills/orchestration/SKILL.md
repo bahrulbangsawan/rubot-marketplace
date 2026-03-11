@@ -2,8 +2,10 @@
 name: orchestration
 version: 2.8.0
 description: |
-  Multi-agent orchestration governor for coordinating specialist agents across domains. MUST activate when a task spans 2+ domains (database + API + UI, deployment + testing, etc.), when agents disagree or produce conflicting recommendations, when the user asks "which agent should I use/handle this", or when building a unified execution plan, risk matrix, or agent sequence. Also activate for: "coordinate the implementation", "create an execution plan", "agent responsibilities", "in what order", "which one wins", multi-step features (e.g., "add booking with table, endpoint, and form"), cross-agent validation, post-implementation verification pipelines, and any request that names 3+ concerns (SSR + responsive + database). Do NOT activate for single-domain tasks like "add a column", "fix a TypeScript error", "write a useQuery hook", or "deploy the worker" -- those go directly to their specialist agent.
-
+  Multi-agent orchestration governor for coordinating specialist agents across domains.
+  MUST activate for: tasks spanning 2+ domains (database + API + UI, deployment + testing, etc.), agents disagreeing or producing conflicting recommendations, the user asking "which agent should I use/handle this", or building a unified execution plan, risk matrix, or agent sequence.
+  Also activate when: "coordinate the implementation", "create an execution plan", "agent responsibilities", "in what order", "which one wins", multi-step features (e.g., "add booking with table, endpoint, and form"), cross-agent validation, post-implementation verification pipelines, or any request that names 3+ concerns (SSR + responsive + database).
+  Do NOT activate for: single-domain tasks like "add a column", "fix a TypeScript error", "write a useQuery hook", or "deploy the worker" -- those go directly to their specialist agent.
   Covers: domain classification, agent selection, task routing, multi-agent coordination, conflict resolution, sequential invocation order, execution plan generation, risk matrices, and cross-agent validation.
 agents:
   - rubot

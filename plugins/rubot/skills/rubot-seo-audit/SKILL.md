@@ -2,11 +2,11 @@
 name: rubot-seo-audit
 version: 1.1.0
 description: |
-  Full-stack SEO audit methodology for live page analysis producing a scored report with prioritized recommendations. ACTIVATE THIS SKILL when the user wants a comprehensive SEO audit, SEO health check, pre-launch/pre-deploy SEO review, SEO score, site audit, or diagnosis of ranking/indexing problems on a URL. Trigger for: "run SEO audit on https://...", "check my SEO", "is my site optimized for search", "pre-launch checklist", "why isn't my page indexed", "page not showing in Google", "Google ranking issues", "crawl errors", "Search Console errors", "Lighthouse SEO score dropped", "SEO gaps", "what's blocking indexing", "check meta tags and structured data and OG tags", "SEO review before we push to production", or any request to analyze/score a live or staging URL across multiple SEO dimensions.
-
+  Full-stack SEO audit methodology for live page analysis producing a scored report with prioritized recommendations.
+  MUST activate for: comprehensive SEO audit, SEO health check, pre-launch/pre-deploy SEO review, SEO score, site audit, diagnosis of ranking/indexing problems on a URL, run SEO audit on a URL, check my SEO, is my site optimized for search, pre-launch checklist, why isn't my page indexed, page not showing in Google, Google ranking issues, crawl errors, Search Console errors, Lighthouse SEO score dropped, SEO gaps, what's blocking indexing, check meta tags and structured data and OG tags, SEO review before we push to production, analyze/score a live or staging URL across multiple SEO dimensions.
+  Also activate when: user asks for a scored SEO report with prioritized recommendations, user wants to diagnose differences between lab data and field data for SEO, user mentions pre-deploy or pre-launch review involving SEO signals.
+  Do NOT activate for: implementing a specific fix (JSON-LD, sitemap generation, robots.txt writing, OG tag setup, CLS/LCP optimization). Those are separate skills.
   Covers: technical SEO (robots.txt, sitemap, canonical, HTTPS, viewport), on-page SEO (title tag length, meta description, heading hierarchy, image alt text), structured data validation, social sharing tags, Core Web Vitals scoring, and severity-based scoring.
-
-  DO NOT trigger for: implementing a specific fix (JSON-LD, sitemap generation, robots.txt writing, OG tag setup, CLS/LCP optimization). Those are separate skills.
 agents:
   - seo-master
   - qa-tester

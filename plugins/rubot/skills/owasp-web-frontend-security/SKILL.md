@@ -1,21 +1,12 @@
 ---
 name: owasp-web-frontend-security
-version: 1.0.0
+version: 1.1.0
 description: |
-  Audits web applications for OWASP ASVS V3 compliance covering browser security mechanisms,
-  cookie configuration, content security policy, CORS, subresource integrity, and frontend
-  security best practices. Provides verification checklists, header inspection patterns, and
-  remediation guidance for CSP, HSTS, cookie flags, CSRF protection, DOM clobbering prevention,
-  and Trusted Types.
-
-  Trigger on: "frontend security audit", "CSP review", "Content-Security-Policy", "cookie security",
-  "ASVS V3", "CORS audit", "CSRF protection", "SameSite cookie", "HSTS", "X-Frame-Options",
-  "clickjacking", "subresource integrity", "SRI", "browser security headers", "DOM clobbering",
-  "Trusted Types", "Permissions-Policy", "MIME sniffing", "X-Content-Type-Options"
-
-  DO NOT trigger for: server-side encoding/sanitization (use owasp-encoding-sanitization),
-  API-level security (use owasp-api-security), authentication flows (use owasp-authentication),
-  session token management (use owasp-session-management), general WCAG accessibility
+  Audits web applications for OWASP ASVS V3 compliance covering browser security mechanisms, cookie configuration, content security policy, CORS, subresource integrity, and frontend security best practices.
+  MUST activate for: frontend security audit, CSP review, Content-Security-Policy, cookie security, ASVS V3, CORS audit, CSRF protection, SameSite cookie, HSTS, X-Frame-Options, clickjacking, subresource integrity, SRI, browser security headers, DOM clobbering, Trusted Types, Permissions-Policy, MIME sniffing, X-Content-Type-Options.
+  Also activate when: user asks to check HTTP response headers for security, review cookie flags on session cookies, audit CORS configuration for overly permissive origins, verify clickjacking defenses, check if CDN scripts have integrity hashes, review Helmet.js configuration, find sensitive data in localStorage, or assess CSRF token implementation.
+  Do NOT activate for: server-side encoding/sanitization (use owasp-encoding-sanitization), API-level security (use owasp-api-security), authentication flows (use owasp-authentication), session token management (use owasp-session-management), general WCAG accessibility.
+  Covers: Content-Type with charset, X-Content-Type-Options nosniff, SVG/HTML upload isolation, cookie Secure/HttpOnly/SameSite flags, __Host- prefix cookies, cookie Path and Domain scoping, cookie expiration, Content-Security-Policy directives, CSP nonces and hashes, unsafe-inline/unsafe-eval detection, X-Frame-Options and frame-ancestors, HSTS with includeSubDomains, Permissions-Policy, Referrer-Policy, CORS origin allowlists, CORS with credentials, CSRF tokens and SameSite defense-in-depth, Origin/Referer validation, Subresource Integrity for scripts and stylesheets, DOM clobbering prevention, Trusted Types, sensitive data in localStorage/sessionStorage, service worker scope.
 agents:
   - debug-master
 ---

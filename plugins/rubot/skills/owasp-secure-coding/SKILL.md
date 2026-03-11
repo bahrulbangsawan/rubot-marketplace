@@ -1,22 +1,12 @@
 ---
 name: owasp-secure-coding
-version: 1.0.0
+version: 1.1.0
 description: |
   Audits secure coding practices against OWASP ASVS V15 requirements.
-  Covers security architecture documentation, dependency management,
-  defensive coding patterns, and safe concurrency. Detects prototype
-  pollution, mass assignment, type juggling, race conditions, TOCTOU
-  vulnerabilities, and insecure dependency usage.
-
-  Trigger on: "secure coding audit", "code security review",
-  "dependency audit", "ASVS V15", "prototype pollution", "mass assignment",
-  "race condition review", "TOCTOU check", "SBOM review",
-  "supply chain security", "dependency vulnerability scan",
-  "concurrency review"
-
-  DO NOT trigger for: input validation specifics (use owasp-validation-logic),
-  authentication logic (use owasp-authentication), cryptographic code
-  (use owasp-cryptography), SQL injection or XSS (use owasp-encoding-sanitization)
+  MUST activate for: secure coding audit, code security review, dependency audit, ASVS V15, prototype pollution, mass assignment, race condition review, TOCTOU check, SBOM review, supply chain security, dependency vulnerability scan, concurrency review.
+  Also activate when: user asks to check for unsafe deserialization, review npm/pip dependencies for vulnerabilities, find race conditions in payment logic, audit object merging for prototype pollution, check for ReDoS in regex patterns, review type coercion issues, verify lock files are committed, assess template injection risks, check for unused dependencies.
+  Do NOT activate for: input validation specifics (use owasp-validation-logic), authentication logic (use owasp-authentication), cryptographic code (use owasp-cryptography), SQL injection or XSS (use owasp-encoding-sanitization).
+  Covers: security architecture documentation, dangerous functionality inventory, dependency management and SCA scanning, SBOM generation, dependency pinning and lock files, unused dependency removal, trusted registry enforcement, transitive dependency monitoring, prototype pollution prevention, mass assignment prevention, type juggling and strict comparison, HTTP parameter pollution, unsafe deserialization, template injection, ReDoS detection, integer overflow handling, race condition prevention, TOCTOU mitigation, deadlock prevention, shared state synchronization, database transaction isolation, atomic file operations, optimistic/pessimistic locking.
 agents:
   - debug-master
 ---

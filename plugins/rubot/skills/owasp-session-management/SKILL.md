@@ -1,23 +1,12 @@
 ---
 name: owasp-session-management
-version: 1.0.0
+version: 1.1.0
 description: |
-  Audits session management implementations against OWASP ASVS v5.0
-  Chapter V7. Covers session token generation, timeout policies,
-  session termination, session abuse defenses, and federated
-  re-authentication. Produces verification checklists, identifies
-  insecure patterns, and provides remediation guidance.
-
-  Trigger on: "session management audit", "session security review",
-  "session timeout review", "cookie security", "session fixation",
-  "session hijacking", "ASVS V7", "logout security", "session token",
-  "idle timeout", "absolute timeout", "concurrent sessions",
-  "federated logout", "SSO session"
-
-  DO NOT trigger for: authentication mechanisms (use owasp-authentication),
-  OAuth/OIDC token flows (use owasp-oauth-oidc), JWT validation
-  (use owasp-self-contained-tokens), authorization checks
-  (use owasp-authorization)
+  Audits session management implementations against OWASP ASVS v5.0 Chapter V7 covering session token generation, timeout policies, session termination, session abuse defenses, and federated re-authentication.
+  MUST activate for: session management audit, session security review, session timeout review, cookie security, session fixation, session hijacking, ASVS V7, logout security, session token, idle timeout, absolute timeout, concurrent sessions, federated logout, SSO session.
+  Also activate when: user asks to review session cookie configuration, check if logout properly invalidates server-side sessions, audit idle and absolute timeout values, test for session fixation on login, review concurrent session limits, check if session tokens are in URLs, assess Redis/database session store, or evaluate better-auth session settings.
+  Do NOT activate for: authentication mechanisms (use owasp-authentication), OAuth/OIDC token flows (use owasp-oauth-oidc), JWT validation (use owasp-self-contained-tokens), authorization checks (use owasp-authorization).
+  Covers: session management documentation, CSPRNG session token generation (>= 128 bits entropy), server-side session validation, unique sessions per user, HttpOnly/Secure/SameSite cookie attributes, session tokens not in URLs, session regeneration on login (fixation prevention), idle timeout, absolute timeout, re-authentication for sensitive actions, risk-appropriate timeout values, server-side session invalidation on logout, session store deletion, client cookie clearing, federated logout propagation, password/MFA change session revocation, session fixation prevention, concurrent session limits, session binding to client fingerprint (IP/User-Agent), session rotation on privilege escalation, active session viewing and revocation, federated re-authentication (prompt=login, auth_time), better-auth session integration.
 agents:
   - debug-master
 ---

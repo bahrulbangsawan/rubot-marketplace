@@ -6,7 +6,7 @@ description: |
 
   MUST activate for: component consistency audits, carousel fixes, card pattern standardization, button style unification, grid layout consistency, component pattern enforcement, reusable component patterns, and any request to make components consistent or uniform across pages.
 
-  Also activate when users mention: "inconsistent components", "cards look different", "carousel broken", "carousel not working", "carousel fix", "carousel arrows", "carousel mobile", "carousel navigation", "carousel swipe", "prev next buttons", "slider broken", "card radius inconsistent", "buttons look different", "grid inconsistent", "component audit", "pattern consistency", "standardize components", "unify styles", "component library cleanup", "reusable patterns", "same component different styles", "visual consistency", "UI inconsistency", "design drift", "component drift".
+  Also activate when: "inconsistent components", "cards look different", "carousel broken", "carousel not working", "carousel fix", "carousel arrows", "carousel mobile", "carousel navigation", "carousel swipe", "prev next buttons", "slider broken", "card radius inconsistent", "buttons look different", "grid inconsistent", "component audit", "pattern consistency", "standardize components", "unify styles", "component library cleanup", "reusable patterns", "same component different styles", "visual consistency", "UI inconsistency", "design drift", "component drift".
 
   Do NOT activate for: theme/color token generation (use design-tokens + theme-master), responsive breakpoint logic (use responsive-design), WCAG accessibility compliance (use wcag-audit), backend API patterns, database schemas, deployment, SEO, or performance optimization.
 

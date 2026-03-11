@@ -1,21 +1,12 @@
 ---
 name: owasp-encoding-sanitization
-version: 1.0.0
+version: 1.1.0
 description: |
-  Audits application code for OWASP ASVS V1 compliance covering encoding, sanitization,
-  injection prevention, memory safety, and safe deserialization. Provides verification
-  checklists, code review grep patterns, and remediation guidance for output encoding,
-  parameterized queries, HTML sanitization, buffer overflow prevention, and secure
-  deserialization practices.
-
-  Trigger on: "encoding audit", "sanitization review", "injection prevention", "XSS audit",
-  "output encoding", "deserialization security", "ASVS V1", "double encoding", "buffer overflow",
-  "parameterized queries", "HTML sanitization", "DOMPurify", "SQL injection review",
-  "LDAP injection", "OS command injection", "encoding architecture"
-
-  DO NOT trigger for: general OWASP overview requests, authentication or session management,
-  file upload handling (use owasp-file-handling), API-specific security (use owasp-api-security),
-  input validation logic (use owasp-validation-logic), cryptography concerns
+  Audits application code for OWASP ASVS V1 compliance covering encoding, sanitization, injection prevention, memory safety, and safe deserialization.
+  MUST activate for: encoding audit, sanitization review, injection prevention, XSS audit, output encoding, deserialization security, ASVS V1, double encoding, buffer overflow, parameterized queries, HTML sanitization, DOMPurify, SQL injection review, LDAP injection, OS command injection, encoding architecture.
+  Also activate when: user asks to review code for XSS vulnerabilities, check if queries are parameterized, audit innerHTML or unsafe HTML rendering usage, find unsafe deserialization calls, review template escaping, check for command injection risks, scan for insecure XML parsing, or assess output encoding strategy.
+  Do NOT activate for: general OWASP overview requests, authentication or session management, file upload handling (use owasp-file-handling), API-specific security (use owasp-api-security), input validation logic (use owasp-validation-logic), cryptography concerns (use owasp-cryptography).
+  Covers: output encoding architecture, context-aware encoding (HTML body, attribute, JavaScript, CSS, URL), centralized encoding libraries, SQL injection via parameterized queries, XSS prevention, CSS escaping, LDAP injection, OS command injection, XPath/XML injection, HTML sanitization with DOMPurify/Bleach, allowlist vs denylist sanitization, double-encoding detection, buffer overflow prevention, safe string functions, format string safety, ASLR/DEP/stack canaries, unsafe deserialization (Java ObjectInputStream, Python serializers, PHP unserialize), safe JSON/XML parsing, XXE prevention.
 agents:
   - debug-master
 ---

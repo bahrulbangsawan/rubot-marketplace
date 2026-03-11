@@ -1,13 +1,14 @@
 ---
 name: geo-citability
-description: AI citability scoring and optimization. Analyzes web page content to determine how likely AI systems (ChatGPT, Claude, Perplexity, Gemini) are to cite or quote passages from the page. Provides a citability score (0-100) with specific rewrite suggestions.
-allowed-tools:
-  - Read
-  - Grep
-  - Glob
-  - Bash
-  - WebFetch
-  - Write
+version: 1.1.0
+description: |
+  AI citability scoring and passage-level optimization for maximizing citation probability by ChatGPT, Claude, Perplexity, and Gemini.
+  MUST activate for: /geo-citability, "citability score", "AI citability", "citability analysis", "how citable is my content", "passage optimization for AI".
+  Also activate when: user wants to know how likely AI systems are to quote their content, asks for rewrite suggestions to improve AI citation, or needs to score content blocks for extractability.
+  Do NOT activate for: full GEO audit across all dimensions (use geo-audit), content E-E-A-T quality assessment (use geo-content), schema markup audit (use geo-schema), traditional SEO content optimization (use rubot-seo-audit).
+  Covers: answer block quality scoring, passage self-containment analysis, structural readability assessment, statistical density measurement, uniqueness and original data evaluation, per-section scoring, rewrite suggestions, citation research data from Georgia Tech/Princeton/IIT Delhi studies.
+agents:
+  - seo-master
 ---
 
 # AI Citability Scoring Skill

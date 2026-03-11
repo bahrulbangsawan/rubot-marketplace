@@ -1,21 +1,12 @@
 ---
 name: owasp-api-security
-version: 1.0.0
+version: 1.1.0
 description: |
-  Audits application APIs for OWASP ASVS V4 compliance covering generic web service security,
-  HTTP message structure validation, GraphQL security, and WebSocket security. Provides
-  verification checklists, API testing patterns, and remediation guidance for request smuggling
-  prevention, content type enforcement, GraphQL depth limiting, WebSocket authentication,
-  and API-level access control.
-
-  Trigger on: "API security audit", "ASVS V4", "web service security", "GraphQL security",
-  "WebSocket security", "request smuggling", "HTTP desync", "API access control",
-  "GraphQL introspection", "query depth limit", "GraphQL complexity", "WebSocket authentication",
-  "API content type", "response splitting", "header injection", "API DoS", "batching attack"
-
-  DO NOT trigger for: frontend browser security (use owasp-web-frontend-security),
-  authentication mechanisms (use owasp-authentication), OAuth/OIDC flows (use owasp-oauth-oidc),
-  input validation logic (use owasp-validation-logic), file upload endpoints (use owasp-file-handling)
+  Audits application APIs for OWASP ASVS V4 compliance covering generic web service security, HTTP message structure validation, GraphQL security, and WebSocket security.
+  MUST activate for: API security audit, ASVS V4, web service security, GraphQL security, WebSocket security, request smuggling, HTTP desync, API access control, GraphQL introspection, query depth limit, GraphQL complexity, WebSocket authentication, API content type, response splitting, header injection, API DoS, batching attack.
+  Also activate when: user asks to audit REST API endpoints for security, review GraphQL schema for depth or complexity attacks, check WebSocket origin validation, assess API error responses for information leakage, verify API documentation is not publicly exposed, review reverse proxy configuration for smuggling, or test API rate limiting and size limits.
+  Do NOT activate for: frontend browser security (use owasp-web-frontend-security), authentication mechanisms (use owasp-authentication), OAuth/OIDC flows (use owasp-oauth-oidc), input validation logic (use owasp-validation-logic), file upload endpoints (use owasp-file-handling).
+  Covers: API Content-Type enforcement, trusted service layer auth, safe error handling without stack traces, API versioning and deprecation, secured API documentation, admin API network restriction, HTTP request smuggling (Content-Length/Transfer-Encoding), response splitting/header injection, request size and header limits, HTTP method restriction, Host header validation, duplicate header rejection, HTTP/2 downgrade prevention, GraphQL depth limiting, introspection disabling, complexity analysis, batching limits, field-level authorization, circular fragment detection, persisted queries, WebSocket authentication and origin validation, WSS enforcement, WebSocket rate limiting and message size limits, per-message authorization, idle timeout.
 agents:
   - debug-master
 ---
