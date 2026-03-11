@@ -1,0 +1,116 @@
+# Section Figma Configuration
+# ──────────────────────────────────────────────────────────────────────────────
+# This file maps each page section to its Figma design node link.
+# Replace [FIGMA LINK HERE] with the actual Figma node URL for each section.
+#
+# How to get Figma node links:
+#   1. Open your Figma file in the browser
+#   2. Select the frame/component for each section
+#   3. Right-click → "Copy link" (or use the share button)
+#   4. Paste the link next to the corresponding section below
+#
+# Figma link format:
+#   https://www.figma.com/design/<file-key>/<file-name>?node-id=<node-id>
+#
+# Usage:
+#   /rubot-implement-figma section-figma.yaml
+# ──────────────────────────────────────────────────────────────────────────────
+
+version: "1.0.0"
+project_name: "{{PROJECT_NAME}}"
+created_at: "{{TIMESTAMP}}"
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Figma File Reference
+# ──────────────────────────────────────────────────────────────────────────────
+figma:
+  file_url: "[FIGMA FILE URL HERE]"
+  # Example: https://www.figma.com/design/AbCdEfGhIjKl/My-Project
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Page Sections — each section maps to a Figma node
+# Order determines implementation sequence (top to bottom)
+# ──────────────────────────────────────────────────────────────────────────────
+sections:
+  - name: navbar
+    label: "Navbar"
+    figma_node_url: "[FIGMA LINK HERE]"
+    description: "Top navigation bar with logo, menu items, and CTA"
+    priority: 1
+
+  - name: hero
+    label: "Hero"
+    figma_node_url: "[FIGMA LINK HERE]"
+    description: "Hero section with headline, subtext, and primary CTA"
+    priority: 2
+
+  - name: stats
+    label: "Stats"
+    figma_node_url: "[FIGMA LINK HERE]"
+    description: "Statistics or metrics section with key numbers"
+    priority: 3
+
+  - name: features
+    label: "Features"
+    figma_node_url: "[FIGMA LINK HERE]"
+    description: "Feature cards or grid showcasing product capabilities"
+    priority: 4
+
+  - name: products
+    label: "Products"
+    figma_node_url: "[FIGMA LINK HERE]"
+    description: "Product listing or showcase section"
+    priority: 5
+
+  - name: testimonial
+    label: "Testimonial"
+    figma_node_url: "[FIGMA LINK HERE]"
+    description: "Customer testimonials or social proof section"
+    priority: 6
+
+  - name: cta
+    label: "CTA"
+    figma_node_url: "[FIGMA LINK HERE]"
+    description: "Call-to-action section with conversion-focused messaging"
+    priority: 7
+
+  - name: footer
+    label: "Footer"
+    figma_node_url: "[FIGMA LINK HERE]"
+    description: "Footer with links, contact info, and legal text"
+    priority: 8
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Custom Sections (optional)
+# Add additional sections below if your design has more than the standard 8
+# ──────────────────────────────────────────────────────────────────────────────
+# custom_sections:
+#   - name: pricing
+#     label: "Pricing"
+#     figma_node_url: "[FIGMA LINK HERE]"
+#     description: "Pricing tiers and comparison table"
+#     priority: 9
+#
+#   - name: faq
+#     label: "FAQ"
+#     figma_node_url: "[FIGMA LINK HERE]"
+#     description: "Frequently asked questions accordion"
+#     priority: 10
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Design System Overrides (optional)
+# Override default responsive breakpoints or design token extraction behavior
+# ──────────────────────────────────────────────────────────────────────────────
+config:
+  breakpoints:
+    xs: "0px"
+    sm: "576px"
+    md: "768px"
+    lg: "992px"
+  extract_design_tokens: true
+  extract_typography: true
+  extract_colors: true
+  extract_spacing: true
+  placeholder_images: true
+  ssr_compatible: true
+  seo_optimized: true

@@ -3,13 +3,18 @@ name: rubot-seo-audit
 description: Run a comprehensive SEO audit on a URL with live page analysis. Use when the user wants to check their site's SEO health, validate meta tags, test structured data, review social sharing previews, measure Core Web Vitals, or audit before deploying to production.
 argument-hint: <url>
 allowed-tools:
+  - Task
   - WebFetch
   - WebSearch
   - AskUserQuestion
   - Read
+  - Write
+  - Edit
   - Bash
   - Glob
   - Grep
+  - TodoWrite
+  - Skill
 ---
 
 # SEO Audit Command
@@ -145,6 +150,66 @@ Compile all findings into the validation report format:
 | Structured Data | 15% | JSON-LD presence and validity |
 | Social Sharing | 15% | OG tags, Twitter cards |
 | Core Web Vitals | 20% | LCP, INP, CLS |
+
+### Step 6: Present Results
+
+Display summary to the user, then use AskUserQuestion:
+
+```
+questions:
+  - question: "SEO audit complete! Score: [X]/100. [N] issues found. What would you like to do?"
+    header: "SEO Audit Results"
+    options:
+      - label: "Create fix plan with OpenSpec (Recommended)"
+        description: "Generate an OpenSpec change proposal and rubot execution plan for all SEO fixes"
+      - label: "Fix all issues now"
+        description: "Apply SEO fixes starting with the most impactful"
+      - label: "Fix critical issues only"
+        description: "Fix only high-impact SEO issues"
+      - label: "Review report first"
+        description: "Read the full report before deciding"
+      - label: "Done for now"
+        description: "Save report and stop"
+    multiSelect: false
+```
+
+### Step 7: Create OpenSpec Plan (If Requested)
+
+If the user chose "Create fix plan with OpenSpec":
+
+1. **Check OpenSpec installation and initialization:**
+   ```bash
+   which openspec && openspec --version
+   ls -d openspec/ 2>/dev/null
+   ```
+   If not installed or initialized, install with `npm install -g @fission-ai/openspec@latest` and run `openspec init && openspec update`.
+
+2. **Create OpenSpec change** named `fix-seo-issues` using the `/opsx:propose` workflow:
+   - `proposal.md` — SEO audit findings, score, impact on search visibility
+   - `specs/` — Requirements from each failed SEO check
+   - `design.md` — Technical approach for SEO fixes (meta tags, structured data, performance)
+   - `tasks.md` — Ordered fix checklist from the audit's priority recommendations
+
+3. **Invoke agents** for domain analysis:
+   - `seo-master` — Review SEO fix strategy and validate approach
+   - `shadcn-ui-designer` — Review any component changes needed for image alt text, heading structure
+
+4. **Generate rubot execution plan** at `.claude/rubot/plan.md` following the standard format from `/rubot-plan`
+
+5. **Ask to execute:**
+   ```
+   questions:
+     - question: "SEO fix plan created with OpenSpec. Execute now?"
+       header: "Execute Plan"
+       options:
+         - label: "Yes, execute now"
+           description: "Proceed with /rubot-execute to implement SEO fixes"
+         - label: "No, review first"
+           description: "Review plan at .claude/rubot/plan.md and OpenSpec artifacts"
+         - label: "Modify plan"
+           description: "Make changes before execution"
+       multiSelect: false
+   ```
 
 ## Related Commands
 

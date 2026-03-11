@@ -2,12 +2,14 @@
 name: rubot-global-layout
 description: Build a persistent global layout with shared Navbar and Footer wrapping all routes. Use when the user wants to add a navbar, footer, global layout, site header, site footer, page wrapper, persistent navigation, or shared layout components.
 allowed-tools:
+  - Task
   - Read
   - Write
   - Edit
   - Bash
   - Glob
   - Grep
+  - TodoWrite
   - AskUserQuestion
   - Skill
 ---
@@ -193,9 +195,11 @@ bun run build 2>&1 | tail -10
 
 ```
 questions:
-  - question: "Global layout created! Navbar and Footer now wrap all routes automatically. Want to verify visually?"
+  - question: "Global layout created! Navbar and Footer now wrap all routes automatically. What next?"
     header: "Layout Complete"
     options:
+      - label: "Create implementation plan with OpenSpec"
+        description: "Generate an OpenSpec change proposal to track all layout changes for review and rollback"
       - label: "Start dev server and verify"
         description: "Run bun run dev and check the layout in the browser"
       - label: "Run validation (/rubot-check)"
@@ -204,6 +208,44 @@ questions:
         description: "All set, no further action needed"
     multiSelect: false
 ```
+
+### Step 10: Create OpenSpec Plan (If Requested)
+
+If the user chose "Create implementation plan with OpenSpec":
+
+1. **Check OpenSpec installation and initialization:**
+   ```bash
+   which openspec && openspec --version
+   ls -d openspec/ 2>/dev/null
+   ```
+   If not installed or initialized, install with `npm install -g @fission-ai/openspec@latest` and run `openspec init && openspec update`.
+
+2. **Create OpenSpec change** named `add-global-layout` using the `/opsx:propose` workflow:
+   - `proposal.md` — Global layout implementation scope, components created, root layout changes
+   - `specs/` — Requirements for Navbar, Footer, and root layout integration
+   - `design.md` — Component architecture, responsive behavior, routing integration
+   - `tasks.md` — Implementation checklist (create components, integrate layout, verify routes)
+
+3. **Invoke agents** for domain analysis:
+   - `shadcn-ui-designer` — Validate component patterns and design system compliance
+   - `responsive-master` — Validate responsive behavior of Navbar and Footer
+
+4. **Generate rubot execution plan** at `.claude/rubot/plan.md` following the standard format from `/rubot-plan`
+
+5. **Ask to execute:**
+   ```
+   questions:
+     - question: "Global layout plan created with OpenSpec. Execute now?"
+       header: "Execute Plan"
+       options:
+         - label: "Yes, execute now"
+           description: "Proceed with /rubot-execute to implement the layout"
+         - label: "No, review first"
+           description: "Review plan at .claude/rubot/plan.md and OpenSpec artifacts"
+         - label: "Modify plan"
+           description: "Make changes before execution"
+       multiSelect: false
+   ```
 
 ## Enforcement Rules
 

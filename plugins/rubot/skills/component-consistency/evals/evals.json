@@ -1,0 +1,23 @@
+{
+  "skill_name": "component-consistency",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "My carousel arrows don't work and cards get cut off on mobile. The prev/next buttons seem to do nothing when clicked.",
+      "expected_output": "Diagnoses carousel navigation issues (state management, translateX calculation, maxIndex boundary), checks mobile basis-full requirement, and provides a working carousel implementation with proper arrow controls and boundary handling.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "I have cards on my homepage with rounded-lg and cards on my pricing page with rounded-xl, and some use bg-white while others use bg-card. Can you make them all consistent?",
+      "expected_output": "Identifies card pattern drift across pages, recommends standardizing to a single radius token and bg-card color token, and provides a unified card pattern with consistent radius, padding, shadow, and colors.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Audit all my components for consistency. I feel like buttons, cards, and grids look different on every page.",
+      "expected_output": "Inventories all component instances across the codebase, fingerprints their styling properties, compares for drift, and generates a component consistency audit report with specific deviations and recommended standardizations.",
+      "files": []
+    }
+  ]
+}

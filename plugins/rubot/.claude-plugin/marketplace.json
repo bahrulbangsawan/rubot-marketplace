@@ -2,9 +2,9 @@
   "$schema": "https://claude.ai/schemas/plugin-marketplace.json",
   "name": "rubot",
   "displayName": "Rubot - Multi-Agent Orchestration Governor",
-  "version": "2.14.0",
-  "description": "Strict multi-agent orchestration governor with 33 workflow commands, 8 hooks, 16 specialist subagents, and 44 domain skills for full-stack TanStack Start development with comprehensive OWASP ASVS 5.0.0 security auditing",
-  "longDescription": "Rubot enforces deterministic, mandatory multi-agent consultation for all significant tasks in complex Claude Code projects. It acts as a project manager ensuring no decision is made without consensus from all relevant domain experts.\n\nFeatures:\n- 16 specialist subagents covering backend, frontend, database, deployment, testing, SEO, and more\n- 33 workflow commands including 7 SEO commands, 5 setup commands, testing/QA, WCAG accessibility, responsive audit, global layout, multilanguage, security scanning, OWASP security audit, and full git/PR workflow\n- 8 lifecycle hooks including 3 SEO hooks (meta-check, image-check, build-check)\n- 44 domain-specific skills including 18 OWASP ASVS 5.0.0 security skills (covering all 17 chapters plus master audit orchestration), 5 SEO skills, responsive design system, global layout, multilanguage i18n, WCAG accessibility (audit + fix), react-grab element inspection, agent-browser CLI reference, and CF Workers setup\n- Comprehensive OWASP ASVS 5.0.0 security auditing with ~350 verification requirements across 17 chapters at 3 assurance levels (L1/L2/L3)\n- ClawSec Suite integration for security advisory monitoring, skill integrity verification, and guarded install checks\n- Frontend ownership model with shadcn-ui-designer as team lead\n- Mandatory registry enforcement for 20 shadcn-compatible registries\n- agent-browser CLI integration for live browser automation and E2E testing",
+  "version": "2.15.0",
+  "description": "Strict multi-agent orchestration governor with 37 workflow commands, 8 hooks, 16 specialist subagents, and 60 domain skills for full-stack TanStack Start development with comprehensive OWASP ASVS 5.0.0 security auditing, GEO (Generative Engine Optimization) for AI search visibility, design system consistency enforcement, Figma-to-code design implementation, and prompt engineering",
+  "longDescription": "Rubot enforces deterministic, mandatory multi-agent consultation for all significant tasks in complex Claude Code projects. It acts as a project manager ensuring no decision is made without consensus from all relevant domain experts.\n\nFeatures:\n- 16 specialist subagents covering backend, frontend, database, deployment, testing, SEO, and more\n- 37 workflow commands including 7 SEO commands, 1 GEO audit command, 5 setup commands, testing/QA, WCAG accessibility, responsive audit, design audit, Figma design implementation, global layout, multilanguage, security scanning, OWASP security audit, prompt fixer, and full git/PR workflow\n- 8 lifecycle hooks including 3 SEO hooks (meta-check, image-check, build-check)\n- 60 domain-specific skills including prompt fixer for rewriting vague prompts, 12 GEO skills (AI citability, crawler access, llms.txt, brand mentions, platform optimization, schema markup, content quality, technical SEO, report generation, PDF reports), 18 OWASP ASVS 5.0.0 security skills (covering all 17 chapters plus master audit orchestration), 5 SEO skills, responsive design system, design token enforcement, component consistency audit, Figma-to-code slicing, global layout, multilanguage i18n, WCAG accessibility (audit + fix), react-grab element inspection, agent-browser CLI reference, and CF Workers setup\n- GEO (Generative Engine Optimization) suite with 12 skills for AI search engine visibility — optimizes for ChatGPT, Perplexity, Gemini, Google AI Overviews, and Bing Copilot with citability scoring, crawler analysis, llms.txt generation, brand mention scanning, and professional PDF report generation\n- Design system consistency enforcement with design token compliance and component pattern drift detection\n- Comprehensive OWASP ASVS 5.0.0 security auditing with ~350 verification requirements across 17 chapters at 3 assurance levels (L1/L2/L3)\n- ClawSec Suite integration for security advisory monitoring, skill integrity verification, and guarded install checks\n- Frontend ownership model with shadcn-ui-designer as team lead\n- Mandatory registry enforcement for 20 shadcn-compatible registries\n- agent-browser CLI integration for live browser automation and E2E testing",
   "author": {
     "name": "bahrulbangsawan",
     "url": "https://github.com/bahrulbangsawan"
@@ -20,7 +20,9 @@
     "full-stack",
     "tanstack",
     "workflow",
-    "security"
+    "security",
+    "geo",
+    "ai-search"
   ],
   "tags": [
     "orchestration",
@@ -48,7 +50,15 @@
     "owasp",
     "asvs",
     "web-security",
-    "vulnerability-assessment"
+    "vulnerability-assessment",
+    "geo",
+    "ai-search",
+    "citability",
+    "llms-txt",
+    "ai-visibility",
+    "generative-engine-optimization",
+    "prompt-engineering",
+    "prompt-fixer"
   ],
   "compatibility": {
     "claudeCode": ">=1.0.0"
@@ -148,7 +158,7 @@
       ]
     },
     "commands": {
-      "count": 33,
+      "count": 37,
       "list": [
         {
           "name": "rubot",
@@ -259,6 +269,10 @@
           "description": "Audit and fix responsive layout issues across all breakpoints (xs/sm/md/lg)"
         },
         {
+          "name": "rubot-design-audit",
+          "description": "Audit design token usage, component consistency, and carousel functionality with OpenSpec planning"
+        },
+        {
           "name": "rubot-wcag-audit",
           "description": "Run WCAG 2.2 Level AA accessibility audit on a URL or codebase"
         },
@@ -281,6 +295,18 @@
         {
           "name": "rubot-security-audit",
           "description": "Run comprehensive OWASP ASVS 5.0.0 security audit with scored compliance reporting"
+        },
+        {
+          "name": "rubot-implement-figma",
+          "description": "Implement pixel-perfect UI from Figma designs — generates section-figma.yaml template or implements sections from a YAML config using Figma MCP"
+        },
+        {
+          "name": "rubot-geo-audit",
+          "description": "Run comprehensive GEO (Generative Engine Optimization) audit for AI search visibility with composite score and prioritized action plan"
+        },
+        {
+          "name": "rubot-fix-prompt",
+          "description": "Rewrite vague prompts into specific, actionable Claude Code instructions with verification criteria and file references"
         }
       ]
     },
@@ -336,7 +362,7 @@
       ]
     },
     "skills": {
-      "count": 44,
+      "count": 60,
       "list": [
         {
           "name": "orchestration",
@@ -432,6 +458,16 @@
           "name": "responsive-design",
           "agents": ["responsive-master", "shadcn-ui-designer"],
           "description": "Mobile-first responsive layouts with strict relative unit enforcement"
+        },
+        {
+          "name": "design-tokens",
+          "agents": ["shadcn-ui-designer", "theme-master", "responsive-master"],
+          "description": "Design token consistency enforcement — CSS variables, OKLCH colors, typography, spacing, radius, shadows"
+        },
+        {
+          "name": "component-consistency",
+          "agents": ["shadcn-ui-designer", "responsive-master"],
+          "description": "Component pattern consistency audit — carousel fixes, card standardization, button/grid/form uniformity"
         },
         {
           "name": "agent-browser",
@@ -557,11 +593,81 @@
           "name": "owasp-webrtc-security",
           "agents": ["debug-master"],
           "description": "ASVS V17: WebRTC security — TURN servers, media encryption, signaling"
+        },
+        {
+          "name": "figma-slicing",
+          "agents": ["shadcn-ui-designer", "frontend"],
+          "description": "Pixel-perfect Figma-to-code implementation using Figma MCP tools with design system extraction"
+        },
+        {
+          "name": "geo",
+          "agents": ["seo-master"],
+          "description": "Master GEO-SEO analysis tool — orchestrates all GEO sub-skills for AI search engine visibility optimization"
+        },
+        {
+          "name": "geo-audit",
+          "agents": ["seo-master"],
+          "description": "Full GEO+SEO audit orchestration with parallel subagent delegation and composite GEO Score (0-100)"
+        },
+        {
+          "name": "geo-citability",
+          "agents": ["seo-master"],
+          "description": "AI citability scoring — analyzes content for citation readiness by ChatGPT, Claude, Perplexity, Gemini"
+        },
+        {
+          "name": "geo-crawlers",
+          "agents": ["seo-master"],
+          "description": "AI crawler access analysis — robots.txt, meta tags, HTTP headers for GPTBot, ClaudeBot, PerplexityBot"
+        },
+        {
+          "name": "geo-llmstxt",
+          "agents": ["seo-master"],
+          "description": "llms.txt standard analysis and generation for AI system discoverability"
+        },
+        {
+          "name": "geo-brand-mentions",
+          "agents": ["seo-master"],
+          "description": "Brand mention scanning across AI-cited platforms (YouTube, Reddit, Wikipedia, LinkedIn)"
+        },
+        {
+          "name": "geo-platform-optimizer",
+          "agents": ["seo-master"],
+          "description": "Platform-specific AI search optimization for Google AI Overviews, ChatGPT, Perplexity, Gemini, Bing Copilot"
+        },
+        {
+          "name": "geo-schema",
+          "agents": ["seo-master"],
+          "description": "Schema.org structured data audit and JSON-LD generation optimized for AI discoverability"
+        },
+        {
+          "name": "geo-content",
+          "agents": ["seo-master"],
+          "description": "Content quality and E-E-A-T assessment for AI citability — experience, expertise, authoritativeness, trustworthiness"
+        },
+        {
+          "name": "geo-technical",
+          "agents": ["seo-master"],
+          "description": "Technical SEO audit with GEO-specific checks — crawlability, indexability, security, Core Web Vitals, SSR"
+        },
+        {
+          "name": "geo-report",
+          "agents": ["seo-master"],
+          "description": "Professional client-facing GEO report generation with scores, findings, and prioritized actions"
+        },
+        {
+          "name": "geo-report-pdf",
+          "agents": ["seo-master"],
+          "description": "GEO PDF report generator using ReportLab — score gauges, bar charts, color-coded tables, action plans"
+        },
+        {
+          "name": "prompt-fixer",
+          "agents": ["debug-master"],
+          "description": "Rewrite vague prompts into specific, actionable Claude Code instructions using official best practices"
         }
       ]
     },
     "templates": {
-      "count": 9,
+      "count": 10,
       "list": [
         "rubot.local.yaml.template",
         "rootAGENTS.md.template",
@@ -571,7 +677,8 @@
         "README.md.template",
         "index.css.template",
         "components.json.template",
-        "commit-message.template"
+        "commit-message.template",
+        "section-figma.yaml.template"
       ]
     }
   },

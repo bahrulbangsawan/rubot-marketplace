@@ -3,12 +3,14 @@ name: rubot-multilanguage
 description: Implement full multilingual support with language switcher, localized routing, auto-detection, and bilingual copywriting. Use when the user wants to add multi-language support, i18n, internationalization, language switcher, translated content, localized routes, or bilingual/multilingual pages.
 argument-hint: <optional: language codes e.g. "id,en">
 allowed-tools:
+  - Task
   - Read
   - Write
   - Edit
   - Bash
   - Glob
   - Grep
+  - TodoWrite
   - AskUserQuestion
   - Skill
   - WebFetch
@@ -302,9 +304,11 @@ Grep pattern: ">[A-Z][a-z]+" glob: "src/**/*.tsx"
 
 ```
 questions:
-  - question: "Multilingual implementation complete! How would you like to verify?"
-    header: "Verification"
+  - question: "Multilingual implementation complete! What would you like to do next?"
+    header: "Implementation Complete"
     options:
+      - label: "Create implementation plan with OpenSpec"
+        description: "Generate an OpenSpec change proposal to track all i18n changes for review and rollback"
       - label: "Start dev server and test language switching"
         description: "Run bun run dev and manually test switching between languages"
       - label: "Run full validation (/rubot-check)"
@@ -315,6 +319,45 @@ questions:
         description: "All set, no further action needed"
     multiSelect: false
 ```
+
+### Step 13: Create OpenSpec Plan (If Requested)
+
+If the user chose "Create implementation plan with OpenSpec":
+
+1. **Check OpenSpec installation and initialization:**
+   ```bash
+   which openspec && openspec --version
+   ls -d openspec/ 2>/dev/null
+   ```
+   If not installed or initialized, install with `npm install -g @fission-ai/openspec@latest` and run `openspec init && openspec update`.
+
+2. **Create OpenSpec change** named `add-multilanguage-support` using the `/opsx:propose` workflow:
+   - `proposal.md` — i18n implementation scope, supported languages, routing strategy, SEO localization
+   - `specs/` — Requirements for translation system, routing, detection, switcher, SEO
+   - `design.md` — i18n architecture, file structure, component changes, route mapping
+   - `tasks.md` — Implementation checklist (infrastructure, routing, detection, switcher, translations, SEO)
+
+3. **Invoke agents** for domain analysis:
+   - `shadcn-ui-designer` — Validate language switcher component and UI changes
+   - `seo-master` — Validate hreflang and localized meta implementation
+   - `responsive-master` — Validate responsive behavior with different text lengths
+
+4. **Generate rubot execution plan** at `.claude/rubot/plan.md` following the standard format from `/rubot-plan`
+
+5. **Ask to execute:**
+   ```
+   questions:
+     - question: "Multilanguage plan created with OpenSpec. Execute now?"
+       header: "Execute Plan"
+       options:
+         - label: "Yes, execute now"
+           description: "Proceed with /rubot-execute to implement multilanguage support"
+         - label: "No, review first"
+           description: "Review plan at .claude/rubot/plan.md and OpenSpec artifacts"
+         - label: "Modify plan"
+           description: "Make changes before execution"
+       multiSelect: false
+   ```
 
 ## Enforcement Rules
 

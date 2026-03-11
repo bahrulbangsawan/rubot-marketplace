@@ -9,6 +9,9 @@
 *.swp
 *.swo
 
+# Dependencies
+node_modules/
+
 # Local files
 *.local.md
 __pycache__/

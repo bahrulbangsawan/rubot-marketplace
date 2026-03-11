@@ -1,6 +1,6 @@
 # rubot
 
-**Strict Multi-Agent Orchestration Governor v2.14.0**
+**Strict Multi-Agent Orchestration Governor v2.15.0**
 
 `rubot` enforces deterministic, mandatory multi-agent consultation for all significant tasks in complex Claude Code projects. It acts as a project manager ensuring no decision is made without consensus from all relevant domain experts.
 
@@ -102,6 +102,13 @@ In multi-domain projects (backend, database, SSR, hydration, performance, respon
 | `/rubot-responsive-audit` | Audit and fix responsive layout issues across all breakpoints (xs/sm/md/lg) |
 | `/rubot-global-layout` | Build a persistent global layout with shared Navbar and Footer wrapping all routes |
 
+### Design & Figma Commands
+
+| Command | Description |
+|---------|-------------|
+| `/rubot-design-audit` | Audit design token usage, component consistency, and carousel functionality with OpenSpec planning |
+| `/rubot-implement-figma` | Implement pixel-perfect UI from Figma designs — generates section-figma.yaml template or implements sections from a YAML config using Figma MCP |
+
 ### Accessibility Commands
 
 | Command | Description |
@@ -121,6 +128,18 @@ In multi-domain projects (backend, database, SSR, hydration, performance, respon
 |---------|-------------|
 | `/rubot-skills-security-check` | Run ClawSec security advisory scan, skill integrity verification, and guarded install checks |
 | `/rubot-security-audit` | Run comprehensive OWASP ASVS 5.0.0 security audit with scored compliance reporting |
+
+### GEO Commands
+
+| Command | Description |
+|---------|-------------|
+| `/rubot-geo-audit` | Run comprehensive GEO (Generative Engine Optimization) audit for AI search visibility with composite score and prioritized action plan |
+
+### Prompt Engineering Commands
+
+| Command | Description |
+|---------|-------------|
+| `/rubot-fix-prompt` | Rewrite vague prompts into specific, actionable Claude Code instructions with verification criteria and file references |
 
 ## Command Examples
 
@@ -620,7 +639,7 @@ Show available commands and usage information.
 
 **Expected Result:**
 ```
-## Rubot Plugin Help (v2.9.0)
+## Rubot Plugin Help (v2.15.0)
 
 ### Workflow Commands
 | Command | Description |
@@ -1233,7 +1252,7 @@ Every rubot orchestration produces:
 
 ## Components
 
-- **Commands**: 33 slash commands for complete workflow orchestration
+- **Commands**: 37 slash commands for complete workflow orchestration
   - `/rubot` - Main orchestration entry point
   - `/rubot-init` - Workspace initialization
   - `/rubot-plan` - Execution planning
@@ -1267,6 +1286,10 @@ Every rubot orchestration produces:
   - `/rubot-multilanguage` - Multilingual i18n implementation
   - `/rubot-skills-security-check` - ClawSec security scanning
   - `/rubot-security-audit` - OWASP ASVS 5.0.0 security audit
+  - `/rubot-design-audit` - Design token and component consistency audit
+  - `/rubot-implement-figma` - Figma-to-code design implementation
+  - `/rubot-geo-audit` - GEO (Generative Engine Optimization) audit
+  - `/rubot-fix-prompt` - Prompt rewriting and optimization
 - **Hooks**: 8 lifecycle hooks
   - `pre-commit-validation` - Blocks commits without validation
   - `dangerous-command-guard` - Guards destructive commands
@@ -1277,7 +1300,7 @@ Every rubot orchestration produces:
   - `session-context-loader` - Loads workspace at session start
   - `validation-reminder` - Reminds about uncommitted changes
 - **Agent**: `rubot` - Proactive orchestrator that coordinates all 16 subagents
-- **Skills**: 44 domain-specific skill sets
+- **Skills**: 60 domain-specific skill sets
   - `orchestration` - Domain classification and coordination knowledge
   - `env-check` - Environment validation
   - `rbac-auth` - Role-based access control implementation
@@ -1304,6 +1327,22 @@ Every rubot orchestration produces:
   - `wcag-audit` - WCAG 2.2 accessibility auditing
   - `wcag-fix` - Accessible component patterns
   - `multilanguage` - Full i18n implementation
+  - `design-tokens` - Design token consistency enforcement
+  - `component-consistency` - Component pattern consistency audit
+  - `figma-slicing` - Pixel-perfect Figma-to-code implementation
+  - `geo` - Master GEO-SEO analysis tool
+  - `geo-audit` - Full GEO+SEO audit orchestration with composite GEO Score
+  - `geo-citability` - AI citability scoring
+  - `geo-crawlers` - AI crawler access analysis
+  - `geo-llmstxt` - llms.txt standard analysis and generation
+  - `geo-brand-mentions` - Brand mention scanning across AI-cited platforms
+  - `geo-platform-optimizer` - Platform-specific AI search optimization
+  - `geo-schema` - Schema.org structured data for AI discoverability
+  - `geo-content` - Content quality and E-E-A-T assessment
+  - `geo-technical` - Technical SEO with GEO-specific checks
+  - `geo-report` - Client-facing GEO report generation
+  - `geo-report-pdf` - Professional PDF report with ReportLab
+  - `prompt-fixer` - Rewrite vague prompts into actionable instructions
   - `owasp-asvs-audit` - Master OWASP ASVS 5.0.0 audit orchestration
   - `owasp-encoding-sanitization` - ASVS V1: Encoding and injection prevention
   - `owasp-validation-logic` - ASVS V2: Input validation and business logic
@@ -1322,7 +1361,7 @@ Every rubot orchestration produces:
   - `owasp-secure-coding` - ASVS V15: Dependencies, SBOM, concurrency
   - `owasp-security-logging` - ASVS V16: Structured logs, event capture
   - `owasp-webrtc-security` - ASVS V17: WebRTC, TURN, media encryption
-- **Templates**: 9 templates for generated documents
+- **Templates**: 10 templates for generated documents
 
 ## Templates
 
@@ -1339,6 +1378,7 @@ Located in `~/.claude/plugins/rubot/templates/`:
 | `index.css.template` | CSS theme reference | `theme-master` |
 | `components.json.template` | shadcn/ui registry configuration | `shadcn-ui-designer` |
 | `commit-message.template` | Conventional commit message format | `/rubot-commit` |
+| `section-figma.yaml.template` | Figma section configuration for design implementation | `/rubot-implement-figma` |
 
 ### Plan Lifecycle & Archival
 

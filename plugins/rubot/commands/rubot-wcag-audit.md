@@ -3,14 +3,17 @@ name: rubot-wcag-audit
 description: Run a WCAG 2.2 Level AA accessibility audit on a URL or codebase. Use when the user wants to check accessibility compliance, audit a11y issues, or generate an accessibility report with remediation plan.
 argument-hint: <url>
 allowed-tools:
+  - Task
   - WebFetch
   - WebSearch
   - AskUserQuestion
   - Read
+  - Write
+  - Edit
   - Bash
   - Glob
   - Grep
-  - Write
+  - TodoWrite
   - Skill
 ---
 
@@ -194,6 +197,8 @@ questions:
   - question: "Accessibility audit complete! Score: [X]/100. [N] issues found. What would you like to do?"
     header: "Audit Results"
     options:
+      - label: "Create fix plan with OpenSpec (Recommended)"
+        description: "Generate an OpenSpec change proposal and rubot execution plan for accessibility fixes"
       - label: "Fix all issues now (/rubot-wcag-fix)"
         description: "Automatically fix accessibility issues starting with critical"
       - label: "Fix critical/high only"
@@ -211,7 +216,9 @@ questions:
   - question: "Accessibility audit complete. Score: [X]/100 — significant work needed. [N] critical and [M] high issues found. How would you like to proceed?"
     header: "Audit Results"
     options:
-      - label: "Fix critical issues first (Recommended)"
+      - label: "Create fix plan with OpenSpec (Recommended)"
+        description: "Generate an OpenSpec change proposal and rubot execution plan for accessibility remediation"
+      - label: "Fix critical issues first"
         description: "Start with blockers that prevent users from accessing content"
       - label: "Fix all issues systematically"
         description: "Work through all issues phase by phase"
@@ -221,6 +228,44 @@ questions:
         description: "Save the report and stop here"
     multiSelect: false
 ```
+
+### Step 8: Create OpenSpec Plan (If Requested)
+
+If the user chose "Create fix plan with OpenSpec":
+
+1. **Check OpenSpec installation and initialization:**
+   ```bash
+   which openspec && openspec --version
+   ls -d openspec/ 2>/dev/null
+   ```
+   If not installed or initialized, install with `npm install -g @fission-ai/openspec@latest` and run `openspec init && openspec update`.
+
+2. **Create OpenSpec change** named `fix-accessibility-issues` using the `/opsx:propose` workflow:
+   - `proposal.md` — Accessibility audit findings, score, WCAG criteria failures
+   - `specs/` — Requirements from each failed WCAG 2.2 success criterion
+   - `design.md` — Technical approach for fixes, component changes needed
+   - `tasks.md` — Phased remediation checklist (Phase 1-4 from the remediation plan)
+
+3. **Invoke agents** for domain analysis:
+   - `shadcn-ui-designer` — Review component accessibility fixes (ARIA, semantics, focus)
+   - `responsive-master` — Validate touch target sizing and responsive focus behavior
+
+4. **Generate rubot execution plan** at `.claude/rubot/plan.md` following the standard format from `/rubot-plan`
+
+5. **Ask to execute:**
+   ```
+   questions:
+     - question: "Accessibility fix plan created with OpenSpec. Execute now?"
+       header: "Execute Plan"
+       options:
+         - label: "Yes, execute now"
+           description: "Proceed with /rubot-execute to implement accessibility fixes"
+         - label: "No, review first"
+           description: "Review plan at .claude/rubot/plan.md and OpenSpec artifacts"
+         - label: "Modify plan"
+           description: "Make changes before execution"
+       multiSelect: false
+   ```
 
 ## Related Commands
 

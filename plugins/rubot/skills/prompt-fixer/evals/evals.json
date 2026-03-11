@@ -1,0 +1,35 @@
+{
+  "skill_name": "prompt-fixer",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "/rubot-fix-prompt make the dashboard look better",
+      "expected_output": "Should produce a rewritten prompt that includes: specific file paths for dashboard components, verification via screenshot comparison, reference to existing design tokens/patterns, and clear scope boundaries. Must be presented in a copyable code block.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "/rubot-fix-prompt fix the login bug",
+      "expected_output": "Should produce a rewritten prompt that includes: symptom description placeholder, file path references to auth-related code, a failing-test-first approach, root cause investigation steps, and regression testing. Must be presented in a copyable code block.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "/rubot-fix-prompt add a contact form",
+      "expected_output": "Should produce a rewritten prompt that references existing form patterns in the codebase, specifies validation requirements, includes test cases, and follows the project's component conventions. Must be presented in a copyable code block.",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "/rubot-fix-prompt refactor this file, it's messy",
+      "expected_output": "Should produce a rewritten prompt that specifies incremental refactoring, test verification after each change, identifies what 'messy' means concretely (duplication, large components, inconsistencies), and preserves external behavior. Must be presented in a copyable code block.",
+      "files": []
+    },
+    {
+      "id": 5,
+      "prompt": "/rubot-fix-prompt deploy this to production",
+      "expected_output": "Should produce a rewritten prompt that includes pre-deployment checks (build, tests, auth), specific deployment commands, and post-deployment verification. Must be presented in a copyable code block.",
+      "files": []
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "skill_name": "design-tokens",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I have bg-[#f5f5f5] and text-[#333] scattered across my components. Can you help me clean these up to use proper design tokens?",
+      "expected_output": "Identifies arbitrary hex color usage as critical violations, recommends replacing with shadcn/ui CSS variable classes (bg-muted, text-foreground), and checks for dark mode parity.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Audit my project for any hardcoded px values in font sizes, padding, and border-radius. I want everything using the token system.",
+      "expected_output": "Scans for text-[Npx], p-[Npx], rounded-[Npx] patterns, categorizes by severity, and provides specific Tailwind token replacements for each violation.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "My index.css has :root and .dark blocks but I'm not sure all tokens are properly defined. Can you check the token system integrity?",
+      "expected_output": "Reads index.css, verifies all required color tokens exist in both :root and .dark, checks OKLCH format, validates @theme inline mappings, and flags any missing or mismatched tokens.",
+      "files": []
+    }
+  ]
+}

@@ -3,14 +3,17 @@ name: rubot-security-audit
 description: Run a comprehensive OWASP ASVS 5.0.0 security audit on the codebase. Use when the user wants to check application security, run a vulnerability assessment, verify OWASP compliance, or generate a security audit report with remediation plan.
 argument-hint: [level] [chapters]
 allowed-tools:
+  - Task
   - WebFetch
   - WebSearch
   - AskUserQuestion
   - Read
+  - Write
+  - Edit
   - Bash
   - Glob
   - Grep
-  - Write
+  - TodoWrite
   - Skill
 ---
 
@@ -229,6 +232,8 @@ questions:
   - question: "The security audit is complete. What would you like to do next?"
     header: "Audit Complete — [X]% Compliance ([Risk Rating])"
     options:
+      - label: "Create remediation plan with OpenSpec (Recommended)"
+        description: "Generate an OpenSpec change proposal and rubot execution plan from the remediation roadmap"
       - label: "Fix critical issues first"
         description: "Address [N] critical findings immediately to eliminate the most severe risks"
       - label: "Fix all issues systematically"
@@ -242,7 +247,47 @@ questions:
     multiSelect: false
 ```
 
-If the user chooses to fix issues, begin with the highest severity findings and work through the remediation roadmap phases in order. For each fix:
+### Step 6: Create OpenSpec Plan (If Requested)
+
+If the user chose "Create remediation plan with OpenSpec":
+
+1. **Check OpenSpec installation and initialization:**
+   ```bash
+   which openspec && openspec --version
+   ls -d openspec/ 2>/dev/null
+   ```
+   If not installed or initialized, install with `npm install -g @fission-ai/openspec@latest` and run `openspec init && openspec update`.
+
+2. **Create OpenSpec change** named `fix-security-findings` using the `/opsx:propose` workflow:
+   - `proposal.md` — Security audit findings, compliance score, risk rating, impact assessment
+   - `specs/` — Requirements from each failed ASVS verification requirement
+   - `design.md` — Technical approach for remediation, architecture changes needed
+   - `tasks.md` — Phased remediation checklist (Phase 1-4 from the remediation roadmap)
+
+3. **Invoke agents** for domain analysis:
+   - `backend-master` — Review API and server-side security fixes
+   - `debug-master` — Validate fix implementations and test for regressions
+
+4. **Generate rubot execution plan** at `.claude/rubot/plan.md` following the standard format from `/rubot-plan`
+
+5. **Ask to execute:**
+   ```
+   questions:
+     - question: "Security remediation plan created with OpenSpec. Execute now?"
+       header: "Execute Plan"
+       options:
+         - label: "Yes, execute now"
+           description: "Proceed with /rubot-execute to implement security fixes"
+         - label: "No, review first"
+           description: "Review plan at .claude/rubot/plan.md and OpenSpec artifacts"
+         - label: "Modify plan"
+           description: "Make changes before execution"
+       multiSelect: false
+   ```
+
+### Step 7: Apply Fixes Directly (If Requested)
+
+If the user chooses to fix issues directly without an OpenSpec plan, begin with the highest severity findings and work through the remediation roadmap phases in order. For each fix:
 1. Show the finding and its ASVS requirement
 2. Implement the fix using the appropriate tools
 3. Verify the fix addresses the requirement

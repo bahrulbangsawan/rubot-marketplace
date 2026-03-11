@@ -8,8 +8,8 @@
     {
       "name": "rubot",
       "source": "./plugins/rubot",
-      "description": "Strict multi-agent orchestration governor with 33 workflow commands, 8 hooks, 16 specialist subagents, and 44 domain skills for full-stack TanStack Start development with comprehensive OWASP ASVS 5.0.0 security auditing",
-      "version": "2.14.0",
+      "description": "Strict multi-agent orchestration governor with 37 workflow commands, 8 hooks, 16 specialist subagents, and 60 domain skills for full-stack TanStack Start development with comprehensive OWASP ASVS 5.0.0 security auditing, GEO (Generative Engine Optimization) for AI search visibility, design system consistency enforcement, Figma-to-code design implementation, and prompt engineering",
+      "version": "2.15.0",
       "author": {
         "name": "bahrulbangsawan"
       }

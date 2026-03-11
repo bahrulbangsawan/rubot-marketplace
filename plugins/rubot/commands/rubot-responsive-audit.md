@@ -3,12 +3,14 @@ name: rubot-responsive-audit
 description: Audit and fix responsive layout issues across all breakpoints. Use when the user wants to check responsive behavior, fix mobile layouts, audit breakpoint consistency, convert px to rem, or validate responsive quality across xs/sm/md/lg.
 argument-hint: "[component-path or --full]"
 allowed-tools:
+  - Task
   - Read
   - Write
   - Edit
   - Bash
   - Glob
   - Grep
+  - TodoWrite
   - AskUserQuestion
   - Skill
   - WebFetch
@@ -219,6 +221,8 @@ questions:
   - question: "Responsive audit complete! Score: [X]/100. [N] issues found. What next?"
     header: "Audit Results"
     options:
+      - label: "Create fix plan with OpenSpec (Recommended)"
+        description: "Generate an OpenSpec change proposal and rubot execution plan for all responsive fixes"
       - label: "Auto-fix all issues"
         description: "Convert px to rem, fix card radius, update breakpoints"
       - label: "Fix critical/high only"
@@ -236,7 +240,9 @@ questions:
   - question: "Responsive audit complete. Score: [X]/100 — needs work. [N] critical issues. How to proceed?"
     header: "Audit Results"
     options:
-      - label: "Fix critical issues first (Recommended)"
+      - label: "Create fix plan with OpenSpec (Recommended)"
+        description: "Generate an OpenSpec change proposal and rubot execution plan for responsive fixes"
+      - label: "Fix critical issues first"
         description: "Start with layout-breaking issues and px violations"
       - label: "Full responsive overhaul"
         description: "Systematically fix everything across all breakpoints"
@@ -247,9 +253,47 @@ questions:
     multiSelect: false
 ```
 
-### Step 9: Apply Fixes (If Requested)
+### Step 9: Create OpenSpec Plan (If Requested)
 
-When fixing, follow this priority order:
+If the user chose "Create fix plan with OpenSpec":
+
+1. **Check OpenSpec installation and initialization:**
+   ```bash
+   which openspec && openspec --version
+   ls -d openspec/ 2>/dev/null
+   ```
+   If not installed or initialized, install with `npm install -g @fission-ai/openspec@latest` and run `openspec init && openspec update`.
+
+2. **Create OpenSpec change** named `fix-responsive-issues` using the `/opsx:propose` workflow:
+   - `proposal.md` — Responsive audit findings, score, impact assessment
+   - `specs/` — Requirements from audit checklist failures
+   - `design.md` — Technical approach for responsive fixes (unit conversions, component patterns)
+   - `tasks.md` — Ordered fix checklist from the audit's priority recommendations
+
+3. **Invoke agents** for domain analysis:
+   - `responsive-master` — Validate fix approach for breakpoint behavior
+   - `shadcn-ui-designer` — Review component pattern changes
+
+4. **Generate rubot execution plan** at `.claude/rubot/plan.md` following the standard format from `/rubot-plan`
+
+5. **Ask to execute:**
+   ```
+   questions:
+     - question: "Responsive fix plan created with OpenSpec. Execute now?"
+       header: "Execute Plan"
+       options:
+         - label: "Yes, execute now"
+           description: "Proceed with /rubot-execute to implement all responsive fixes"
+         - label: "No, review first"
+           description: "Review plan at .claude/rubot/plan.md and OpenSpec artifacts"
+         - label: "Modify plan"
+           description: "Make changes before execution"
+       multiSelect: false
+   ```
+
+### Step 10: Apply Fixes Directly (If Requested)
+
+If the user chose to fix directly without an OpenSpec plan, follow this priority order:
 1. **Unit conversions**: Replace all px values with rem equivalents (divide by 16)
 2. **Card radius**: Replace all card border-radius with `rounded-[10%]`
 3. **Hero section**: Ensure `min-h-dvh`, flexbox centering, stacked CTAs

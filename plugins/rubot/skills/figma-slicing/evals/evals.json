@@ -1,0 +1,23 @@
+{
+  "skill_name": "figma-slicing",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I have a Figma design for a SaaS landing page and a section-figma.yaml with all the node links. Implement the full page from the Figma design, starting with the design system extraction.",
+      "expected_output": "Should invoke the figma-slicing skill, read the section-figma.yaml file, use Figma MCP tools to extract design context from each node URL, create design tokens (colors, typography, spacing, shadows, radius), build reusable components, then implement sections in order (Navbar → Hero → Stats → Features → Products → Testimonial → CTA → Footer) with responsive behavior across all 4 breakpoints.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "I need to slice this Figma design into code. Here's the Figma link for the hero section: https://www.figma.com/design/AbCdEf/MyProject?node-id=123-456. Extract the design tokens and build the hero component pixel-perfect.",
+      "expected_output": "Should invoke the figma-slicing skill, use Figma MCP to fetch node 123-456, extract colors/typography/spacing from the node properties, create design tokens, and build the Hero section component matching the Figma design exactly with responsive breakpoints and semantic HTML.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Run /rubot-implement-figma to set up my design implementation config file.",
+      "expected_output": "Should generate a section-figma.yaml template file from the template, with placeholders for the user to fill in their Figma node URLs for each section (Navbar, Hero, Stats, Features, Products, Testimonial, CTA, Footer) and project configuration.",
+      "files": []
+    }
+  ]
+}
