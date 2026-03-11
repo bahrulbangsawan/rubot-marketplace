@@ -1,9 +1,18 @@
 #!/usr/bin/env node
 
+import { normalizeType } from '../lib/ui.mjs'
+
 function parseArgs(argv) {
   const args = argv.slice(2)
   const command = args[0]
-  const flags = { skills: [], global: false, yes: false, all: false, help: false }
+  const flags = {
+    skills: [],
+    types: [],
+    global: false,
+    yes: false,
+    all: false,
+    help: false,
+  }
   const positional = []
 
   let i = 1
@@ -13,6 +22,16 @@ function parseArgs(argv) {
       i++
       while (i < args.length && !args[i].startsWith('-')) {
         flags.skills.push(args[i])
+        i++
+      }
+    } else if (arg === '--type' || arg === '-t') {
+      i++
+      if (i < args.length) {
+        const rawTypes = args[i].split(',')
+        for (const rt of rawTypes) {
+          const nt = normalizeType(rt)
+          if (!flags.types.includes(nt)) flags.types.push(nt)
+        }
         i++
       }
     } else if (arg === '--global' || arg === '-g') {
@@ -41,25 +60,36 @@ function parseArgs(argv) {
 
 function showHelp() {
   console.log(`
-  \x1b[1mrubot\x1b[0m - Install and manage skills from rubot-marketplace
+  \x1b[1mrubot\x1b[0m - Install and manage components from rubot-marketplace
 
   \x1b[2mUsage:\x1b[0m rubot <command> [options]
 
   \x1b[2mCommands:\x1b[0m
-    add          Install skill(s)
-    list, ls     Show installed skills
-    remove, rm   Uninstall a skill
-    search       Search available skills
-    update       Update installed skills
+    add          Install component(s) — interactive multi-select or direct
+    list, ls     Show installed components
+    remove, rm   Uninstall component(s) — interactive or direct
+    search       Search available components
+    update       Update installed components
     init         Create a new SKILL.md template
 
   \x1b[2mOptions:\x1b[0m
-    --skill, -s  Skill name(s) to install/remove
-    --global, -g Install/remove globally (~/.claude/skills/)
+    --type, -t   Component type: skill, command, agent, hook, template
+    --skill, -s  Skill name(s) — shorthand for --type skill <names>
+    --all        Install/remove all (of specified type, or everything)
+    --global, -g Install/remove globally (~/.claude/)
     --yes, -y    Skip confirmation prompts
-    --all        Install all available skills
     --help, -h   Show help
     --version, -v Show version
+
+  \x1b[2mExamples:\x1b[0m
+    rubot add                              Interactive multi-select
+    rubot add --type skill                 Multi-select skills
+    rubot add --skill drizzle-orm          Install specific skill
+    rubot add --type command --all         Install all commands
+    rubot add --all                        Install everything
+    rubot remove                           Interactive remove
+    rubot remove --type skill drizzle-orm  Remove specific skill
+    rubot search seo                       Search across all types
   `)
 }
 

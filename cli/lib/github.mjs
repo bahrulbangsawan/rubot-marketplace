@@ -3,7 +3,15 @@ import { request } from 'node:https'
 const REPO_OWNER = 'bahrulbangsawan'
 const REPO_NAME = 'rubot-marketplace'
 const BRANCH = 'main'
-const SKILLS_PATH = 'plugins/rubot/skills'
+
+const COMPONENT_PATHS = {
+  skill: 'plugins/rubot/skills',
+  command: 'plugins/rubot/commands',
+  agent: 'plugins/rubot/agents',
+  hook: 'plugins/rubot/hooks',
+  template: 'plugins/rubot/templates',
+}
+
 const MARKETPLACE_PATH = 'plugins/rubot/.claude-plugin/marketplace.json'
 
 function fetch(url) {
@@ -28,9 +36,13 @@ function fetch(url) {
         resolve(data)
       })
       res.on('error', reject)
-    }).on('error', reject).end()
+    })
+      .on('error', reject)
+      .end()
   })
 }
+
+// ── Marketplace metadata ──
 
 export async function fetchMarketplace() {
   const url = `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/${BRANCH}/${MARKETPLACE_PATH}`
@@ -38,11 +50,31 @@ export async function fetchMarketplace() {
   return JSON.parse(data)
 }
 
-export async function fetchSkillContents(skillName) {
-  const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${SKILLS_PATH}/${skillName}?ref=${BRANCH}`
+// ── Skills (directory-based) ──
+
+export async function fetchSkillContents(skillPath) {
+  const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${COMPONENT_PATHS.skill}/${skillPath}?ref=${BRANCH}`
   const data = await fetch(url)
   return JSON.parse(data)
 }
+
+// ── Single-file components (commands, agents, templates) ──
+
+export async function fetchComponentFile(type, fileName) {
+  const basePath = COMPONENT_PATHS[type]
+  const url = `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/${BRANCH}/${basePath}/${fileName}`
+  return fetch(url)
+}
+
+// ── Hooks config ──
+
+export async function fetchHooksConfig() {
+  const url = `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/${BRANCH}/${COMPONENT_PATHS.hook}/hooks.json`
+  const data = await fetch(url)
+  return JSON.parse(data)
+}
+
+// ── Generic file download ──
 
 export async function fetchFileContent(downloadUrl) {
   return fetch(downloadUrl)
