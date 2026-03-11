@@ -1,0 +1,32 @@
+{
+  "skill": "tanstack-db",
+  "configuration": "with_skill",
+  "expectations": [
+    {
+      "text": "Response creates collection with Zod schema",
+      "passed": true,
+      "evidence": "Code defines taskSchema using z.object({...}) with fields id, title, description, status (z.enum), priority (z.number().int().min(1).max(5)), assigneeId, projectId, createdAt and uses it in createCollection"
+    },
+    {
+      "text": "Response uses createCollection with getKey function",
+      "passed": true,
+      "evidence": "Code uses: createCollection({ id: 'tasks', schema: taskSchema, getKey: (task) => task.id, ... })"
+    },
+    {
+      "text": "Response implements useLiveQuery for reactive data",
+      "passed": true,
+      "evidence": "TaskBoard component uses three separate useLiveQuery calls: const { data: todoTasks } = useLiveQuery((q) => q.from({ task: taskCollection }).where(...).orderBy(...))"
+    },
+    {
+      "text": "Response groups tasks by status in the TaskBoard component",
+      "passed": true,
+      "evidence": "TaskBoard uses three live queries filtered by status ('todo', 'in-progress', 'done') and renders each group in a separate column via STATUS_COLUMNS map"
+    },
+    {
+      "text": "Response includes mutation handlers (onInsert, onUpdate, onDelete)",
+      "passed": true,
+      "evidence": "Collection definition includes onInsert (POST to /api/tasks), onUpdate (PUT to /api/tasks/:id), and onDelete (DELETE to /api/tasks/:id) with async fetch calls"
+    }
+  ],
+  "pass_rate": 1.0
+}

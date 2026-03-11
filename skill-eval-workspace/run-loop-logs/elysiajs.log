@@ -1,0 +1,6 @@
+Split: 12 train, 8 test (holdout=0.4)
+
+============================================================
+Iteration 1/3
+Description: Implements ElysiaJS for high-performance, type-safe Bun HTTP server and REST API development. Use when building API endpoints, request handlers, middleware, route validation with Typebox schemas, Eden client integration, or API server setup. Also use when defining backend routes, implementing plugin architecture, configuring CORS, setting up WebSocket servers, or creating type-safe HTTP services.
+============================================================

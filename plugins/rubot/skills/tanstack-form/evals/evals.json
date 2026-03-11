@@ -1,0 +1,23 @@
+{
+  "skill_name": "tanstack-form",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I'm building a patient registration form for a clinic app. It needs three steps: 1) personal info (name, DOB, phone), 2) insurance details (provider, policy number, group number), 3) medical history (allergies as a text list, current medications). Each step should validate with Zod before allowing next. The final submit POSTs to /api/patients. Build this in src/features/patients/components/registration-form.tsx.",
+      "expected_output": "Creates a multi-step form using useForm with TanStack Form. Defines separate Zod schemas for each step (personalInfoSchema, insuranceSchema, medicalHistorySchema). Uses a step state variable to control which fields are visible. Each 'Next' button validates only the current step's fields before advancing using form.validateField or step-level validation. The form uses zodValidator() adapter. Final submit calls form.handleSubmit() which POSTs to /api/patients. Fields use form.Field with proper onChange/onBlur handlers and error display. Submit button shows loading state via form.state.isSubmitting.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "I need an invoice creation form at src/features/invoices/components/invoice-form.tsx. It has basic fields (customer name, invoice date, due date) plus a line items array where each item has description, quantity, unit price. Users need to add/remove line items and see a running total. Quantity and price need to be positive numbers. Minimum 1 line item required.",
+      "expected_output": "Implements a form with useForm that includes a lineItems field array. Uses form.Field with mode='array' for the line items. Provides 'Add Item' button calling field.pushValue() with default empty item, and 'Remove' buttons calling field.removeValue(index) for each row. Each line item has sub-fields accessed via indexed names (e.g., lineItems[0].description). Uses Zod validation to enforce positive numbers for quantity and unitPrice, and minimum array length of 1. Computes running total using form.useStore or form.Subscribe watching the lineItems values, multiplying quantity by unitPrice for each item and summing.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "I have a user profile edit page at src/features/users/components/edit-profile.tsx. It needs to load the existing user data from our useQuery hook (userQueryOptions from src/lib/queries/users.ts), populate the form with it, let the user edit their name, email, bio, and avatar URL, then submit via a useMutation that PATCHes /api/users/:id. The form should show which fields were actually changed and disable submit if nothing is dirty.",
+      "expected_output": "Creates an edit form that uses useQuery with userQueryOptions to fetch existing user data. Passes the fetched data as defaultValues to useForm (handling the loading state before form renders). Integrates useMutation for the PATCH call, with onSuccess invalidating the user query cache. Uses form.state.isDirty to disable the submit button when no changes are made. Fields are set up with form.Field for name, email, bio, and avatarUrl. The mutation's onSuccess calls queryClient.invalidateQueries for the user's query key. Handles the async loading state properly, either by conditionally rendering the form or using reset when data arrives.",
+      "files": []
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "skill": "crawl-config",
+  "configuration": "with_skill",
+  "expectations": [
+    {
+      "text": "Response creates a TanStack Start API route for robots.txt",
+      "passed": true,
+      "evidence": "Code creates src/routes/robots.txt.ts using createAPIFileRoute('/robots.txt') with a GET handler that returns a Response with text/plain content type"
+    },
+    {
+      "text": "Response blocks /app/, /api/, /auth/, /admin/ for default user-agent",
+      "passed": true,
+      "evidence": "Production rules include: User-agent: *\nAllow: /\nDisallow: /app/\nDisallow: /api/\nDisallow: /auth/\nDisallow: /admin/"
+    },
+    {
+      "text": "Response allows GPTBot/ClaudeBot for /blog/ and /docs/ only",
+      "passed": true,
+      "evidence": "Production rules include separate sections for GPTBot, ChatGPT-User, ClaudeBot, anthropic-ai, Claude-Web, Google-Extended each with Allow: /blog/, Allow: /docs/, Disallow: /"
+    },
+    {
+      "text": "Response blocks AhrefsBot and SemrushBot entirely",
+      "passed": true,
+      "evidence": "Production rules include: User-agent: AhrefsBot\nDisallow: / and User-agent: SemrushBot\nDisallow: /"
+    },
+    {
+      "text": "Response switches behavior based on environment (staging vs production)",
+      "passed": true,
+      "evidence": "Code checks isStaging (via APP_ENV or hostname) and isProduction (NODE_ENV). Staging/non-production returns 'User-agent: *\nDisallow: /' while production returns full crawl rules"
+    },
+    {
+      "text": "Response includes Sitemap directive",
+      "passed": true,
+      "evidence": "Production rules include: Sitemap: ${baseUrl}/sitemap.xml which resolves to the full HTTPS URL"
+    }
+  ],
+  "pass_rate": 1.0
+}

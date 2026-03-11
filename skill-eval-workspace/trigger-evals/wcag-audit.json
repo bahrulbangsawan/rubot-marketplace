@@ -1,0 +1,82 @@
+[
+  {
+    "query": "Run a WCAG 2.2 Level AA accessibility audit on https://shop.retailbrand.com and generate a scored report with prioritized remediation plan",
+    "should_trigger": true
+  },
+  {
+    "query": "We're launching our public-facing SaaS app next month and need an accessibility compliance check. Audit the signup flow, dashboard, and settings pages for WCAG 2.2 AA",
+    "should_trigger": true
+  },
+  {
+    "query": "Our legal team says we need ADA compliance before going live. Can you check our site for accessibility issues and tell us what needs to be fixed with effort estimates?",
+    "should_trigger": true
+  },
+  {
+    "query": "Run axe-core and Lighthouse accessibility scans on localhost:3000 and then do manual keyboard navigation testing on the checkout form to find focus trap issues",
+    "should_trigger": true
+  },
+  {
+    "query": "A user with a screen reader reported they can't complete the registration form. Audit the form for missing labels, ARIA attributes, and error announcement issues",
+    "should_trigger": true
+  },
+  {
+    "query": "Check if our color palette meets WCAG 2.2 contrast requirements — we use #6B7280 text on #F9FAFB background and I suspect it fails the 4.5:1 ratio for normal text",
+    "should_trigger": true
+  },
+  {
+    "query": "Audit our data table component for accessibility — does it have proper th scope, caption, keyboard navigation for sorting, and screen reader announcements for updates?",
+    "should_trigger": true
+  },
+  {
+    "query": "We need a Section 508 compliance assessment for our government client. Run the full WCAG 2.2 audit methodology with all 5 phases and generate the formal report template",
+    "should_trigger": true
+  },
+  {
+    "query": "Our Lighthouse accessibility score is 100 but a blind user told us the site is unusable. What manual tests should we run that automated tools miss, and audit the main user flows?",
+    "should_trigger": true
+  },
+  {
+    "query": "Check our modal dialog for WCAG 2.2 focus management — specifically 2.4.11 Focus Not Obscured and 2.4.3 Focus Order. The sticky header might be covering the focused element",
+    "should_trigger": true
+  },
+  {
+    "query": "Fix the color contrast on our primary button — change the background from #3B82F6 to a darker shade that passes WCAG AA 4.5:1 with white text",
+    "should_trigger": false
+  },
+  {
+    "query": "Add aria-label, aria-expanded, and aria-controls to our hamburger menu button for screen reader support",
+    "should_trigger": false
+  },
+  {
+    "query": "Implement a skip-to-content link at the top of our page that appears on focus and jumps to the main content area",
+    "should_trigger": false
+  },
+  {
+    "query": "Our images are missing alt text. Add descriptive alt attributes to all product images in src/components/product-card.tsx",
+    "should_trigger": false
+  },
+  {
+    "query": "Add keyboard event handlers to our custom dropdown menu so users can navigate with arrow keys, select with Enter, and close with Escape",
+    "should_trigger": false
+  },
+  {
+    "query": "Run a full SEO audit on our homepage and check meta tags, heading hierarchy, robots.txt, sitemap, and structured data",
+    "should_trigger": false
+  },
+  {
+    "query": "Check our Core Web Vitals — LCP is slow because the hero image is unoptimized and CLS is caused by font loading",
+    "should_trigger": false
+  },
+  {
+    "query": "Build a responsive layout that works on mobile, tablet, and desktop with proper breakpoints and flexible grid columns",
+    "should_trigger": false
+  },
+  {
+    "query": "Set up ESLint with the jsx-a11y plugin to catch accessibility issues automatically during development",
+    "should_trigger": false
+  },
+  {
+    "query": "Add prefers-reduced-motion media query to disable our CSS animations for users who have motion sensitivity settings enabled",
+    "should_trigger": false
+  }
+]

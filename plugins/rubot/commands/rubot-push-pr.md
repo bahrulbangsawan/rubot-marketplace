@@ -26,7 +26,7 @@ You are in the PULL REQUEST UPDATE PHASE of the rubot orchestration workflow.
    - If uncommitted changes exist, inform user to run `/rubot-commit` first
 
 3. **Load workspace configuration**:
-   - Read `.claude/rubot/rubot.local.md` for project rules
+   - Read `.claude/rubot/rubot.local.yaml` for project rules
 
 ## Update Process
 

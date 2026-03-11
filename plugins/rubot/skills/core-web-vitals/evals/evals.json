@@ -1,0 +1,17 @@
+{
+  "skill_name": "core-web-vitals",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Our landing page at /features has a huge hero image (3200x1800 PNG, about 2.4MB) and PageSpeed Insights is showing LCP at 4.8s which is in the red. The TTFB is fine at around 300ms so it's not the server. The image loads from our own domain, no CDN. What do I need to do to get LCP under 2.5s? We're on TanStack Start deployed to Cloudflare Workers.",
+      "expected_output": "A diagnosis identifying the hero image as the LCP element and providing a multi-step optimization plan: (1) Convert the PNG to WebP or AVIF format to reduce file size by 60-80%, (2) Resize to max 1600px width since larger is unnecessary, (3) Add a preload link with rel=preload, as=image, fetchPriority=high in the route's head() function, (4) Set the img tag with fetchPriority=high, loading=eager (not lazy), explicit width/height attributes, and decoding=async, (5) Serve through Cloudflare's CDN/cache instead of origin, (6) Consider inline critical CSS for the hero section to avoid render-blocking stylesheets. Should include TanStack Start code examples for the route head() preload and the optimized img element.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Users keep complaining that our dashboard page 'jumps around' when it loads. I checked PageSpeed and CLS is 0.38 which is terrible. The page has a sidebar that loads user preferences from an API, a data table that comes from a server query, and we're using Inter font from Google Fonts. It's built with TanStack Start and TanStack Table. How do I fix the layout shifts?",
+      "expected_output": "A diagnosis identifying multiple CLS sources and fixes: (1) Sidebar with dynamic preferences — add a skeleton loader with fixed min-height/min-width matching the final sidebar dimensions, use CSS contain:layout on the container, (2) Data table — reserve space with a skeleton table matching expected row count, set explicit column widths or use table-layout:fixed, consider using TanStack Table's column sizing to pre-define widths, (3) Inter font from Google Fonts — self-host the woff2 file, add font-display:swap in @font-face, preload the font file with rel=preload as=font crossorigin, (4) General fixes — ensure all images in the dashboard have width/height attributes, use CSS aspect-ratio where appropriate, avoid dynamically injecting content above existing content. Should include code examples for skeleton loaders, font preloading in the TanStack Start head, and CSS containment strategies.",
+      "files": []
+    }
+  ]
+}

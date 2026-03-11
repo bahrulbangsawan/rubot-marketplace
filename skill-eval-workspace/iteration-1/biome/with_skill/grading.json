@@ -1,0 +1,32 @@
+{
+  "skill": "biome",
+  "configuration": "with_skill",
+  "expectations": [
+    {
+      "text": "Response installs @biomejs/biome as dev dependency",
+      "passed": true,
+      "evidence": "Step 1: \"bun add -D @biomejs/biome\" -- installs Biome as a dev dependency using bun."
+    },
+    {
+      "text": "Response configures indentStyle as tab",
+      "passed": true,
+      "evidence": "biome.json formatter section: \"\\\"indentStyle\\\": \\\"tab\\\"\" -- configures tab indentation."
+    },
+    {
+      "text": "Response configures quoteStyle as single",
+      "passed": true,
+      "evidence": "biome.json javascript.formatter section: \"\\\"quoteStyle\\\": \\\"single\\\"\" -- configures single quotes for JavaScript/TypeScript."
+    },
+    {
+      "text": "Response sets noUnusedVariables and noUnusedImports to error",
+      "passed": true,
+      "evidence": "biome.json linter rules: \"\\\"noUnusedVariables\\\": \\\"error\\\", \\\"noUnusedImports\\\": \\\"error\\\"\" -- both set to error level."
+    },
+    {
+      "text": "Response adds package.json scripts (lint, format, check)",
+      "passed": true,
+      "evidence": "Section 3 adds scripts including: \"\\\"lint\\\": \\\"biome lint .\\\"\", \"\\\"format\\\": \\\"biome format --write .\\\"\", \"\\\"check\\\": \\\"biome check .\\\"\" plus additional lint:fix, format:check, check:fix, and validate scripts."
+    }
+  ],
+  "pass_rate": 1.0
+}

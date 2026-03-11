@@ -1,0 +1,6 @@
+Split: 12 train, 8 test (holdout=0.4)
+
+============================================================
+Iteration 1/3
+Description: Implements Drizzle ORM for type-safe database schema definition, SQL query building, database migration, and PostgreSQL ORM operations. Use when designing pgTable schemas, writing InferSelectModel/InferInsertModel types, running drizzle-kit migrations, defining database relations, creating prepared statements, or integrating with NeonDB serverless PostgreSQL. MUST be activated when user says: "create database schema", "add a table", "write a migration", "pgTable", "drizzle query", "InferSelectModel", "database relations", "drizzle-kit generate", "drizzle-kit push", "NeonDB setup", "PostgreSQL ORM", "type-safe SQL", "prepared statement", "upsert", "onConflictDoUpdate", "batch insert", "drizzle transaction", "schema index", "join query", "soft delete pattern", "database connection pool". Covers: schema definition, migrations, queries, relations, transactions, indexes, prepared statements, NeonDB/PostgreSQL integration, type inference, and query optimization.
+============================================================

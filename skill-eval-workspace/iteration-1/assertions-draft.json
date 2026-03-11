@@ -1,0 +1,183 @@
+{
+  "assertions_by_skill": {
+    "orchestration": [
+      {"text": "Response identifies multiple domains (database, backend, frontend, responsive)", "type": "content_check"},
+      {"text": "Response names specific agents or specializations for each domain", "type": "content_check"},
+      {"text": "Response provides a sequential execution plan with ordering rationale", "type": "content_check"},
+      {"text": "Response includes verification/testing step at the end", "type": "content_check"}
+    ],
+    "tanstack-router": [
+      {"text": "Response creates route files using createFileRoute", "type": "code_check"},
+      {"text": "Response includes a loader function that fetches data", "type": "code_check"},
+      {"text": "Response uses notFound() for missing properties", "type": "code_check"},
+      {"text": "Response defines a pendingComponent with skeleton UI", "type": "code_check"},
+      {"text": "Response uses Route.useLoaderData() to access data", "type": "code_check"}
+    ],
+    "env-check": [
+      {"text": "Response checks for critical tools (bun, node, git)", "type": "content_check"},
+      {"text": "Response uses PASS/FAIL/WARN status indicators", "type": "format_check"},
+      {"text": "Response checks for .env/.env.local files", "type": "content_check"},
+      {"text": "Response provides remediation steps for failures", "type": "content_check"},
+      {"text": "Response detects project stack from package.json", "type": "content_check"}
+    ],
+    "rbac-auth": [
+      {"text": "Response uses resource:action permission pattern (e.g., booking:read)", "type": "code_check"},
+      {"text": "Response defines role-permission mappings following least-privilege", "type": "content_check"},
+      {"text": "Response includes Drizzle pgTable schemas for roles and permissions", "type": "code_check"},
+      {"text": "Response creates junction tables (user_roles, role_permissions)", "type": "code_check"},
+      {"text": "Response includes foreign keys and indexes", "type": "code_check"}
+    ],
+    "tanstack-query": [
+      {"text": "Response uses useMutation with mutationFn for PATCH call", "type": "code_check"},
+      {"text": "Response implements onMutate with cache snapshot and optimistic update", "type": "code_check"},
+      {"text": "Response implements onError with rollback from context", "type": "code_check"},
+      {"text": "Response implements onSettled with invalidateQueries", "type": "code_check"},
+      {"text": "Response cancels outgoing queries before optimistic update", "type": "code_check"}
+    ],
+    "responsive-design": [
+      {"text": "Response replaces h-screen with min-h-dvh", "type": "code_check"},
+      {"text": "Response converts px values to rem-based Tailwind classes", "type": "code_check"},
+      {"text": "Response adds mobile-first responsive typography classes", "type": "code_check"},
+      {"text": "Response makes CTA button full-width on mobile (w-full sm:w-auto)", "type": "code_check"}
+    ],
+    "agent-browser": [
+      {"text": "Response uses agent-browser open command to navigate", "type": "content_check"},
+      {"text": "Response uses agent-browser snapshot to identify elements", "type": "content_check"},
+      {"text": "Response uses agent-browser fill for form inputs", "type": "content_check"},
+      {"text": "Response uses agent-browser click for the sign-in button", "type": "content_check"},
+      {"text": "Response verifies 'Welcome back' text appears after login", "type": "content_check"}
+    ],
+    "biome": [
+      {"text": "Response installs @biomejs/biome as dev dependency", "type": "code_check"},
+      {"text": "Response configures indentStyle as tab", "type": "code_check"},
+      {"text": "Response configures quoteStyle as single", "type": "code_check"},
+      {"text": "Response sets noUnusedVariables and noUnusedImports to error", "type": "code_check"},
+      {"text": "Response adds package.json scripts (lint, format, check)", "type": "code_check"}
+    ],
+    "drizzle-orm": [
+      {"text": "Response uses pgTable for table definitions", "type": "code_check"},
+      {"text": "Response creates pgEnum for status and role columns", "type": "code_check"},
+      {"text": "Response defines relations() for all table relationships", "type": "code_check"},
+      {"text": "Response includes indexes on org_id columns", "type": "code_check"},
+      {"text": "Response creates uniqueIndex on (org_id, number) for invoices", "type": "code_check"}
+    ],
+    "schema-markup": [
+      {"text": "Response generates Organization JSON-LD with sameAs array", "type": "code_check"},
+      {"text": "Response generates WebSite JSON-LD with SearchAction", "type": "code_check"},
+      {"text": "Response uses absolute URLs (https://buildstack.dev)", "type": "code_check"},
+      {"text": "Response shows integration in TanStack Start root layout", "type": "code_check"}
+    ],
+    "react-grab": [
+      {"text": "Response installs react-grab as dev dependency", "type": "code_check"},
+      {"text": "Response uses import.meta.env.DEV for Vite dev-only check", "type": "code_check"},
+      {"text": "Response adds script in index.html before </head>", "type": "code_check"},
+      {"text": "Response confirms react-grab is excluded from production builds", "type": "content_check"}
+    ],
+    "rubot-seo-audit": [
+      {"text": "Response covers technical SEO checks (robots.txt, sitemap, HTTPS)", "type": "content_check"},
+      {"text": "Response analyzes on-page SEO (title, meta description, headings)", "type": "content_check"},
+      {"text": "Response checks structured data / JSON-LD", "type": "content_check"},
+      {"text": "Response evaluates Core Web Vitals (LCP, INP, CLS)", "type": "content_check"},
+      {"text": "Response provides prioritized recommendations", "type": "content_check"}
+    ],
+    "global-layout": [
+      {"text": "Response creates navbar component with sticky positioning", "type": "code_check"},
+      {"text": "Response creates footer component", "type": "code_check"},
+      {"text": "Response modifies __root.tsx to wrap Outlet with layout", "type": "code_check"},
+      {"text": "Response uses semantic HTML (header, nav, main, footer)", "type": "code_check"},
+      {"text": "Response uses min-h-dvh flex flex-col pattern", "type": "code_check"}
+    ],
+    "tanstack-form": [
+      {"text": "Response uses useForm from TanStack Form", "type": "code_check"},
+      {"text": "Response defines separate Zod schemas per step", "type": "code_check"},
+      {"text": "Response validates current step before advancing", "type": "code_check"},
+      {"text": "Response uses zodValidator adapter", "type": "code_check"},
+      {"text": "Response handles final submit with form.handleSubmit()", "type": "code_check"}
+    ],
+    "cf-workers-setup": [
+      {"text": "Response detects bun as package manager", "type": "content_check"},
+      {"text": "Response detects TanStack Start framework", "type": "content_check"},
+      {"text": "Response generates wrangler.jsonc configuration", "type": "code_check"},
+      {"text": "Response adds cloudflare() plugin to vite.config.ts", "type": "code_check"},
+      {"text": "Response adds deploy script to package.json", "type": "code_check"}
+    ],
+    "core-web-vitals": [
+      {"text": "Response identifies hero image as LCP element", "type": "content_check"},
+      {"text": "Response recommends format conversion (WebP/AVIF)", "type": "content_check"},
+      {"text": "Response recommends image preload with fetchPriority=high", "type": "content_check"},
+      {"text": "Response includes TanStack Start code examples", "type": "code_check"},
+      {"text": "Response addresses CDN/caching via Cloudflare", "type": "content_check"}
+    ],
+    "wcag-audit": [
+      {"text": "Response includes automated testing phase (axe-core/Lighthouse)", "type": "content_check"},
+      {"text": "Response includes manual testing phase (keyboard, screen reader)", "type": "content_check"},
+      {"text": "Response categorizes issues by severity", "type": "format_check"},
+      {"text": "Response references specific WCAG success criteria", "type": "content_check"},
+      {"text": "Response produces a structured audit report", "type": "format_check"}
+    ],
+    "elysiajs": [
+      {"text": "Response creates Elysia routes with /api/recipes prefix", "type": "code_check"},
+      {"text": "Response uses t.Object for Typebox query/body validation", "type": "code_check"},
+      {"text": "Response validates cuisine as enum/union type", "type": "code_check"},
+      {"text": "Response includes pagination params with defaults", "type": "code_check"},
+      {"text": "Response defines error response schemas for 400/404", "type": "code_check"}
+    ],
+    "multilanguage": [
+      {"text": "Response creates src/i18n/ directory structure", "type": "content_check"},
+      {"text": "Response sets Indonesian as DEFAULT_LANGUAGE", "type": "code_check"},
+      {"text": "Response creates locale JSON files for id and en", "type": "code_check"},
+      {"text": "Response implements useTranslation hook with dotted key paths", "type": "code_check"},
+      {"text": "Response creates LanguageProvider with React context", "type": "code_check"}
+    ],
+    "tanstack-table": [
+      {"text": "Response uses createColumnHelper<Order>() for type safety", "type": "code_check"},
+      {"text": "Response implements getSortedRowModel and SortingState", "type": "code_check"},
+      {"text": "Response implements getFilteredRowModel and ColumnFiltersState", "type": "code_check"},
+      {"text": "Response renders status column with Badge component", "type": "code_check"},
+      {"text": "Response uses shadcn/ui Table components with flexRender", "type": "code_check"}
+    ],
+    "cloudflare-workers": [
+      {"text": "Response adds KV namespace binding to wrangler.toml", "type": "code_check"},
+      {"text": "Response updates Env interface with PRODUCT_CACHE: KVNamespace", "type": "code_check"},
+      {"text": "Response implements cache-first pattern (check KV, fallback to fetch)", "type": "code_check"},
+      {"text": "Response uses expirationTtl: 86400 for 24-hour TTL", "type": "code_check"},
+      {"text": "Response provides CLI command to create KV namespace", "type": "content_check"}
+    ],
+    "social-sharing": [
+      {"text": "Response generates complete OG meta tags (title, description, image, url, type)", "type": "code_check"},
+      {"text": "Response generates Twitter Card meta tags with summary_large_image", "type": "code_check"},
+      {"text": "Response creates dynamic OG image endpoint", "type": "code_check"},
+      {"text": "Response uses absolute URLs (https://devnotes.sh)", "type": "code_check"},
+      {"text": "Response integrates in route head() function using loaderData", "type": "code_check"}
+    ],
+    "tanstack-db": [
+      {"text": "Response creates collection with Zod schema", "type": "code_check"},
+      {"text": "Response uses createCollection with getKey function", "type": "code_check"},
+      {"text": "Response implements useLiveQuery for reactive data", "type": "code_check"},
+      {"text": "Response groups tasks by status in the TaskBoard component", "type": "code_check"},
+      {"text": "Response includes mutation handlers (onInsert, onUpdate, onDelete)", "type": "code_check"}
+    ],
+    "wcag-fix": [
+      {"text": "Response adds role=dialog and aria-modal=true", "type": "code_check"},
+      {"text": "Response implements focus trapping within the modal", "type": "code_check"},
+      {"text": "Response adds Escape key handler to close", "type": "code_check"},
+      {"text": "Response saves and restores focus to triggering element", "type": "code_check"},
+      {"text": "Response uses role=alertdialog for destructive action", "type": "code_check"}
+    ],
+    "url-state-management": [
+      {"text": "Response uses nuqs parseAs* functions for typed URL params", "type": "code_check"},
+      {"text": "Response implements useQueryStates for multiple params", "type": "code_check"},
+      {"text": "Response resets page to 1 when filters change", "type": "code_check"},
+      {"text": "Response integrates with TanStack Router validateSearch", "type": "code_check"},
+      {"text": "Response uses clearOnDefault for clean URLs", "type": "code_check"}
+    ],
+    "crawl-config": [
+      {"text": "Response creates a TanStack Start API route for robots.txt", "type": "code_check"},
+      {"text": "Response blocks /app/, /api/, /auth/, /admin/ for default user-agent", "type": "code_check"},
+      {"text": "Response allows GPTBot/ClaudeBot for /blog/ and /docs/ only", "type": "code_check"},
+      {"text": "Response blocks AhrefsBot and SemrushBot entirely", "type": "code_check"},
+      {"text": "Response switches behavior based on environment (staging vs production)", "type": "code_check"},
+      {"text": "Response includes Sitemap directive", "type": "code_check"}
+    ]
+  }
+}

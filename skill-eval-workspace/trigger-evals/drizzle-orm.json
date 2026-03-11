@@ -1,0 +1,82 @@
+[
+  {
+    "query": "create a pgTable schema for a bookings table with id (serial PK), user_id (FK to users), date (timestamp), status (enum: pending/confirmed/cancelled), and created_at",
+    "should_trigger": true
+  },
+  {
+    "query": "run drizzle-kit generate to create a migration for the new invoices table I just added to src/db/schema/invoices.ts",
+    "should_trigger": true
+  },
+  {
+    "query": "write an upsert query using onConflictDoUpdate that inserts a new user or updates the name and updatedAt if the email already exists",
+    "should_trigger": true
+  },
+  {
+    "query": "define relations between users and posts tables — a user has many posts, and each post belongs to one user via authorId",
+    "should_trigger": true
+  },
+  {
+    "query": "db.query.users is undefined even though I have the users table defined in schema.ts — what am I missing?",
+    "should_trigger": true
+  },
+  {
+    "query": "set up drizzle.config.ts pointing to src/db/schema.ts with postgresql dialect and DATABASE_URL from .env",
+    "should_trigger": true
+  },
+  {
+    "query": "create a prepared statement for getUserById that accepts an id placeholder and can be reused for session lookups",
+    "should_trigger": true
+  },
+  {
+    "query": "wrap the user creation and first post insert in a transaction so both succeed or both rollback",
+    "should_trigger": true
+  },
+  {
+    "query": "add a composite index on (author_id, status) to the posts table and a unique index on the slug column",
+    "should_trigger": true
+  },
+  {
+    "query": "set up the Neon serverless connection using neon-http for my Cloudflare Worker — I need drizzle(neon(DATABASE_URL), { schema })",
+    "should_trigger": true
+  },
+  {
+    "query": "add a useQuery hook that fetches users from the API and caches the result for 5 minutes",
+    "should_trigger": false
+  },
+  {
+    "query": "write raw SQL to create a materialized view for the monthly revenue report in PostgreSQL",
+    "should_trigger": false
+  },
+  {
+    "query": "set up Prisma with a PostgreSQL datasource and generate the client with npx prisma generate",
+    "should_trigger": false
+  },
+  {
+    "query": "configure the Neon dashboard to create a new database branch for the staging environment",
+    "should_trigger": false
+  },
+  {
+    "query": "implement row-level security policies in PostgreSQL so tenants can only access their own data",
+    "should_trigger": false
+  },
+  {
+    "query": "add a pgTable for the permission matrix with role_id, permission_id, and a composite primary key",
+    "should_trigger": false
+  },
+  {
+    "query": "set up Supabase client with createClient and configure the auth listener for session management",
+    "should_trigger": false
+  },
+  {
+    "query": "write a MongoDB aggregation pipeline to compute average order value grouped by month",
+    "should_trigger": false
+  },
+  {
+    "query": "implement a tRPC procedure for listing bookings with pagination, filtering by status, and sorting by date",
+    "should_trigger": false
+  },
+  {
+    "query": "add Redis caching for the most frequently queried database records to reduce PostgreSQL load",
+    "should_trigger": false
+  }
+]

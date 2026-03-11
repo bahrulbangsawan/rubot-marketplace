@@ -1,0 +1,32 @@
+{
+  "skill": "core-web-vitals",
+  "configuration": "without_skill",
+  "expectations": [
+    {
+      "text": "Response identifies hero image as LCP element",
+      "passed": true,
+      "evidence": "Diagnosis states 'the problem is clearly the hero image: a 3200x1800 PNG at 2.4MB is far too large' and identifies it as the largest contentful element."
+    },
+    {
+      "text": "Response recommends format conversion (WebP/AVIF)",
+      "passed": true,
+      "evidence": "Step 1 recommends converting to WebP or AVIF with explanations of size reduction. Shows sharp-cli command for WebP conversion with resize to 1600px. Mentions target of 100-200KB from 2.4MB."
+    },
+    {
+      "text": "Response recommends image preload with fetchPriority=high",
+      "passed": true,
+      "evidence": "Step 3 shows '<link rel=\"preload\" href=\"/hero.webp\" as=\"image\" type=\"image/webp\" fetchpriority=\"high\" />' and mentions adding it via TanStack Start route head configuration. Step 4 also adds fetchpriority='high' on the img element."
+    },
+    {
+      "text": "Response includes TanStack Start code examples",
+      "passed": false,
+      "evidence": "Step 3 mentions 'In TanStack Start, you can add this via the route's head configuration or in your root layout' but does not provide an actual TanStack Start code example. The preload link is shown as generic HTML, not in a createFileRoute/head() pattern."
+    },
+    {
+      "text": "Response addresses CDN/caching via Cloudflare",
+      "passed": true,
+      "evidence": "Step 5 'Serve through a CDN' addresses serving through Cloudflare's edge network, recommends Cache-Control headers with 'public, max-age=31536000, immutable', and suggests checking for 'cf-cache-status: HIT' header."
+    }
+  ],
+  "pass_rate": 0.8
+}

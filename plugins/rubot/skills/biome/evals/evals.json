@@ -1,0 +1,23 @@
+{
+  "skill_name": "biome",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I just scaffolded a new TanStack Start project and there's no linter set up yet. Can you add Biome with sensible defaults? I want tabs, single quotes, and I'd like it to catch unused variables and imports as errors.",
+      "expected_output": "The skill should install Biome as a dev dependency with 'bun add -D @biomejs/biome', initialize config with 'bunx @biomejs/biome init', then configure biome.json with: formatter using indentStyle 'tab', javascript.formatter.quoteStyle 'single', recommended rules enabled, and correctness rules noUnusedVariables and noUnusedImports set to 'error'. It should also add package.json scripts (lint, lint:fix, format, format:check, check, check:fix, validate) and configure VCS integration with git. The full config should include organizeImports enabled and files.ignore for node_modules and dist.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "I'm getting a wall of Biome errors after refactoring src/features/users/components/UserTable.tsx — stuff like noExplicitAny on the column definitions, useConst on a couple of let statements, and noNonNullAssertion on user!.email. Can you fix them without changing the logic?",
+      "expected_output": "The skill should address each specific error type: 1) Replace 'any' types in column definitions with proper TypeScript types or generics (e.g., ColumnDef<User> instead of ColumnDef<any>), 2) Change 'let' to 'const' for variables that are never reassigned, 3) Replace non-null assertions like user!.email with optional chaining (user?.email) or nullish coalescing (user?.email ?? 'default') or type guards (if (user) { ... }). It should preserve all existing logic and only fix the lint violations. If a suppression is truly necessary (e.g., external API returns any), it should use biome-ignore with a descriptive reason.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "We've been using ESLint and Prettier but they're slow and the configs are a mess — there's an .eslintrc.cjs, .prettierrc, and .eslintignore. I want to switch everything to Biome. Can you migrate and then remove the old configs?",
+      "expected_output": "The skill should run the automatic migration commands: 'bunx @biomejs/biome migrate eslint --write' and 'bunx @biomejs/biome migrate prettier --write' to convert existing rules to Biome equivalents. It should then verify the generated biome.json has the correct rule mappings (e.g., no-unused-vars becomes noUnusedVariables, prefer-const becomes useConst, no-console becomes noConsoleLog). After migration, it should remove the old config files (.eslintrc.cjs, .prettierrc, .eslintignore), uninstall ESLint and Prettier packages (eslint, prettier, and any eslint-plugin-* or eslint-config-* packages), update package.json scripts to use biome commands instead of eslint/prettier, and run 'bunx biome check .' to verify everything works cleanly.",
+      "files": []
+    }
+  ]
+}

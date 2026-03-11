@@ -1,6 +1,6 @@
 ---
 name: rubot
-description: Invoke the strict multi-agent orchestration governor. Enforces mandatory consultation of all 15 registered specialist subagents before any task is finalized. Produces consolidated root-cause analysis, cross-agent risk matrix, unified execution plan, and validation checklist.
+description: Invoke the strict multi-agent orchestration governor. Enforces mandatory consultation of all 16 registered specialist subagents before any task is finalized. Produces consolidated root-cause analysis, cross-agent risk matrix, unified execution plan, and validation checklist.
 argument-hint: <task description>
 allowed-tools:
   - Task
@@ -40,7 +40,7 @@ You are invoking the rubot orchestration governor. This is a strict, mandatory m
 - Do NOT attempt to solve the task directly
 - Do NOT skip any relevant agents
 - Do NOT proceed with implementation until rubot orchestration is complete
-- ALL 15 registered agents are mandatory based on domain relevance
+- All registered agents are mandatory based on domain relevance
 
 ## Registered Subagents (15 Total)
 
@@ -55,7 +55,7 @@ You are invoking the rubot orchestration governor. This is a strict, mandatory m
 | lazy-load-master | Code splitting, lazy loading, dynamic imports |
 | neon-master | PostgreSQL, NeonDB, schema design |
 | plan-supervisor | Plan.md tracking, task completion |
-| qa-tester | Playwright, Chrome DevTools |
+| qa-tester | agent-browser |
 | responsive-master | Tailwind responsive layouts |
 | seo-master | SEO, structured data, metadata (user-confirmed) |
 | shadcn-ui-designer | UI components, design system |

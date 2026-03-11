@@ -1,0 +1,32 @@
+{
+  "skill": "tanstack-db",
+  "configuration": "without_skill",
+  "expectations": [
+    {
+      "text": "Response creates collection with Zod schema",
+      "passed": true,
+      "evidence": "Code defines taskSchema using z.object({...}) with fields id, title, description, status (z.enum), priority, assigneeId, projectId and uses it in createCollection"
+    },
+    {
+      "text": "Response uses createCollection with getKey function",
+      "passed": false,
+      "evidence": "Response uses createCollection with 'primaryKey: \"id\"' instead of a getKey function. The API used is: createCollection<Task>({ name: 'tasks', schema: taskSchema, primaryKey: 'id' }) which does not match the expected getKey pattern"
+    },
+    {
+      "text": "Response implements useLiveQuery for reactive data",
+      "passed": true,
+      "evidence": "TaskBoard uses useLiveQuery: const tasks = useLiveQuery(() => taskCollection.query({ where: { projectId }, orderBy: { priority: 'asc' } }))"
+    },
+    {
+      "text": "Response groups tasks by status in the TaskBoard component",
+      "passed": true,
+      "evidence": "Tasks are grouped by status using .filter(): todoTasks = tasks.filter(t => t.status === 'todo'), inProgressTasks = tasks.filter(t => t.status === 'in-progress'), doneTasks = tasks.filter(t => t.status === 'done') and rendered in separate columns"
+    },
+    {
+      "text": "Response includes mutation handlers (onInsert, onUpdate, onDelete)",
+      "passed": false,
+      "evidence": "The createCollection call does not include onInsert, onUpdate, or onDelete handlers. The response only mentions that 'For server persistence, you would need to integrate a sync engine or backend API calls' in the Notes section"
+    }
+  ],
+  "pass_rate": 0.6
+}

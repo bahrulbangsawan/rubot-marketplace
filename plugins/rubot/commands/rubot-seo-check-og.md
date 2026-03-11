@@ -1,6 +1,13 @@
 ---
 name: rubot-seo-check-og
-description: Validate Open Graph and Twitter Card meta tags
+description: Validate Open Graph and Twitter Card meta tags on a page. Use when checking social media link previews, debugging missing or incorrect previews on Facebook/Twitter/LinkedIn/WhatsApp/Discord, or verifying og:image dimensions and aspect ratios.
+argument-hint: <url>
+allowed-tools:
+  - WebFetch
+  - AskUserQuestion
+  - Read
+  - Bash
+  - Glob
 ---
 
 # SEO Check Open Graph Command
@@ -27,199 +34,14 @@ questions:
     multiSelect: false
 ```
 
-### Step 2: Navigate to Page
+### Step 2: Fetch and Analyze Page
 
-```
-mcp__chrome-devtools__navigate_page({
-  url: "<target_url>",
-  type: "url"
-})
-```
+Use WebFetch to retrieve the target URL and analyze the HTML for social meta tags. Extract and validate:
 
-### Step 3: Extract Social Meta Tags
+- **Open Graph tags**: og:title, og:description, og:image, og:url, og:type, og:site_name, og:locale
+- **Twitter Card tags**: twitter:card, twitter:title, twitter:description, twitter:image, twitter:site
 
-```javascript
-mcp__chrome-devtools__evaluate_script({
-  function: `() => {
-    const results = {
-      url: window.location.href,
-      timestamp: new Date().toISOString(),
-      openGraph: {},
-      twitter: {},
-      validation: {
-        og: { errors: [], warnings: [], score: 0 },
-        twitter: { errors: [], warnings: [], score: 0 }
-      }
-    };
-
-    // Collect Open Graph tags
-    document.querySelectorAll('meta[property^="og:"]').forEach(el => {
-      const property = el.getAttribute('property');
-      results.openGraph[property] = el.content;
-    });
-
-    // Collect Twitter tags
-    document.querySelectorAll('meta[name^="twitter:"]').forEach(el => {
-      results.twitter[el.name] = el.content;
-    });
-
-    // Validate Open Graph
-    const og = results.openGraph;
-    const ogValidation = results.validation.og;
-
-    // Required OG tags
-    if (!og['og:title']) {
-      ogValidation.errors.push('Missing og:title');
-    } else {
-      ogValidation.score += 20;
-      if (og['og:title'].length > 60) {
-        ogValidation.warnings.push('og:title exceeds 60 characters');
-      }
-    }
-
-    if (!og['og:description']) {
-      ogValidation.errors.push('Missing og:description');
-    } else {
-      ogValidation.score += 20;
-      if (og['og:description'].length > 200) {
-        ogValidation.warnings.push('og:description exceeds 200 characters');
-      }
-    }
-
-    if (!og['og:image']) {
-      ogValidation.errors.push('Missing og:image');
-    } else {
-      ogValidation.score += 25;
-      if (!og['og:image'].startsWith('https://')) {
-        ogValidation.warnings.push('og:image should use https://');
-      }
-    }
-
-    if (!og['og:url']) {
-      ogValidation.errors.push('Missing og:url');
-    } else {
-      ogValidation.score += 15;
-    }
-
-    if (!og['og:type']) {
-      ogValidation.warnings.push('Missing og:type (defaults to website)');
-    } else {
-      ogValidation.score += 10;
-    }
-
-    if (!og['og:site_name']) {
-      ogValidation.warnings.push('Missing og:site_name');
-    } else {
-      ogValidation.score += 5;
-    }
-
-    if (!og['og:locale']) {
-      ogValidation.warnings.push('Missing og:locale');
-    } else {
-      ogValidation.score += 5;
-    }
-
-    // Validate Twitter Cards
-    const tw = results.twitter;
-    const twValidation = results.validation.twitter;
-
-    if (!tw['twitter:card']) {
-      twValidation.errors.push('Missing twitter:card');
-    } else {
-      twValidation.score += 25;
-      const validCards = ['summary', 'summary_large_image', 'player', 'app'];
-      if (!validCards.includes(tw['twitter:card'])) {
-        twValidation.errors.push('Invalid twitter:card value');
-      }
-    }
-
-    if (!tw['twitter:title']) {
-      // Can fall back to og:title
-      if (og['og:title']) {
-        twValidation.warnings.push('No twitter:title, will use og:title');
-        twValidation.score += 15;
-      } else {
-        twValidation.errors.push('Missing twitter:title');
-      }
-    } else {
-      twValidation.score += 20;
-    }
-
-    if (!tw['twitter:description']) {
-      if (og['og:description']) {
-        twValidation.warnings.push('No twitter:description, will use og:description');
-        twValidation.score += 15;
-      } else {
-        twValidation.errors.push('Missing twitter:description');
-      }
-    } else {
-      twValidation.score += 20;
-    }
-
-    if (!tw['twitter:image']) {
-      if (og['og:image']) {
-        twValidation.warnings.push('No twitter:image, will use og:image');
-        twValidation.score += 15;
-      } else {
-        twValidation.errors.push('Missing twitter:image');
-      }
-    } else {
-      twValidation.score += 25;
-    }
-
-    if (!tw['twitter:site']) {
-      twValidation.warnings.push('Missing twitter:site (your @handle)');
-    } else {
-      twValidation.score += 10;
-    }
-
-    // Overall assessment
-    results.overall = {
-      ogComplete: ogValidation.errors.length === 0,
-      twitterComplete: twValidation.errors.length === 0,
-      ogScore: ogValidation.score,
-      twitterScore: twValidation.score,
-      totalScore: Math.round((ogValidation.score + twValidation.score) / 2)
-    };
-
-    return results;
-  }`
-})
-```
-
-### Step 4: Check Image Dimensions (if image URL found)
-
-If an og:image URL is found, you can check its dimensions:
-
-```javascript
-mcp__chrome-devtools__evaluate_script({
-  function: `(ogImageUrl) => {
-    return new Promise((resolve) => {
-      const img = new Image();
-      img.onload = () => {
-        resolve({
-          url: ogImageUrl,
-          width: img.naturalWidth,
-          height: img.naturalHeight,
-          aspectRatio: (img.naturalWidth / img.naturalHeight).toFixed(2),
-          meetsMinimum: img.naturalWidth >= 200 && img.naturalHeight >= 200,
-          recommended: img.naturalWidth >= 1200 && img.naturalHeight >= 630
-        });
-      };
-      img.onerror = () => {
-        resolve({
-          url: ogImageUrl,
-          error: 'Failed to load image'
-        });
-      };
-      img.src = ogImageUrl;
-    });
-  }`,
-  args: [{ uid: "<og_image_url>" }]
-})
-```
-
-### Step 5: Generate Report
+### Step 3: Generate Report
 
 ```markdown
 # Social Sharing Validation Report

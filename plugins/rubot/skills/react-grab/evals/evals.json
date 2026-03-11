@@ -1,0 +1,17 @@
+{
+  "skill_name": "react-grab",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I just scaffolded a new Vite + React project with npm create vite@latest. Can you set up react-grab so I can hover over components and copy their file paths? I only want it active in dev mode, not in production.",
+      "expected_output": "The agent installs react-grab as a dev dependency using npm install -D react-grab or bun add -D react-grab. It then edits index.html to add a script block before the closing </head> tag that conditionally imports react-grab only in development: <script type=\"module\">if (import.meta.env.DEV) { import('react-grab'); }</script>. The agent confirms that the setup uses import.meta.env.DEV (the Vite-specific dev check) so react-grab is automatically excluded from production builds. No changes to vite.config.ts are needed.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "There's a weird blue banner at the top of my page that says 'Beta access only' and I have no idea which component renders it. I'm running my React app on localhost:5173. Can you help me figure out which file it comes from using react-grab?",
+      "expected_output": "The agent confirms react-grab is installed and active in the dev environment. It instructs the user to hover over the blue 'Beta access only' banner in the browser and press Cmd+C (or Ctrl+C on Windows/Linux). This copies the element's HTML source, component name, and file path with line number to the clipboard in the format: '<div class=\"...\">Beta access only</div> in BetaBanner at components/beta-banner.tsx:12:5'. The agent explains that the copied output reveals exactly which component and file renders the banner, including the line number. If the banner is transient or hard to hover, the agent mentions using react-grab's page freeze feature to halt React updates and preserve the current DOM state for inspection.",
+      "files": []
+    }
+  ]
+}

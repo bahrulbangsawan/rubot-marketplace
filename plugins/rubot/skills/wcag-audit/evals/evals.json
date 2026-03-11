@@ -1,0 +1,17 @@
+{
+  "skill_name": "wcag-audit",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "run a full WCAG 2.2 audit on our landing page at http://localhost:3000, it has a hero section, feature cards grid, testimonial carousel, pricing table, and a contact form at the bottom. we want to hit AA compliance before launch next week",
+      "expected_output": "Runs a three-phase audit: Phase 1 automated testing with axe-core (npx axe with wcag2aa,wcag22aa rules) and Lighthouse accessibility scan. Phase 2 semi-automated codebase scan looking for images missing alt text, interactive elements without accessible names, missing form labels, positive tabindex, hardcoded color values, and missing lang attribute. Phase 3 manual testing covering keyboard navigation through all interactive elements (carousel controls, pricing toggles, form fields), screen reader testing with VoiceOver, visual testing at 200% and 400% zoom, and contrast checking. Produces a structured audit report with overall score, category breakdown across all 7 categories (Structure & Semantics, Keyboard & Focus, Color & Contrast, Forms & Validation, Images & Media, ARIA & Screen Reader, Navigation & Wayfinding), issues categorized by severity (Critical/High/Medium/Low) with WCAG success criteria references, and a phased remediation plan with estimated effort.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "I need an accessibility audit focused on our multi-step registration form, it's 4 steps with personal info, address, payment, and confirmation. users have been complaining they cant tab through it properly and the error messages are confusing. page is at /register",
+      "expected_output": "Focuses the audit on form-specific WCAG criteria: SC 1.3.1 (all inputs have programmatic labels via label htmlFor or aria-label), SC 1.3.5 (autocomplete attributes on name/email/address/card fields), SC 2.1.1 (full keyboard operability through all 4 steps), SC 2.4.3 (logical focus order within and between steps), SC 2.4.7 (visible focus indicators on all inputs and buttons), SC 3.3.1 (error messages clearly identify which field failed and why), SC 3.3.2 (required fields indicated with text and aria-required), SC 3.3.3 (error suggestions provided for known patterns like email format), SC 3.3.7 (no redundant data entry across steps), SC 4.1.2 (all controls have accessible names), SC 4.1.3 (validation errors announced via aria-live or role alert). Tests tab order between form steps, checks that progress indicator is accessible, verifies error summary links to specific fields, and confirms step transitions announce to screen readers. Generates a report with findings organized by step and severity.",
+      "files": []
+    }
+  ]
+}

@@ -1,0 +1,82 @@
+[
+  {
+    "query": "Our axe-core scan found 23 color contrast violations on the dashboard page. Most are muted-foreground text on white background failing the 4.5:1 ratio. How do I fix these using OKLCH lightness adjustments?",
+    "should_trigger": true
+  },
+  {
+    "query": "The modal dialog in src/components/settings-dialog.tsx doesn't trap focus. When I Tab through it, focus escapes to the page behind. Also, pressing Escape doesn't close it.",
+    "should_trigger": true
+  },
+  {
+    "query": "Add a skip-to-content link as the first focusable element on every page. It should be visually hidden but appear on focus, and jump to main-content when activated.",
+    "should_trigger": true
+  },
+  {
+    "query": "Our icon-only buttons have no accessible names. The edit, delete, and share buttons in our card component are just <Button size='icon'><Pencil /></Button> with no aria-label.",
+    "should_trigger": true
+  },
+  {
+    "query": "Make our form at src/components/contact-form.tsx accessible. Inputs are missing label associations, required fields have no indication, and validation errors aren't linked to their fields with aria-describedby.",
+    "should_trigger": true
+  },
+  {
+    "query": "When users navigate between routes in our TanStack Start SPA, screen readers don't announce the new page. I need a route announcer with aria-live='assertive' and focus management that moves focus to #main-content.",
+    "should_trigger": true
+  },
+  {
+    "query": "Our toast notifications use a custom component but screen readers never announce them. I need to wrap the toast container in aria-live='polite' and give each toast role='status'.",
+    "should_trigger": true
+  },
+  {
+    "query": "Fix the heading hierarchy on our pricing page. It goes h1 -> h3 -> h2 -> h4 with no logical structure. Screen reader users navigating by headings get a confusing outline.",
+    "should_trigger": true
+  },
+  {
+    "query": "Our animations don't respect prefers-reduced-motion. Users who have motion sensitivity enabled still see the slide-in transitions and auto-playing carousels. Add the media query to disable animations.",
+    "should_trigger": true
+  },
+  {
+    "query": "The dropdown menu in our navbar uses div and span elements with onClick handlers. Keyboard users can't Tab to it or use arrow keys to navigate items. It needs proper role='menu' with roving tabindex.",
+    "should_trigger": true
+  },
+  {
+    "query": "Run a full WCAG 2.2 audit on our website and generate a report with all violations categorized by severity, affected pages, and WCAG success criteria references.",
+    "should_trigger": false
+  },
+  {
+    "query": "Set up automated accessibility testing with axe-core in our Playwright test suite. I want a11y tests to run on every page during CI and fail the build on critical violations.",
+    "should_trigger": false
+  },
+  {
+    "query": "Write an accessibility statement page for our website that describes our WCAG 2.2 AA compliance level, known issues, and how users can report accessibility problems.",
+    "should_trigger": false
+  },
+  {
+    "query": "Our site needs to work on screen sizes down to 320px wide. The navigation menu overflows and creates horizontal scrolling. I need a responsive hamburger menu for mobile.",
+    "should_trigger": false
+  },
+  {
+    "query": "Implement dark mode toggle using next-themes. Users click a sun/moon button in the navbar to switch themes. Store the preference in localStorage.",
+    "should_trigger": false
+  },
+  {
+    "query": "The text on our hero banner is hard to read because the background image has low contrast behind the white text. I need a gradient overlay on the image.",
+    "should_trigger": false
+  },
+  {
+    "query": "Set up ESLint with eslint-plugin-jsx-a11y to catch accessibility issues during development. Add rules for alt text, label associations, and ARIA attributes.",
+    "should_trigger": false
+  },
+  {
+    "query": "Our landing page loads too slowly on mobile. Lighthouse shows a performance score of 35. I need to optimize images, reduce bundle size, and improve Core Web Vitals.",
+    "should_trigger": false
+  },
+  {
+    "query": "Add internationalization support with translated ARIA labels. When the language is Indonesian, screen reader text like 'Close dialog' should read 'Tutup dialog'.",
+    "should_trigger": false
+  },
+  {
+    "query": "I need to add SEO meta tags and structured data to our product pages. Each product should have schema.org Product markup with name, price, and availability.",
+    "should_trigger": false
+  }
+]

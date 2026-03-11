@@ -1,0 +1,32 @@
+{
+  "skill": "global-layout",
+  "configuration": "with_skill",
+  "expectations": [
+    {
+      "text": "Response creates navbar component with sticky positioning",
+      "passed": true,
+      "evidence": "Creates src/components/layout/navbar.tsx with className 'sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur'. Explicitly notes 'Sticky positioning with sticky top-0 z-50 -- this keeps the header pinned to the top on scroll.'"
+    },
+    {
+      "text": "Response creates footer component",
+      "passed": true,
+      "evidence": "Creates src/components/layout/footer.tsx with copyright, privacy, and terms links. Uses responsive layout with flex-col on mobile and sm:flex-row on larger screens."
+    },
+    {
+      "text": "Response modifies __root.tsx to wrap Outlet with layout",
+      "passed": true,
+      "evidence": "Shows app/routes/__root.tsx with createRootRoute importing Navbar and Footer, wrapping <Outlet /> between them. Explains 'TanStack Router renders every route as a child of __root.tsx via the <Outlet /> slot.'"
+    },
+    {
+      "text": "Response uses semantic HTML (header, nav, main, footer)",
+      "passed": true,
+      "evidence": "Navbar uses <header> and <nav> elements, content area uses <main>, footer uses <footer>. Verification checklist explicitly lists 'Semantic elements used: <header>, <nav>, <main>, <footer>'."
+    },
+    {
+      "text": "Response uses min-h-dvh flex flex-col pattern",
+      "passed": true,
+      "evidence": "Root layout uses className 'flex min-h-dvh flex-col' on the outer div. Includes explanation: 'Why min-h-dvh instead of min-h-screen: The dvh (dynamic viewport height) unit accounts for mobile browser chrome like the address bar and toolbar.'"
+    }
+  ],
+  "pass_rate": 1.0
+}

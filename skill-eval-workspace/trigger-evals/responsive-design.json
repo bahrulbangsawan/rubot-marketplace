@@ -1,0 +1,82 @@
+[
+  {
+    "query": "the cards on the pricing page are cut off on iPhone 13 — they overflow horizontally and cause a sideways scroll",
+    "should_trigger": true
+  },
+  {
+    "query": "convert all the px values in the hero section to rem — I see w-[400px], text-[18px], p-[20px], and gap-[15px]",
+    "should_trigger": true
+  },
+  {
+    "query": "implement a mobile drawer menu using the Sheet component that replaces the desktop navbar below the md breakpoint",
+    "should_trigger": true
+  },
+  {
+    "query": "audit the landing page for responsive issues — check all 4 breakpoints (xs, sm, md, lg) for overflow, clipping, and layout breakage",
+    "should_trigger": true
+  },
+  {
+    "query": "the hero section doesn't fill the full viewport on mobile because h-screen doesn't account for the Safari address bar",
+    "should_trigger": true
+  },
+  {
+    "query": "make the carousel show 1 card per slide on mobile (basis-full), 2 on sm, and 3 on lg — right now it shows partial cards on small screens",
+    "should_trigger": true
+  },
+  {
+    "query": "set up custom Tailwind breakpoints at sm:576px, md:768px, lg:992px, xl:1200px in tailwind.config.ts",
+    "should_trigger": true
+  },
+  {
+    "query": "the card border-radius uses rounded-[12px] which doesn't scale — should I switch to rounded-[10%] or a rem value?",
+    "should_trigger": true
+  },
+  {
+    "query": "make the footer grid go from 1 column on mobile to 2 columns on sm to 4 columns on lg with progressive spacing",
+    "should_trigger": true
+  },
+  {
+    "query": "the CTA buttons are too small to tap on mobile — they need to meet the 2.75rem minimum touch target size",
+    "should_trigger": true
+  },
+  {
+    "query": "add a dark mode toggle using OKLCH color variables and CSS custom properties",
+    "should_trigger": false
+  },
+  {
+    "query": "run agent-browser with viewport set to 375x667 to test if the login page works on iPhone SE",
+    "should_trigger": false
+  },
+  {
+    "query": "implement lazy loading for the product images below the fold to improve Largest Contentful Paint",
+    "should_trigger": false
+  },
+  {
+    "query": "add alt text and ARIA labels to all images and icons for WCAG 2.1 AA compliance",
+    "should_trigger": false
+  },
+  {
+    "query": "the layout is broken because of a hydration mismatch — the server renders the desktop nav but the client renders the mobile nav",
+    "should_trigger": false
+  },
+  {
+    "query": "create a sidebar dashboard layout using the shadcn/ui Sidebar component with collapsible navigation groups",
+    "should_trigger": false
+  },
+  {
+    "query": "add container queries to the product card so it adapts based on its parent container width, not the viewport",
+    "should_trigger": false
+  },
+  {
+    "query": "set up a responsive ECharts bar chart that resizes correctly when the browser window changes",
+    "should_trigger": false
+  },
+  {
+    "query": "generate responsive OG images at 1200x630 for social sharing with proper text scaling",
+    "should_trigger": false
+  },
+  {
+    "query": "implement code splitting with React.lazy so the admin panel bundle doesn't load on the public pages",
+    "should_trigger": false
+  }
+]

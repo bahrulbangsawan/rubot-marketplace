@@ -1,0 +1,82 @@
+[
+  {
+    "query": "Set up a TanStack DB collection for our todos with Zod schema validation. I need insert, update, and delete mutation handlers that call our REST API at /api/todos. Include getKey using the id field.",
+    "should_trigger": true
+  },
+  {
+    "query": "Our useLiveQuery hook isn't updating the UI when I call todoCollection.update(). The data shows correctly on initial load but mutations don't trigger re-renders. Am I using the wrong import?",
+    "should_trigger": true
+  },
+  {
+    "query": "Implement cross-collection joins between our orders collection and customers collection. I need a live query that shows each order with the customer name by joining on customerId, filtered to only active orders.",
+    "should_trigger": true
+  },
+  {
+    "query": "Migrate our existing TanStack Query setup to TanStack DB using queryCollectionOptions. We have a useQuery for /api/products with queryKey ['products']. I want to keep the same API but get reactive live queries.",
+    "should_trigger": true
+  },
+  {
+    "query": "Set up ElectricSQL sync for our tasks collection. The Electric shape should filter by the current user's ID and sync the tasks table from our Postgres database. Include onInsert and onUpdate handlers.",
+    "should_trigger": true
+  },
+  {
+    "query": "I need optimistic mutations for our kanban board. When a user drags a task to a different column, the status should update instantly in the UI and sync to the server in the background. If the server rejects it, roll back.",
+    "should_trigger": true
+  },
+  {
+    "query": "Create a batch transaction that inserts 20 sample tasks into our collection without auto-committing each one. Use createTransaction with autoCommit: false, then commit all at once.",
+    "should_trigger": true
+  },
+  {
+    "query": "Our app shows the previous user's data after logout and re-login with a different account. How do I clear all TanStack DB collections when the auth state changes?",
+    "should_trigger": true
+  },
+  {
+    "query": "Build an offline-first notes app using TanStack DB with PowerSync as the sync engine. Notes should be editable without network and sync when connectivity returns.",
+    "should_trigger": true
+  },
+  {
+    "query": "I need to add a reactive query with where, orderBy, and limit operators. Show me how to use eq, and, gt from @tanstack/db to filter tasks where status equals 'active' AND priority is greater than 3, sorted by createdAt desc, limited to 20.",
+    "should_trigger": true
+  },
+  {
+    "query": "Set up a PostgreSQL database on Neon with Drizzle ORM schema. Create users and posts tables with proper relations and generate migration files.",
+    "should_trigger": false
+  },
+  {
+    "query": "Implement React Query with useQuery and useMutation for our CRUD API. I need loading states, error handling, and cache invalidation when a mutation succeeds.",
+    "should_trigger": false
+  },
+  {
+    "query": "Build a real-time chat using WebSockets and Supabase Realtime. Messages should appear instantly for all connected users when someone sends a message.",
+    "should_trigger": false
+  },
+  {
+    "query": "I need to add IndexedDB storage for caching API responses in the browser. Use idb-keyval to store and retrieve JSON data so the app loads faster on repeat visits.",
+    "should_trigger": false
+  },
+  {
+    "query": "Set up Zustand store for our shopping cart state with add, remove, and update quantity actions. The cart should persist in localStorage across sessions.",
+    "should_trigger": false
+  },
+  {
+    "query": "Create a D1 database on Cloudflare Workers and write SQL queries to insert and select records. The data lives on the edge, not in the client.",
+    "should_trigger": false
+  },
+  {
+    "query": "Add TanStack Form to our checkout page with field validation using Zod schemas. I need onChange validation for email and onSubmit validation for the full form.",
+    "should_trigger": false
+  },
+  {
+    "query": "Implement Server-Sent Events for real-time stock price updates. The server pushes new prices every second and the client displays them in a live ticker.",
+    "should_trigger": false
+  },
+  {
+    "query": "I need to sync data between my React app and Firebase Firestore in real time. Use onSnapshot listeners to update the UI when documents change.",
+    "should_trigger": false
+  },
+  {
+    "query": "Build a reactive store using Jotai atoms for our multi-step form wizard. Each step's data should be stored in separate atoms and combined on submission.",
+    "should_trigger": false
+  }
+]

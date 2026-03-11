@@ -24,7 +24,7 @@ Validation report template: `~/.claude/plugins/rubot/templates/validation-report
 ## Prerequisites
 
 1. **Load workspace configuration**:
-   - Read `.claude/rubot/rubot.local.md` for validation rules
+   - Read `.claude/rubot/rubot.local.yaml` for validation rules
    - Find the most recent plan file (either `plan.md` or latest `*-plan.md`)
 
 2. **Identify plan reference**:

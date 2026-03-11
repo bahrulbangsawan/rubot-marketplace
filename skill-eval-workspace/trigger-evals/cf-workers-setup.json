@@ -1,0 +1,82 @@
+[
+  {
+    "query": "Deploy our TanStack Start app to Cloudflare Workers — install wrangler, generate wrangler.jsonc, add the cloudflare Vite plugin, and verify the build",
+    "should_trigger": true
+  },
+  {
+    "query": "Add Cloudflare Workers support to our existing Vite React project. We use bun as the package manager and the app is in apps/web/ in a monorepo",
+    "should_trigger": true
+  },
+  {
+    "query": "Run wrangler init on our project and set up the config for edge deployment. We need nodejs_compat flag and observability enabled",
+    "should_trigger": true
+  },
+  {
+    "query": "Our Cloudflare Workers build is failing with 'Node.js built-in module not found' — I think we're missing the compatibility flag in wrangler.jsonc",
+    "should_trigger": true
+  },
+  {
+    "query": "Migrate our Astro site from Vercel to Cloudflare Workers — install @astrojs/cloudflare adapter, create wrangler config, and add the deploy script",
+    "should_trigger": true
+  },
+  {
+    "query": "Set up a vanilla Cloudflare Worker with wrangler.toml and a basic src/index.ts that handles fetch requests — no framework, just a bare worker",
+    "should_trigger": true
+  },
+  {
+    "query": "The wrangler deploy command says 'not authenticated'. Walk me through the login flow and then configure wrangler.jsonc with our project name and today's compatibility_date",
+    "should_trigger": true
+  },
+  {
+    "query": "Our dist/server/ directory is empty after running vite build even though wrangler.jsonc exists. The cloudflare() plugin might not be first in the Vite plugins array",
+    "should_trigger": true
+  },
+  {
+    "query": "We have a Remix app with Vite and want to deploy to Cloudflare Workers. Set up @remix-run/cloudflare, create the wrangler config, and make sure the build produces the right output structure",
+    "should_trigger": true
+  },
+  {
+    "query": "I need to do my first production deploy to Cloudflare. Detect our framework from package.json, install the right deps, generate config, add deploy script, and run a build verification",
+    "should_trigger": true
+  },
+  {
+    "query": "Set up a Cloudflare KV namespace and bind it to our worker so we can cache API responses at the edge",
+    "should_trigger": false
+  },
+  {
+    "query": "Configure Cloudflare Pages with a custom domain and set up the _redirects file for our static site",
+    "should_trigger": false
+  },
+  {
+    "query": "Write a Cloudflare Worker that proxies requests to our origin server and adds custom headers for caching",
+    "should_trigger": false
+  },
+  {
+    "query": "Deploy our Next.js app to Vercel and configure the vercel.json with rewrites for our API routes",
+    "should_trigger": false
+  },
+  {
+    "query": "Set up a CI/CD pipeline in GitHub Actions that runs tests and deploys to our staging server on push to develop",
+    "should_trigger": false
+  },
+  {
+    "query": "Add Cloudflare R2 bucket storage to our existing Worker for uploading and serving user profile images",
+    "should_trigger": false
+  },
+  {
+    "query": "Configure our Cloudflare DNS to point to our AWS EC2 instance with an A record and enable proxying",
+    "should_trigger": false
+  },
+  {
+    "query": "Build a serverless function on AWS Lambda that processes webhooks from Stripe and stores events in DynamoDB",
+    "should_trigger": false
+  },
+  {
+    "query": "Our Docker container deployment to Fly.io keeps timing out on health checks. Help me fix the Dockerfile and fly.toml configuration",
+    "should_trigger": false
+  },
+  {
+    "query": "Set up Cloudflare Durable Objects for real-time collaboration features in our app — need to manage WebSocket connections with state",
+    "should_trigger": false
+  }
+]

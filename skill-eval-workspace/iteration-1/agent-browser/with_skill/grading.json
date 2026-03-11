@@ -1,0 +1,32 @@
+{
+  "skill": "agent-browser",
+  "configuration": "with_skill",
+  "expectations": [
+    {
+      "text": "Response uses agent-browser open command to navigate",
+      "passed": true,
+      "evidence": "Step 1: \"agent-browser open http://localhost:3000/login\" -- uses the open command to navigate to the login page."
+    },
+    {
+      "text": "Response uses agent-browser snapshot to identify elements",
+      "passed": true,
+      "evidence": "Step 2: \"agent-browser snapshot -i\" -- snapshots interactive elements and shows example output with refs like '@e1 - textbox \"Email\"', '@e2 - textbox \"Password\"', '@e3 - button \"Sign In\"'."
+    },
+    {
+      "text": "Response uses agent-browser fill for form inputs",
+      "passed": true,
+      "evidence": "Step 3: \"agent-browser fill @e1 \"admin@mycompany.com\"\" and Step 4: \"agent-browser fill @e2 \"Test1234!\"\" -- uses fill command for both email and password inputs."
+    },
+    {
+      "text": "Response uses agent-browser click for the sign-in button",
+      "passed": true,
+      "evidence": "Step 5: \"agent-browser click @e3\" -- uses click command for the sign-in button."
+    },
+    {
+      "text": "Response verifies 'Welcome back' text appears after login",
+      "passed": true,
+      "evidence": "Step 6: \"agent-browser wait --text \"Welcome back\"\" -- waits for and verifies the 'Welcome back' text appears on the page after login."
+    }
+  ],
+  "pass_rate": 1.0
+}

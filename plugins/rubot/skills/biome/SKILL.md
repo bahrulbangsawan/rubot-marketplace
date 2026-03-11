@@ -1,21 +1,63 @@
 ---
 name: biome
+version: 1.1.0
 description: |
-  Implements Biome for fast linting and formatting in JavaScript/TypeScript projects. Use when configuring code quality tools, fixing lint errors, setting up formatting rules, or migrating from ESLint/Prettier.
+  Biome: unified linting, formatting, and import sorting for JavaScript/TypeScript projects (replaces ESLint + Prettier). MUST activate for: biome.json configuration, bunx biome check, bunx biome ci, bunx biome lint, bunx biome format, biome init, biome-ignore comments, biome check --write, biome check --staged, and any @biomejs/biome usage. Also activate for lint rules: noUnusedVariables, noUnusedImports, noExplicitAny, noConsoleLog, useConst, useTemplate, noDoubleEquals, noNonNullAssertion, useExhaustiveDependencies, useSortedClasses (Tailwind class sorting with cn/clsx). Also activate when: setting up code quality tooling, fixing lint/format violations, migrating from ESLint/Prettier to Biome, adding pre-commit hooks for linting staged files, configuring overrides to disable rules for test files, setting up VS Code format-on-save with Biome, organizing/sorting imports, biome ci passes locally but fails in GitHub Actions (version drift), or adding Tailwind class sorting via nursery rules. Do NOT activate for: TypeScript type errors (tsc --noEmit), Prettier configuration (.prettierrc), ESLint setup (@typescript-eslint), general build failures, Drizzle migration errors, husky with tsc, SWC configuration, JSON API formatting, or tailwindcss-animate plugin setup.
 
-  Covers: configuration, lint rules, formatting, imports organization, CI integration, and error resolution.
+  Covers: biome.json configuration, lint rules, formatter options, import sorting, rule suppression (biome-ignore), CI integration (biome ci), ESLint/Prettier migration, VS Code IDE setup, pre-commit hooks, overrides for test files, and common error resolution.
+agents:
+  - debug-master
 ---
 
 # Biome Skill
 
-You are an expert in Biome for fast, unified linting and formatting in JavaScript/TypeScript projects.
+> One tool to lint, format, and sort imports — 10-100x faster than ESLint + Prettier combined
+
+## When to Use
+
+- Setting up code quality tooling for a new JavaScript/TypeScript project
+- Fixing linting errors or formatting violations reported by Biome
+- Migrating from ESLint and/or Prettier to a single unified tool
+- Configuring lint rules, formatter options, or import sorting in `biome.json`
+- Suppressing specific lint rules with `biome-ignore` comments
+- Integrating Biome into CI pipelines or pre-commit hooks
+- Resolving conflicts between linter and formatter configurations
+- Debugging why `biome check` passes locally but fails in CI
+
+## Quick Reference
+
+| Command | What It Does |
+|---------|-------------|
+| `bunx biome init` | Create a starter `biome.json` config file |
+| `bunx biome check .` | Run lint + format + import checks (read-only) |
+| `bunx biome check --write .` | Run all checks and auto-fix safe issues |
+| `bunx biome check --write --unsafe .` | Auto-fix including unsafe transformations |
+| `bunx biome lint .` | Run linter only (no formatting) |
+| `bunx biome lint --write .` | Run linter and auto-fix safe lint issues |
+| `bunx biome format .` | Check formatting only (no fixes) |
+| `bunx biome format --write .` | Apply formatting fixes |
+| `bunx biome ci .` | CI mode — fails on any issue, zero config |
+| `bunx biome migrate eslint --write` | Migrate ESLint config to Biome rules |
+| `bunx biome migrate prettier --write` | Migrate Prettier config to Biome formatter |
+| `bunx biome check --staged --no-errors-on-unmatched` | Check only git-staged files (for pre-commit) |
 
 ## Core Principles
 
-1. **Speed First**: Biome is built in Rust for maximum performance
-2. **Unified Tooling**: One tool for linting, formatting, and import sorting
-3. **Sensible Defaults**: Works great out of the box
-4. **Type-Aware**: Leverages TypeScript for better analysis
+### 1. Single Tool Replaces ESLint + Prettier
+
+**WHY:** Running ESLint and Prettier separately creates configuration drift, conflicting rules, and slower pipelines. ESLint handles linting, Prettier handles formatting, and they often fight over semicolons, quotes, and spacing. Biome unifies linting, formatting, and import sorting into one tool with one config file. Zero conflicts, one dependency, one command.
+
+### 2. Rust-Powered Speed Changes the Workflow
+
+**WHY:** Biome is written in Rust and processes files 10-100x faster than ESLint + Prettier. On a 5,000-file codebase, ESLint might take 30-60 seconds while Biome finishes in under 1 second. This speed makes format-on-save instant, pre-commit hooks painless, and CI pipelines faster. Developers stop disabling checks because they no longer slow anything down.
+
+### 3. Sensible Defaults Eliminate Configuration Bikeshedding
+
+**WHY:** Biome ships recommended rules that cover the most impactful lint checks and a formatter that matches common community conventions. Teams can start with zero configuration and customize incrementally rather than spending days debating ESLint presets and Prettier options. The `biome init` command generates a working config in seconds.
+
+### 4. Type-Aware Analysis Catches More Bugs
+
+**WHY:** Biome understands TypeScript natively, not through a plugin. This lets it enforce rules like `noExplicitAny`, `noUnusedVariables`, and `useConst` with full type context. The result is fewer false positives and more meaningful warnings compared to tools that treat TypeScript as an afterthought.
 
 ## Installation
 
@@ -150,19 +192,19 @@ bunx @biomejs/biome init
 
 ## CLI Commands
 
-### Check (Lint + Format Check)
+### Check (Lint + Format + Import Sorting)
 
 ```bash
-# Check all files
+# Check all files (read-only, reports issues)
 bunx biome check .
 
-# Check with auto-fix
+# Check with auto-fix for safe fixes
 bunx biome check --write .
 
-# Check specific files
+# Check specific directory
 bunx biome check src/
 
-# Check with unsafe fixes (use with caution)
+# Check with unsafe fixes (renames, deletions — review carefully)
 bunx biome check --write --unsafe .
 ```
 
@@ -179,7 +221,7 @@ bunx biome lint --write .
 ### Format Only
 
 ```bash
-# Check formatting
+# Check formatting (reports violations, no changes)
 bunx biome format .
 
 # Apply formatting
@@ -314,79 +356,35 @@ console.log('More debug');
 ### noUnusedVariables
 
 ```typescript
-// Error
-const unused = 'value';
-
-// Fix 1: Remove if truly unused
-// (delete the line)
-
+// Error: const unused = 'value';
+// Fix 1: Remove the unused variable entirely
 // Fix 2: Prefix with underscore if intentionally unused
 const _intentionallyUnused = 'value';
-
-// Fix 3: Use the variable
-console.log(unused);
 ```
 
 ### noExplicitAny
 
 ```typescript
-// Error
-function process(data: any) {}
-
-// Fix 1: Define proper type
-interface Data {
-  id: number;
-  name: string;
-}
-function process(data: Data) {}
-
-// Fix 2: Use unknown for truly unknown data
-function process(data: unknown) {
-  if (isData(data)) {
-    // Type is narrowed
-  }
-}
-
+// Error: function process(data: any) {}
+// Fix 1: Define a proper type
+function process(data: { id: number; name: string }) {}
+// Fix 2: Use unknown + type narrowing
+function process(data: unknown) { if (isData(data)) { /* narrowed */ } }
 // Fix 3: Use generics
 function process<T>(data: T) {}
 ```
 
-### useConst
+### useConst / noNonNullAssertion / useTemplate
 
 ```typescript
-// Error
-let value = 'constant';
+// useConst — Error: let value = 'constant';
+const value = 'constant'; // Fix: use const for non-reassigned variables
 
-// Fix: Use const for non-reassigned variables
-const value = 'constant';
-```
+// noNonNullAssertion — Error: const name = user!.name;
+const name = user?.name ?? 'default'; // Fix: optional chaining + nullish coalescing
 
-### noNonNullAssertion
-
-```typescript
-// Error
-const name = user!.name;
-
-// Fix 1: Optional chaining
-const name = user?.name;
-
-// Fix 2: Nullish coalescing
-const name = user?.name ?? 'default';
-
-// Fix 3: Type guard
-if (user) {
-  const name = user.name;
-}
-```
-
-### useTemplate
-
-```typescript
-// Error
-const message = 'Hello ' + name + '!';
-
-// Fix: Use template literal
-const message = `Hello ${name}!`;
+// useTemplate — Error: const msg = 'Hello ' + name + '!';
+const msg = `Hello ${name}!`; // Fix: use template literal
 ```
 
 ## CI Integration
@@ -427,6 +425,18 @@ bunx @biomejs/biome migrate eslint --write
 bunx @biomejs/biome migrate prettier --write
 ```
 
+### Post-Migration Cleanup
+
+After migration, remove the old tooling to avoid conflicts:
+
+```bash
+# Remove ESLint and Prettier dependencies
+bun remove eslint prettier eslint-config-prettier eslint-plugin-prettier @typescript-eslint/eslint-plugin @typescript-eslint/parser
+
+# Delete old config files
+rm -f .eslintrc .eslintrc.js .eslintrc.json .eslintrc.yml .prettierrc .prettierrc.js .prettierrc.json .prettierrc.yml .prettierignore
+```
+
 ### Rule Mapping
 
 | ESLint Rule | Biome Rule |
@@ -461,20 +471,50 @@ bunx @biomejs/biome migrate prettier --write
 }
 ```
 
-## Best Practices
+## Troubleshooting
 
-1. **Enable All Recommended Rules**: Start with `"recommended": true`
-2. **Customize Incrementally**: Only override rules that conflict with project needs
-3. **Use CI Mode**: Run `biome ci` in CI for zero-config checking
-4. **Format on Save**: Enable auto-formatting in IDE
-5. **Staged Files Only**: Use `--staged` in pre-commit hooks for speed
+| Problem | Cause | Solution |
+|---------|-------|----------|
+| Biome conflicts with Prettier | Both tools try to format the same files with different rules | Remove Prettier entirely (`bun remove prettier`) and delete `.prettierrc`; Biome replaces it |
+| Rule too strict for this case | A specific lint rule flags valid code | Add `// biome-ignore lint/category/ruleName: reason` above the line with a clear justification |
+| CI fails but local passes | Different Biome versions between local and CI | Pin exact version in `package.json` (no `^`), run `bun install --frozen-lockfile` in CI |
+| `biome check` reports nothing | Files are excluded or config is not found | Verify `files.include`/`files.ignore` in `biome.json`; run `bunx biome check --verbose .` to see which files are processed |
+| Format-on-save not working in VS Code | Wrong default formatter or extension not installed | Install the Biome VS Code extension, set `"editor.defaultFormatter": "biomejs.biome"` per language |
+| Import sorting not applied | `organizeImports` is disabled in config | Set `"organizeImports": { "enabled": true }` in `biome.json` |
+| Unsafe fixes cause unexpected changes | `--unsafe` applies transformations that change behavior | Review changes after `--write --unsafe` with `git diff`; use `--write` alone for safe fixes only |
+| ESLint migration misses rules | Some ESLint rules have no Biome equivalent | Check Biome docs for coverage; manually configure missing rules or accept the gap |
 
-## When to Apply This Skill
+## Constraints
 
-- Setting up linting in new projects
-- Fixing lint errors and warnings
-- Configuring formatting rules
-- Migrating from ESLint/Prettier
-- Setting up CI pipelines for code quality
-- Debugging rule violations
-- Customizing rules for project needs
+- Biome does NOT support all ESLint rules — check the [rules reference](https://biomejs.dev/linter/rules/) for current coverage
+- Biome does NOT read `.eslintrc` or `.prettierrc` at runtime — you must migrate configs explicitly
+- The `--unsafe` flag can rename variables or remove code — never run it without reviewing the diff
+- `biome-ignore` comments MUST include a reason after the colon or the suppression is considered incomplete
+- Biome does NOT support custom rule plugins — if you need custom lint rules, you cannot extend Biome
+- The `overrides` array in `biome.json` applies in order — later entries override earlier ones for the same files
+- Biome requires Node.js 14+ or Bun — it does not run in browsers or Deno
+- The `biome ci` command exits with a non-zero code on ANY issue — it is stricter than `biome check`
+
+## Verification Checklist
+
+- [ ] `biome.json` exists at the project root with `$schema` field set
+- [ ] `bunx biome check .` exits with zero errors and zero warnings
+- [ ] `bunx biome format .` reports no formatting issues
+- [ ] Import sorting is enabled and `bunx biome check --organize-imports-enabled=true .` passes
+- [ ] All `biome-ignore` comments include a reason after the colon
+- [ ] No Prettier or ESLint configs remain in the project (no `.eslintrc*`, `.prettierrc*`)
+- [ ] No Prettier or ESLint packages remain in `package.json` devDependencies
+- [ ] `package.json` scripts use `biome` commands (not `eslint` or `prettier`)
+- [ ] VS Code settings configure Biome as the default formatter
+- [ ] CI pipeline uses `bunx biome ci .` (not `biome check`)
+- [ ] Biome version is pinned (no `^`) in `package.json` to prevent CI drift
+- [ ] Pre-commit hook uses `--staged` flag for performance
+
+## References
+
+- [Biome Official Documentation](https://biomejs.dev/)
+- [Biome Lint Rules Reference](https://biomejs.dev/linter/rules/)
+- [Biome Formatter Options](https://biomejs.dev/formatter/)
+- [Biome Configuration Reference](https://biomejs.dev/reference/configuration/)
+- [Biome VS Code Extension](https://marketplace.visualstudio.com/items?itemName=biomejs.biome)
+- [Biome GitHub Repository](https://github.com/biomejs/biome)

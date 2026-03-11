@@ -1,11 +1,18 @@
 ---
 name: rubot-seo-check-schema
-description: Validate structured data (JSON-LD) on a page
+description: Validate structured data (JSON-LD) on a page. Use when checking Schema.org markup, verifying Google Rich Results eligibility, debugging schema validation errors, or auditing existing JSON-LD implementations for correctness.
+argument-hint: <url>
+allowed-tools:
+  - WebFetch
+  - AskUserQuestion
+  - Read
+  - Bash
+  - Glob
 ---
 
 # SEO Check Schema Command
 
-Validate Schema.org structured data implementation on a page using Chrome DevTools.
+Validate Schema.org structured data implementation on a page.
 
 ## Execution Steps
 
@@ -27,121 +34,16 @@ questions:
     multiSelect: false
 ```
 
-### Step 2: Navigate to Page
+### Step 2: Fetch and Analyze Page
 
-```
-mcp__chrome-devtools__navigate_page({
-  url: "<target_url>",
-  type: "url"
-})
-```
+Use WebFetch to retrieve the target URL. Parse the HTML to find all `<script type="application/ld+json">` blocks and validate:
 
-### Step 3: Extract and Validate Structured Data
+- JSON syntax validity
+- Presence of `@context` (should include schema.org)
+- Presence of `@type`
+- Type-specific required/recommended properties (Organization, Article, Product, BreadcrumbList, FAQPage, WebSite)
 
-```javascript
-mcp__chrome-devtools__evaluate_script({
-  function: `() => {
-    const scripts = document.querySelectorAll('script[type="application/ld+json"]');
-    const results = {
-      url: window.location.href,
-      timestamp: new Date().toISOString(),
-      count: scripts.length,
-      schemas: []
-    };
-
-    scripts.forEach((script, index) => {
-      const result = {
-        index,
-        raw: script.textContent,
-        parsed: null,
-        valid: false,
-        errors: [],
-        warnings: []
-      };
-
-      try {
-        const data = JSON.parse(script.textContent);
-        result.parsed = data;
-        result.valid = true;
-
-        // Basic validation
-        if (!data['@context']) {
-          result.errors.push('Missing @context');
-          result.valid = false;
-        } else if (!data['@context'].includes('schema.org')) {
-          result.warnings.push('@context should include schema.org');
-        }
-
-        if (!data['@type']) {
-          result.errors.push('Missing @type');
-          result.valid = false;
-        }
-
-        // Type-specific validation
-        const type = data['@type'];
-        result.type = type;
-
-        if (type === 'Organization') {
-          if (!data.name) result.errors.push('Organization: missing name');
-          if (!data.url) result.warnings.push('Organization: missing url');
-          if (!data.logo) result.warnings.push('Organization: missing logo');
-        }
-
-        if (type === 'Article') {
-          if (!data.headline) result.errors.push('Article: missing headline');
-          if (!data.datePublished) result.errors.push('Article: missing datePublished');
-          if (!data.author) result.warnings.push('Article: missing author');
-          if (!data.image) result.warnings.push('Article: missing image');
-          if (data.headline && data.headline.length > 110) {
-            result.warnings.push('Article: headline exceeds 110 characters');
-          }
-        }
-
-        if (type === 'Product') {
-          if (!data.name) result.errors.push('Product: missing name');
-          if (!data.offers) result.errors.push('Product: missing offers');
-          if (!data.image) result.warnings.push('Product: missing image');
-        }
-
-        if (type === 'BreadcrumbList') {
-          if (!data.itemListElement || !Array.isArray(data.itemListElement)) {
-            result.errors.push('BreadcrumbList: missing itemListElement array');
-          }
-        }
-
-        if (type === 'FAQPage') {
-          if (!data.mainEntity || !Array.isArray(data.mainEntity)) {
-            result.errors.push('FAQPage: missing mainEntity array');
-          }
-        }
-
-        if (type === 'WebSite') {
-          if (!data.name) result.warnings.push('WebSite: missing name');
-          if (!data.url) result.warnings.push('WebSite: missing url');
-        }
-
-      } catch (e) {
-        result.valid = false;
-        result.errors.push('JSON Parse Error: ' + e.message);
-      }
-
-      results.schemas.push(result);
-    });
-
-    // Summary
-    results.summary = {
-      total: results.count,
-      valid: results.schemas.filter(s => s.valid).length,
-      invalid: results.schemas.filter(s => !s.valid).length,
-      types: results.schemas.map(s => s.type).filter(Boolean)
-    };
-
-    return results;
-  }`
-})
-```
-
-### Step 4: Generate Report
+### Step 3: Generate Report
 
 ```markdown
 # Structured Data Validation Report

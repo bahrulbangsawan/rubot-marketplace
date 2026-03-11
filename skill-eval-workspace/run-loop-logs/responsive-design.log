@@ -1,0 +1,6 @@
+Split: 12 train, 8 test (holdout=0.4)
+
+============================================================
+Iteration 1/3
+Description: Mobile-first responsive layout design system with strict relative unit enforcement for Tailwind CSS projects. Use when fixing responsive layout issues, auditing breakpoint behavior, converting px to rem, implementing mobile-first layouts, building hero sections, drawer menus, carousels, or any UI component that must work across xs/sm/md/lg breakpoints. Also use when users mention "responsive", "mobile layout", "breakpoint", "overflow on mobile", "cut-off cards", "layout broken on phone", "hamburger menu", "drawer menu", "carousel mobile", "hero section mobile", "rem conversion", or "no px units".
+============================================================

@@ -3,6 +3,7 @@ name: rubot-new-pr
 description: Create a new pull request using GitHub CLI
 allowed-tools:
   - Read
+  - Glob
   - Bash
   - AskUserQuestion
 ---
@@ -22,7 +23,7 @@ You are in the PULL REQUEST CREATION PHASE of the rubot orchestration workflow.
    - Validation must have passed
 
 3. **Load PR rules**:
-   - Read `.claude/rubot/rubot.local.md` for PR conventions
+   - Read `.claude/rubot/rubot.local.yaml` for PR conventions
    - Check for PR templates in `.github/PULL_REQUEST_TEMPLATE.md`
 
 4. **Verify GitHub CLI**:
@@ -181,7 +182,7 @@ Return the PR URL to user.
 
 If `.github/PULL_REQUEST_TEMPLATE.md` exists, incorporate its structure.
 
-If `rubot.local.md` specifies PR conventions, follow them.
+If `rubot.local.yaml` specifies PR conventions, follow them.
 
 ## After PR Creation
 
@@ -224,5 +225,5 @@ AskUserQuestion({
 
 Provide user with:
 - PR URL
-- Suggested reviewers (if defined in rubot.local.md)
+- Suggested reviewers (if defined in rubot.local.yaml)
 - Next steps (await review, address feedback)

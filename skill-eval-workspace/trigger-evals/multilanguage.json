@@ -1,0 +1,82 @@
+[
+  {
+    "query": "We need to add Bahasa Indonesia translations to our TanStack Start app. The site currently only has English content at /about, /pricing, and /contact. We want Indonesian as the default language with English under /en prefix.",
+    "should_trigger": true
+  },
+  {
+    "query": "The language switcher on our navbar is navigating to 404 when I switch from /en/pricing to Indonesian. I think the ROUTE_MAP is missing the pricing entry.",
+    "should_trigger": true
+  },
+  {
+    "query": "Can you set up hreflang tags for our bilingual site? We have Indonesian and English versions but Google Search Console shows the international targeting report has errors about missing reciprocal hreflang.",
+    "should_trigger": true
+  },
+  {
+    "query": "I need a LanguageSwitcherInline component with flag icons for ID and EN side by side. It should persist the choice in a cookie and navigate to the equivalent page in the other language.",
+    "should_trigger": true
+  },
+  {
+    "query": "Our localized sitemap is missing xhtml:link alternates. Each URL entry should point to both the Indonesian and English versions of that page.",
+    "should_trigger": true
+  },
+  {
+    "query": "Create the translation JSON structure for our app. We need keys organized by nav, common, pages, forms, footer, meta, errors, and a11y prefixes. Start with id.json and en.json under src/i18n/locales/.",
+    "should_trigger": true
+  },
+  {
+    "query": "Our useTranslation hook has a TranslationKey type that resolves to never. The id.json file exists but the type isn't picking up the keys from the import.",
+    "should_trigger": true
+  },
+  {
+    "query": "I need to add language detection that checks the Accept-Language header during SSR and auto-redirects first-time visitors to the right language version, but only on the root / path.",
+    "should_trigger": true
+  },
+  {
+    "query": "The <html lang> attribute isn't updating when users switch languages. It stays as 'id' even when browsing /en/about. Where should I put the useEffect to sync this?",
+    "should_trigger": true
+  },
+  {
+    "query": "Add Japanese (ja) as a third language to our existing Indonesian/English setup. I need the SUPPORTED_LANGUAGES updated, LANGUAGE_META with the Japanese flag, a ja.json locale file, and route files under /ja/ prefix.",
+    "should_trigger": true
+  },
+  {
+    "query": "I want to translate the error messages in my Zod validation schemas so they show in the user's language. The form validation currently shows English-only messages like 'Required' and 'Must be at least 8 characters'.",
+    "should_trigger": false
+  },
+  {
+    "query": "Set up react-intl with FormatMessage components for our Next.js app. We need ICU message syntax with plurals and date formatting.",
+    "should_trigger": false
+  },
+  {
+    "query": "I need to add lang='fr' to a specific paragraph that contains a French quote on our English-only marketing page. Just that one span, not full multilanguage support.",
+    "should_trigger": false
+  },
+  {
+    "query": "Our API returns user-generated content in multiple languages. I need to detect the language of each comment and display a 'Translate' button using Google Translate API.",
+    "should_trigger": false
+  },
+  {
+    "query": "How do I set the og:locale meta tag to en_US on our single-language English site for Facebook sharing?",
+    "should_trigger": false
+  },
+  {
+    "query": "I need to configure the date-fns locale so dates display in Indonesian format (DD/MM/YYYY) on our dashboard. The rest of the app stays English-only.",
+    "should_trigger": false
+  },
+  {
+    "query": "Add a currency formatter that shows IDR for Indonesian users and USD for US users based on their IP geolocation. The UI language doesn't change.",
+    "should_trigger": false
+  },
+  {
+    "query": "Set up a content management system where authors can write blog posts in different languages. Each post has a language field and we filter by language in the admin panel.",
+    "should_trigger": false
+  },
+  {
+    "query": "I want to use Crowdin to manage our translations and auto-sync JSON files to the repo via GitHub Actions. How do I set up the crowdin.yml config?",
+    "should_trigger": false
+  },
+  {
+    "query": "Our chatbot widget needs to respond in the user's preferred language. I need to pass the browser language to our LLM API endpoint so it generates responses in that language.",
+    "should_trigger": false
+  }
+]

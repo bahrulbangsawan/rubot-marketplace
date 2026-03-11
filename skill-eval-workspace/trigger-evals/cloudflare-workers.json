@@ -1,0 +1,82 @@
+[
+  {
+    "query": "Set up a new Cloudflare Worker project with wrangler.toml configured for KV namespace binding called CACHE and a D1 database binding called DB. Include staging and production environments.",
+    "should_trigger": true
+  },
+  {
+    "query": "My worker keeps throwing 'ReferenceError: Buffer is not defined' when I try to use crypto.createHash. How do I handle this in the Workers V8 runtime?",
+    "should_trigger": true
+  },
+  {
+    "query": "Implement a CORS middleware for our Cloudflare Worker API. It needs to handle preflight OPTIONS requests and add Access-Control-Allow-Origin headers for our frontend at app.example.com.",
+    "should_trigger": true
+  },
+  {
+    "query": "Create a scheduled worker with cron triggers that runs every hour to clean expired entries from our KV store and daily at midnight to generate a report and store it in R2.",
+    "should_trigger": true
+  },
+  {
+    "query": "I need to set up R2 object storage for user-uploaded profile pictures. The worker should accept POST with multipart form data, validate file type/size, and store in the AVATARS R2 bucket with a UUID key.",
+    "should_trigger": true
+  },
+  {
+    "query": "Implement a Durable Object counter that tracks active WebSocket connections for our real-time collaboration feature. Each document gets its own Durable Object instance.",
+    "should_trigger": true
+  },
+  {
+    "query": "Our worker bundle is 1.2MB and exceeding the free plan limit. How do I tree-shake the dependencies and check bundle size before deploying? We're importing lodash and moment.",
+    "should_trigger": true
+  },
+  {
+    "query": "Set up D1 database migrations for our worker. I need to create a users table with id, email, name, created_at columns and a sessions table with foreign key to users. Show the SQL and wrangler migration commands.",
+    "should_trigger": true
+  },
+  {
+    "query": "I need to implement Cache API in my worker to cache expensive API responses for 1 hour. The cache key should be based on the request URL and the response should include proper Cache-Control headers.",
+    "should_trigger": true
+  },
+  {
+    "query": "Deploy our worker to staging first with 'bunx wrangler deploy --env staging' and set the API_KEY and DATABASE_URL secrets for the staging environment using wrangler secret.",
+    "should_trigger": true
+  },
+  {
+    "query": "Set up a Cloudflare Pages project for our static marketing site with a custom domain. We need redirects for old URLs and custom 404 page.",
+    "should_trigger": false
+  },
+  {
+    "query": "Configure our Next.js app to deploy on Vercel with edge runtime. We need ISR with 60 second revalidation for our product pages.",
+    "should_trigger": false
+  },
+  {
+    "query": "I need to set up a reverse proxy with Nginx that routes /api/* requests to our Node.js backend and serves static files for everything else.",
+    "should_trigger": false
+  },
+  {
+    "query": "Implement server-side rendering for our TanStack Start app. The server function needs to fetch data from our PostgreSQL database before rendering the page.",
+    "should_trigger": false
+  },
+  {
+    "query": "Set up Cloudflare DNS records for our domain. We need an A record for the root domain and a CNAME for the www subdomain pointing to our hosting provider.",
+    "should_trigger": false
+  },
+  {
+    "query": "Build a REST API using ElysiaJS with rate limiting, authentication middleware, and PostgreSQL database integration using Drizzle ORM.",
+    "should_trigger": false
+  },
+  {
+    "query": "I need to set up a CDN for our images and static assets. Configure Cloudflare's CDN caching rules with custom page rules for different content types.",
+    "should_trigger": false
+  },
+  {
+    "query": "Implement a WebSocket server using Node.js ws library for real-time chat. It needs authentication, rooms, and message history stored in Redis.",
+    "should_trigger": false
+  },
+  {
+    "query": "Configure Cloudflare WAF rules to block suspicious traffic patterns and rate limit login attempts to our /auth/login endpoint.",
+    "should_trigger": false
+  },
+  {
+    "query": "Set up a service worker for offline caching of our PWA. It should cache app shell files and use a stale-while-revalidate strategy for API responses.",
+    "should_trigger": false
+  }
+]

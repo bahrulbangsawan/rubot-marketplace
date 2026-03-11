@@ -37,7 +37,7 @@
     "SessionStart": [
       {
         "type": "prompt",
-        "prompt": "SESSION CONTEXT LOADER: If .claude/rubot/rubot.local.md exists, load and display: Project name, stack, active plan status (tasks remaining), last validation status. Show quick commands: /rubot-status, /rubot-plan, /rubot-execute, /rubot-check, /rubot-commit. Keep summary to 10-15 lines max."
+        "prompt": "SESSION CONTEXT LOADER: If .claude/rubot/rubot.local.yaml exists, load and display: Project name, stack, active plan status (tasks remaining), last validation status. Show quick commands: /rubot-status, /rubot-plan, /rubot-execute, /rubot-check, /rubot-commit. Keep summary to 10-15 lines max."
       }
     ],
     "Stop": [

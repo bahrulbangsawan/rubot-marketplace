@@ -36,14 +36,14 @@ To initialize:
   /rubot-init - Initialize rubot workspace with project detection
 
 This will create:
-  .claude/rubot/rubot.local.md  - Project configuration
+  .claude/rubot/rubot.local.yaml  - Project configuration
   .claude/rubot/plan.md         - Execution plan (when created)
 ```
 
 ### Step 2: Load Workspace Configuration
 
 If workspace exists, read:
-- `.claude/rubot/rubot.local.md` - Project configuration
+- `.claude/rubot/rubot.local.yaml` - Project configuration
 
 Extract:
 - Project name
@@ -155,7 +155,7 @@ RUBOT: [project] | Plan: 4/10 (40%) | Validation: PASS | Git: 3 changes | PR: #4
 ```
 ⚠️  CONFIGURATION INCOMPLETE
 
-Missing: rubot.local.md
+Missing: rubot.local.yaml
 
 Run /rubot-init to reconfigure the workspace.
 ```

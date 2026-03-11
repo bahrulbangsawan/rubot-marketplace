@@ -42,46 +42,62 @@ The standard rubot workflow follows these phases:
   2. PLAN      → /rubot-plan     Create execution plan
   3. EXECUTE   → /rubot-execute  Execute the plan
   4. CHECK     → /rubot-check    Run validations
-  5. COMMIT    → /rubot-commit   Commit changes
-  6. PR        → /rubot-new-pr   Create pull request
-  7. UPDATE    → /rubot-push-pr  Push updates to PR
+  5. REVIEW    → /rubot-review   Code review and bug fix
+  6. COMMIT    → /rubot-commit   Commit changes
+  7. PR        → /rubot-new-pr   Create pull request
+  8. UPDATE    → /rubot-push-pr  Push updates to PR
 
-COMMANDS
+COMMANDS (29)
 ────────────────────────────────────────────────────────────────
 
-  /rubot-init       Initialize or sync rubot workspace
-                    Detects project stack, creates configuration
+  Core Workflow:
+    /rubot-init       Initialize or sync rubot workspace
+    /rubot-plan       Create structured execution plan
+    /rubot-execute    Execute the approved plan
+    /rubot-check      Run validation and verification
+    /rubot-commit     Create git commit following project rules
+    /rubot-review     Autonomous code review and bug fix
 
-  /rubot-plan       Create structured execution plan
-                    Analyzes prompt, orchestrates agents, creates plan
+  Git & PR:
+    /rubot-new-pr     Create new pull request
+    /rubot-push-pr    Push updates to active PR
+    /rubot-new-repo   Create new GitHub repository
 
-  /rubot-execute    Execute the approved plan
-                    Runs implementation with agent consultation
+  Testing & QA:
+    /rubot-test-browser       E2E browser tests with agent-browser
+    /rubot-wcag-audit         WCAG 2.2 accessibility audit
+    /rubot-wcag-fix           Fix accessibility issues
 
-  /rubot-check      Run validation and verification
-                    Invokes debug-master and verification agents
+  Security:
+    /rubot-skills-security-check  ClawSec advisory scan and skill integrity check
 
-  /rubot-commit     Create git commit
-                    Follows project conventions, adds Co-Author
+  SEO - Audit:
+    /rubot-seo-audit          Full SEO audit on a URL
+    /rubot-seo-check-og       Validate Open Graph and Twitter Cards
+    /rubot-seo-check-schema   Validate structured data (JSON-LD)
+    /rubot-seo-check-vitals   Audit Core Web Vitals (LCP, INP, CLS)
 
-  /rubot-new-pr     Create new pull request
-                    Generates PR with plan summary and validation
+  SEO - Generate:
+    /rubot-seo-generate-robots    Generate robots.txt
+    /rubot-seo-generate-sitemap   Generate sitemap.xml
+    /rubot-seo-generate-favicons  Set up favicon structure
 
-  /rubot-push-pr    Push updates to active PR
-                    Re-validates, pushes, updates PR comments
+  Setup:
+    /rubot-setup-agent-browser    Install agent-browser CLI
+    /rubot-setup-cf-workers       Set up Cloudflare Workers deployment
+    /rubot-setup-react-grab       Install react-grab for element inspection
+    /rubot-setup-react-grab-mcp   Add MCP integration to react-grab
+    /rubot-setup-localdb          Set up local PostgreSQL with Docker
 
-  /rubot-status     View workspace status
-                    Shows plan progress, validation, git state
+  Workspace:
+    /rubot-status     View workspace status
+    /rubot-reset      Reset workspace to clean state
+    /rubot-help       Display this help
 
-  /rubot-reset      Reset workspace to clean state
-                    Soft/hard/full reset options
+  Orchestration:
+    /rubot            Invoke full multi-agent orchestration
 
-  /rubot-help       Display this help information
-
-  /rubot            Invoke full orchestration governor
-                    Mandatory multi-agent consultation
-
-SPECIALIST AGENTS
+SPECIALIST AGENTS (15 Specialist Subagents)
 ────────────────────────────────────────────────────────────────
 
   Backend & Database:
@@ -106,7 +122,6 @@ SPECIALIST AGENTS
     qa-tester           Browser testing with DevTools
 
   Orchestration:
-    rubot               Multi-agent governor
     plan-supervisor     Plan status tracking
 
 SKILLS
@@ -133,7 +148,7 @@ WORKSPACE FILES
 ────────────────────────────────────────────────────────────────
 
   .claude/rubot/
-    rubot.local.md         Project configuration
+    rubot.local.yaml         Project configuration
     plan.md                Execution plan
     validation-report.md   Validation results
 
@@ -145,14 +160,23 @@ QUICK START
     2. /rubot-plan          Create plan for your task
     3. /rubot-execute       Implement the plan
     4. /rubot-check         Verify implementation
-    5. /rubot-commit        Commit your changes
-    6. /rubot-new-pr        Open pull request
+    5. /rubot-review        Code review and bug fix
+    6. /rubot-commit        Commit your changes
+    7. /rubot-new-pr        Open pull request
 
   Existing PR:
     1. Make changes
     2. /rubot-check         Verify changes
-    3. /rubot-commit        Commit changes
-    4. /rubot-push-pr       Push to PR
+    3. /rubot-review        Code review and bug fix
+    4. /rubot-commit        Commit changes
+    5. /rubot-push-pr       Push to PR
+
+  Setup Tools:
+    /rubot-setup-agent-browser    Install agent-browser CLI
+    /rubot-setup-cf-workers       Set up Cloudflare Workers
+    /rubot-setup-react-grab       Install react-grab
+    /rubot-setup-react-grab-mcp   Add MCP to react-grab
+    /rubot-setup-localdb          Set up local PostgreSQL
 
 TIPS
 ────────────────────────────────────────────────────────────────
@@ -162,6 +186,7 @@ TIPS
   • The orchestrator enforces multi-agent review
   • Plan tasks are tracked automatically
   • Validation must pass before PR creation
+  • Run /rubot-skills-security-check to scan for skill advisories
 
 GETTING HELP
 ────────────────────────────────────────────────────────────────

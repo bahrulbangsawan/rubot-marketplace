@@ -1,0 +1,6 @@
+Split: 12 train, 8 test (holdout=0.4)
+
+============================================================
+Iteration 1/3
+Description: Implements TanStack Form for type-safe, headless form management in React applications. Use when building form validation, multi-step form, dynamic form fields, field arrays, Zod form integration, form submission handling, form error handling, controlled inputs, async validation, or form state management. Also use when working with useForm, form.Field, zodValidator, field.handleChange, form.Subscribe, or any TanStack Form API.
+============================================================

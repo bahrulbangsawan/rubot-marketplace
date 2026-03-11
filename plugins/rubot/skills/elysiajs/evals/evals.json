@@ -1,0 +1,23 @@
+{
+  "skill_name": "elysiajs",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I need a REST API for a recipe sharing app using ElysiaJS. Set up routes for recipes: GET /api/recipes with query params for search (q), cuisine filter, and pagination (page, limit). POST /api/recipes to create a recipe with body validation — title (required string 3-100 chars), description (optional), ingredients (array of strings, min 1 item), cook_time_minutes (positive integer), cuisine (one of 'italian', 'mexican', 'japanese', 'indian', 'american'). Add proper Typebox validation on all inputs and typed error responses for 400/404.",
+      "expected_output": "Should produce an Elysia app or route module with prefix '/api/recipes'. GET route should have query validation using t.Object with t.Optional for q (string), cuisine (StringEnum), page (Numeric with default 1), limit (Numeric with default 20). POST route should validate body with t.Object containing title with minLength/maxLength, t.Optional description, ingredients as t.Array(t.String(), {minItems: 1}), cook_time_minutes as t.Number({minimum: 1}), cuisine as t.Union or StringEnum. Should include response schemas for 200 and 400, and an onError handler that formats validation errors cleanly.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "I want to add JWT authentication to my ElysiaJS recipe app. Create an auth plugin that: uses @elysiajs/jwt to sign/verify tokens, has POST /auth/login that takes email+password and returns an access token, has a derive that extracts the user from the Authorization header, and exposes a requireAuth macro I can use on protected routes. The JWT payload should include userId, email, and role. Token expiry should be 24h.",
+      "expected_output": "Should produce an auth plugin using new Elysia({name: 'auth'}) that .use(jwt({secret, exp: '24h'})). Should include a POST /auth/login route with body validation for email/password that verifies credentials and returns {token: await jwt.sign({userId, email, role})}. Should have a .derive() that reads headers.authorization, strips 'Bearer ', verifies with jwt.verify(), and returns {user} on context. Should expose a .macro() with requireAuth that adds an onBeforeHandle checking if user exists, returning 401 if not. Should show usage example on a protected route like GET /api/recipes/my with {requireAuth: true}.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "I want to add real-time features to my recipe app. When someone posts a new recipe or leaves a comment, all connected clients should see it live. Set up an ElysiaJS WebSocket endpoint at /ws/feed that: validates incoming messages (type: 'subscribe_cuisine' with a cuisine field, or type: 'post_comment' with recipeId and text), broadcasts new recipe events to all subscribers, and broadcasts comments only to users subscribed to that recipe's cuisine. Use Elysia's built-in ws() with Typebox validation.",
+      "expected_output": "Should produce a .ws('/ws/feed') setup with body validation using t.Union of message types — a subscribe message with t.Literal('subscribe_cuisine') and cuisine field, and a comment message with t.Literal('post_comment') plus recipeId and text. The open handler should set up initial state. The message handler should switch on message type: for subscribe_cuisine, call ws.subscribe(cuisine) to join a pub/sub channel; for post_comment, persist the comment and ws.publish() to the relevant cuisine channel. Should show how the REST POST /api/recipes handler can also publish to WebSocket channels when a new recipe is created. Should include close handler that unsubscribes.",
+      "files": []
+    }
+  ]
+}

@@ -1,0 +1,82 @@
+[
+  {
+    "query": "Run a full SEO audit on https://staging.acmecorp.io and give me a scored report before we push to production Friday",
+    "should_trigger": true
+  },
+  {
+    "query": "Our blog at https://acme.com/blog isn't showing up in Google at all. Can you check the robots.txt, sitemap, canonical tags, and figure out what's blocking indexing?",
+    "should_trigger": true
+  },
+  {
+    "query": "Check the SEO health of our homepage — I want to know if the title tag length is good, meta description is within range, heading hierarchy is clean, and images have alt text",
+    "should_trigger": true
+  },
+  {
+    "query": "We're launching next week. Do a pre-launch SEO review on https://beta.ourapp.com — check technical SEO, on-page signals, structured data, OG tags, and Core Web Vitals",
+    "should_trigger": true
+  },
+  {
+    "query": "Google Search Console is showing crawl errors and our pages dropped out of the index last week. Audit https://shop.example.com to find what broke",
+    "should_trigger": true
+  },
+  {
+    "query": "Give me an SEO score for https://docs.myapi.dev — I need to know how it rates across technical SEO, content, structured data, social sharing, and performance",
+    "should_trigger": true
+  },
+  {
+    "query": "Is https://myportfolio.dev optimized for search? Check meta tags, heading structure, image alt coverage, JSON-LD, Open Graph, and tell me what's missing",
+    "should_trigger": true
+  },
+  {
+    "query": "Our competitor ranks higher for 'project management tool'. Audit our landing page at https://taskflow.io and tell me what SEO gaps we have compared to best practices",
+    "should_trigger": true
+  },
+  {
+    "query": "Lighthouse SEO score dropped from 95 to 62 after our last deploy. Audit https://app.saasco.com and find which checks are now failing",
+    "should_trigger": true
+  },
+  {
+    "query": "Check if https://events.nonprofit.org has all the right meta tags, proper canonical setup, and valid structured data before we promote the fundraising page on social media",
+    "should_trigger": true
+  },
+  {
+    "query": "Add JSON-LD Product schema to our /products/$id route with offers, price, and aggregateRating",
+    "should_trigger": false
+  },
+  {
+    "query": "Our LCP is 4.2 seconds on mobile — help me optimize the hero image loading and reduce render-blocking CSS",
+    "should_trigger": false
+  },
+  {
+    "query": "Set up og:title, og:description, and og:image meta tags on our blog post pages for better social sharing previews",
+    "should_trigger": false
+  },
+  {
+    "query": "Generate a sitemap.xml from our TanStack Router routes and include lastmod dates from the database",
+    "should_trigger": false
+  },
+  {
+    "query": "Write a robots.txt that allows Googlebot but blocks /admin, /api, and /internal paths",
+    "should_trigger": false
+  },
+  {
+    "query": "Run a WCAG 2.2 accessibility audit on our checkout flow and generate a remediation plan",
+    "should_trigger": false
+  },
+  {
+    "query": "Check if our site passes Core Web Vitals thresholds and fix any CLS issues caused by font loading",
+    "should_trigger": false
+  },
+  {
+    "query": "Add canonical URLs to all our blog pages to prevent duplicate content from paginated archives",
+    "should_trigger": false
+  },
+  {
+    "query": "Our PageSpeed Insights score is 45 on mobile — help me reduce JavaScript bundle size and optimize image formats to WebP",
+    "should_trigger": false
+  },
+  {
+    "query": "Create a responsive navbar with a mobile hamburger menu and sticky header for our marketing site",
+    "should_trigger": false
+  }
+]

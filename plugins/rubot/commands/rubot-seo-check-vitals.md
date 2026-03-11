@@ -1,11 +1,19 @@
 ---
 name: rubot-seo-check-vitals
-description: Audit Core Web Vitals (LCP, INP, CLS) using Chrome DevTools
+description: Audit Core Web Vitals (LCP, INP, CLS) on a page. Use when measuring page performance, investigating slow load times, diagnosing layout shifts, checking interaction responsiveness, or optimizing for Google's page experience signals.
+argument-hint: <url>
+allowed-tools:
+  - WebFetch
+  - AskUserQuestion
+  - Read
+  - Bash
+  - Glob
+  - Grep
 ---
 
 # SEO Check Vitals Command
 
-Measure and analyze Core Web Vitals using Chrome DevTools performance tracing.
+Measure and analyze Core Web Vitals performance metrics.
 
 ## Execution Steps
 
@@ -45,143 +53,18 @@ questions:
     multiSelect: false
 ```
 
-If throttling selected:
+### Step 3: Analyze Performance
 
-```
-mcp__chrome-devtools__emulate({
-  networkConditions: "Slow 3G",
-  cpuThrottlingRate: 4
-})
-```
+Use WebFetch to retrieve the target URL and analyze the page for performance characteristics:
 
-### Step 3: Navigate to Page
+- Check for images without explicit dimensions (CLS impact)
+- Check for render-blocking resources in `<head>`
+- Check for preload hints for critical resources
+- Analyze script loading patterns (async/defer)
+- Check for font-display usage
+- Recommend using PageSpeed Insights API or Lighthouse for precise metric measurements
 
-```
-mcp__chrome-devtools__navigate_page({
-  url: "<target_url>",
-  type: "url"
-})
-```
-
-### Step 4: Start Performance Trace
-
-```
-mcp__chrome-devtools__performance_start_trace({
-  reload: true,
-  autoStop: true
-})
-```
-
-### Step 5: Collect Web Vitals via JavaScript
-
-```javascript
-mcp__chrome-devtools__evaluate_script({
-  function: `() => {
-    return new Promise((resolve) => {
-      const metrics = {
-        url: window.location.href,
-        timestamp: new Date().toISOString(),
-        lcp: null,
-        cls: null,
-        fid: null,
-        fcp: null,
-        ttfb: null,
-        longTasks: []
-      };
-
-      // LCP
-      new PerformanceObserver((list) => {
-        const entries = list.getEntries();
-        const lastEntry = entries[entries.length - 1];
-        metrics.lcp = {
-          value: lastEntry.startTime,
-          element: lastEntry.element?.tagName || 'unknown',
-          url: lastEntry.url || null,
-          size: lastEntry.size || null
-        };
-      }).observe({ type: 'largest-contentful-paint', buffered: true });
-
-      // CLS
-      let clsValue = 0;
-      let clsEntries = [];
-      new PerformanceObserver((list) => {
-        for (const entry of list.getEntries()) {
-          if (!entry.hadRecentInput) {
-            clsValue += entry.value;
-            clsEntries.push({
-              value: entry.value,
-              sources: entry.sources?.map(s => ({
-                node: s.node?.tagName,
-                currentRect: s.currentRect,
-                previousRect: s.previousRect
-              }))
-            });
-          }
-        }
-        metrics.cls = { value: clsValue, entries: clsEntries };
-      }).observe({ type: 'layout-shift', buffered: true });
-
-      // FID
-      new PerformanceObserver((list) => {
-        for (const entry of list.getEntries()) {
-          metrics.fid = {
-            value: entry.processingStart - entry.startTime,
-            name: entry.name
-          };
-        }
-      }).observe({ type: 'first-input', buffered: true });
-
-      // Long Tasks
-      new PerformanceObserver((list) => {
-        for (const entry of list.getEntries()) {
-          metrics.longTasks.push({
-            duration: entry.duration,
-            startTime: entry.startTime
-          });
-        }
-      }).observe({ type: 'longtask', buffered: true });
-
-      // Navigation Timing
-      const navTiming = performance.getEntriesByType('navigation')[0];
-      if (navTiming) {
-        metrics.ttfb = navTiming.responseStart;
-        metrics.fcp = performance.getEntriesByName('first-contentful-paint')[0]?.startTime;
-        metrics.domContentLoaded = navTiming.domContentLoadedEventEnd;
-        metrics.load = navTiming.loadEventEnd;
-      }
-
-      // Collect after page settles
-      setTimeout(() => resolve(metrics), 5000);
-    });
-  }`
-})
-```
-
-### Step 6: Analyze Performance Insights
-
-After trace completes, analyze specific insights:
-
-```
-// LCP Breakdown
-mcp__chrome-devtools__performance_analyze_insight({
-  insightSetId: "<id>",
-  insightName: "LCPBreakdown"
-})
-
-// CLS Analysis
-mcp__chrome-devtools__performance_analyze_insight({
-  insightSetId: "<id>",
-  insightName: "CLS"
-})
-
-// Render Blocking
-mcp__chrome-devtools__performance_analyze_insight({
-  insightSetId: "<id>",
-  insightName: "RenderBlocking"
-})
-```
-
-### Step 7: Generate Report
+### Step 4: Generate Report
 
 ```markdown
 # Core Web Vitals Report
@@ -292,15 +175,6 @@ mcp__chrome-devtools__performance_analyze_insight({
 1. Fix highest-impact issue first
 2. Re-run audit after changes
 3. Monitor field data in Search Console
-```
-
-### Step 8: Reset Emulation (if applied)
-
-```
-mcp__chrome-devtools__emulate({
-  networkConditions: "No emulation",
-  cpuThrottlingRate: 1
-})
 ```
 
 ## Thresholds Reference

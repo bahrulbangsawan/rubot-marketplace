@@ -1,0 +1,23 @@
+{
+  "skill_name": "responsive-design",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "my hero section on the landing page is getting cut off on iphone, the headline and CTA button overflow past the screen and you have to scroll sideways to see them. the hero uses h-screen and has a bunch of px values for padding. file is src/components/hero.tsx",
+      "expected_output": "Replaces h-screen with min-h-dvh to account for mobile browser chrome. Converts all px-based padding, margin, and font-size values to rem-based Tailwind classes. Adds mobile-first responsive classes for typography scaling (e.g., text-2xl sm:text-3xl md:text-4xl lg:text-5xl). Ensures the CTA button is full-width on mobile with w-full sm:w-auto. Uses flexbox centering (items-center justify-center) instead of any absolute positioning. Verifies no horizontal overflow remains at any breakpoint.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "I need to go through our PricingCard component and convert all the hardcoded px values to rem. it's got stuff like p-[20px], text-[18px], gap-[15px], rounded-[12px], w-[350px] all over it. also the card width is fixed so it breaks on small screens. component is at src/components/pricing-card.tsx",
+      "expected_output": "Converts every px-based utility to its rem-equivalent Tailwind class: p-[20px] becomes p-5, text-[18px] becomes text-lg, gap-[15px] becomes gap-4, rounded-[12px] becomes rounded-[10%] for the card container. Replaces the fixed w-[350px] with w-full max-w-[22rem] so the card fills available space on mobile. Adds responsive spacing that scales up at breakpoints (e.g., p-5 sm:p-6 md:p-8). References the px-to-rem conversion table (divide by 16) and flags any remaining px values except 1px borders.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "build me a responsive card grid for our features section, should be 1 column on mobile, 2 on tablet, and 4 on desktop. each card has an icon, title, and description. use shadcn Card component. needs to look good from 320px up to ultrawide",
+      "expected_output": "Creates a grid layout using grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 with responsive gap (gap-4 sm:gap-6). Each card uses the shadcn Card component with rounded-[10%] for consistent radius. All spacing inside cards uses rem-based Tailwind classes (p-6, gap-4). Typography scales appropriately (text-lg for card titles, text-sm sm:text-base for descriptions). The grid container has responsive horizontal padding (px-4 sm:px-6 md:px-8 lg:px-12). Wraps in a max-w container with mx-auto for ultrawide screens. No px units anywhere except 1px borders.",
+      "files": []
+    }
+  ]
+}

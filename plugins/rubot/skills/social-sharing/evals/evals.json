@@ -1,0 +1,17 @@
+{
+  "skill_name": "social-sharing",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I'm building a blog on TanStack Start and I want each post to have its own OG image generated dynamically — the image should show the post title and author name on a branded background. The blog is at https://devnotes.sh and our Twitter handle is @devnoteshq. Posts load from a CMS via the route loader. Can you set up the full social sharing setup including the dynamic OG image endpoint?",
+      "expected_output": "A complete social sharing implementation with: (1) A generateSocialMeta utility function producing all required OG tags (og:title, og:description, og:image with 1200x630 dimensions, og:url, og:type=article, og:site_name) plus Twitter Card tags (twitter:card=summary_large_image, twitter:site=@devnoteshq, twitter:image:alt) and article-specific tags (article:published_time, article:author, article:tag), (2) Integration in the blog/$slug route's head() function using loaderData to populate dynamic values and pointing og:image to the dynamic endpoint, (3) A dynamic OG image API route using @vercel/og ImageResponse that renders the post title and author name on a styled background at 1200x630px, accepting title/author as query params, (4) All image URLs must be absolute https://devnotes.sh/og/... URLs. Should mention validation with Facebook Debugger and opengraph.xyz.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "When I share our case study pages on LinkedIn and Twitter, the preview shows our old logo instead of the case study hero image. The page is at https://saasmetrics.io/case-studies/acme-growth-story and the correct image is at /images/case-studies/acme-hero.jpg (2400x1260). I've set og:image but it's still wrong. Twitter shows the right image sometimes but LinkedIn never does. What's going on and how do I fix it?",
+      "expected_output": "A debugging guide addressing common causes: (1) Check if og:image uses a relative URL (/images/...) instead of absolute (https://saasmetrics.io/images/...) — LinkedIn requires absolute URLs, (2) Check if the image is too large — at 2400x1260 it may exceed LinkedIn's 5MB limit, recommend resizing to 1200x630 and compressing under 1MB, (3) LinkedIn and Twitter cache aggressively — use LinkedIn Post Inspector (linkedin.com/post-inspector/) to force a recrawl and Twitter Card Validator to refresh, (4) Verify og:image:width and og:image:height meta tags are present, (5) Check if there are multiple og:image tags and the old logo one appears first, (6) Verify the image URL is accessible (not behind auth, not blocked by robots.txt, returns correct Content-Type), (7) Provide corrected meta tag implementation with absolute URL, proper dimensions, and cache-busting strategy if needed.",
+      "files": []
+    }
+  ]
+}

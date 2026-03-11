@@ -1,0 +1,23 @@
+{
+  "skill_name": "multilanguage",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I have a TanStack Start app with a homepage, about page, and contact page. I want to add English and Indonesian support. Indonesian should be the default language. Can you set up the whole i18n system with the translation files, the config, and the useTranslation hook?",
+      "expected_output": "The agent creates the src/i18n/ directory structure including index.ts (with SUPPORTED_LANGUAGES = ['id', 'en'], DEFAULT_LANGUAGE = 'id', and LANGUAGE_META), types.ts (with NestedKeys type deriving TranslationKey from the Indonesian JSON), context.tsx (LanguageProvider with React context), and hooks/use-translation.ts (useTranslation hook supporting dotted key paths and variable interpolation). It creates locales/id.json and locales/en.json with translation keys organized by domain prefixes (nav.*, common.*, pages.home.*, pages.about.*, pages.contact.*, footer.*, meta.*). Indonesian translations use natural language (e.g., 'Beranda' for Home, 'Tentang Kami' for About, 'Hubungi Kami' for Contact). The LanguageProvider sets document.documentElement.lang on language change. The agent wraps the root layout with the LanguageProvider.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "I need a language switcher component for my navbar. It should show flag icons for Indonesian and English, and when you click one it should navigate to the same page in the other language. Don't use emoji flags, use SVGs. I want the dropdown style that shows the current language.",
+      "expected_output": "The agent creates src/i18n/components/language-switcher.tsx with a dropdown-style component that displays the current language's SVG flag and language code as the trigger button. When expanded, it shows a listbox with both language options (Indonesian with ID flag, English with GB flag), with a checkmark or bold style on the active language. It creates src/i18n/components/flag-icons.tsx with inline SVG components for the Indonesian and British flags (not emoji). The switcher uses the route map (src/i18n/utils/route-map.ts) with getLocalizedPath() to navigate to the equivalent page in the target language. It persists the user's preference in a cookie. The component includes proper accessibility attributes: aria-expanded on the button, role='listbox' on the dropdown, and tabIndex for keyboard navigation. The agent integrates the LanguageSwitcher into the existing Navbar component on the right side.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "My TanStack Start app already has i18n set up with Indonesian as default. I need to add hreflang tags to every page so Google indexes both language versions correctly. The site is at https://warungkita.id and I have routes for /, /tentang, /kontak, /harga, and their English equivalents at /en, /en/about, /en/contact, /en/pricing.",
+      "expected_output": "The agent creates a reusable HreflangTags component (or adds hreflang logic to the root layout) that renders <link rel='alternate'> tags in the <head> for every page. For each page, three hreflang links are generated: one for Indonesian (hreflang='id'), one for English (hreflang='en'), and one for x-default pointing to the Indonesian version (since Indonesian is the default language). The URLs use the full domain (https://warungkita.id). For example, the /tentang page gets: <link rel='alternate' hreflang='id' href='https://warungkita.id/tentang' />, <link rel='alternate' hreflang='en' href='https://warungkita.id/en/about' />, <link rel='alternate' hreflang='x-default' href='https://warungkita.id/tentang' />. The component uses the existing route map to look up equivalent paths across languages. The agent also ensures the <html lang> attribute updates based on the current language and that each page uses localized <title> and <meta name='description'> via the t() function with meta.* translation keys.",
+      "files": []
+    }
+  ]
+}

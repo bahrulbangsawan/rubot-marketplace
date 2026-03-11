@@ -1,0 +1,82 @@
+[
+  {
+    "query": "When I share our blog posts on LinkedIn, it shows the site logo instead of the post's featured image. The og:image tag is set to a relative URL /images/blog/post-cover.jpg. How do I fix this?",
+    "should_trigger": true
+  },
+  {
+    "query": "Set up dynamic OG image generation for our blog using @vercel/og. Each post should get a 1200x630 image with the title, author name, and publish date rendered on a dark gradient background.",
+    "should_trigger": true
+  },
+  {
+    "query": "Our Twitter cards aren't showing. The shared link just appears as a plain URL. We have og tags but no twitter:card meta tag. Add summary_large_image Twitter Card tags to our TanStack Start route.",
+    "should_trigger": true
+  },
+  {
+    "query": "Facebook is caching our old OG image from before the redesign. I updated the og:image URL two days ago but the preview still shows the old logo. How do I force Facebook to re-scrape?",
+    "should_trigger": true
+  },
+  {
+    "query": "Implement the generateSocialMeta function for our e-commerce product pages. Each product needs og:type=product with price and availability meta tags, plus the product image as og:image.",
+    "should_trigger": true
+  },
+  {
+    "query": "WhatsApp link previews aren't showing for any page on our site. I checked and the OG tags are there in the React component but when I curl the URL, they're not in the HTML response.",
+    "should_trigger": true
+  },
+  {
+    "query": "Our og:image is 3200x1800px and 2.4MB. Pinterest shows it fine but Facebook and Twitter often fail to load the preview. What are the recommended dimensions and file size limits for each platform?",
+    "should_trigger": true
+  },
+  {
+    "query": "Add og:type=article tags for our blog post routes with article:published_time, article:modified_time, article:author, article:section, and article:tag meta properties populated from the post data.",
+    "should_trigger": true
+  },
+  {
+    "query": "The Discord embed for our site links is missing the description. It shows the title and image but no description text. I only have og:title and og:image set.",
+    "should_trigger": true
+  },
+  {
+    "query": "Create a SocialMeta component that I can use in every TanStack Start route's head function. It should generate both OpenGraph and Twitter Card tags with proper og:image:width, og:image:height, and og:image:alt.",
+    "should_trigger": true
+  },
+  {
+    "query": "Add social media share buttons (Facebook, Twitter, LinkedIn, WhatsApp) to our blog post pages. When clicked, they should open the share dialog for each platform with the post URL pre-filled.",
+    "should_trigger": false
+  },
+  {
+    "query": "I need to embed a Twitter/X timeline widget on our homepage showing our latest tweets. Use the Twitter embed script to display the last 5 tweets.",
+    "should_trigger": false
+  },
+  {
+    "query": "Set up meta description tags for SEO on all our pages. Each page should have a unique description under 160 characters that appears in Google search results.",
+    "should_trigger": false
+  },
+  {
+    "query": "Build a social login flow with OAuth for Google and GitHub. Users click 'Sign in with Google' and get redirected to the OAuth consent screen.",
+    "should_trigger": false
+  },
+  {
+    "query": "I need to add structured data (JSON-LD) for our product pages so they show rich snippets in Google search results with price, rating, and availability.",
+    "should_trigger": false
+  },
+  {
+    "query": "Create an Instagram-style image gallery grid component. Users can click to expand images and swipe through them in a lightbox overlay.",
+    "should_trigger": false
+  },
+  {
+    "query": "Add a favicon and apple-touch-icon to our site. We need favicon.ico, 32x32 PNG, 180x180 apple-touch-icon, and a web manifest with icons.",
+    "should_trigger": false
+  },
+  {
+    "query": "Set up the canonical URL tag on all pages to prevent duplicate content issues. We have both www and non-www versions being indexed by Google.",
+    "should_trigger": false
+  },
+  {
+    "query": "I need to implement a social media feed aggregator that pulls posts from our Facebook page, Instagram, and Twitter accounts and displays them in a unified feed on our website.",
+    "should_trigger": false
+  },
+  {
+    "query": "Generate a sitemap.xml that includes image:loc tags for all images on each page so Google can discover and index our product photos.",
+    "should_trigger": false
+  }
+]

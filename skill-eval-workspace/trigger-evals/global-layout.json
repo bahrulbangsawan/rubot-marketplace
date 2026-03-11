@@ -1,0 +1,82 @@
+[
+  {
+    "query": "Add a shared navbar and footer to our TanStack Start app — they should appear on every page and be imported only in __root.tsx",
+    "should_trigger": true
+  },
+  {
+    "query": "Our footer is floating in the middle of the viewport on pages with little content. Fix the layout so it always pins to the bottom using the flex min-h-dvh pattern",
+    "should_trigger": true
+  },
+  {
+    "query": "Build a sticky header with logo on the left and nav links on the right, plus a hamburger menu that opens a mobile drawer on screens below md breakpoint",
+    "should_trigger": true
+  },
+  {
+    "query": "We have Navbar and Footer components imported in every single route file. Refactor to a centralized root layout in __root.tsx so they persist across navigation",
+    "should_trigger": true
+  },
+  {
+    "query": "Create a multi-column footer with Product, Company, and Legal sections in a responsive grid — 2 cols mobile, 3 cols tablet, 4 cols desktop with a brand column",
+    "should_trigger": true
+  },
+  {
+    "query": "The page layout shifts every time I navigate between routes because the navbar unmounts and remounts. How do I make it persistent?",
+    "should_trigger": true
+  },
+  {
+    "query": "I need a site-wide navigation bar component at src/components/layout/navbar.tsx with links to /about, /pricing, /blog, and /contact",
+    "should_trigger": true
+  },
+  {
+    "query": "Switch our header from fixed to sticky positioning — the fixed header requires a manual pt-16 offset on main and it breaks when the nav height changes on mobile",
+    "should_trigger": true
+  },
+  {
+    "query": "Add an app shell wrapper to our project — a flex column container with min-h-dvh, the header at top, main content with flex-1, and footer at bottom",
+    "should_trigger": true
+  },
+  {
+    "query": "The mobile hamburger menu stays open after clicking a link. Fix it so the drawer closes on navigation and add proper aria-expanded and aria-controls attributes",
+    "should_trigger": true
+  },
+  {
+    "query": "Build a sidebar navigation layout with a collapsible left panel and main content area for our admin dashboard",
+    "should_trigger": false
+  },
+  {
+    "query": "Add breadcrumb navigation to our product pages showing Home > Category > Product Name with JSON-LD markup",
+    "should_trigger": false
+  },
+  {
+    "query": "Create a tab navigation component that switches between Overview, Settings, and Billing panels on the account page",
+    "should_trigger": false
+  },
+  {
+    "query": "Set up TanStack Router with file-based routing in our project — create the routes directory structure and configure the router",
+    "should_trigger": false
+  },
+  {
+    "query": "Build a bottom navigation bar for our mobile PWA with icons for Home, Search, Cart, and Profile",
+    "should_trigger": false
+  },
+  {
+    "query": "Add a scroll-to-top button that appears when the user scrolls down more than 500px on any page",
+    "should_trigger": false
+  },
+  {
+    "query": "Create a pagination component for our blog listing page with previous/next buttons and page numbers",
+    "should_trigger": false
+  },
+  {
+    "query": "Design a responsive grid layout for our product cards — 1 column on mobile, 2 on tablet, 3 on desktop with consistent gap spacing",
+    "should_trigger": false
+  },
+  {
+    "query": "Implement a command palette (Cmd+K) overlay for quick navigation between pages in our app",
+    "should_trigger": false
+  },
+  {
+    "query": "Our CLS score is bad because the page layout jumps when fonts load. Fix the font-display and add a size-adjusted fallback",
+    "should_trigger": false
+  }
+]

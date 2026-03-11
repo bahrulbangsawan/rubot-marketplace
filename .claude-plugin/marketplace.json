@@ -8,8 +8,8 @@
     {
       "name": "rubot",
       "source": "./plugins/rubot",
-      "description": "Strict multi-agent orchestration governor with 20 workflow commands, 8 hooks, 16 specialist subagents, and 18 domain skills including comprehensive SEO toolkit",
-      "version": "2.9.0",
+      "description": "Strict multi-agent orchestration governor with 32 workflow commands, 8 hooks, 16 specialist subagents, and 26 domain skills for full-stack TanStack Start development",
+      "version": "2.13.0",
       "author": {
         "name": "bahrulbangsawan"
       }

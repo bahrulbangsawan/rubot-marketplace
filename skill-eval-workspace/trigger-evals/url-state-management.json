@@ -1,0 +1,82 @@
+[
+  {
+    "query": "Replace the useState calls for search query, page number, and sort order in our products page with nuqs useQueryStates. When a user applies filters, the URL should update to ?q=shoes&page=2&sort=price so the view is shareable.",
+    "should_trigger": true
+  },
+  {
+    "query": "I'm getting a hydration mismatch error: 'Text content does not match server-rendered HTML' on our search page. It only happens when the URL has query params. I think the NuqsAdapter might be missing.",
+    "should_trigger": true
+  },
+  {
+    "query": "Set up tab state in the URL using parseAsStringLiteral. Our dashboard has tabs for 'overview', 'analytics', and 'settings'. Clicking a tab should update ?tab=analytics and the back button should switch tabs.",
+    "should_trigger": true
+  },
+  {
+    "query": "Our search box pushes a new history entry on every keystroke, flooding the browser back button. When I press back, it goes through 30 intermediate states. How do I use history: 'replace' with nuqs?",
+    "should_trigger": true
+  },
+  {
+    "query": "Implement URL-based pagination that resets to page 1 when the search query changes. Use parseAsIndex for zero-indexed pagination and batch the page reset with the query update using useQueryStates.",
+    "should_trigger": true
+  },
+  {
+    "query": "Connect nuqs to TanStack Router's validateSearch using createStandardSchemaV1. Our /bookings route needs q, status, and dateRange params validated by both nuqs and the router.",
+    "should_trigger": true
+  },
+  {
+    "query": "I need a multi-select filter stored in the URL as comma-separated values. Users select statuses like ?status=active,pending and the URL should parse back to a string array. Use parseAsArrayOf with parseAsString.",
+    "should_trigger": true
+  },
+  {
+    "query": "Centralize our search param definitions in src/lib/search-params/. We have products, bookings, and users pages that each define their own inline parsers. Move them to shared modules with re-exports.",
+    "should_trigger": true
+  },
+  {
+    "query": "The clearOnDefault option isn't working. When I set sort back to the default 'date', it stays in the URL as ?sort=date instead of being removed. How does clearOnDefault interact with withDefault?",
+    "should_trigger": true
+  },
+  {
+    "query": "Our filter panel uses useState for a date range picker. The selected range is lost on page refresh and can't be shared. I need to store start and end dates in the URL using parseAsIsoDateTime.",
+    "should_trigger": true
+  },
+  {
+    "query": "Implement client-side routing with TanStack Router. Set up the route tree with nested layouts, a root route, and dynamic route segments like /users/$userId.",
+    "should_trigger": false
+  },
+  {
+    "query": "Add pagination to our blog post list using TanStack Query. The API returns page and totalPages. I need Previous/Next buttons but the URL doesn't need to update.",
+    "should_trigger": false
+  },
+  {
+    "query": "Store the user's theme preference (light/dark) in localStorage so it persists across visits. Use a React context to provide the theme to all components.",
+    "should_trigger": false
+  },
+  {
+    "query": "I need to read the current URL pathname in my component to highlight the active navigation link. Use useLocation from TanStack Router to get the current path.",
+    "should_trigger": false
+  },
+  {
+    "query": "Build a multi-step form wizard where each step is a separate route (/checkout/shipping, /checkout/payment, /checkout/review). Form state is stored in a Zustand store.",
+    "should_trigger": false
+  },
+  {
+    "query": "Implement deep linking for our mobile app. When users open a link like myapp://product/123, the app navigates to the correct product screen.",
+    "should_trigger": false
+  },
+  {
+    "query": "Set up React Query's queryKey to include the filter parameters. When filters change, the query should automatically refetch. The filters come from a form state, not from the URL.",
+    "should_trigger": false
+  },
+  {
+    "query": "Use window.history.pushState to add a back button to our modal. When the modal opens, push state; when back is pressed, close the modal instead of navigating away.",
+    "should_trigger": false
+  },
+  {
+    "query": "Add breadcrumb navigation based on the current route path. Parse /products/electronics/headphones into 'Products > Electronics > Headphones' links.",
+    "should_trigger": false
+  },
+  {
+    "query": "I need to implement OAuth callback handling. After the user authenticates, they're redirected back to /auth/callback?code=abc123&state=xyz. I need to extract and process these params server-side.",
+    "should_trigger": false
+  }
+]

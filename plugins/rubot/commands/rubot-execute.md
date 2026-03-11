@@ -11,6 +11,7 @@ allowed-tools:
   - Bash
   - TodoWrite
   - AskUserQuestion
+  - Skill
 ---
 
 You are in the EXECUTION PHASE of the rubot orchestration workflow.
@@ -46,7 +47,7 @@ You are in the EXECUTION PHASE of the rubot orchestration workflow.
    ```
 
 3. **Load workspace configuration**:
-   - Read `.claude/rubot/rubot.local.md` for project context and rules
+   - Read `.claude/rubot/rubot.local.yaml` for project context and rules
 
 ## Execution Process
 
@@ -79,7 +80,7 @@ For each implementation step in the plan:
        **Files**: [affected files]
        **Details**: [step details]
 
-       **Constraints from rubot.local.md**:
+       **Constraints from rubot.local.yaml**:
        [relevant project rules]
 
        Implement this step following all constraints.
@@ -147,17 +148,45 @@ When ALL checkboxes in the plan are marked as done `[x]`:
 
 1. **Update plan status** to "Completed"
 
-2. **Archive the plan** by renaming:
+2. **Archive the rubot plan** by renaming:
    ```bash
    # Get current timestamp
    TIMESTAMP=$(date +"%Y-%m-%dT%H:%M:%S")
-   
+
    # Rename plan to archived version
    mv .claude/rubot/plan.md ".claude/rubot/${TIMESTAMP}-plan.md"
    ```
 
-3. **Confirm to user**:
+3. **Archive the OpenSpec change** (if plan references one):
+   - Check the plan for `OpenSpec Change:` field to get the change name
+   - If found, archive the OpenSpec change:
+   ```bash
+   openspec archive [change-name]
+   ```
+   - If `openspec` is not installed or no change name is found, skip this step silently
+
+4. **Run ClawSec security scan** (post-execution advisory check):
+   - If `~/.claude/skills/clawsec-suite/` exists, run a quick advisory scan:
+   ```bash
+   SUITE_DIR="$HOME/.claude/skills/clawsec-suite"
+   FEED_URL="${CLAWSEC_FEED_URL:-https://clawsec.prompt.security/advisories/feed.json}"
+   TMP="$(mktemp -d)"
+   trap 'rm -rf "$TMP"' EXIT
+   curl -fsSLo "$TMP/feed.json" "$FEED_URL" 2>/dev/null || cp "$SUITE_DIR/advisories/feed.json" "$TMP/feed.json"
+   if jq -e '.version and (.advisories | type == "array")' "$TMP/feed.json" >/dev/null 2>&1; then
+     ls -1 ~/.claude/skills/ 2>/dev/null | while read skill; do
+       [ -z "$skill" ] && continue
+       MATCHES=$(jq -r --arg s "$skill" '[.advisories[] | select(.affected[]? | ascii_downcase == ($s | ascii_downcase))] | length' "$TMP/feed.json" 2>/dev/null)
+       [ "$MATCHES" -gt 0 ] && echo "SECURITY ALERT: Skill '$skill' has advisory match — run /rubot-skills-security-check"
+     done
+   fi
+   ```
+   - If clawsec-suite is not installed, skip this step silently
+
+5. **Confirm to user**:
    - Plan archived as `[TIMESTAMP]-plan.md`
+   - OpenSpec change archived (if applicable)
+   - Security scan results (if clawsec-suite is installed)
    - Remind user to run `/rubot-check` for validation
 
 ### Archive Naming Convention
@@ -183,7 +212,7 @@ During execution, STRICTLY enforce:
    - If plan is not approved, stop and ask
    - If step is not in plan, do not execute it
 
-3. **Follow project rules from rubot.local.md**
+3. **Follow project rules from rubot.local.yaml**
    - Validation rules must be followed
    - Git rules must be respected
    - Project conventions must be maintained

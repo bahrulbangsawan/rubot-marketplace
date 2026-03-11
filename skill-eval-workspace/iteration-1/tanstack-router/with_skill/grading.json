@@ -1,0 +1,32 @@
+{
+  "skill": "tanstack-router",
+  "configuration": "with_skill",
+  "expectations": [
+    {
+      "text": "Response creates route files using createFileRoute",
+      "passed": true,
+      "evidence": "Both route files use createFileRoute: \"export const Route = createFileRoute('/properties/')({...})\" and \"export const Route = createFileRoute('/properties/$propertyId')({...})\"."
+    },
+    {
+      "text": "Response includes a loader function that fetches data",
+      "passed": true,
+      "evidence": "Both routes define loader functions. The listing route: \"loader: async () => { const response = await fetch('/api/properties'); ... }\". The detail route: \"loader: async ({ params }) => { ... await Promise.all([fetch(...), fetch(...)]) ... }\"."
+    },
+    {
+      "text": "Response uses notFound() for missing properties",
+      "passed": true,
+      "evidence": "Detail route imports notFound and uses it: \"import { createFileRoute, notFound, Link } from '@tanstack/react-router';\" and \"if (propertyResponse.status === 404 || !propertyResponse.ok) { throw notFound(); }\"."
+    },
+    {
+      "text": "Response defines a pendingComponent with skeleton UI",
+      "passed": true,
+      "evidence": "Both routes define pendingComponent with skeleton UIs. For example: \"pendingComponent: PropertyDetailSkeleton\" with a full skeleton implementation using \"animate-pulse\" and \"bg-muted rounded\" placeholder elements."
+    },
+    {
+      "text": "Response uses Route.useLoaderData() to access data",
+      "passed": true,
+      "evidence": "Listing route: \"const properties = Route.useLoaderData();\". Detail route: \"const { property, tenants } = Route.useLoaderData();\"."
+    }
+  ],
+  "pass_rate": 1.0
+}

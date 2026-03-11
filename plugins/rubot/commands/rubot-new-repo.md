@@ -27,7 +27,7 @@ You are in the REPOSITORY CREATION PHASE of the rubot orchestration workflow.
    - If not a git repo, will initialize one
 
 3. **Load workspace configuration** (if exists):
-   - Read `.claude/rubot/rubot.local.md` for project name
+   - Read `.claude/rubot/rubot.local.yaml` for project name
 
 ## Repository Creation Process
 
@@ -123,9 +123,9 @@ chore: initial commit
 
 Project scaffolded and ready for development.
 
-🤖 Generated with [Claude Code](https://claude.com/claude-code)
+Generated with AI
 
-Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
+Co-Authored-By: RuBot <https://github.com/bahrulbangsawan/rubot-marketplace>
 EOF
 )"
 ```
@@ -241,5 +241,5 @@ echo ".dev.vars" >> .gitignore
 
 After creating the repository:
 1. User can run `/rubot-init` to set up workspace
-2. Repository URL will be captured in `rubot.local.md`
+2. Repository URL will be captured in `rubot.local.yaml`
 3. Future commits/PRs will use this repository

@@ -1,0 +1,82 @@
+[
+  {
+    "query": "Add JSON-LD structured data to our /blog/$slug route so articles get rich snippets in Google with the author name and publish date",
+    "should_trigger": true
+  },
+  {
+    "query": "We need BreadcrumbList schema on every page — Home > Category > Current Page. Generate the JSON-LD and wire it into the TanStack Start head() function",
+    "should_trigger": true
+  },
+  {
+    "query": "Our product pages at src/routes/products/$id.tsx need Product schema with offers, price as string, availability set to InStock, and aggregateRating from our reviews table",
+    "should_trigger": true
+  },
+  {
+    "query": "Google Search Console is throwing 'missing field image' errors on our Article structured data in production — can you fix the JSON-LD in src/lib/seo/schema.ts?",
+    "should_trigger": true
+  },
+  {
+    "query": "I want star ratings to show up next to our SaaS product in Google search results. How do I add the right schema for a SoftwareApplication with aggregateRating?",
+    "should_trigger": true
+  },
+  {
+    "query": "Create a reusable JsonLd component for our TanStack Start app that accepts an array of schema objects and renders them as separate script tags",
+    "should_trigger": true
+  },
+  {
+    "query": "Add FAQ schema to our pricing page — we have 6 questions/answers in a collapsible accordion. Each question needs its own mainEntity entry in the FAQPage JSON-LD",
+    "should_trigger": true
+  },
+  {
+    "query": "Our local business page needs LocalBusiness structured data with address, geo coordinates 37.7749/-122.4194, opening hours Mon-Fri 9-5, and a contactPoint for customer service",
+    "should_trigger": true
+  },
+  {
+    "query": "We're building a recipe site — add Recipe schema to the route at /recipes/$slug with recipeIngredient, recipeInstructions as HowToStep, nutrition info, and prep/cook times in ISO 8601 duration",
+    "should_trigger": true
+  },
+  {
+    "query": "I pasted our JSON-LD into the Rich Results Test and got 'Incorrect value type for field price' — it's set to 29.99 as a number but Google wants a string. Fix this across all our product schemas",
+    "should_trigger": true
+  },
+  {
+    "query": "Run a full SEO audit on https://acme.com and give me a scored report with recommendations",
+    "should_trigger": false
+  },
+  {
+    "query": "Set up og:title, og:description, og:image, and twitter:card meta tags for our blog posts so they look good when shared on LinkedIn",
+    "should_trigger": false
+  },
+  {
+    "query": "Our database schema for the users table needs a new column for email_verified — can you write the Drizzle migration?",
+    "should_trigger": false
+  },
+  {
+    "query": "Create a Zod schema for validating the contact form with name, email, and message fields",
+    "should_trigger": false
+  },
+  {
+    "query": "I need to define the TypeScript interface for our API response — it has id, name, createdAt, and a nested address object",
+    "should_trigger": false
+  },
+  {
+    "query": "Add a sitemap.xml that lists all our blog posts with lastmod dates and weekly changefreq",
+    "should_trigger": false
+  },
+  {
+    "query": "Our Typebox schema in the Elysia route validator is rejecting valid requests — the body t.Object has a t.Numeric field but the client sends a string",
+    "should_trigger": false
+  },
+  {
+    "query": "Write a robots.txt that allows all crawlers but blocks /admin and /api paths",
+    "should_trigger": false
+  },
+  {
+    "query": "The GraphQL schema needs a new Query type for fetching orders by customer ID with pagination",
+    "should_trigger": false
+  },
+  {
+    "query": "Validate our Prisma schema file and make sure the relations between User and Post are correct with onDelete cascade",
+    "should_trigger": false
+  }
+]

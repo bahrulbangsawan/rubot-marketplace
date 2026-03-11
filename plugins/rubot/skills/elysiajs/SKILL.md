@@ -1,21 +1,53 @@
 ---
 name: elysiajs
+version: 1.1.0
 description: |
-  Implements ElysiaJS for high-performance, type-safe HTTP servers in Bun. Use when building APIs, handling routes, implementing middleware, setting up validation, or integrating with tRPC.
+  Build high-performance, type-safe HTTP servers and REST APIs with ElysiaJS on Bun. ACTIVATE THIS SKILL when the user wants to: create Elysia routes with Typebox validation (t.Object, t.Numeric, t.File), build auth plugins using derive/macro, add @elysiajs/swagger for OpenAPI docs, wire up Eden treaty client for end-to-end type-safe API calls, implement WebSocket with pub/sub channels, handle file uploads with t.File validation, fix plugin ordering issues (.use(authPlugin) before routes), set up route groups and guards for API versioning, add custom error handling with onError hooks, configure CORS, fix t.Numeric() param coercion, fix type inference breaking with intermediate variables, or set up lifecycle hooks (onRequest, onBeforeHandle, onAfterHandle).
 
-  Covers: routing, validation, plugins, lifecycle hooks, error handling, OpenAPI, and Eden integration.
+  Trigger on: "Elysia", "ElysiaJS", "Eden treaty", "Eden client", "Typebox validation", "@elysiajs/swagger", "Bun HTTP server", "Elysia plugin", "Elysia WebSocket", "Elysia route", "Elysia error handling", "Elysia guard", "Elysia derive", "Elysia macro".
+
+  DO NOT trigger for: Express.js, Fastify, Hono.js, tRPC with Next.js, Apollo GraphQL, Drizzle ORM schema, AWS Lambda, or generic Node.js HTTP servers.
+agents:
+  - backend-master
 ---
 
 # ElysiaJS Skill
 
-You are an expert in ElysiaJS for building high-performance, type-safe HTTP servers with Bun.
+> High-performance, type-safe Bun HTTP server and REST API framework
+
+## When to Use
+
+- Building a new REST API or HTTP server with Bun
+- Creating type-safe API endpoints with request/response validation
+- Setting up middleware, CORS, JWT auth, or lifecycle hooks
+- Implementing route validation with Typebox schemas
+- Connecting frontend to backend with Eden client for end-to-end type safety
+- Designing plugin architecture for composable, reusable server features
+- Adding WebSocket support to an existing Elysia server
+- Generating OpenAPI/Swagger documentation from route definitions
+
+## Quick Reference
+
+| Concept | Description |
+|---------|-------------|
+| **Elysia** | Core server class, entry point for all routes and plugins |
+| **Route** | HTTP method handler bound to a path pattern |
+| **Plugin** | Reusable Elysia instance composed via `.use()` |
+| **Guard** | Shared validation/hooks applied to a group of routes |
+| **Lifecycle Hook** | Request/response interception at defined stages |
+| **Derive** | Compute and inject new context properties per request |
+| **State** | Global mutable store shared across all handlers |
+| **Decorate** | Immutable values/functions injected into handler context |
+| **t (Typebox)** | Schema builder for validation and type inference |
+| **Eden** | Type-safe HTTP client generated from server types |
 
 ## Core Principles
 
-1. **Type Safety**: Leverage end-to-end type inference
-2. **Performance**: Utilize Bun's speed and Elysia's optimizations
-3. **Plugin Architecture**: Compose functionality through plugins
-4. **Validation First**: Validate all inputs with schemas
+1. **Type Safety First**: Leverage end-to-end type inference from route definition to client consumption. WHY: catches bugs at compile time rather than runtime, eliminating entire categories of API contract mismatches.
+2. **Bun-Native Performance**: Build on Bun rather than Node.js for the server runtime. WHY: native TypeScript execution, faster startup, better throughput, and built-in APIs for files, hashing, and networking.
+3. **Plugin Architecture**: Compose functionality through isolated, reusable plugins. WHY: plugins are independently testable, lazily loaded, and enforce separation of concerns across your API surface.
+4. **Validation First**: Validate all inputs and outputs with Typebox schemas. WHY: schema validation doubles as documentation and ensures runtime data matches TypeScript types.
+5. **Method Chaining**: Always chain methods on the same Elysia instance. WHY: Elysia tracks types through the chain; breaking it loses type inference.
 
 ## Basic Server Setup
 
@@ -75,6 +107,21 @@ const app = new Elysia()
         app
           .get('/users', () => 'v2 users')
       )
+  );
+```
+
+### Guards (Shared Validation)
+
+```typescript
+const app = new Elysia()
+  .guard({
+    headers: t.Object({
+      authorization: t.String(),
+    }),
+  }, (app) =>
+    app
+      .get('/profile', ({ headers }) => getProfile(headers.authorization))
+      .get('/settings', ({ headers }) => getSettings(headers.authorization))
   );
 ```
 
@@ -216,7 +263,7 @@ const app = new Elysia()
 
 ```typescript
 const app = new Elysia()
-  // Global state
+  // Global state (mutable, tracked via store)
   .state('version', '1.0.0')
   // Decorators (functions/values on context)
   .decorate('db', database)
@@ -265,42 +312,10 @@ const app = new Elysia()
   });
 ```
 
-## tRPC Integration
-
-```typescript
-import { Elysia } from 'elysia';
-import { trpc } from '@elysiajs/trpc';
-import { initTRPC } from '@trpc/server';
-import { z } from 'zod';
-
-const t = initTRPC.create();
-
-const router = t.router({
-  users: t.router({
-    list: t.procedure.query(() => getUsers()),
-    get: t.procedure
-      .input(z.object({ id: z.number() }))
-      .query(({ input }) => getUserById(input.id)),
-    create: t.procedure
-      .input(z.object({
-        email: z.string().email(),
-        name: z.string(),
-      }))
-      .mutation(({ input }) => createUser(input)),
-  }),
-});
-
-const app = new Elysia()
-  .use(trpc(router))
-  .listen(3000);
-
-export type AppRouter = typeof router;
-```
-
 ## Eden Client (Type-Safe Client)
 
 ```typescript
-// Server
+// Server (server.ts)
 import { Elysia, t } from 'elysia';
 
 const app = new Elysia()
@@ -314,18 +329,46 @@ const app = new Elysia()
 
 export type App = typeof app;
 
-// Client
+// Client (client.ts)
 import { treaty } from '@elysiajs/eden';
 import type { App } from './server';
 
 const client = treaty<App>('http://localhost:3000');
 
-// Fully typed!
+// Fully typed - errors caught at compile time
 const users = await client.users.get();
 const newUser = await client.users.post({
   email: 'user@example.com',
   name: 'New User',
 });
+```
+
+## tRPC Integration
+
+```typescript
+import { Elysia } from 'elysia';
+import { trpc } from '@elysiajs/trpc';
+import { initTRPC } from '@trpc/server';
+import { z } from 'zod';
+
+const t = initTRPC.create();
+const router = t.router({
+  users: t.router({
+    list: t.procedure.query(() => getUsers()),
+    get: t.procedure
+      .input(z.object({ id: z.number() }))
+      .query(({ input }) => getUserById(input.id)),
+    create: t.procedure
+      .input(z.object({ email: z.string().email(), name: z.string() }))
+      .mutation(({ input }) => createUser(input)),
+  }),
+});
+
+const app = new Elysia()
+  .use(trpc(router))
+  .listen(3000);
+
+export type AppRouter = typeof router;
 ```
 
 ## File Handling
@@ -416,25 +459,54 @@ export const usersRoutes = new Elysia({ prefix: '/users' })
 // src/index.ts
 import { Elysia } from 'elysia';
 import { usersRoutes } from './routes/users';
+import { postsRoutes } from './routes/posts';
 
 const app = new Elysia()
   .use(usersRoutes)
+  .use(postsRoutes)
   .listen(3000);
-```
 
-### Type Export for Clients
-
-```typescript
 // Always export the app type for Eden clients
 export type App = typeof app;
 ```
 
-## When to Apply This Skill
+## Troubleshooting
 
-- Building HTTP APIs with Bun
-- Implementing type-safe route handlers
-- Setting up request validation
-- Creating reusable plugins
-- Integrating with tRPC
-- Building WebSocket servers
-- Generating OpenAPI documentation
+| Issue | Cause | Fix |
+|-------|-------|-----|
+| Type inference broken | Method chain interrupted by variable reassignment or conditional logic | Keep all `.get()`, `.post()`, `.use()` calls chained on the same instance without breaking the chain |
+| Plugin not working | `.use()` called after routes that depend on it | Move `.use(plugin)` BEFORE any routes that consume the plugin's context, derive, or macro |
+| CORS errors in browser | Missing or misconfigured `@elysiajs/cors` plugin | Add `.use(cors({ origin: ['your-domain'] }))` before route definitions |
+| `params.id` is string not number | Path params are always strings by default | Use `t.Object({ id: t.Numeric() })` in params validation to coerce to number |
+| Eden client types stale | Server type export not updated after route changes | Re-export `type App = typeof app` and ensure client imports the latest type |
+| `store` property missing | Accessing state before `.state()` declaration | Declare `.state('key', value)` before any handler that reads `store.key` |
+| Handler returns undefined | Async handler missing return statement | Ensure all code paths return a value; Elysia does not auto-serialize undefined |
+| Validation error on valid data | Schema mismatch between `t.Number()` and string input | Use `t.Numeric()` for query/path params that arrive as strings but should be numbers |
+
+## Constraints
+
+- **Bun Only**: ElysiaJS requires Bun runtime. It does not run on Node.js or Deno.
+- **Method Chaining Required**: Breaking the method chain (e.g., storing intermediate results in variables) breaks type inference. Always chain.
+- **Plugin Order Matters**: Plugins registered with `.use()` must appear before routes that depend on them. Order of `.use()` calls defines the execution order.
+- **No Express Middleware**: Express/Connect middleware is not compatible. Use Elysia's native plugin and hook system instead.
+- **Schema Serialization**: Typebox schemas must be serializable. Do not use functions or class instances inside schema definitions.
+- **Single Listen Call**: Only call `.listen()` once per Elysia instance. Multiple `.listen()` calls will throw.
+- **Eden Requires Type Export**: The Eden client only works if the server exports its app type via `export type App = typeof app`.
+
+## Verification Checklist
+
+- [ ] Server starts without errors on `bun run dev`
+- [ ] All routes have Typebox validation for body, params, and query where applicable
+- [ ] Response schemas defined for all routes (enables OpenAPI generation)
+- [ ] Plugins are `.use()`-d before routes that depend on them
+- [ ] Method chain is unbroken from `new Elysia()` through `.listen()`
+- [ ] Error handler covers VALIDATION, NOT_FOUND, and default cases
+- [ ] CORS plugin configured if API is consumed from browser
+- [ ] App type exported for Eden client consumers: `export type App = typeof app`
+- [ ] Route modules use `new Elysia({ prefix: '/resource' })` pattern
+- [ ] No Express/Connect middleware used (Elysia-native plugins only)
+
+## References
+
+- [ElysiaJS Docs](https://elysiajs.com) | [Eden Client](https://elysiajs.com/eden/overview) | [Plugins](https://elysiajs.com/plugins/overview)
+- [Typebox Schemas](https://github.com/sinclairzx81/typebox) | [Bun Runtime](https://bun.sh)

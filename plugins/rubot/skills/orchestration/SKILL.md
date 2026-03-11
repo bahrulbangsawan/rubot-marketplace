@@ -1,29 +1,74 @@
 ---
-name: Multi-Agent Orchestration
+name: orchestration
+version: 2.8.0
 description: |
-  Provides domain classification, agent coordination patterns, and conflict resolution knowledge for the rubot orchestration governor. Use when coordinating multiple specialist agents, classifying tasks by domain, resolving inter-agent conflicts, or producing unified execution plans from multi-agent consultations.
-version: 2.6.0
+  Multi-agent orchestration governor for coordinating specialist agents across domains. MUST activate when a task spans 2+ domains (database + API + UI, deployment + testing, etc.), when agents disagree or produce conflicting recommendations, when the user asks "which agent should I use/handle this", or when building a unified execution plan, risk matrix, or agent sequence. Also activate for: "coordinate the implementation", "create an execution plan", "agent responsibilities", "in what order", "which one wins", multi-step features (e.g., "add booking with table, endpoint, and form"), cross-agent validation, post-implementation verification pipelines, and any request that names 3+ concerns (SSR + responsive + database). Do NOT activate for single-domain tasks like "add a column", "fix a TypeScript error", "write a useQuery hook", or "deploy the worker" -- those go directly to their specialist agent.
+
+  Covers: domain classification, agent selection, task routing, multi-agent coordination, conflict resolution, sequential invocation order, execution plan generation, risk matrices, and cross-agent validation.
 agents:
   - rubot
 ---
 
 # Multi-Agent Orchestration Knowledge
 
-This skill provides the knowledge base for coordinating the 15 registered specialist subagents in a deterministic, mandatory orchestration workflow.
+> Coordinate specialist agents for deterministic, conflict-free multi-domain task execution
 
-## Documentation Verification (MANDATORY)
+## When to Use
 
-Before orchestrating any multi-agent workflow:
+- User asks "which agent should I use for X" or needs help selecting the right agent
+- Task spans multiple domains (database + API + UI, deployment + testing, etc.)
+- You need to determine the correct invocation order for a multi-step feature
+- Two or more agents produce conflicting recommendations that need resolution
+- User describes a complex feature that requires coordinated agent effort
+- You need to build a unified execution plan from multiple agent consultations
+- Task routing is ambiguous and domain classification is needed
+- Post-implementation validation requires coordinating verification agents
 
-1. **Use Context7 MCP** to verify current library APIs:
-   - `mcp__context7__resolve-library-id` with libraryName for any technology in the task
-   - `mcp__context7__query-docs` for specific patterns agents will need
+## Quick Reference
 
-2. **Use Exa MCP** for latest integration patterns:
-   - `mcp__exa__web_search_exa` for "multi-agent orchestration patterns 2024"
-   - `mcp__exa__get_code_context_exa` for specific technology combinations
+| Agent | Domain | Role |
+|-------|--------|------|
+| backend-master | API, tRPC, ElysiaJS, Drizzle | Backend logic and validation |
+| chart-master | ECharts, data visualization | Charts (sub-agent of shadcn-ui-designer) |
+| cloudflare | Workers, R2, D1, Wrangler | Deployment and package installation |
+| dashboard-master | Dashboard, sidebar, admin | Dashboard architecture (sub-agent) |
+| debug-master | TypeScript, Biome, lint | Error diagnosis and verification |
+| hydration-solver | SSR, hydration, streaming | Hydration fix and SSR patterns |
+| lazy-load-master | Code splitting, dynamic imports | Bundle optimization |
+| neon-master | PostgreSQL, NeonDB, migrations | Database schema and queries |
+| plan-supervisor | plan.md tracking | Task completion status |
+| qa-tester | agent-browser, feature testing | Functional verification |
+| responsive-master | Tailwind responsive, breakpoints | Layout validation (sub-agent) |
+| seo-master | SEO, schema markup, crawlability | SEO implementation (user-confirmed) |
+| shadcn-ui-designer | shadcn/ui, Tailwind, forms | Frontend owner and UI team lead |
+| tanstack | Router/Query/Form/Table/DB | Full-stack TypeScript patterns |
+| theme-master | OKLCH, CSS variables, dark mode | Theming (sub-agent) |
 
-3. **Use AskUserQuestion** for orchestration clarification:
+## Core Principles
+
+1. **Sequential Invocation Order Matters** — Context propagates forward: each agent builds on previous agents' outputs. Database schema informs API design, which informs UI structure. Invoking out of order means later agents lack the context they need, producing incompatible outputs.
+
+2. **Frontend Ownership is Singular** — shadcn-ui-designer owns all UI implementation because split ownership causes inconsistent styling, duplicated components, and broken responsive behavior. Other agents provide data and logic; one agent renders it all.
+
+3. **Conflict Resolution Requires Human Input** — When agents disagree (performance vs UX, normalized vs denormalized schema), these represent genuine trade-offs with no objectively correct answer. Auto-resolving masks important decisions the user should make.
+
+4. **Every Domain Gets Consulted** — Skipping an agent for a "simple" task misses cross-domain implications. A "simple" UI change may affect SSR, responsiveness, and accessibility. The cost of consultation is low; the cost of a missed edge case is high.
+
+5. **Verification is Non-Negotiable** — debug-master, qa-tester, and plan-supervisor run after every implementation. Catching issues during verification is cheap; fixing them in production is expensive.
+
+## Documentation Verification
+
+Before orchestrating any multi-agent workflow, gather current information:
+
+1. **Verify current library APIs** (if Context7 MCP is available):
+   - Use `mcp__context7__resolve-library-id` and `mcp__context7__query-docs` for specific technology patterns
+   - If Context7 is not available, use WebSearch or WebFetch to check current documentation
+
+2. **Research integration patterns** (if Exa MCP is available):
+   - Use `mcp__exa__web_search_exa` for latest patterns
+   - If Exa is not available, use WebSearch as a fallback
+
+3. **Clarify with user** via AskUserQuestion:
    - Priority between conflicting agent recommendations
    - Which features are critical vs nice-to-have
    - Acceptable trade-offs (performance vs UX, etc.)
@@ -42,7 +87,7 @@ Before orchestrating any multi-agent workflow:
 | error, bug, type error, validation, lint, Biome | Debugging | debug-master |
 | SSR, hydration, server-render, streaming | Hydration | hydration-solver |
 | database, schema, table, migration, query, PostgreSQL, Neon | Database | neon-master |
-| test, QA, Playwright, DevTools | Testing | qa-tester |
+| test, QA, agent-browser | Testing | qa-tester |
 | responsive, mobile, breakpoint, layout | Responsiveness | responsive-master |
 | SEO, metadata, schema markup, robots.txt, sitemap | SEO | seo-master (user-confirmed) |
 | UI, component, shadcn, button, dialog | UI | shadcn-ui-designer |
@@ -62,6 +107,8 @@ Before orchestrating any multi-agent workflow:
 | Electric, ElectricSQL, shape, real-time sync, Postgres sync | Electric Sync | tanstack, neon-master |
 | PowerSync, offline-first, SQLite, local persistence | Offline Sync | tanstack, backend-master |
 | optimistic mutation, transaction, isPersisted, rollback | Client Mutations | tanstack, shadcn-ui-designer |
+| WCAG, accessibility, a11y, screen reader, keyboard navigation, focus management, aria, alt text | Accessibility | seo-master, responsive-master, shadcn-ui-designer |
+| navbar, footer, global layout, site header, site footer, page wrapper, shared layout, persistent navigation | Layout Structure | shadcn-ui-designer, responsive-master |
 
 ### Multi-Domain Task Patterns
 
@@ -88,6 +135,8 @@ These task patterns ALWAYS require multiple agents:
 | "Add permission-based UI" | shadcn-ui-designer, tanstack, backend-master, responsive-master |
 | "Protect admin routes" | backend-master, tanstack, debug-master |
 | "Add user roles" | neon-master, backend-master, shadcn-ui-designer |
+| "Add navbar and footer" | shadcn-ui-designer, responsive-master |
+| "Create global layout" | shadcn-ui-designer, responsive-master |
 | "Set up file-based routing" | tanstack, debug-master |
 | "Add route guards" | tanstack, backend-master |
 | "Implement URL state" | tanstack, shadcn-ui-designer |
@@ -137,15 +186,15 @@ These task patterns ALWAYS require multiple agents:
 | "Optimistic mutations" | tanstack, shadcn-ui-designer |
 | "Collection with transactions" | tanstack, backend-master |
 
-## Frontend Ownership Rule (GLOBAL)
+## Frontend Ownership Rule
 
-**shadcn-ui-designer is the SINGLE OWNER of all frontend/UI implementation.**
+**shadcn-ui-designer owns all frontend/UI implementation.** This ensures design consistency — when multiple agents touch the UI independently, you get inconsistent styling, duplicated components, and broken responsive behavior.
 
 | Rule | Description |
 |------|-------------|
-| Frontend Authority | ALL frontend/UI tasks MUST be delegated to shadcn-ui-designer |
-| No Direct UI | Other agents are NOT allowed to craft frontend components, layouts, or UI logic |
-| Sub-agent Hierarchy | responsive-master, theme-master, dashboard-master, chart-master operate ONLY under shadcn-ui-designer |
+| Frontend Authority | Frontend/UI tasks are delegated to shadcn-ui-designer |
+| No Direct UI | Other agents provide data and logic; shadcn-ui-designer handles the UI |
+| Sub-agent Hierarchy | responsive-master, theme-master, dashboard-master, chart-master work under shadcn-ui-designer's coordination |
 
 ### UI Team Structure
 
@@ -189,6 +238,11 @@ shadcn-ui-designer (Team Lead - Frontend Owner)
 - **Produces**: Hydration fixes, SSR patterns, determinism analysis
 - **Constraints**: No speculation, documentation-backed solutions
 
+### lazy-load-master
+- **Expertise**: Code splitting, lazy loading, dynamic imports, bundle size optimization
+- **Produces**: Lazy loading patterns, React.lazy implementations, dynamic import strategies, bundle analysis
+- **Constraints**: Performance-focused, must maintain SSR compatibility, hydration-safe patterns
+
 ### neon-master
 - **Expertise**: PostgreSQL, NeonDB, schema design, migrations, indexing
 - **Produces**: Schema definitions, migration files, query optimization, constraint designs
@@ -200,7 +254,7 @@ shadcn-ui-designer (Team Lead - Frontend Owner)
 - **Constraints**: Read-only for all files except plan.md checkboxes, no assumptions, no implementation
 
 ### qa-tester
-- **Expertise**: Playwright, Chrome DevTools, feature testing, debugging
+- **Expertise**: agent-browser, feature testing, debugging
 - **Produces**: Test reports, error investigations, verification results
 - **Constraints**: No UI modifications, testing only, delegate fixes
 
@@ -213,7 +267,7 @@ shadcn-ui-designer (Team Lead - Frontend Owner)
 - **Expertise**: SEO, structured data, schema markup, crawlability, AI crawlers
 - **Produces**: robots.txt, sitemap.xml, JSON-LD, metadata optimization
 - **Constraints**: Evidence-based only, no black-hat techniques
-- **⚠️ User Confirmation Required**: Must verify with user before implementation. Dashboards, admin panels, and authenticated apps should NOT be indexed for security.
+- **User Confirmation Required**: Must verify with user before implementation. Dashboards, admin panels, and authenticated apps should NOT be indexed for security.
 
 ### shadcn-ui-designer (FRONTEND OWNER - Team Lead)
 - **Expertise**: shadcn/ui, Tailwind, design systems, TanStack Form, 20 mandatory registries
@@ -233,7 +287,7 @@ shadcn-ui-designer (Team Lead - Frontend Owner)
 
 ## Sequential Invocation Order
 
-For maximum context propagation, invoke agents in this order:
+Context propagates forward through this sequence — each phase builds on the outputs of the previous one. Invoking out of order means agents lack the context they need.
 
 1. **Domain Analysis Agents** (understand the problem)
    - neon-master (if database involved)
@@ -250,7 +304,7 @@ For maximum context propagation, invoke agents in this order:
    - hydration-solver (if SSR involved)
    - cloudflare (if deployment or package installation involved)
 
-3. **Verification Agents** (validate the solution) - ALWAYS LAST
+3. **Verification Agents** (validate the solution) - run after implementation
    - debug-master (mandatory - verifies no errors)
    - qa-tester (mandatory - verifies functionality)
    - plan-supervisor (mandatory - updates plan.md completion status)
@@ -283,22 +337,13 @@ For maximum context propagation, invoke agents in this order:
 
 ```markdown
 ## Conflict Detected
-
 **Domain**: [e.g., Performance vs UX]
-
-**Agent A**: [agent-name]
-**Position**: [what they recommend]
-**Rationale**: [why]
-
-**Agent B**: [agent-name]
-**Position**: [what they recommend]
-**Rationale**: [why]
-
+**Agent A**: [agent-name] — Position: [what they recommend] — Rationale: [why]
+**Agent B**: [agent-name] — Position: [what they recommend] — Rationale: [why]
 **Options**:
 1. [Option favoring Agent A]
 2. [Option favoring Agent B]
 3. [Compromise option if available]
-
 **Recommendation**: [If one option is clearly better, state it]
 ```
 
@@ -308,18 +353,14 @@ For maximum context propagation, invoke agents in this order:
 
 ```markdown
 ## Root-Cause Analysis
-
 ### Problem Statement
 [What is the core issue, synthesized from all agent inputs]
-
 ### Contributing Factors
 | Factor | Identified By | Severity |
 |--------|---------------|----------|
 | ... | [agent] | High/Medium/Low |
-
 ### Root Cause
 [The fundamental issue that, if fixed, resolves the problem]
-
 ### Evidence
 [Supporting observations from multiple agents]
 ```
@@ -328,7 +369,6 @@ For maximum context propagation, invoke agents in this order:
 
 ```markdown
 ## Cross-Agent Risk Matrix
-
 | Risk | Source Agent | Probability | Impact | Mitigation |
 |------|--------------|-------------|--------|------------|
 | [Risk description] | [agent] | High/Med/Low | High/Med/Low | [How to address] |
@@ -338,20 +378,14 @@ For maximum context propagation, invoke agents in this order:
 
 ```markdown
 ## Unified Execution Plan
-
 ### Prerequisites
 - [ ] [Prerequisite with responsible agent]
-
 ### Implementation Steps
-
 #### Step 1: [Action]
 - **Responsible Agent**: [agent-name]
 - **Details**: [What to do]
 - **Verification**: [How to verify completion]
-
-#### Step 2: [Action]
-...
-
+#### Step 2: [Action] ...
 ### Post-Implementation
 - [ ] Run debug-master verification
 - [ ] Run qa-tester validation
@@ -362,37 +396,83 @@ For maximum context propagation, invoke agents in this order:
 
 ```markdown
 ## Validation Checklist
-
 ### From debug-master
 - [ ] `bun run validate` passes
 - [ ] `bunx biome check .` passes
-- [ ] No type errors
-- [ ] No lint violations
-
+- [ ] No type errors / No lint violations
 ### From qa-tester
 - [ ] Feature works as expected
-- [ ] No console errors
-- [ ] Network requests succeed
+- [ ] No console errors / Network requests succeed
 - [ ] Responsive behavior verified
-
 ### From [other relevant agents]
 - [ ] [Domain-specific verification items]
 ```
 
 ## Orchestration Anti-Patterns
 
-### NEVER Do These
+### Anti-Patterns
 
-1. **Skip agents for "simple" tasks** - All relevant agents are mandatory
-2. **Auto-resolve conflicts** - Always escalate to user
-3. **Implement during orchestration** - Rubot coordinates, doesn't implement
-4. **Proceed with partial consultation** - All agents must respond
-5. **Ignore agent constraints** - Each agent's rules are binding
-6. **Rush to solution** - Proper orchestration takes time
+These patterns lead to poor outcomes because they bypass the consensus-building that makes orchestration valuable:
+
+1. **Skipping agents for "simple" tasks** — What looks simple often has cross-domain implications. A "simple" UI change may affect SSR, responsiveness, and accessibility.
+2. **Auto-resolving conflicts** — Conflicts represent genuine trade-offs. The user needs to make the call on which priority wins.
+3. **Implementing during orchestration** — Rubot coordinates and plans; agents implement. Mixing the two creates unreviewed changes.
+4. **Proceeding with partial consultation** — Missing an agent's input means missing their domain expertise.
+5. **Ignoring agent constraints** — Constraints exist because of real technical limitations (e.g., Workers size limits, hydration determinism).
+6. **Rushing to solution** — Quick solutions often miss edge cases that agents would catch.
 
 ### Warning Signs
 
-- "Let's just quickly..." - Stop, follow the protocol
-- "This is obvious..." - Still consult all relevant agents
-- "We can skip X because..." - No, X is mandatory if relevant
-- "I'll implement and verify later..." - No, verify during orchestration
+If you notice these thought patterns, pause and reconsider — they usually indicate a shortcut that will cost more time later:
+
+- "Let's just quickly..." — Speed now often means rework later
+- "This is obvious..." — Obvious tasks still benefit from domain expertise
+- "We can skip X because..." — Skipping consultation leads to missed edge cases
+- "I'll implement and verify later..." — Verification during planning catches issues cheaply; fixing post-implementation is expensive
+
+## Troubleshooting
+
+| Issue | Cause | Fix |
+|-------|-------|-----|
+| Wrong agent selected for task | Domain keywords matched incorrectly or task is ambiguous | Re-check the Domain Classification Reference table; look for secondary keywords that indicate the true domain |
+| Agents give conflicting advice | Genuine trade-off between domains (e.g., performance vs UX) | Use the Conflict Presentation Template to surface both positions; ask the user to decide |
+| Too many agents invoked for a simple task | Task was over-classified as multi-domain | Verify the task truly spans multiple domains; single-domain tasks need only their primary agent plus verification |
+| Agent output is incompatible with previous agent | Invocation order was wrong; context did not propagate | Re-invoke agents in the correct Sequential Invocation Order so each builds on prior outputs |
+| SEO agent applied to admin panel | Missing user confirmation step | Always confirm with user before invoking seo-master; dashboards and authenticated apps should NOT be indexed |
+| Sub-agent acts independently of shadcn-ui-designer | Frontend ownership rule was bypassed | Route all UI work through shadcn-ui-designer; sub-agents (chart-master, responsive-master, etc.) operate under its coordination |
+| Plan.md not updated after implementation | plan-supervisor was skipped in verification phase | Always run all three verification agents: debug-master, qa-tester, plan-supervisor |
+| Agent recommends deprecated API | Documentation was not verified before orchestration | Run Documentation Verification step first; use Context7 or WebSearch to confirm current APIs |
+
+## Constraints
+
+- Rubot orchestrates and coordinates; it does NOT implement code directly
+- All UI implementation must go through shadcn-ui-designer (frontend ownership rule)
+- seo-master requires explicit user confirmation before invocation
+- Verification agents (debug-master, qa-tester, plan-supervisor) are mandatory after every implementation
+- Conflicts between agents must be presented to the user; never auto-resolve trade-offs
+- Agents must be invoked in sequential order (Domain Analysis, then Implementation, then Verification)
+- plan-supervisor is read-only for all files except plan.md checkboxes
+- qa-tester performs testing only; it delegates fixes to the appropriate specialist agent
+
+## Verification Checklist
+
+Before finalizing any orchestration workflow, confirm:
+
+- [ ] All relevant domains identified using the Domain Classification Reference
+- [ ] Correct agents selected for each domain (no missing, no extras)
+- [ ] User confirmation obtained for seo-master (if SEO is involved)
+- [ ] Agents invoked in correct sequential order (Domain Analysis, Implementation, Verification)
+- [ ] Frontend ownership rule respected (all UI routed through shadcn-ui-designer)
+- [ ] No conflicts auto-resolved; all trade-offs presented to user
+- [ ] Documentation verified for current APIs before agent invocation
+- [ ] Execution plan generated with clear steps, responsible agents, and verification criteria
+- [ ] All three verification agents scheduled: debug-master, qa-tester, plan-supervisor
+- [ ] Anti-patterns checklist reviewed (no skipped agents, no rushed solutions)
+
+## References
+
+- Agent definitions: `AGENTS.md` in project root (generated by `/rubot-init`)
+- Plan tracking: `plan.md` in project root (managed by plan-supervisor)
+- shadcn/ui registries: Loaded via `mcp__shadcn__list_items_in_registries`
+- Context7 docs: `mcp__context7__resolve-library-id` and `mcp__context7__query-docs`
+- Exa search: `mcp__exa__web_search_exa` for latest integration patterns

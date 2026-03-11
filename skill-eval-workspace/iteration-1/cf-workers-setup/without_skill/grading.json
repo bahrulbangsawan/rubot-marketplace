@@ -1,0 +1,32 @@
+{
+  "skill": "cf-workers-setup",
+  "configuration": "without_skill",
+  "expectations": [
+    {
+      "text": "Response detects bun as package manager",
+      "passed": true,
+      "evidence": "Install command uses 'bun add -D wrangler @cloudflare/vite-plugin'. Build and deploy commands use 'bun run build' and 'bun run deploy'."
+    },
+    {
+      "text": "Response detects TanStack Start framework",
+      "passed": true,
+      "evidence": "Mentions TanStack Start in the title and imports tanstackStart from '@tanstack/react-start/plugin/vite' in the vite.config.ts example. However, does not configure viteEnvironment: { name: \"ssr\" } which is required for TanStack Start SSR."
+    },
+    {
+      "text": "Response generates wrangler.jsonc configuration",
+      "passed": true,
+      "evidence": "Creates apps/web/wrangler.jsonc with $schema, name, compatibility_date, compatibility_flags: [\"nodejs_compat\"], and observability. However, omits the 'main' field pointing to TanStack Start server entry."
+    },
+    {
+      "text": "Response adds cloudflare() plugin to vite.config.ts",
+      "passed": true,
+      "evidence": "Shows importing cloudflare from '@cloudflare/vite-plugin' and adding cloudflare() to the plugins array. However, does not pass the required viteEnvironment: { name: \"ssr\" } parameter needed for TanStack Start."
+    },
+    {
+      "text": "Response adds deploy script to package.json",
+      "passed": true,
+      "evidence": "Shows adding 'deploy': 'wrangler deploy' to apps/web/package.json scripts alongside dev and build scripts."
+    }
+  ],
+  "pass_rate": 1.0
+}

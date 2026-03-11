@@ -1,21 +1,48 @@
 ---
 name: cloudflare-workers
+version: 1.1.0
 description: |
-  Implements Cloudflare Workers for serverless edge computing. Use when deploying applications to Cloudflare, configuring Wrangler, setting up KV/D1/R2 storage, implementing edge logic, or optimizing for global distribution.
-
-  Covers: Wrangler configuration, Workers API, KV storage, D1 database, R2 object storage, Durable Objects, and deployment.
+  Implements Cloudflare Workers for serverless edge computing, APIs, and storage. Use when deploying to Cloudflare Workers, configuring wrangler.toml, setting up KV namespace bindings, D1 database (migrations, SQL, bindings), R2 object storage (file uploads, buckets), implementing Workers secrets with wrangler secret, creating cron trigger schedules, or deploying to staging/production environments. Also use when working with Durable Objects, Cache API, environment bindings, CORS middleware for Workers, V8 runtime errors like "Buffer is not defined", bundle size limits, Worker bundle optimization, tree-shaking dependencies, or "wrangler deploy --env". Use for multipart form data handling in Workers, WebSocket connections via Durable Objects, or edge-served sitemaps from KV. NOT for: Cloudflare Pages static sites, Cloudflare DNS records, Cloudflare CDN page rules, Cloudflare WAF firewall rules, Vercel/Next.js edge runtime, Nginx reverse proxy, Node.js WebSocket servers, or browser service workers for PWA offline caching.
+agents:
+  - cloudflare
 ---
 
 # Cloudflare Workers Skill
 
-You are an expert in Cloudflare Workers for serverless edge computing and global application deployment.
+> Serverless edge computing and global application deployment on Cloudflare's network
+
+## When to Use
+
+- Setting up a new Cloudflare Workers project with Wrangler
+- Configuring `wrangler.toml` for environments, routes, or bindings
+- Implementing edge API handlers with routing and middleware
+- Working with KV store, D1 database, or R2 object storage bindings
+- Creating scheduled cron trigger workers for background tasks
+- Managing Workers secrets and environment variables
+- Deploying workers to staging or production environments
+- Implementing caching strategies with the Cache API or KV
+
+## Quick Reference
+
+| Task                      | Command / API                                      |
+| ------------------------- | -------------------------------------------------- |
+| Create project            | `bunx wrangler init my-worker`                     |
+| Local dev server          | `bunx wrangler dev`                                |
+| Deploy to production      | `bunx wrangler deploy`                             |
+| Deploy to environment     | `bunx wrangler deploy --env staging`               |
+| Set secret                | `bunx wrangler secret put SECRET_NAME`             |
+| Create KV namespace       | `bunx wrangler kv namespace create CACHE`          |
+| Create D1 database        | `bunx wrangler d1 create my-database`              |
+| Run D1 migration          | `bunx wrangler d1 migrations apply my-database`    |
+| Create R2 bucket          | `bunx wrangler r2 bucket create my-bucket`         |
+| Stream live logs          | `bunx wrangler tail`                               |
 
 ## Core Principles
 
-1. **Edge-First**: Code runs at 300+ locations globally
-2. **Minimal Cold Starts**: Workers start in milliseconds
-3. **V8 Isolates**: Lightweight, secure execution environment
-4. **Integrated Storage**: KV, D1, R2, and Durable Objects
+1. **Edge-First Architecture** -- Code runs at 300+ PoPs globally. WHY: sub-50ms latency for users worldwide by running compute physically close to them, eliminating round-trips to a centralized origin server.
+2. **V8 Isolates Over Containers** -- Workers use V8 isolates, not Docker containers or VMs. WHY: isolates spin up in under 5ms with near-zero cold starts, compared to 200-500ms for containers, delivering consistently fast response times.
+3. **Integrated Storage** -- Use KV, D1, R2, and Durable Objects as first-class bindings. WHY: co-located storage on Cloudflare's network eliminates cross-network latency that external databases and storage services introduce.
+4. **Minimal Bundle Size** -- Keep worker bundles lean and tree-shaken. WHY: smaller bundles deploy faster, start faster, and stay within the 1MB (free) or 10MB (paid) size limits.
 
 ## Project Setup
 
@@ -63,39 +90,23 @@ main = "src/index.ts"
 compatibility_date = "2024-01-01"
 compatibility_flags = ["nodejs_compat"]
 
-# Account and zone (optional for custom domains)
-# account_id = "your-account-id"
-# zone_id = "your-zone-id"
-
-# Environment variables
 [vars]
 ENVIRONMENT = "production"
 API_VERSION = "v1"
 
-# Secrets (set via wrangler secret put)
-# DATABASE_URL, API_KEY, etc.
-
-# KV Namespaces
 [[kv_namespaces]]
 binding = "CACHE"
 id = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 
-[[kv_namespaces]]
-binding = "SESSIONS"
-id = "yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
-
-# D1 Database
 [[d1_databases]]
 binding = "DB"
 database_name = "my-database"
 database_id = "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz"
 
-# R2 Buckets
 [[r2_buckets]]
 binding = "STORAGE"
 bucket_name = "my-bucket"
 
-# Durable Objects
 [[durable_objects.bindings]]
 name = "COUNTER"
 class_name = "Counter"
@@ -104,16 +115,13 @@ class_name = "Counter"
 tag = "v1"
 new_classes = ["Counter"]
 
-# Routes and custom domains
 routes = [
   { pattern = "api.example.com/*", zone_name = "example.com" }
 ]
 
-# Development environment
 [env.dev]
 vars = { ENVIRONMENT = "development" }
 
-# Staging environment
 [env.staging]
 vars = { ENVIRONMENT = "staging" }
 ```
@@ -188,7 +196,7 @@ export default {
 };
 ```
 
-### Query Parameters and Headers
+### Query Parameters, Headers, and Body Parsing
 
 ```typescript
 async function handleRequest(request: Request): Promise<Response> {
@@ -200,278 +208,50 @@ async function handleRequest(request: Request): Promise<Response> {
 
   // Headers
   const authHeader = request.headers.get('Authorization');
-  const contentType = request.headers.get('Content-Type');
+  const contentType = request.headers.get('Content-Type') || '';
+
+  // Body parsing by content type
+  if (contentType.includes('application/json')) {
+    const json = await request.json();
+  } else if (contentType.includes('form-data')) {
+    const formData = await request.formData();
+  } else if (contentType.includes('text/plain')) {
+    const text = await request.text();
+  }
 
   // Response with headers
   return new Response(JSON.stringify({ page, limit }), {
     headers: {
       'Content-Type': 'application/json',
       'Cache-Control': 'public, max-age=3600',
-      'X-Custom-Header': 'value',
     },
   });
-}
-```
-
-### Request Body Parsing
-
-```typescript
-async function handlePost(request: Request): Promise<Response> {
-  const contentType = request.headers.get('Content-Type') || '';
-
-  if (contentType.includes('application/json')) {
-    const json = await request.json();
-    return processJson(json);
-  }
-
-  if (contentType.includes('form-data')) {
-    const formData = await request.formData();
-    const file = formData.get('file') as File;
-    return processFile(file);
-  }
-
-  if (contentType.includes('text/plain')) {
-    const text = await request.text();
-    return processText(text);
-  }
-
-  return new Response('Unsupported Content-Type', { status: 415 });
 }
 ```
 
 ## KV Storage
 
-### Basic KV Operations
+Key-value storage for caching and session management. Supports TTL expiration and metadata. Reads are eventually consistent.
 
-```typescript
-interface Env {
-  CACHE: KVNamespace;
-}
-
-// Get value
-async function getValue(key: string, env: Env): Promise<string | null> {
-  return await env.CACHE.get(key);
-}
-
-// Get with type
-async function getJsonValue<T>(key: string, env: Env): Promise<T | null> {
-  return await env.CACHE.get(key, 'json');
-}
-
-// Put value
-async function setValue(key: string, value: string, env: Env): Promise<void> {
-  await env.CACHE.put(key, value, {
-    expirationTtl: 3600, // 1 hour
-  });
-}
-
-// Put JSON
-async function setJsonValue(key: string, value: object, env: Env): Promise<void> {
-  await env.CACHE.put(key, JSON.stringify(value), {
-    expirationTtl: 86400, // 24 hours
-    metadata: { type: 'json', createdAt: Date.now() },
-  });
-}
-
-// Delete
-async function deleteValue(key: string, env: Env): Promise<void> {
-  await env.CACHE.delete(key);
-}
-
-// List keys
-async function listKeys(prefix: string, env: Env): Promise<string[]> {
-  const list = await env.CACHE.list({ prefix, limit: 100 });
-  return list.keys.map((k) => k.name);
-}
-```
+For detailed KV operations (get, put, delete, list), see [references/kv-storage.md](references/kv-storage.md).
 
 ## D1 Database
 
-### D1 Operations
+SQLite-based relational database at the edge. Supports prepared statements, parameter binding, and batch operations. Uses SQLite syntax, not PostgreSQL.
 
-```typescript
-interface Env {
-  DB: D1Database;
-}
-
-// Query all
-async function getUsers(env: Env): Promise<User[]> {
-  const { results } = await env.DB.prepare('SELECT * FROM users').all<User>();
-  return results;
-}
-
-// Query with parameters
-async function getUserById(id: number, env: Env): Promise<User | null> {
-  const result = await env.DB.prepare('SELECT * FROM users WHERE id = ?').bind(id).first<User>();
-  return result;
-}
-
-// Insert
-async function createUser(user: NewUser, env: Env): Promise<D1Result> {
-  return await env.DB.prepare('INSERT INTO users (email, name) VALUES (?, ?)')
-    .bind(user.email, user.name)
-    .run();
-}
-
-// Update
-async function updateUser(id: number, data: Partial<User>, env: Env): Promise<D1Result> {
-  return await env.DB.prepare('UPDATE users SET name = ? WHERE id = ?')
-    .bind(data.name, id)
-    .run();
-}
-
-// Delete
-async function deleteUser(id: number, env: Env): Promise<D1Result> {
-  return await env.DB.prepare('DELETE FROM users WHERE id = ?').bind(id).run();
-}
-
-// Batch operations
-async function batchInsert(users: NewUser[], env: Env): Promise<D1Result[]> {
-  const statements = users.map((user) =>
-    env.DB.prepare('INSERT INTO users (email, name) VALUES (?, ?)').bind(user.email, user.name)
-  );
-  return await env.DB.batch(statements);
-}
-```
-
-### D1 Migrations
-
-```bash
-# Create migration
-bunx wrangler d1 migrations create my-database create-users-table
-
-# Apply migrations
-bunx wrangler d1 migrations apply my-database
-
-# Apply to production
-bunx wrangler d1 migrations apply my-database --remote
-```
-
-```sql
--- migrations/0001_create-users-table.sql
-CREATE TABLE IF NOT EXISTS users (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  email TEXT NOT NULL UNIQUE,
-  name TEXT NOT NULL,
-  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE INDEX idx_users_email ON users(email);
-```
+For detailed D1 operations (CRUD, batch, migrations), see [references/d1-database.md](references/d1-database.md).
 
 ## R2 Object Storage
 
-### R2 Operations
+S3-compatible object storage for files, images, and large assets. Supports streaming uploads and custom metadata.
 
-```typescript
-interface Env {
-  STORAGE: R2Bucket;
-}
-
-// Upload object
-async function uploadFile(key: string, file: File, env: Env): Promise<R2Object> {
-  return await env.STORAGE.put(key, file.stream(), {
-    httpMetadata: {
-      contentType: file.type,
-    },
-    customMetadata: {
-      originalName: file.name,
-      uploadedAt: new Date().toISOString(),
-    },
-  });
-}
-
-// Get object
-async function getFile(key: string, env: Env): Promise<Response> {
-  const object = await env.STORAGE.get(key);
-
-  if (!object) {
-    return new Response('Not Found', { status: 404 });
-  }
-
-  return new Response(object.body, {
-    headers: {
-      'Content-Type': object.httpMetadata?.contentType || 'application/octet-stream',
-      'Content-Length': object.size.toString(),
-      ETag: object.etag,
-    },
-  });
-}
-
-// Delete object
-async function deleteFile(key: string, env: Env): Promise<void> {
-  await env.STORAGE.delete(key);
-}
-
-// List objects
-async function listFiles(prefix: string, env: Env): Promise<R2Object[]> {
-  const list = await env.STORAGE.list({ prefix, limit: 100 });
-  return list.objects;
-}
-```
+For detailed R2 operations (upload, get, delete, list), see [references/r2-storage.md](references/r2-storage.md).
 
 ## Durable Objects
 
-### Durable Object Class
+Strongly consistent, stateful objects for coordination, counters, and real-time collaboration. Each object has its own persistent storage and single-threaded execution.
 
-```typescript
-export class Counter implements DurableObject {
-  private state: DurableObjectState;
-  private value: number = 0;
-
-  constructor(state: DurableObjectState, env: Env) {
-    this.state = state;
-    // Load persisted value
-    this.state.blockConcurrencyWhile(async () => {
-      const stored = await this.state.storage.get<number>('value');
-      this.value = stored || 0;
-    });
-  }
-
-  async fetch(request: Request): Promise<Response> {
-    const url = new URL(request.url);
-
-    switch (url.pathname) {
-      case '/increment':
-        this.value++;
-        await this.state.storage.put('value', this.value);
-        return new Response(this.value.toString());
-
-      case '/decrement':
-        this.value--;
-        await this.state.storage.put('value', this.value);
-        return new Response(this.value.toString());
-
-      case '/value':
-        return new Response(this.value.toString());
-
-      default:
-        return new Response('Not Found', { status: 404 });
-    }
-  }
-}
-```
-
-### Using Durable Objects
-
-```typescript
-interface Env {
-  COUNTER: DurableObjectNamespace;
-}
-
-export default {
-  async fetch(request: Request, env: Env): Promise<Response> {
-    const url = new URL(request.url);
-
-    // Get Durable Object stub by name
-    const id = env.COUNTER.idFromName('global-counter');
-    const stub = env.COUNTER.get(id);
-
-    // Forward request to Durable Object
-    return stub.fetch(request);
-  },
-};
-```
+For Durable Object class implementation and usage patterns, see [references/durable-objects.md](references/durable-objects.md).
 
 ## Caching
 
@@ -627,12 +407,51 @@ export default {
 };
 ```
 
-## When to Apply This Skill
+## Troubleshooting
 
-- Deploying applications to Cloudflare Workers
-- Configuring Wrangler for projects
-- Setting up KV, D1, or R2 storage
-- Implementing edge-side logic
-- Creating scheduled/cron workers
-- Optimizing for global distribution
-- Managing secrets and environment variables
+| Problem                          | Cause                                          | Solution                                                                                      |
+| -------------------------------- | ---------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| Worker too large                 | Bundle exceeds size limit                      | Check bundle size: 1MB limit on free plan, 10MB on paid. Tree-shake dependencies, lazy-load.  |
+| KV read returns null             | Eventual consistency delay                     | KV is eventually consistent. Writes may take up to 60s to propagate globally. Retry or cache. |
+| D1 query fails                   | Invalid SQL syntax                             | D1 uses SQLite, not PostgreSQL. Check SQLite-compatible syntax (e.g., no `ILIKE`, use `LIKE`).|
+| `ReferenceError: X is not defined` | Using Node.js built-in module                | Workers use V8, not Node.js. Enable `nodejs_compat` flag or use polyfills.                    |
+| `wrangler dev` port conflict     | Port 8787 already in use                       | Use `--port <number>` flag or stop the conflicting process.                                   |
+| Secret not found in env          | Secret not set for the environment             | Run `bunx wrangler secret put NAME --env <env>` for each target environment.                  |
+| CORS preflight fails             | Missing OPTIONS handler                        | Add an explicit OPTIONS route returning CORS headers before other routes.                     |
+| R2 upload fails                  | Body stream already consumed                   | Clone the request before reading the body: `request.clone()`.                                 |
+| Durable Object not found         | Missing migration in wrangler.toml             | Add `[[migrations]]` entry with `new_classes` for the Durable Object class.                   |
+
+## Constraints
+
+- **Bundle Size**: 1MB compressed (free plan), 10MB compressed (paid plan) -- includes all dependencies
+- **Memory Limit**: 128MB per worker invocation -- no large in-memory datasets
+- **CPU Time**: 10ms CPU time (free), 30s CPU time (paid) per invocation -- offload heavy compute
+- **Execution Wall Time**: 30s maximum wall-clock time per request
+- **No Native Node.js APIs**: `fs`, `path`, `child_process`, `net`, `crypto` (partial) are unavailable unless `nodejs_compat` is enabled
+- **No Raw TCP/UDP**: Workers handle HTTP only -- use Durable Objects WebSockets for persistent connections
+- **KV Consistency**: Eventually consistent reads (up to 60s propagation) -- not suitable for strong consistency needs
+- **Subrequest Limit**: Maximum 1,000 `fetch()` subrequests per invocation (50 on free plan)
+- **R2 Object Size**: Maximum 5GB per object via single PUT, use multipart for larger uploads
+- **Environment Variables**: Use `wrangler secret` for sensitive values -- never commit secrets to `wrangler.toml`
+
+## Verification Checklist
+
+Before deploying a Cloudflare Worker, verify:
+
+- [ ] `wrangler.toml` has correct `name`, `main`, and `compatibility_date`
+- [ ] All KV, D1, R2, and Durable Object bindings are declared in `wrangler.toml`
+- [ ] Secrets are set via `wrangler secret put` for each deployment environment
+- [ ] `Env` interface in TypeScript matches all bindings and variables in `wrangler.toml`
+- [ ] Error handling wraps the main `fetch` handler with try/catch
+- [ ] CORS headers are applied if the worker serves cross-origin requests
+- [ ] Bundle size is within limits (`bunx wrangler deploy --dry-run` to check)
+- [ ] D1 migrations are applied before deploying code that depends on schema changes
+- [ ] Scheduled cron triggers are defined under `[triggers]` in `wrangler.toml`
+- [ ] `ctx.waitUntil()` is used for background tasks to avoid blocking responses
+- [ ] Local dev tested with `bunx wrangler dev` before deploying
+
+## References
+
+- [Cloudflare Workers Docs](https://developers.cloudflare.com/workers/) | [Wrangler CLI](https://developers.cloudflare.com/workers/wrangler/commands/)
+- [KV](https://developers.cloudflare.com/kv/) | [D1](https://developers.cloudflare.com/d1/) | [R2](https://developers.cloudflare.com/r2/) | [Durable Objects](https://developers.cloudflare.com/durable-objects/)
+- [Workers Platform Limits](https://developers.cloudflare.com/workers/platform/limits/)

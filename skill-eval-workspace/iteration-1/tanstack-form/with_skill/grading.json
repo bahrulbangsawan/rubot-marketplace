@@ -1,0 +1,32 @@
+{
+  "skill": "tanstack-form",
+  "configuration": "with_skill",
+  "expectations": [
+    {
+      "text": "Response uses useForm from TanStack Form",
+      "passed": true,
+      "evidence": "Uses 'import { useForm } from \"@tanstack/react-form\"' and 'const form = useForm<PatientRegistrationForm>({...})' with defaultValues, validatorAdapter, and onSubmit."
+    },
+    {
+      "text": "Response defines separate Zod schemas per step",
+      "passed": true,
+      "evidence": "Defines three separate schemas: personalInfoSchema (name, dob, phone), insuranceSchema (provider, policyNumber, groupNumber), and medicalHistorySchema (allergies, currentMedications). Stored in stepSchemas array."
+    },
+    {
+      "text": "Response validates current step before advancing",
+      "passed": true,
+      "evidence": "validateCurrentStep() function parses current step values against stepSchemas[step]. handleNext() calls validateCurrentStep() and only advances if valid: 'if (isValid && step < STEP_LABELS.length - 1) { setStep(step + 1); }'"
+    },
+    {
+      "text": "Response uses zodValidator adapter",
+      "passed": true,
+      "evidence": "Imports 'zodValidator' from '@tanstack/zod-form-adapter' and passes 'validatorAdapter: zodValidator()' to useForm configuration."
+    },
+    {
+      "text": "Response handles final submit with form.handleSubmit()",
+      "passed": true,
+      "evidence": "handleSubmit function calls 'form.handleSubmit()' after validating the current step. The form's onSubmit handler POSTs to /api/patients."
+    }
+  ],
+  "pass_rate": 1.0
+}

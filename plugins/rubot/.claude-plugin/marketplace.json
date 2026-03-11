@@ -2,9 +2,9 @@
   "$schema": "https://claude.ai/schemas/plugin-marketplace.json",
   "name": "rubot",
   "displayName": "Rubot - Multi-Agent Orchestration Governor",
-  "version": "2.9.0",
-  "description": "Strict multi-agent orchestration governor with 20 workflow commands, 8 hooks, 16 specialist subagents, and 18 domain skills for full-stack TanStack Start development",
-  "longDescription": "Rubot enforces deterministic, mandatory multi-agent consultation for all significant tasks in complex Claude Code projects. It acts as a project manager ensuring no decision is made without consensus from all relevant domain experts.\n\nFeatures:\n- 16 specialist subagents covering backend, frontend, database, deployment, testing, SEO, and more\n- 20 workflow commands including 7 SEO commands (rubot-seo-audit, rubot-seo-check-schema, rubot-seo-check-og, rubot-seo-check-vitals, rubot-seo-generate-robots, rubot-seo-generate-sitemap, rubot-seo-generate-favicons)\n- 8 lifecycle hooks including 3 SEO hooks (meta-check, image-check, build-check)\n- 18 domain-specific skills including 5 SEO skills (rubot-seo-audit, schema-markup, core-web-vitals, social-sharing, crawl-config)\n- Frontend ownership model with shadcn-ui-designer as team lead\n- Mandatory registry enforcement for 20 shadcn-compatible registries\n- Chrome DevTools MCP integration for live SEO auditing",
+  "version": "2.13.0",
+  "description": "Strict multi-agent orchestration governor with 32 workflow commands, 8 hooks, 16 specialist subagents, and 26 domain skills for full-stack TanStack Start development",
+  "longDescription": "Rubot enforces deterministic, mandatory multi-agent consultation for all significant tasks in complex Claude Code projects. It acts as a project manager ensuring no decision is made without consensus from all relevant domain experts.\n\nFeatures:\n- 16 specialist subagents covering backend, frontend, database, deployment, testing, SEO, and more\n- 32 workflow commands including 7 SEO commands, 5 setup commands, testing/QA, WCAG accessibility, responsive audit, global layout, multilanguage, security scanning, and full git/PR workflow\n- 8 lifecycle hooks including 3 SEO hooks (meta-check, image-check, build-check)\n- 26 domain-specific skills including 5 SEO skills, responsive design system, global layout, multilanguage i18n, WCAG accessibility (audit + fix), react-grab element inspection, agent-browser CLI reference, and CF Workers setup\n- ClawSec Suite integration for security advisory monitoring, skill integrity verification, and guarded install checks\n- Frontend ownership model with shadcn-ui-designer as team lead\n- Mandatory registry enforcement for 20 shadcn-compatible registries\n- agent-browser CLI integration for live browser automation and E2E testing",
   "author": {
     "name": "bahrulbangsawan",
     "url": "https://github.com/bahrulbangsawan"
@@ -39,7 +39,11 @@
     "responsive",
     "theming",
     "biome",
-    "code-review"
+    "code-review",
+    "i18n",
+    "multilanguage",
+    "security",
+    "clawsec"
   ],
   "compatibility": {
     "claudeCode": ">=1.0.0"
@@ -106,7 +110,7 @@
           "name": "qa-tester",
           "role": "independent",
           "required": true,
-          "description": "Playwright, Chrome DevTools testing"
+          "description": "agent-browser testing"
         },
         {
           "name": "responsive-master",
@@ -118,7 +122,7 @@
           "name": "seo-master",
           "role": "independent",
           "requiresConfirmation": true,
-          "description": "SEO with Chrome DevTools live auditing, structured data, Core Web Vitals"
+          "description": "SEO, structured data, Core Web Vitals"
         },
         {
           "name": "shadcn-ui-designer",
@@ -139,7 +143,7 @@
       ]
     },
     "commands": {
-      "count": 20,
+      "count": 32,
       "list": [
         {
           "name": "rubot",
@@ -147,7 +151,7 @@
         },
         {
           "name": "rubot-init",
-          "description": "Initialize or sync the rubot workspace configuration"
+          "description": "Initialize or sync the rubot workspace — generates AGENTS.md, CLAUDE.md, and rubot.local.yaml with file selection and subfolder support"
         },
         {
           "name": "rubot-plan",
@@ -195,7 +199,7 @@
         },
         {
           "name": "rubot-seo-audit",
-          "description": "Comprehensive SEO audit with Chrome DevTools live inspection"
+          "description": "Comprehensive SEO audit"
         },
         {
           "name": "rubot-seo-check-schema",
@@ -220,6 +224,54 @@
         {
           "name": "rubot-seo-generate-favicons",
           "description": "Set up complete favicon structure and meta tags"
+        },
+        {
+          "name": "rubot-setup-agent-browser",
+          "description": "Install and configure agent-browser CLI for headless browser automation"
+        },
+        {
+          "name": "rubot-setup-cf-workers",
+          "description": "Set up Cloudflare Workers deployment — detects framework, installs wrangler, generates config"
+        },
+        {
+          "name": "rubot-setup-react-grab",
+          "description": "Install react-grab for AI-assisted element inspection in React apps"
+        },
+        {
+          "name": "rubot-setup-react-grab-mcp",
+          "description": "Add MCP server integration to react-grab for Claude Code"
+        },
+        {
+          "name": "rubot-setup-localdb",
+          "description": "Set up local PostgreSQL Docker database with Drizzle ORM integration"
+        },
+        {
+          "name": "rubot-test-browser",
+          "description": "Run E2E browser tests using agent-browser and dogfood exploratory testing skill"
+        },
+        {
+          "name": "rubot-responsive-audit",
+          "description": "Audit and fix responsive layout issues across all breakpoints (xs/sm/md/lg)"
+        },
+        {
+          "name": "rubot-wcag-audit",
+          "description": "Run WCAG 2.2 Level AA accessibility audit on a URL or codebase"
+        },
+        {
+          "name": "rubot-wcag-fix",
+          "description": "Fix WCAG 2.2 accessibility issues across the codebase"
+        },
+        {
+          "name": "rubot-global-layout",
+          "description": "Build a persistent global layout with shared Navbar and Footer wrapping all routes"
+        },
+        {
+          "name": "rubot-multilanguage",
+          "description": "Implement full multilingual support with language switcher, localized routing, and bilingual copywriting"
+        },
+        {
+          "name": "rubot-skills-security-check",
+          "description": "Run ClawSec security advisory scan, skill integrity verification, and guarded install checks"
         }
       ]
     },
@@ -275,7 +327,7 @@
       ]
     },
     "skills": {
-      "count": 18,
+      "count": 26,
       "list": [
         {
           "name": "orchestration",
@@ -345,7 +397,7 @@
         {
           "name": "rubot-seo-audit",
           "agents": ["seo-master", "qa-tester"],
-          "description": "Comprehensive SEO auditing with Chrome DevTools"
+          "description": "Comprehensive SEO auditing"
         },
         {
           "name": "schema-markup",
@@ -366,16 +418,59 @@
           "name": "crawl-config",
           "agents": ["seo-master"],
           "description": "robots.txt and sitemap.xml generation"
+        },
+        {
+          "name": "responsive-design",
+          "agents": ["responsive-master", "shadcn-ui-designer"],
+          "description": "Mobile-first responsive layouts with strict relative unit enforcement"
+        },
+        {
+          "name": "agent-browser",
+          "agents": ["qa-tester", "seo-master"],
+          "description": "Headless browser automation CLI reference"
+        },
+        {
+          "name": "cf-workers-setup",
+          "agents": ["rubot", "cloudflare"],
+          "description": "Cloudflare Workers deployment setup and configuration"
+        },
+        {
+          "name": "global-layout",
+          "agents": ["shadcn-ui-designer", "responsive-master"],
+          "description": "Persistent global layout with shared Navbar and Footer patterns"
+        },
+        {
+          "name": "react-grab",
+          "agents": ["qa-tester", "shadcn-ui-designer"],
+          "description": "AI-assisted element inspection for React apps"
+        },
+        {
+          "name": "wcag-audit",
+          "agents": ["seo-master", "responsive-master", "shadcn-ui-designer"],
+          "description": "WCAG 2.2 Level AA accessibility auditing"
+        },
+        {
+          "name": "wcag-fix",
+          "agents": ["shadcn-ui-designer", "responsive-master", "seo-master"],
+          "description": "Accessible component patterns and WCAG 2.2 fixes"
+        },
+        {
+          "name": "multilanguage",
+          "agents": ["shadcn-ui-designer", "seo-master", "responsive-master", "tanstack"],
+          "description": "Full i18n implementation with localized routing, translation system, and language switcher"
         }
       ]
     },
     "templates": {
-      "count": 6,
+      "count": 9,
       "list": [
-        "rubot.local.md.template",
+        "rubot.local.yaml.template",
+        "rootAGENTS.md.template",
+        "subAGENTS.md.template",
         "plan.md.template",
         "validation-report.md.template",
         "README.md.template",
+        "index.css.template",
         "components.json.template",
         "commit-message.template"
       ]

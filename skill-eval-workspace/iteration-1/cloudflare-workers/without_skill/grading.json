@@ -1,0 +1,32 @@
+{
+  "skill": "cloudflare-workers",
+  "configuration": "without_skill",
+  "expectations": [
+    {
+      "text": "Response adds KV namespace binding to wrangler.toml",
+      "passed": true,
+      "evidence": "Response includes wrangler.toml config: kv_namespaces = [{ binding = \"PRODUCT_CACHE\", id = \"your-namespace-id-here\" }]"
+    },
+    {
+      "text": "Response updates Env interface with PRODUCT_CACHE: KVNamespace",
+      "passed": true,
+      "evidence": "Code includes: export interface Env { PRODUCT_CACHE: KVNamespace; }"
+    },
+    {
+      "text": "Response implements cache-first pattern (check KV, fallback to fetch)",
+      "passed": true,
+      "evidence": "Handler checks KV first with env.PRODUCT_CACHE.get(cacheKey), returns cached data if found, otherwise fetches from origin and stores in KV"
+    },
+    {
+      "text": "Response uses expirationTtl: 86400 for 24-hour TTL",
+      "passed": true,
+      "evidence": "Code uses: env.PRODUCT_CACHE.put(cacheKey, data, { expirationTtl: 86400 })"
+    },
+    {
+      "text": "Response provides CLI command to create KV namespace",
+      "passed": true,
+      "evidence": "Step 1 includes: npx wrangler kv:namespace create \"PRODUCT_CACHE\""
+    }
+  ],
+  "pass_rate": 1.0
+}

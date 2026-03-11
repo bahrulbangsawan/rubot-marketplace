@@ -1,0 +1,32 @@
+{
+  "skill": "global-layout",
+  "configuration": "without_skill",
+  "expectations": [
+    {
+      "text": "Response creates navbar component with sticky positioning",
+      "passed": true,
+      "evidence": "Creates src/components/navbar.tsx with inline style 'position: sticky, top: 0, zIndex: 50'. Uses sticky positioning to keep header visible on scroll."
+    },
+    {
+      "text": "Response creates footer component",
+      "passed": true,
+      "evidence": "Creates src/components/footer.tsx with copyright text and privacy/terms links."
+    },
+    {
+      "text": "Response modifies __root.tsx to wrap Outlet with layout",
+      "passed": true,
+      "evidence": "Shows app/routes/__root.tsx using createRootRoute with Navbar, <main> wrapping <Outlet />, and Footer. Explains '<Outlet /> component renders whatever child route is active.'"
+    },
+    {
+      "text": "Response uses semantic HTML (header, nav, main, footer)",
+      "passed": true,
+      "evidence": "Navbar uses <header> and <nav> elements, content area uses <main>, footer uses <footer> element."
+    },
+    {
+      "text": "Response uses min-h-dvh flex flex-col pattern",
+      "passed": false,
+      "evidence": "Uses inline styles with 'minHeight: 100vh' (not min-h-dvh). The response uses 100vh which does not account for mobile browser chrome. Does not use Tailwind classes or dvh units."
+    }
+  ],
+  "pass_rate": 0.8
+}

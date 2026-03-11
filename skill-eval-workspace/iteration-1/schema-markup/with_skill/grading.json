@@ -1,0 +1,27 @@
+{
+  "skill": "schema-markup",
+  "configuration": "with_skill",
+  "expectations": [
+    {
+      "text": "Response generates Organization JSON-LD with sameAs array",
+      "passed": true,
+      "evidence": "Organization schema includes sameAs array with Twitter, LinkedIn, and GitHub URLs. Both the standalone JSON example and the code in __root.tsx include sameAs."
+    },
+    {
+      "text": "Response generates WebSite JSON-LD with SearchAction",
+      "passed": true,
+      "evidence": "WebSite schema includes potentialAction with @type SearchAction, target with EntryPoint and urlTemplate, and query-input. Present in both JSON examples and code."
+    },
+    {
+      "text": "Response uses absolute URLs (https://buildstack.dev)",
+      "passed": true,
+      "evidence": "All URLs use absolute format: https://buildstack.dev, https://buildstack.dev/images/logo.svg, https://buildstack.dev/search?q={search_term_string}. Explicitly notes 'logo URL must be absolute, not relative'."
+    },
+    {
+      "text": "Response shows integration in TanStack Start root layout",
+      "passed": true,
+      "evidence": "Shows two integration approaches in src/routes/__root.tsx: Option A uses head() function with scripts array, Option B uses a JsonLd component. Both use createRootRoute and Outlet from @tanstack/react-router."
+    }
+  ],
+  "pass_rate": 1.0
+}

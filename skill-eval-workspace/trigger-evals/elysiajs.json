@@ -1,0 +1,82 @@
+[
+  {
+    "query": "Set up a new ElysiaJS server with Bun that has CRUD routes for /users with Typebox validation on the POST body — email, name, and optional age fields",
+    "should_trigger": true
+  },
+  {
+    "query": "Create an auth plugin for our Elysia API that uses derive to extract the JWT from the Authorization header and a macro for requireAuth on protected routes",
+    "should_trigger": true
+  },
+  {
+    "query": "Add @elysiajs/swagger to our Elysia server so it auto-generates OpenAPI docs from our Typebox schemas at /swagger",
+    "should_trigger": true
+  },
+  {
+    "query": "Wire up Eden treaty client in our frontend to consume the Elysia API — import the App type from the server and make type-safe calls to client.users.get()",
+    "should_trigger": true
+  },
+  {
+    "query": "Our Elysia route params.id is a string but we need it as a number. How do I use t.Numeric() in the params validation to coerce it? Also the type inference breaks when I store intermediate results in a variable",
+    "should_trigger": true
+  },
+  {
+    "query": "Add WebSocket support to our Elysia chat server — handle open, message, and close events with pub/sub on a 'chat' channel and validate incoming messages with t.Object",
+    "should_trigger": true
+  },
+  {
+    "query": "Implement file upload in our Elysia API — accept image/jpeg and image/png up to 5MB using t.File validation, save to ./uploads/, and return the filename",
+    "should_trigger": true
+  },
+  {
+    "query": "Our Elysia .use(authPlugin) is placed after the routes that need it, so the user property is undefined in the handler context. Fix the plugin ordering",
+    "should_trigger": true
+  },
+  {
+    "query": "Set up route groups for our API versioning — /api/v1/users and /api/v2/users as separate groups with a guard that requires an authorization header on all v2 routes",
+    "should_trigger": true
+  },
+  {
+    "query": "Add error handling to our Elysia server — custom ValidationError class, onError hook that returns proper 400/404/500 JSON responses, and type-safe error codes",
+    "should_trigger": true
+  },
+  {
+    "query": "Build a REST API using Express.js with middleware for authentication, CORS, and request logging",
+    "should_trigger": false
+  },
+  {
+    "query": "Set up a tRPC router with Zod validation for our Next.js app — createTRPCRouter with users.list and users.create procedures",
+    "should_trigger": false
+  },
+  {
+    "query": "Create a Fastify server with route validation using JSON Schema and automatic Swagger generation",
+    "should_trigger": false
+  },
+  {
+    "query": "Write a Cloudflare Worker that handles incoming webhooks from Stripe and verifies the signature",
+    "should_trigger": false
+  },
+  {
+    "query": "Build a GraphQL API with Apollo Server — define the User type, resolvers for queries and mutations, and add authentication via context",
+    "should_trigger": false
+  },
+  {
+    "query": "Set up Drizzle ORM with PostgreSQL — define the users table schema with id, email, name, and createdAt columns",
+    "should_trigger": false
+  },
+  {
+    "query": "Create API route handlers in our TanStack Start app using server functions for form submission and data mutation",
+    "should_trigger": false
+  },
+  {
+    "query": "Configure Hono.js server with middleware for JWT authentication and deploy it to Cloudflare Workers",
+    "should_trigger": false
+  },
+  {
+    "query": "Build a Node.js HTTP server from scratch using the built-in http module — parse JSON bodies, handle routing manually, and return proper status codes",
+    "should_trigger": false
+  },
+  {
+    "query": "Add rate limiting to our API endpoints using Redis — allow 100 requests per minute per IP address with a sliding window",
+    "should_trigger": false
+  }
+]

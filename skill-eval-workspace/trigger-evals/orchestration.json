@@ -1,0 +1,82 @@
+[
+  {
+    "query": "I need to add a booking feature with a PostgreSQL table, an ElysiaJS API endpoint, and a shadcn form — what agents should handle each part and in what order?",
+    "should_trigger": true
+  },
+  {
+    "query": "neon-master says to normalize the schema but backend-master wants a denormalized view for the listing API — which one wins?",
+    "should_trigger": true
+  },
+  {
+    "query": "which agent handles tRPC procedures vs which one handles the Drizzle schema?",
+    "should_trigger": true
+  },
+  {
+    "query": "build me a full analytics dashboard with charts, sidebar nav, database queries, and deploy it to Cloudflare Workers",
+    "should_trigger": true
+  },
+  {
+    "query": "coordinate the implementation: add user roles table, RBAC middleware, permission-based UI guards, and QA verification",
+    "should_trigger": true
+  },
+  {
+    "query": "after implementing the search feature, run debug-master to check for type errors, then qa-tester to verify it works, then update plan.md",
+    "should_trigger": true
+  },
+  {
+    "query": "I have a task that involves SSR hydration fixes AND responsive layout changes AND database migration — create an execution plan with the right agent sequence",
+    "should_trigger": true
+  },
+  {
+    "query": "the hydration-solver and shadcn-ui-designer disagree about whether to use client-only rendering for the price ticker component — help me resolve",
+    "should_trigger": true
+  },
+  {
+    "query": "give me a risk matrix for adding real-time sync with ElectricSQL across the neon-master, tanstack, and cloudflare agents",
+    "should_trigger": true
+  },
+  {
+    "query": "I want to refactor the checkout flow — it touches the database, API, form validation, and UI. Generate a unified plan with agent responsibilities.",
+    "should_trigger": true
+  },
+  {
+    "query": "add a createdAt column to the users table in src/db/schema/users.ts",
+    "should_trigger": false
+  },
+  {
+    "query": "fix the TypeScript error on line 42 of src/routes/dashboard.tsx — Property 'name' does not exist on type 'User | undefined'",
+    "should_trigger": false
+  },
+  {
+    "query": "create a responsive hero section with min-h-dvh and a CTA button that's full-width on mobile",
+    "should_trigger": false
+  },
+  {
+    "query": "set up biome.json with the recommended rules and add a pre-commit hook",
+    "should_trigger": false
+  },
+  {
+    "query": "write a useQuery hook for fetching the list of bookings from /api/bookings with 5-minute staleTime",
+    "should_trigger": false
+  },
+  {
+    "query": "add a beforeLoad guard to the /_admin route that checks for the admin:access permission",
+    "should_trigger": false
+  },
+  {
+    "query": "run agent-browser to test if the login form works on the staging URL https://staging.myapp.com/login",
+    "should_trigger": false
+  },
+  {
+    "query": "check if bun and wrangler are installed and verify the node version is 20+",
+    "should_trigger": false
+  },
+  {
+    "query": "deploy the worker to Cloudflare using wrangler deploy",
+    "should_trigger": false
+  },
+  {
+    "query": "add the requirePermission('booking:create') middleware to the createBooking tRPC procedure",
+    "should_trigger": false
+  }
+]

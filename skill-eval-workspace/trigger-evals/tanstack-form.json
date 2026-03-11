@@ -1,0 +1,82 @@
+[
+  {
+    "query": "Build a registration form with useForm that has email, password, and confirmPassword fields with Zod validation using zodValidator adapter",
+    "should_trigger": true
+  },
+  {
+    "query": "Our checkout form needs a dynamic field array for line items — each item has name, quantity, and price. Users should be able to add and remove items with pushValue/removeValue",
+    "should_trigger": true
+  },
+  {
+    "query": "I need async validation on the email field that checks uniqueness against /api/check-email on blur with a 500ms debounce using onChangeAsyncDebounceMs",
+    "should_trigger": true
+  },
+  {
+    "query": "Build a multi-step wizard form with 3 steps: personal info, address, and payment. Each step should validate its own fields before allowing progression",
+    "should_trigger": true
+  },
+  {
+    "query": "The form.Field children callback is not re-rendering when I type in the input — field.state.value stays empty. I'm using form.Field but my Input component doesn't call field.handleChange",
+    "should_trigger": true
+  },
+  {
+    "query": "Wire up our settings form to TanStack Query — load initial values from a useQuery hook and submit changes via useMutation with cache invalidation on success",
+    "should_trigger": true
+  },
+  {
+    "query": "Add error display below each field using field.state.meta.errors and disable the submit button using form.Subscribe to watch form.state.canSubmit",
+    "should_trigger": true
+  },
+  {
+    "query": "Convert our manual useState-based contact form to TanStack Form. We have 4 separate useState calls for name, email, subject, and message that need to move into useForm",
+    "should_trigger": true
+  },
+  {
+    "query": "I'm getting TypeScript errors on form.Field name='address.city' — how do I type nested fields properly with useForm<T> and access deeply nested field state?",
+    "should_trigger": true
+  },
+  {
+    "query": "Our form submission fires twice because we forgot e.preventDefault(). Also the Zod errors aren't showing because we're missing validatorAdapter: zodValidator() on useForm",
+    "should_trigger": true
+  },
+  {
+    "query": "Build a login page with email and password inputs using shadcn/ui Input and Button components styled with Tailwind",
+    "should_trigger": false
+  },
+  {
+    "query": "Validate the request body in our Elysia POST /users endpoint using Typebox t.Object with email and name fields",
+    "should_trigger": false
+  },
+  {
+    "query": "Create a Zod schema for our user profile data — name min 2 chars, email must be valid, age optional number between 0-150",
+    "should_trigger": false
+  },
+  {
+    "query": "Our React Hook Form integration is broken — the register function isn't binding to the input and validation messages don't appear",
+    "should_trigger": false
+  },
+  {
+    "query": "Set up Formik with Yup validation for our survey form with conditional fields that appear based on previous answers",
+    "should_trigger": false
+  },
+  {
+    "query": "Build a search bar component that debounces input and calls our API after the user stops typing for 300ms",
+    "should_trigger": false
+  },
+  {
+    "query": "Add client-side form validation to our HTML contact form using vanilla JavaScript — check required fields and email format before submission",
+    "should_trigger": false
+  },
+  {
+    "query": "Create a TanStack Table with sorting, filtering, and pagination for our users list fetched from the API",
+    "should_trigger": false
+  },
+  {
+    "query": "Our Drizzle insert query is failing with a type error — the schema expects a string for createdAt but we're passing a Date object",
+    "should_trigger": false
+  },
+  {
+    "query": "Write a controlled input component in React that formats phone numbers as the user types using onChange and local state",
+    "should_trigger": false
+  }
+]

@@ -1,0 +1,17 @@
+{
+  "skill_name": "agent-browser",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I need to test the login flow on my app running at localhost:3000. Can you use agent-browser to go to the login page, enter admin@mycompany.com and password Test1234!, click the sign in button, and then make sure we actually land on the dashboard? Check that the page says 'Welcome back' somewhere after login.",
+      "expected_output": "The agent opens http://localhost:3000/login using agent-browser open, takes a snapshot with agent-browser snapshot -i to identify the email field, password field, and sign-in button refs. It fills the email field with admin@mycompany.com and the password field with Test1234! using agent-browser fill, then clicks the sign-in button with agent-browser click. After clicking, it uses agent-browser wait --text 'Welcome back' to confirm the dashboard loaded, then takes another agent-browser snapshot -i to verify the dashboard content is present. Console errors are checked with agent-browser console or agent-browser errors to ensure no login-related failures occurred.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Hey, I have a contact form at http://localhost:5173/contact with name, email, message fields and a submit button. Use agent-browser to snapshot the page, find all the interactive elements, fill out the form with some test data, and take a screenshot before submitting so I can see what it looks like.",
+      "expected_output": "The agent opens http://localhost:5173/contact with agent-browser open, then runs agent-browser snapshot -i to list all interactive elements with their refs (e.g., @e1 for name input, @e2 for email, @e3 for message textarea, @e4 for submit button). It fills each field using agent-browser fill @e1 'Jane Doe', agent-browser fill @e2 'jane@example.com', agent-browser fill @e3 'Hi, I have a question about your pricing plans. Could you send me more details?'. Before submitting, it takes a screenshot with agent-browser screenshot ./contact-form-filled.png so the user can visually verify the filled form. The agent reports back the list of interactive elements found and confirms all fields were filled.",
+      "files": []
+    }
+  ]
+}

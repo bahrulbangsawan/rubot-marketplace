@@ -5,24 +5,142 @@ All notable changes to the rubot plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.13.0] - 2026-03-11
+
+### Added
+
+- **New Commands (11)**:
+  - `/rubot-setup-cf-workers` - Set up Cloudflare Workers deployment — detects framework, installs wrangler, generates config
+  - `/rubot-setup-react-grab` - Install react-grab for AI-assisted element inspection in React apps
+  - `/rubot-setup-react-grab-mcp` - Add MCP server integration to react-grab for Claude Code
+  - `/rubot-setup-localdb` - Set up local PostgreSQL Docker database with Drizzle ORM integration
+  - `/rubot-test-browser` - Run E2E browser tests using agent-browser and dogfood exploratory testing
+  - `/rubot-responsive-audit` - Audit and fix responsive layout issues across all breakpoints (xs/sm/md/lg)
+  - `/rubot-wcag-audit` - Run WCAG 2.2 Level AA accessibility audit on a URL or codebase
+  - `/rubot-wcag-fix` - Fix WCAG 2.2 accessibility issues across the codebase
+  - `/rubot-global-layout` - Build a persistent global layout with shared Navbar and Footer wrapping all routes
+  - `/rubot-multilanguage` - Implement full multilingual support with language switcher, localized routing, and bilingual copywriting
+  - `/rubot-skills-security-check` - Run ClawSec security advisory scan, skill integrity verification, and guarded install checks
+
+- **New Skills (7)**:
+  - `responsive-design` - Mobile-first responsive layout design system with strict relative unit enforcement
+  - `cf-workers-setup` - Cloudflare Workers deployment setup and configuration
+  - `global-layout` - Persistent global layout with shared Navbar and Footer patterns
+  - `react-grab` - AI-assisted element inspection for React apps
+  - `wcag-audit` - WCAG 2.2 Level AA accessibility auditing
+  - `wcag-fix` - Accessible component patterns and WCAG 2.2 fixes
+  - `multilanguage` - Full i18n implementation with localized routing, translation system, and language switcher
+
+- **Skill Evaluations** - Added `evals/` test directories to 18 existing skills for quality verification
+
+- **Skill References** - Added `references/` documentation to `cloudflare-workers` and `schema-markup` skills
+
+- **ClawSec Suite Integration** - Security advisory monitoring, skill integrity verification, and guarded install checks
+
+### Changed
+
+- Updated plugin version to 2.13.0
+- Updated command count from 21 to 32
+- Updated skill count from 19 to 26
+- Workspace configuration template migrated from `rubot.local.md.template` to `rubot.local.yaml.template`
+- Added Setup, Testing, Responsive/Layout, Accessibility, i18n, and Security command sections to README
+
+## [2.12.0] - 2026-03-11
+
+### Improved
+
+- **`/rubot-init` command** - Major overhaul of workspace initialization
+  - Added AskUserQuestion file selection: user can choose AGENTS.md only, CLAUDE.md only, or both
+  - Added subfolder argument support: `/rubot-init src/` regenerates only that folder's AGENTS.md
+  - Added merge logic for existing `rubot.local.yaml` — preserves user customizations (auth, scenarios, rules)
+  - Added agent-browser installation check during environment verification
+  - Added `qa-tester` to agent applicability toggle
+  - Completion summary now reflects user's file selection choice
+
+- **`rootAGENTS.md.template`** - Config-driven root AGENTS.md generator
+  - Added config header referencing `rubot.local.yaml` as source of truth and `/rubot-init` as generator
+  - Added `{GIT_REMOTE}` placeholder for repository URL
+  - Added `rubot.local.yaml` to Key Files table
+  - Added "Browser Testing" section with agent-browser commands, core workflow, and `{AGENT_BROWSER_SCENARIOS}` placeholder
+  - Added "Rubot Commands" section with table of all key `/rubot-*` commands
+  - Added "Update & Regenerate" section with self-documenting commands
+  - Added footer notes pointing back to config source
+
+- **`subAGENTS.md.template`** - Config-driven subfolder AGENTS.md generator
+  - Added config header referencing `rubot.local.yaml` and `/rubot-init` generator
+  - Added "Browser Testing" section scoped to subfolder route (`{FOLDER_ROUTE}`)
+  - Added "Update & Regenerate" section with subfolder-specific regeneration (`/rubot-init {FOLDER_PATH}`)
+  - Added browser test and update commands to Quick Reference table
+
+- **Generated CLAUDE.md** - Now includes Browser Testing section and Rubot Commands table
+
+### Changed
+
+- Updated plugin version to 2.12.0
+- Updated template count from 6 to 8 (added rootAGENTS.md.template, subAGENTS.md.template)
+
+## [2.11.0] - 2026-03-11
+
+### Added
+
+- **New Command: `/rubot-setup-agent-browser`** - Install and configure agent-browser CLI for headless browser automation and AI agent testing
+  - Supports global (npm), Homebrew (macOS), project-level, and npx installation methods
+  - Handles Chromium download and Linux system dependency installation
+  - Optional CLAUDE.md configuration for browser automation instructions
+  - Custom browser executable support via flag or environment variable
+
+- **New Skill: `agent-browser`** - Comprehensive CLI reference for headless browser automation
+  - Full command reference: navigation, snapshots, screenshots, element interaction
+  - Performance tracing and profiling commands
+  - Responsive testing with viewport and device emulation
+  - Console, error, and network request inspection
+  - Dialog handling and offline mode simulation
+  - Serverless usage patterns
+
+### Changed
+
+- Updated plugin version to 2.11.0
+- Updated command count from 20 to 21
+- Updated skill count from 18 to 19
+
+## [2.10.0] - 2026-03-11
+
+### Fixed
+
+- **Agent count inconsistency** - Corrected all references from "15 agents" to "16 agents" across orchestration skill, rubot command, and rubot agent files
+- **Missing `lazy-load-master` references** - Added lazy-load-master to rubot agent's registered subagents table and orchestration skill's agent capability matrix
+- **Missing version fields** - Added `version: 1.0.0` and `agents:` fields to 4 skills: `drizzle-orm`, `elysiajs`, `biome`, `cloudflare-workers`
+- **Missing version and agents fields** - Added `version: 1.0.0` and `agents:` fields to 5 SEO skills: `schema-markup`, `core-web-vitals`, `social-sharing`, `crawl-config`, `rubot-seo-audit`
+
+### Improved
+
+- **Skill descriptions** - Enhanced all 9 skill descriptions with broader keyword coverage for better triggering accuracy (e.g., "page is slow" now triggers `core-web-vitals`, "link preview not working" triggers `social-sharing`)
+- **Command descriptions** - Expanded all 9 command descriptions with use-case context and trigger phrases for more reliable invocation
+- **Orchestration skill description** - Added multi-domain task and agent sequencing trigger phrases
+- **Orchestration skill version** - Bumped from v2.6.0 to v2.7.0 to reflect lazy-load-master addition
+
+### Changed
+
+- Marketplace version bumped to 2.10.0
+
 ## [2.9.0] - 2025-01-12
 
 ### Added
 
-- **Comprehensive SEO Toolkit** - Full SEO implementation with Chrome DevTools MCP integration
+- **Comprehensive SEO Toolkit** - Full SEO implementation with browser automation
   - 5 new SEO skills: `rubot-seo-audit`, `schema-markup`, `core-web-vitals`, `social-sharing`, `crawl-config`
   - 7 new SEO commands for auditing and generation
   - 3 new SEO hooks for automated validation
 
 - **New SEO Skills (5)**:
-  - `rubot-seo-audit` - Comprehensive SEO auditing methodology with Chrome DevTools integration
+  - `rubot-seo-audit` - Comprehensive SEO auditing methodology
   - `schema-markup` - Schema.org JSON-LD implementation patterns for all content types
   - `core-web-vitals` - LCP, INP, CLS measurement and optimization strategies
   - `social-sharing` - Open Graph and Twitter Card meta tag implementation
   - `crawl-config` - robots.txt and sitemap.xml generation patterns
 
 - **New SEO Commands (7)**:
-  - `/rubot-seo-audit` - Full SEO audit with Chrome DevTools live inspection
+  - `/rubot-seo-audit` - Full SEO audit
   - `/rubot-seo-check-schema` - Validate structured data and JSON-LD markup
   - `/rubot-seo-check-og` - Check Open Graph and Twitter Card meta tags
   - `/rubot-seo-check-vitals` - Audit Core Web Vitals with performance tracing
@@ -35,12 +153,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `seo-image-check` (PostToolUse/Write) - Checks image alt text and dimensions for accessibility
   - `seo-build-check` (PreToolUse/Bash) - Pre-deployment SEO checklist reminder
 
-- **Chrome DevTools MCP Integration** for seo-master agent:
+- **agent-browser Integration** for browser automation:
   - Live page navigation and snapshot capture
   - JavaScript evaluation for SEO data extraction
-  - Performance tracing for Core Web Vitals measurement
-  - Network request analysis
-  - Console message monitoring
+  - Performance tracing and profiling
+  - Network request tracking
+  - Console message and error monitoring
 
 ### Changed
 
@@ -48,7 +166,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated command count from 13 to 20
 - Updated hook count from 5 to 8
 - Updated skill count from 13 to 18
-- Enhanced seo-master agent with Chrome DevTools MCP tools
+- Enhanced seo-master agent with agent-browser CLI integration
 - Added comprehensive SEO keywords to plugin.json
 
 ## [2.8.0] - 2025-01-11
@@ -284,7 +402,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `/rubot-push-pr` - PR update
 - Orchestration skill with domain classification
 - Environment check skill
-- Workspace configuration template (`rubot.local.md.template`)
+- Workspace configuration template (`rubot.local.yaml.template`)
 
 ### Changed
 

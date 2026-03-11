@@ -1,174 +1,227 @@
 ---
-name: Environment Checker
+name: env-check
+version: 1.1.0
 description: |
-  Validates local tooling and stack readiness for modern web projects. Checks tool availability (bun, node, wrangler, git, gh), version information, Wrangler readiness, project dependencies (ElysiaJS, Drizzle, tRPC, Zod, Neon, TanStack), and configuration files. Use when setting up a project, before deployment, or in CI pipelines.
-version: 1.0.0
+  Validates local development tooling, CLI versions, and stack readiness. Checks bun, node, wrangler, git, gh availability, version compatibility, lockfile format, Wrangler auth, and project dependency detection.
+  MUST activate when user says: "check my setup", "is bun installed", "what version", "prerequisites check", "verify my tools", "which tools do I need", "environment setup", "dev environment ready", "setup not working", "can't find command", "command not found" (bun/node/wrangler/git). Also activate for: "bun: command not found", "lockfile version mismatch", "bun.lockb not working", "MODULE_NOT_FOUND but it's in package.json", "wrangler whoami returns error", "expired token", "node version is 20+", "bun 1.1+", "fresh Mac setup", "CI pipeline validate runner tools", "before running /rubot-init", and "why won't it build" when the root cause might be missing/outdated CLI tools. Do NOT activate for: adding env vars to wrangler.toml, writing health check endpoints, setting up biome.json, running drizzle-kit, deploying workers, checking .env variable values, installing npm packages, or responsive layout audits.
+
+  Covers: tool availability, version checks (bun 1.1+, node 20+, wrangler 3/4), lockfile migration (bun.lockb to bun.lock), Wrangler auth readiness, stack detection, config file presence, and CI environment validation.
 agents:
   - cloudflare
   - debug-master
 ---
 
 # Environment Checker Skill
+> Validate local tooling, versions, and stack readiness before a single line of code runs.
 
-This skill provides comprehensive environment validation for the rubot orchestration workflow, ensuring all required tooling and stack components are properly configured before execution.
+## When to Use
 
-## Documentation Verification (MANDATORY)
+- **Project bootstrap** — run before `/rubot-init` to catch missing tools before they cause confusing failures
+- **Pre-deployment gate** — verify Wrangler auth and config before pushing to Cloudflare Workers
+- **Debugging build errors** — "module not found", version mismatch, or CLI-not-found errors often trace back to environment gaps
+- **CI pipeline setup** — ensure runners have every required binary and correct versions
+- **Onboarding new developers** — one command confirms the machine is ready
 
-Before running environment checks or troubleshooting:
-
-1. **Use Context7 MCP** to verify current tool APIs:
-   - `mcp__context7__resolve-library-id` with libraryName: "bun" or "wrangler"
-   - `mcp__context7__query-docs` for specific configuration patterns
-
-2. **Use Exa MCP** for latest tooling information:
-   - `mcp__exa__web_search_exa` for "bun installation 2024" or "wrangler setup"
-   - `mcp__exa__get_code_context_exa` for configuration examples
-
-3. **Use AskUserQuestion** when requirements are unclear:
-   - Target deployment platform (Cloudflare, Vercel, etc.)
-   - Database provider (Neon, Supabase, etc.)
-   - Required tooling versions
-
-## Usage
-
-Run environment checks using these bash commands:
+## Quick Reference
 
 ```bash
-# Check critical tools
+# Full environment check (copy-paste one-liner)
 echo "=== Critical Tools ===" && \
-command -v bun && bun --version || echo "[FAIL] bun not found" && \
-command -v node && node --version || echo "[FAIL] node not found" && \
-command -v git && git --version || echo "[FAIL] git not found"
-
-# Check optional tools
+(command -v bun && bun --version || echo "[FAIL] bun not found") && \
+(command -v node && node --version || echo "[FAIL] node not found") && \
+(command -v git && git --version || echo "[FAIL] git not found") && \
 echo "=== Optional Tools ===" && \
-command -v wrangler && wrangler --version || echo "[WARN] wrangler not installed" && \
-command -v gh && gh --version || echo "[WARN] gh CLI not installed"
-
-# Check wrangler authentication
+(command -v wrangler && wrangler --version || echo "[WARN] wrangler not installed") && \
+(command -v gh && gh --version || echo "[WARN] gh CLI not installed") && \
 echo "=== Wrangler Auth ===" && \
-wrangler whoami 2>/dev/null || echo "[WARN] Wrangler not authenticated"
-
-# Check configuration files
+(wrangler whoami 2>/dev/null || echo "[WARN] Wrangler not authenticated") && \
 echo "=== Config Files ===" && \
 ls -la package.json bun.lockb bun.lock wrangler.toml .env .env.local 2>/dev/null
 ```
 
-## Validation Categories
+## Core Principles
 
-### 1. Tool Availability (Critical)
+1. **Fail early, fail clearly** — a missing `bun` binary discovered during `bun run build` produces a generic shell error; discovering it during an explicit env-check produces an actionable message with install instructions. Early detection saves minutes-to-hours of debugging.
+2. **Version compatibility matters** — Bun 1.0 vs 1.1+ introduced breaking changes in the module resolver and lockfile format (`bun.lockb` → `bun.lock`). Node 18 vs 20+ changed the default `fetch` global. Running the wrong major version leads to subtle, hard-to-Google failures.
+3. **Wrangler readiness prevents deployment disasters** — deploying to Cloudflare Workers without valid auth or a correct `wrangler.toml` results in cryptic 10xxx error codes. Checking `wrangler whoami` before deploy is cheap; debugging a failed production deploy is not.
+4. **Stack detection drives smart defaults** — knowing that a project uses Drizzle+Neon vs Prisma+Supabase lets other skills apply the right patterns automatically.
 
-These tools are **required** - validation will fail if missing:
+## Tool Availability
+
+### Critical (validation fails if missing)
+
+| Tool | Purpose | Min Version | Installation |
+|------|---------|-------------|--------------|
+| `bun` | JS runtime & package manager | 1.1.0+ | `curl -fsSL https://bun.sh/install \| bash` |
+| `node` | Node.js runtime (compat/tooling) | 20.0.0+ | `fnm install 20` or https://nodejs.org |
+| `git` | Version control | 2.30+ | System package manager |
+
+### Optional (warning if missing)
 
 | Tool | Purpose | Installation |
 |------|---------|--------------|
-| `bun` | JavaScript runtime & package manager | https://bun.sh |
-| `node` | Node.js runtime (fallback/compatibility) | https://nodejs.org |
-| `git` | Version control | System package manager |
+| `wrangler` | Cloudflare Workers CLI | `bun add -g wrangler` then `wrangler login` |
+| `gh` | GitHub CLI (PRs, issues, releases) | https://cli.github.com |
 
-These tools are **optional** but recommended:
+### Version Checks
 
-| Tool | Purpose | Installation |
-|------|---------|--------------|
-| `wrangler` | Cloudflare Workers CLI | `bun add -g wrangler` |
-| `gh` | GitHub CLI | https://cli.github.com |
-
-### 2. Version Information
-
-Check versions with:
 ```bash
-bun --version   # e.g., 1.3.0
-node --version  # e.g., v24.10.0
-wrangler --version 2>/dev/null  # e.g., 4.42.2
+bun --version        # expect 1.1.0+
+node --version       # expect v20.0.0+
+git --version        # expect 2.30+
+wrangler --version 2>/dev/null  # expect 3.x or 4.x
+gh --version 2>/dev/null
 ```
 
-### 3. Wrangler Readiness
+**Why versions matter:**
+- **Bun <1.1** — old lockfile format (`bun.lockb`), missing workspace features, different module resolution. Projects using `bun.lock` (text-based) require 1.1+.
+- **Node <20** — no built-in `fetch`, no stable `--watch`, missing `crypto.subtle` globals. Many modern libraries assume Node 20+.
+- **Wrangler 3 vs 4** — config schema differences (`wrangler.toml` fields changed), different dev server behaviour. Check `wrangler.toml` compatibility header.
 
-Check Cloudflare Workers deployment readiness:
+## Stack Detection
 
-| Check | Command | Pass Condition |
-|-------|---------|----------------|
-| Installation | `command -v wrangler` | Command exists |
-| Authentication | `wrangler whoami` | Returns account info |
-| Configuration | `ls wrangler.toml wrangler.jsonc wrangler.json` | At least one exists |
+Identify what stack a project uses by inspecting config files and `package.json` dependencies.
 
-### 4. Configuration Files
+### Config File Signatures
 
-| File | Purpose | Check Command |
-|------|---------|---------------|
-| `package.json` | Project manifest | `test -f package.json` |
-| `bun.lockb` / `bun.lock` | Dependency lockfile | `ls bun.lock* 2>/dev/null` |
-| `wrangler.toml` | Cloudflare config | `test -f wrangler.toml` |
+| File Present | Indicates |
+|-------------|-----------|
+| `wrangler.toml` / `wrangler.jsonc` | Cloudflare Workers deployment target |
+| `drizzle.config.ts` / `drizzle.config.json` | Drizzle ORM with migrations |
+| `biome.json` / `biome.jsonc` | Biome linter/formatter (not ESLint) |
+| `tsconfig.json` | TypeScript project |
+| `bun.lock` or `bun.lockb` | Bun as package manager |
+| `.env.local` | Local environment overrides |
+
+### Dependency Detection
+
+```bash
+# Detect stack components from package.json
+cat package.json | grep -oE '"(elysia|drizzle-orm|@trpc/server|zod|@neondatabase/serverless|@tanstack/react-query|@tanstack/react-router|@tanstack/react-table|@tanstack/react-form|hono|pg|postgres)"' | sort -u
+```
+
+| Component | Package Pattern | What It Tells You |
+|-----------|-----------------|-------------------|
+| ElysiaJS | `"elysia"` | Bun-native HTTP framework |
+| Drizzle ORM | `"drizzle-orm"` | Type-safe SQL with migrations |
+| tRPC | `"@trpc/*"` | End-to-end type-safe API layer |
+| Zod | `"zod"` | Schema validation (likely used by tRPC/forms) |
+| Neon | `"@neondatabase/serverless"` | Serverless PostgreSQL via HTTP |
+| TanStack | `"@tanstack/*"` | Router, query, table, or form |
+| Hono | `"hono"` | Lightweight HTTP framework (CF Workers) |
+
+### Database Connection Check
+
+```bash
+# Check for database env vars (presence only — never print values)
+grep -lE "^(DATABASE_URL|NEON_|POSTGRES_)" .env .env.local 2>/dev/null && \
+  echo "[PASS] Database env vars found" || \
+  echo "[WARN] No database env vars in .env/.env.local"
+```
+
+## Wrangler Readiness
+
+| Check | Command | Pass Condition | Why It Matters |
+|-------|---------|----------------|----------------|
+| Installed | `command -v wrangler` | Binary exists in PATH | Cannot deploy without it |
+| Authenticated | `wrangler whoami` | Returns account name | Unauthenticated deploys fail with opaque errors |
+| Configured | `ls wrangler.toml wrangler.jsonc wrangler.json 2>/dev/null` | At least one exists | Wrangler needs a config to know the worker name, routes, bindings |
+
+## Configuration Files
+
+| File | Purpose | Check |
+|------|---------|-------|
+| `package.json` | Project manifest & scripts | `test -f package.json` |
+| `bun.lock` / `bun.lockb` | Dependency lockfile | `ls bun.lock* 2>/dev/null` |
+| `wrangler.toml` | Cloudflare Workers config | `test -f wrangler.toml` |
 | `drizzle.config.*` | Drizzle ORM config | `ls drizzle.config.* 2>/dev/null` |
 | `.env` / `.env.local` | Environment variables | `ls .env* 2>/dev/null` |
+| `biome.json` | Linter/formatter config | `test -f biome.json` |
 
-### 5. Project Stack Detection
-
-Detect rubot-standard stack components in `package.json`:
-
-```bash
-# Check for stack components
-cat package.json | grep -E '"(elysia|drizzle-orm|@trpc/|zod|@neondatabase/|@tanstack/)"' | head -10
-```
-
-| Component | Package Pattern |
-|-----------|-----------------|
-| ElysiaJS | `"elysia"` |
-| Drizzle ORM | `"drizzle-orm"` |
-| tRPC | `"@trpc/*"` |
-| Zod | `"zod"` |
-| Neon/PostgreSQL | `"@neondatabase/serverless"`, `"pg"`, `"postgres"` |
-| TanStack | `"@tanstack/*"` |
-
-Also check for database connection environment variables:
-```bash
-grep -E "^(DATABASE_URL|NEON_|POSTGRES_)" .env .env.local 2>/dev/null
-```
-
-### 6. Validate Command
-
-Check if `package.json` defines a `validate` script:
+### Validate Script Check
 
 ```bash
-# Check for validate script
-cat package.json | grep '"validate"'
-
-# Run validation
-bun run validate
+# Check if project defines a validate script
+cat package.json | grep '"validate"' && echo "[INFO] Run: bun run validate"
 ```
+
+## Remediation Steps
+
+### Missing bun
+
+```bash
+# Install latest bun
+curl -fsSL https://bun.sh/install | bash
+# Reload shell
+source ~/.bashrc  # or ~/.zshrc
+# Verify
+bun --version
+```
+
+**Common issue:** bun installed but not in PATH → add `export BUN_INSTALL="$HOME/.bun"` and `export PATH="$BUN_INSTALL/bin:$PATH"` to your shell profile.
+
+### Wrong Node version
+
+```bash
+# Using fnm (recommended)
+fnm install 20 && fnm use 20
+# Using nvm
+nvm install 20 && nvm use 20
+# Verify
+node --version  # should show v20.x.x+
+```
+
+**nvm/fnm conflict:** if both are installed, one may shadow the other. Check `which node` to confirm the active version manager is the one you expect.
+
+### Missing or outdated wrangler
+
+```bash
+bun add -g wrangler
+wrangler login          # opens browser for OAuth
+wrangler whoami         # verify auth succeeded
+```
+
+### Missing lockfile
+
+```bash
+bun install  # generates bun.lock
+```
+
+**Note:** if you see `bun.lockb` (binary) instead of `bun.lock` (text), the project was created with Bun <1.1. Run `rm bun.lockb && bun install` to migrate to the text-based lockfile.
+
+### Missing .env
+
+```bash
+cp .env.example .env.local
+# Edit .env.local with actual values — never commit .env.local
+```
+
+### Missing database connection
+
+Add to `.env.local`:
+```
+DATABASE_URL=postgresql://user:password@host:5432/dbname?sslmode=require
+```
+
+For Neon specifically: copy the connection string from the Neon dashboard → Connection Details → Pooled connection string.
 
 ## Exit Criteria
 
-| Status | Meaning |
-|--------|---------|
-| Pass | All critical tools present, configuration valid |
-| Fail | Missing bun/node/git or critical configuration |
-| Warn | Missing optional components (wrangler, gh) |
-
-## Output Format
-
-Use these status indicators in reports:
-
-```
-[PASS] Check passed successfully
-[FAIL] Check failed - must be resolved
-[WARN] Warning - recommended to address
-[INFO] Informational message
-```
+| Status | Meaning | Action |
+|--------|---------|--------|
+| `[PASS]` | Check passed | No action needed |
+| `[FAIL]` | Critical tool missing or wrong version | Must resolve before proceeding |
+| `[WARN]` | Optional component missing | Recommended to address; may block specific workflows |
+| `[INFO]` | Informational | No action needed |
 
 ## Integration with Rubot Workflow
 
 ### In `/rubot-init`
-
-Run environment check first to ensure the development environment is ready.
-
-If critical tools are missing, abort initialization and provide remediation steps.
+Run environment check first. If critical tools are missing, abort initialization and provide remediation steps with exact install commands.
 
 ### In `/rubot-check`
-
-Include environment validation in the comprehensive check:
-
-```markdown
+Include environment validation in the comprehensive report:
+```
 ## Environment Validation
 - **Result**: [pass/fail]
 - **Critical Issues**: [count]
@@ -176,9 +229,6 @@ Include environment validation in the comprehensive check:
 ```
 
 ### In CI Pipelines
-
-Add environment checks to CI workflow:
-
 ```yaml
 - name: Validate Environment
   run: |
@@ -188,45 +238,50 @@ Add environment checks to CI workflow:
     node --version
 ```
 
-## Remediation Reference
+## Troubleshooting
 
-### Missing bun
-
-```bash
-curl -fsSL https://bun.sh/install | bash
-```
-
-### Missing wrangler
-
-```bash
-bun add -g wrangler
-wrangler login
-```
-
-### Missing lockfile
-
-```bash
-bun install
-```
-
-### Missing .env
-
-```bash
-cp .env.example .env.local
-# Edit .env.local with your values
-```
-
-### Missing database connection
-
-Add to `.env.local`:
-```
-DATABASE_URL=postgresql://user:pass@host/dbname
-```
+| Symptom | Likely Cause | Fix |
+|---------|-------------|-----|
+| `bun: command not found` | Bun not installed or not in PATH | Install bun; add `~/.bun/bin` to PATH |
+| `error: lockfile version mismatch` | Bun version too old for `bun.lock` format | Upgrade bun: `bun upgrade` |
+| `wrangler: command not found` | Wrangler not installed globally | `bun add -g wrangler` |
+| `wrangler whoami` returns error | Not authenticated or token expired | `wrangler login` (re-authenticates via browser) |
+| `node: command not found` after nvm install | Shell not reloaded | `source ~/.zshrc` or open new terminal |
+| `fnm` and `nvm` conflicting | Both version managers installed | Remove one; check `which node` resolves correctly |
+| `MODULE_NOT_FOUND` on known package | `node_modules` missing or stale | `rm -rf node_modules && bun install` |
+| `.env` values not loading | Wrong filename or missing dotenv setup | Bun loads `.env` automatically; ensure file is `.env` or `.env.local` |
+| `drizzle-kit: command not found` | Not in devDependencies | `bun add -D drizzle-kit` |
+| Deployment fails with 10000-series error | Wrangler config mismatch or missing bindings | Check `wrangler.toml` bindings match dashboard settings |
 
 ## Constraints
 
 - **No network calls** except `wrangler whoami` for auth check
-- **No secret output** - env files checked for presence only
-- **Deterministic output** - same input produces same result
-- **CI-safe** - works in headless environments
-- **Fail-fast** - stops immediately on critical missing tools
+- **No secret output** — env files checked for presence only, never print values
+- **Deterministic output** — same environment produces same result
+- **CI-safe** — works in headless environments without interactive prompts
+- **Fail-fast** — stops immediately on critical missing tools
+- **Read-only** — never installs or modifies anything; only reports status
+
+## Verification Checklist
+
+Before marking environment as ready, confirm every item:
+
+- [ ] `bun --version` returns 1.1.0 or higher
+- [ ] `node --version` returns v20.0.0 or higher
+- [ ] `git --version` returns 2.30 or higher
+- [ ] `package.json` exists in project root
+- [ ] `bun.lock` or `bun.lockb` exists (dependencies installed)
+- [ ] `node_modules/` directory exists and is non-empty
+- [ ] `wrangler whoami` succeeds (if project deploys to CF Workers)
+- [ ] `wrangler.toml` exists and has valid `name` field (if CF Workers project)
+- [ ] `.env` or `.env.local` exists with required variables (if project needs env vars)
+- [ ] `bun run validate` passes (if validate script defined in package.json)
+
+## References
+
+- Bun installation: https://bun.sh/docs/installation
+- Bun lockfile migration (lockb → lock): https://bun.sh/blog/bun-lock-text-lockfile
+- Node.js releases & EOL schedule: https://nodejs.org/en/about/previous-releases
+- Wrangler CLI docs: https://developers.cloudflare.com/workers/wrangler
+- fnm (Fast Node Manager): https://github.com/Schniz/fnm
+- GitHub CLI: https://cli.github.com/manual

@@ -1,6 +1,14 @@
 ---
 name: rubot-seo-generate-sitemap
-description: Generate sitemap.xml from project routes
+description: Generate sitemap.xml from project routes. Use when creating a sitemap for search engine submission, building dynamic sitemaps from database content, setting up sitemap indexes for large sites, or generating sitemaps as TanStack Start API routes.
+allowed-tools:
+  - Write
+  - AskUserQuestion
+  - Glob
+  - Grep
+  - Read
+  - Bash
+  - WebFetch
 ---
 
 # SEO Generate Sitemap Command
@@ -199,14 +207,7 @@ Write to: src/routes/sitemap.xml.ts
 
 ### Step 7: Verify Creation
 
-```
-mcp__chrome-devtools__navigate_page({
-  url: "http://localhost:3000/sitemap.xml",
-  type: "url"
-})
-
-mcp__chrome-devtools__take_snapshot()
-```
+Use WebFetch to verify the content at `http://localhost:3000/sitemap.xml`.
 
 Verify:
 - Valid XML structure

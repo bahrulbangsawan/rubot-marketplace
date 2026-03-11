@@ -1,0 +1,32 @@
+{
+  "skill": "agent-browser",
+  "configuration": "without_skill",
+  "expectations": [
+    {
+      "text": "Response uses agent-browser open command to navigate",
+      "passed": false,
+      "evidence": "The response does not use agent-browser at all. Instead, it suggests Playwright (page.goto), Cypress (cy.visit), or Puppeteer (page.goto) for navigation."
+    },
+    {
+      "text": "Response uses agent-browser snapshot to identify elements",
+      "passed": false,
+      "evidence": "The response does not use agent-browser snapshot. It uses CSS selectors like 'input[name=\"email\"]' and 'button[type=\"submit\"]' instead of accessibility-tree-based element refs."
+    },
+    {
+      "text": "Response uses agent-browser fill for form inputs",
+      "passed": false,
+      "evidence": "The response does not use agent-browser fill. It uses Playwright's page.fill(), Cypress's cy.get().type(), or Puppeteer's page.type() instead."
+    },
+    {
+      "text": "Response uses agent-browser click for the sign-in button",
+      "passed": false,
+      "evidence": "The response does not use agent-browser click. It uses Playwright's page.click(), Cypress's cy.get().click(), or Puppeteer's page.click() instead."
+    },
+    {
+      "text": "Response verifies 'Welcome back' text appears after login",
+      "passed": true,
+      "evidence": "All three options verify 'Welcome back' text: Playwright uses \"await expect(page.locator('text=Welcome back')).toBeVisible()\", Cypress uses \"cy.contains('Welcome back').should('be.visible')\", and Puppeteer checks \"content.includes('Welcome back')\"."
+    }
+  ],
+  "pass_rate": 0.2
+}

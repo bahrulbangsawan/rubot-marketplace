@@ -1,0 +1,17 @@
+{
+  "skill_name": "tanstack-db",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I'm building a project management app and want to use TanStack DB for local-first task management. I need a tasks collection with fields: id, title, description, status (todo/in-progress/done), priority (1-5), assigneeId, and projectId. Tasks should be queryable by project and filterable by status. Set up the collection with Zod schema in src/lib/collections/tasks.ts and create a TaskBoard component in src/features/projects/components/task-board.tsx that uses useLiveQuery to show tasks grouped by status for a given projectId.",
+      "expected_output": "Creates src/lib/collections/tasks.ts with a Zod schema defining the task fields with proper types (status as enum, priority as number 1-5). Uses createCollection with the schema, a getKey returning task.id, and mutation handlers (onInsert, onUpdate, onDelete) that call the API. Creates TaskBoard component that uses useLiveQuery with a query filtering by projectId via eq() and ordering by priority. The component renders three columns (todo, in-progress, done) by either running three separate live queries filtered by status, or one query with client-side grouping. Includes insert/update/delete operations on the collection for adding tasks and changing status.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "We're using Neon Postgres and want real-time sync for our chat app's messages collection. Set up an ElectricSQL-synced collection for messages (id, channelId, userId, content, createdAt) in src/lib/collections/messages.ts. The Electric shape should filter by channelId so each channel only syncs its own messages. Show me how to use it in a ChatMessages component that displays messages in real-time as they come in.",
+      "expected_output": "Creates src/lib/collections/messages.ts using createCollection with electricCollectionOptions. Defines a Zod schema for messages. Configures shapeOptions with the Electric endpoint URL and a where clause filtering by channelId. Implements onInsert handler that POSTs new messages to the API. Creates a ChatMessages component that takes channelId as a prop and uses useLiveQuery to query from the messages collection, filtering by eq(message.channelId, channelId) and ordering by createdAt ascending. The live query automatically updates when Electric syncs new messages from other users. Includes a message input that calls messageCollection.insert() for optimistic send.",
+      "files": []
+    }
+  ]
+}

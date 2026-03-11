@@ -1,0 +1,23 @@
+{
+  "skill_name": "orchestration",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I need to build a user management page — it needs a postgres table for roles and permissions, tRPC endpoints for CRUD, a data table with sorting and filtering on the frontend, and the whole thing needs to be responsive on mobile. Where do we start?",
+      "expected_output": "The orchestrator should classify this as a multi-domain task matching 'Add RBAC to app' and invoke neon-master (schema design for roles/permissions tables), backend-master (tRPC procedures for CRUD), tanstack (TanStack Table for data grid + TanStack Query for server state), shadcn-ui-designer (UI components and data table styling), and responsive-master (mobile layout). It should produce a sequential execution plan starting with domain analysis agents (neon-master, backend-master) then implementation agents (tanstack, shadcn-ui-designer, responsive-master) and finally verification agents (debug-master, qa-tester, plan-supervisor). The plan should include concrete steps with responsible agents and verification criteria.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "I want a really interactive dashboard with animated charts that update in real-time, but we're deploying to Cloudflare Workers and I'm worried about bundle size. Can you plan this out?",
+      "expected_output": "The orchestrator should detect a conflict between UX richness (shadcn-ui-designer + chart-master wanting animated ECharts) and deployment constraints (cloudflare agent flagging Workers 3MB size limit). It should present the conflict using the Conflict Presentation Template, identifying Agent A (chart-master/shadcn-ui-designer wanting rich interactions) vs Agent B (cloudflare flagging bundle size). Options should include: 1) full ECharts with code splitting and lazy loading via lazy-load-master, 2) lightweight chart library to stay under limits, 3) hybrid approach with critical charts bundled and advanced ones lazy-loaded. The orchestrator should ask the user to prioritize before proceeding and not auto-resolve the conflict.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "The login page is broken — users see a flash of the dashboard before getting redirected back to login. Also I think there might be some hydration warnings in the console. Can you figure out what's going on?",
+      "expected_output": "The orchestrator should classify this as touching multiple domains: authentication (backend-master + tanstack for route guards), SSR/hydration (hydration-solver for the flash/mismatch), and debugging (debug-master for root cause). It should NOT invoke seo-master, chart-master, neon-master, or other irrelevant agents. The execution plan should start with debug-master for root-cause analysis of the flash behavior, then hydration-solver to diagnose the SSR hydration warnings (likely auth state mismatch between server and client render), then tanstack for proper route guard implementation, and backend-master for session/auth validation. The plan should include a Consolidated Root-Cause Analysis template and end with qa-tester verification.",
+      "files": []
+    }
+  ]
+}

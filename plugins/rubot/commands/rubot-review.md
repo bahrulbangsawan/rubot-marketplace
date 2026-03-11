@@ -1,6 +1,6 @@
 ---
 name: rubot-review
-description: Autonomous code review, codebase analysis, and bug fix workflow with Chrome DevTools debugging
+description: Autonomous code review, codebase analysis, and bug fix workflow. Use when the user wants a full code review, performance audit, responsive validation, or needs to debug and fix a specific bug with an autonomous test-fix-verify loop.
 allowed-tools:
   - Task
   - Read
@@ -11,21 +11,7 @@ allowed-tools:
   - Bash
   - TodoWrite
   - AskUserQuestion
-  - mcp__chrome-devtools__list_pages
-  - mcp__chrome-devtools__select_page
-  - mcp__chrome-devtools__navigate_page
-  - mcp__chrome-devtools__take_screenshot
-  - mcp__chrome-devtools__take_snapshot
-  - mcp__chrome-devtools__list_console_messages
-  - mcp__chrome-devtools__get_console_message
-  - mcp__chrome-devtools__list_network_requests
-  - mcp__chrome-devtools__get_network_request
-  - mcp__chrome-devtools__resize_page
-  - mcp__chrome-devtools__click
-  - mcp__chrome-devtools__fill
-  - mcp__chrome-devtools__performance_start_trace
-  - mcp__chrome-devtools__performance_stop_trace
-  - mcp__chrome-devtools__performance_analyze_insight
+  - Skill
 ---
 
 You are in the CODE REVIEW & BUG FIX phase of the rubot orchestration workflow.
@@ -189,17 +175,10 @@ AskUserQuestion({
 
 ### Step 2: Reproduce the Bug
 
-1. Navigate to the affected page using DevTools MCP
+1. Navigate to the affected page
 2. Take screenshot to document current state
 3. Check console for errors
 4. Check network requests for failures
-
-```
-mcp__chrome-devtools__navigate_page → http://localhost:3001/[affected-route]
-mcp__chrome-devtools__list_console_messages(types: ['error', 'warn'])
-mcp__chrome-devtools__list_network_requests
-mcp__chrome-devtools__take_screenshot
-```
 
 ### Step 3: Root Cause Analysis
 
@@ -233,58 +212,7 @@ Based on bug type, invoke appropriate agent:
 
 ---
 
-## Phase 3: Chrome DevTools Debugging
-
-Use Chrome DevTools MCP for runtime analysis.
-
-### Console Analysis
-
-```
-1. mcp__chrome-devtools__list_pages                    → Find active tabs
-2. mcp__chrome-devtools__select_page(pageIdx: 0)      → Select target
-3. mcp__chrome-devtools__list_console_messages        → List all output
-4. mcp__chrome-devtools__get_console_message(msgid)   → Get details
-```
-
-#### Console Message Types
-
-| Type | What It Means |
-|------|---------------|
-| error | JavaScript errors, exceptions |
-| warn | Deprecation warnings, potential issues |
-| log | Debug output, info messages |
-| info | Informational messages |
-
-### Network Analysis
-
-```
-1. mcp__chrome-devtools__list_network_requests        → View all API calls
-2. mcp__chrome-devtools__get_network_request(reqid)   → Request details
-```
-
-Check for:
-- Failed requests (4xx, 5xx status)
-- Slow requests (> 1s response time)
-- Missing requests (expected calls not made)
-
-### Visual Debugging
-
-```
-mcp__chrome-devtools__take_screenshot                 → Capture current state
-mcp__chrome-devtools__take_snapshot                   → Accessibility tree
-```
-
-### Performance Profiling
-
-```
-1. mcp__chrome-devtools__performance_start_trace(reload: true, autoStop: true)
-2. mcp__chrome-devtools__performance_stop_trace
-3. mcp__chrome-devtools__performance_analyze_insight(insightSetId, insightName)
-```
-
----
-
-## Phase 4: Responsive Validation
+## Phase 3: Responsive Validation
 
 **Only if user selected "Responsive Validation" or "Full Review"**
 
@@ -299,14 +227,7 @@ mcp__chrome-devtools__take_snapshot                   → Accessibility tree
 
 ### Testing Process
 
-For each breakpoint:
-
-```
-1. mcp__chrome-devtools__resize_page(width, height)
-2. mcp__chrome-devtools__take_screenshot
-3. mcp__chrome-devtools__take_snapshot
-4. Analyze for layout issues
-```
+For each breakpoint, resize the browser window and take screenshots to analyze layout issues.
 
 ### Responsive Checklist
 
@@ -324,7 +245,7 @@ Record any issues found per breakpoint with screenshots.
 
 ---
 
-## Phase 5: Autonomous Fix Loop
+## Phase 4: Autonomous Fix Loop
 
 **CRITICAL: Zero human intervention required for fixes.**
 
@@ -408,7 +329,7 @@ ISSUE DETECTED
 
 ---
 
-## Phase 6: Success Criteria
+## Phase 5: Success Criteria
 
 **ALL must pass before completion:**
 
@@ -423,7 +344,7 @@ ISSUE DETECTED
 
 ---
 
-## Phase 7: Escalation Protocol
+## Phase 6: Escalation Protocol
 
 If issue remains unresolved after **15 iterations**, halt and document:
 
@@ -514,22 +435,6 @@ AskUserQuestion({
 | Init | Select mode, start servers | Review mode selected |
 | Analysis | Find inefficiencies | List of optimizations |
 | Bug Fix | Resolve specific issue | Working fix |
-| DevTools | Runtime debugging | Console/network clean |
 | Responsive | Viewport validation | All 4 breakpoints pass |
 | **Fix Loop** | **Autonomous fixes** | **All criteria pass** |
 | Escalation | Document blockers | Handoff documentation |
-
-### DevTools Quick Commands
-
-| Action | Tool |
-|--------|------|
-| List pages | `list_pages` |
-| Navigate | `navigate_page` |
-| Screenshot | `take_screenshot` |
-| Snapshot | `take_snapshot` |
-| Console | `list_console_messages` |
-| Network | `list_network_requests` |
-| Resize | `resize_page` |
-| Click | `click` |
-| Fill | `fill` |
-| Perf trace | `performance_start_trace` |

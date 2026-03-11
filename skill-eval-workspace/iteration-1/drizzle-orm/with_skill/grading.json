@@ -1,0 +1,32 @@
+{
+  "skill": "drizzle-orm",
+  "configuration": "with_skill",
+  "expectations": [
+    {
+      "text": "Response uses pgTable for table definitions",
+      "passed": true,
+      "evidence": "All three tables use pgTable: \"export const organizations = pgTable('organizations', {...})\", \"export const users = pgTable('users', {...})\", \"export const invoices = pgTable('invoices', {...})\"."
+    },
+    {
+      "text": "Response creates pgEnum for status and role columns",
+      "passed": true,
+      "evidence": "Three pgEnums defined: \"export const planEnum = pgEnum('plan', ['free', 'starter', 'pro', 'enterprise']);\", \"export const roleEnum = pgEnum('role', ['owner', 'admin', 'member']);\", \"export const invoiceStatusEnum = pgEnum('invoice_status', ['draft', 'sent', 'paid', 'overdue']);\"."
+    },
+    {
+      "text": "Response defines relations() for all table relationships",
+      "passed": true,
+      "evidence": "relations.ts defines relations for all three tables: organizationsRelations (many users, many invoices), usersRelations (one organization, many createdInvoices), invoicesRelations (one organization, one creator)."
+    },
+    {
+      "text": "Response includes indexes on org_id columns",
+      "passed": true,
+      "evidence": "Users table: \"orgIdIdx: index('users_org_id_idx').on(table.orgId)\". Invoices table: \"orgIdIdx: index('invoices_org_id_idx').on(table.orgId)\"."
+    },
+    {
+      "text": "Response creates uniqueIndex on (org_id, number) for invoices",
+      "passed": true,
+      "evidence": "Invoices table: \"orgNumberUniqueIdx: uniqueIndex('invoices_org_id_number_idx').on(table.orgId, table.number)\"."
+    }
+  ],
+  "pass_rate": 1.0
+}

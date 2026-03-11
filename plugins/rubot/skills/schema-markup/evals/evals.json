@@ -1,0 +1,23 @@
+{
+  "skill_name": "schema-markup",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I need to add Organization and WebSite schema to our homepage. We're BuildStack, a dev tools company at https://buildstack.dev. Our logo is at /images/logo.svg, we're on Twitter @buildstackdev, LinkedIn /company/buildstack, and GitHub /buildstack. We also have a site search at /search?q=. Can you generate the JSON-LD and show me where to put it in our TanStack Start layout?",
+      "expected_output": "Two JSON-LD schema blocks: (1) Organization schema with @type Organization, name BuildStack, url https://buildstack.dev, logo absolute URL, sameAs array with Twitter/LinkedIn/GitHub profiles, and contactPoint if applicable. (2) WebSite schema with @type WebSite, name, url, and potentialAction containing a SearchAction with target URL template using /search?q={search_term_string}. Implementation should use the JsonLd component in the TanStack Start root layout or __root.tsx file so schemas appear on every page. All URLs must be absolute with https://.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "I have a blog post page at /blog/migrating-to-bun-runtime and I need Article schema for it. The post title is 'Why We Migrated to Bun Runtime (And You Should Too)', published on 2025-11-20, updated 2025-12-03, written by Marcus Chen who has a profile at /team/marcus. We're using TanStack Start and the post data comes from the route loader. Can you set up the Article JSON-LD so it shows up in Google's article carousel?",
+      "expected_output": "Article JSON-LD schema with: @type Article, headline under 110 chars, description, image array with multiple aspect ratios (16:9, 4:3, 1:1), datePublished and dateModified in ISO 8601 format, author as Person type with name and url (absolute), publisher as Organization with name and logo ImageObject, and mainEntityOfPage with WebPage @id. Implementation integrated into the TanStack Start route's head() function using loaderData to populate fields dynamically. Should use the JsonLd component or generateArticleSchema utility from the schema generators.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "We sell handmade ceramics on our site and I need Product schema for individual product pages like /shop/terracotta-mug. A typical product has a name, description, price in USD, availability status, 4.7 star rating from 89 reviews, SKU, and multiple product images. We're on TanStack Start with data from Drizzle ORM. Set up the schema so we get the product rich snippet with price and stars in Google.",
+      "expected_output": "Product JSON-LD schema with: @type Product, name, description, image array, sku, brand as Organization, offers with @type Offer including price, priceCurrency USD, availability using schema.org/InStock enum URL, url, and priceValidUntil. Also aggregateRating with @type AggregateRating, ratingValue 4.7, reviewCount 89, bestRating 5. Implementation in the TanStack Start product route using loader data from Drizzle ORM queries, with the JsonLd component rendering in the page component. Should include validation notes about required fields for the Product rich result and warn about Google's review snippet policies.",
+      "files": []
+    }
+  ]
+}

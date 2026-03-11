@@ -1,0 +1,32 @@
+{
+  "skill": "tanstack-query",
+  "configuration": "with_skill",
+  "expectations": [
+    {
+      "text": "Response uses useMutation with mutationFn for PATCH call",
+      "passed": true,
+      "evidence": "useMutation is used with mutationFn that performs a PATCH call: \"mutationFn: async ({ taskId, status }: UpdateTaskStatusInput): Promise<Task> => { const response = await fetch(`/api/tasks/${taskId}`, { method: 'PATCH', ... }); }\"."
+    },
+    {
+      "text": "Response implements onMutate with cache snapshot and optimistic update",
+      "passed": true,
+      "evidence": "onMutate snapshots previous data (\"const previousTasks = queryClient.getQueryData<Task[]>(queryKeys.tasks.all);\") and optimistically updates the cache (\"queryClient.setQueryData<Task[]>(queryKeys.tasks.all, (old) => { ... return old.map((task) => task.id === taskId ? { ...task, status } : task); });\")."
+    },
+    {
+      "text": "Response implements onError with rollback from context",
+      "passed": true,
+      "evidence": "onError restores from context: \"onError: (_err, _variables, context) => { if (context?.previousTasks) { queryClient.setQueryData<Task[]>(queryKeys.tasks.all, context.previousTasks); } }\"."
+    },
+    {
+      "text": "Response implements onSettled with invalidateQueries",
+      "passed": true,
+      "evidence": "onSettled invalidates queries: \"onSettled: () => { queryClient.invalidateQueries({ queryKey: queryKeys.tasks.all }); }\"."
+    },
+    {
+      "text": "Response cancels outgoing queries before optimistic update",
+      "passed": true,
+      "evidence": "First step in onMutate: \"await queryClient.cancelQueries({ queryKey: queryKeys.tasks.all });\" with comment '1. Cancel outgoing refetches so they don't overwrite our optimistic update'."
+    }
+  ],
+  "pass_rate": 1.0
+}

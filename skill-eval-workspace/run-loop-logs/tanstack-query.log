@@ -1,0 +1,6 @@
+Split: 12 train, 8 test (holdout=0.4)
+
+============================================================
+Iteration 1/3
+Description: Implements TanStack Query for server state management in React applications. Use when fetching data from API endpoints, caching API responses, implementing background refetching, handling stale data, building infinite scroll lists, managing server state, or integrating React Query with TanStack Router. Also use when users mention "fetch data from API", "cache API responses", "background refetching", "stale data", "infinite scroll", "server state", "React Query", "API data fetching", "cache invalidation", "data disappears on navigate", "refetch on window focus", "optimistic update", "prefetch on hover", "useQuery", "useMutation", "queryKey", "invalidateQueries", "staleTime", "gcTime", or "ensureQueryData".
+============================================================

@@ -1,0 +1,1 @@
+{"eval_id":1,"eval_name":"fresh-clone-env-validation","prompt":"I just cloned the repo on a new MacBook and ran bun install, but I haven't set anything else up yet. Can you check if my environment is good to go before I start working on the app?","assertions":[]}

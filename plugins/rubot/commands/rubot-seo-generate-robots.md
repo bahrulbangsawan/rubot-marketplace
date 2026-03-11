@@ -1,6 +1,14 @@
 ---
 name: rubot-seo-generate-robots
-description: Generate robots.txt file for the project
+description: Generate robots.txt file for the project. Use when setting up crawl directives for a new site, configuring AI crawler policies (GPTBot, ClaudeBot), blocking aggressive bots, or creating environment-specific crawl rules for production vs staging.
+allowed-tools:
+  - Write
+  - AskUserQuestion
+  - Glob
+  - Grep
+  - Read
+  - Bash
+  - WebFetch
 ---
 
 # SEO Generate Robots Command
@@ -262,14 +270,7 @@ After writing:
 2. Navigate to /robots.txt
 3. Verify content is correct
 
-```
-mcp__chrome-devtools__navigate_page({
-  url: "http://localhost:3000/robots.txt",
-  type: "url"
-})
-
-mcp__chrome-devtools__take_snapshot()
-```
+Use WebFetch to verify the content at `http://localhost:3000/robots.txt`.
 
 ### Step 8: Provide Validation Instructions
 

@@ -1,0 +1,32 @@
+{
+  "skill": "rubot-seo-audit",
+  "configuration": "without_skill",
+  "expectations": [
+    {
+      "text": "Response covers technical SEO checks (robots.txt, sitemap, HTTPS)",
+      "passed": true,
+      "evidence": "Section 'Indexing Issues' covers robots.txt, sitemap, Google Search Console, and HTTPS redirect check. Also mentions canonical URL and noindex meta tag in the Meta Tags section."
+    },
+    {
+      "text": "Response analyzes on-page SEO (title, meta description, headings)",
+      "passed": true,
+      "evidence": "Section 'Meta Tags' covers title tag (50-60 chars), meta description (150-160 chars), canonical tag, and robots meta tag. Quick checklist items include these checks."
+    },
+    {
+      "text": "Response checks structured data / JSON-LD",
+      "passed": true,
+      "evidence": "Section 'Structured Data' mentions checking for JSON-LD removal, lists Product, SoftwareApplication, Offer, Organization, and WebPage schemas. References Google's Rich Results Test tool."
+    },
+    {
+      "text": "Response evaluates Core Web Vitals (LCP, INP, CLS)",
+      "passed": true,
+      "evidence": "Section 'Core Web Vitals' covers LCP (<2.5s), CLS (<0.1), and INP (<200ms) with specific concerns about hero video. Mentions PageSpeed Insights, Lighthouse, and Search Console for measurement."
+    },
+    {
+      "text": "Response provides prioritized recommendations",
+      "passed": true,
+      "evidence": "Section 'Recommendations' provides 4 ranked guesses of most likely causes. Quick Checklist provides 11 numbered items. However, no formal severity/priority classification system (P0-P3 etc.) is used - just an ordered list."
+    }
+  ],
+  "pass_rate": 1.0
+}

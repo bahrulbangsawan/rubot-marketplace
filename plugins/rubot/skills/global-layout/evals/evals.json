@@ -1,0 +1,17 @@
+{
+  "skill_name": "global-layout",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I just scaffolded a new TanStack Start project and theres no layout at all, every page is just raw content with no nav or footer. I need a sticky navbar with logo and links to /about, /features, /pricing, and /contact, plus a footer with copyright and links to /privacy and /terms. should wrap all routes automatically",
+      "expected_output": "Creates src/components/layout/navbar.tsx with a sticky header using sticky top-0 z-50, backdrop-blur, and border-b. Navbar contains a logo Link to / and a list of navigation links using TanStack Router Link components. Creates src/components/layout/footer.tsx with border-t, copyright text with dynamic year, and privacy/terms links. Modifies app/routes/__root.tsx to import both components and wrap the Outlet in a flex min-h-dvh flex-col container with Navbar at top, main with flex-1 wrapping the Outlet, and Footer at bottom. Preserves any existing RootDocument, Meta, Scripts, or provider wrappers. Uses semantic HTML (header, nav with aria-label, main, footer). All units are rem-based.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "our navbar works fine on desktop but on mobile the links just disappear because theyre set to hidden on small screens and theres no hamburger menu. I need a mobile drawer that shows up below md breakpoint with all the same links. the navbar is at src/components/layout/navbar.tsx",
+      "expected_output": "Adds a useState for controlling the drawer open/close state. Adds a hamburger button visible only on mobile (md:hidden) with h-11 w-11 for a 44px touch target, aria-expanded, aria-controls pointing to the mobile menu id, and aria-label toggling between Open menu and Close menu. The button icon switches between hamburger (3 lines) and X based on state. Adds a mobile drawer div (id matching aria-controls) below the nav that renders only when open, containing the same navigation links as the desktop list. Each mobile link has py-3 for comfortable touch targets, hover/focus states, and an onClick that closes the drawer. Desktop links keep their existing hidden md:flex pattern. The drawer is hidden with md:hidden.",
+      "files": []
+    }
+  ]
+}

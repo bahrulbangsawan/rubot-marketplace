@@ -1,0 +1,82 @@
+[
+  {
+    "query": "Set up react-grab in our TanStack Start project so I can hover over elements and copy the component file path for the AI agent",
+    "should_trigger": true
+  },
+  {
+    "query": "I need to find which .tsx file renders the pricing card on our landing page — can we use the element inspector tool to hover and identify it?",
+    "should_trigger": true
+  },
+  {
+    "query": "Install react-grab as a dev dependency in our Vite React app and add the import.meta.env.DEV conditional import in index.html",
+    "should_trigger": true
+  },
+  {
+    "query": "The tooltip in our dropdown menu disappears before I can inspect it. How do I freeze the page state so I can hover-copy the component info?",
+    "should_trigger": true
+  },
+  {
+    "query": "react-grab is showing 'Anonymous' instead of the component name when I hover over elements in src/components/dashboard/stats-card.tsx — how do I fix this?",
+    "should_trigger": true
+  },
+  {
+    "query": "Add the react-grab script to our Next.js App Router layout.tsx with the beforeInteractive strategy, but only in development mode",
+    "should_trigger": true
+  },
+  {
+    "query": "I want to point at UI elements and get the component name + file path copied to clipboard so the AI coding agent knows which file to edit",
+    "should_trigger": true
+  },
+  {
+    "query": "How do I temporarily disable react-grab? The overlay is interfering with my drag-and-drop testing. I heard there's a window flag I can set",
+    "should_trigger": true
+  },
+  {
+    "query": "Set up the MCP bridge for react-grab so the AI agent can receive element context directly without clipboard",
+    "should_trigger": true
+  },
+  {
+    "query": "After a hot module reload, react-grab stopped detecting components. The overlay appears but file path shows 'unknown'. Hovering works fine before HMR",
+    "should_trigger": true
+  },
+  {
+    "query": "Open Chrome DevTools and inspect the DOM to find which CSS class is causing the overflow issue on the sidebar",
+    "should_trigger": false
+  },
+  {
+    "query": "I need to grab data from the API response and display it in a React table component",
+    "should_trigger": false
+  },
+  {
+    "query": "Write a Playwright test that clicks on the submit button and checks the response",
+    "should_trigger": false
+  },
+  {
+    "query": "Add a screenshot testing setup with Storybook so we can visual regression test our components",
+    "should_trigger": false
+  },
+  {
+    "query": "Use React DevTools Profiler to find which components are re-rendering too often on the dashboard page",
+    "should_trigger": false
+  },
+  {
+    "query": "Set up a drag-and-drop sortable list using @dnd-kit/sortable for reordering todo items in our React app",
+    "should_trigger": false
+  },
+  {
+    "query": "I want to copy text to clipboard when the user clicks a button — implement a useCopyToClipboard hook",
+    "should_trigger": false
+  },
+  {
+    "query": "Build an image picker component that lets users select and crop photos before uploading",
+    "should_trigger": false
+  },
+  {
+    "query": "Set up React Testing Library with Jest so we can unit test our form components",
+    "should_trigger": false
+  },
+  {
+    "query": "Inspect the network waterfall in Chrome to see why the API call to /api/users takes 3 seconds",
+    "should_trigger": false
+  }
+]

@@ -88,7 +88,7 @@ gh repo create "$PROJECT_NAME" --public --source=. --push
    - Only proceed if validation passed
 
 2. **Load git rules**:
-   - Read `.claude/rubot/rubot.local.md` for commit conventions
+   - Read `.claude/rubot/rubot.local.yaml` for commit conventions
    - Check for commit message templates
 
 ## Commit Process
@@ -170,9 +170,9 @@ Execute the commit:
 git commit -m "$(cat <<'EOF'
 <commit message here>
 
-<generated with Claude Code footer>
+Generated with AI
 
-Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
+Co-Authored-By: RuBot <https://github.com/bahrulbangsawan/rubot-marketplace>
 EOF
 )"
 ```
@@ -258,11 +258,11 @@ git log origin/"$BRANCH" -1 --oneline
 - Do NOT commit sensitive files
 - Do NOT skip commit message review with user
 - Do NOT force push without explicit user request
-- ALWAYS follow git rules from rubot.local.md
+- ALWAYS follow git rules from rubot.local.yaml
 
 ## Commit Message Templates
 
-If `.claude/rubot/rubot.local.md` specifies commit templates, use them.
+If `.claude/rubot/rubot.local.yaml` specifies commit templates, use them.
 
 Example custom template:
 ```

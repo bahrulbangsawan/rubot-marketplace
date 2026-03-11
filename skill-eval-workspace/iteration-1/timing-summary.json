@@ -1,0 +1,32 @@
+{
+  "completed_agents": 26,
+  "timing_data": {
+    "biome": {"total_tokens": 20257, "duration_ms": 53381, "tool_uses": 5},
+    "tanstack-router": {"total_tokens": 34435, "duration_ms": 83212, "tool_uses": 10},
+    "agent-browser": {"total_tokens": 17599, "duration_ms": 60104, "tool_uses": 5},
+    "env-check": {"total_tokens": 20257, "duration_ms": 84498, "tool_uses": 13},
+    "tanstack-query": {"total_tokens": 38159, "duration_ms": 79779, "tool_uses": 10},
+    "responsive-design": {"total_tokens": 23906, "duration_ms": 75906, "tool_uses": 7},
+    "react-grab": {"total_tokens": 16472, "duration_ms": 51781, "tool_uses": 6},
+    "drizzle-orm": {"total_tokens": 22047, "duration_ms": 69241, "tool_uses": 5},
+    "rbac-auth": {"total_tokens": 37106, "duration_ms": 123649, "tool_uses": 7},
+    "global-layout": {"total_tokens": 21535, "duration_ms": 71615, "tool_uses": 5},
+    "orchestration": {"total_tokens": 26283, "duration_ms": 141331, "tool_uses": 5},
+    "cf-workers-setup": {"total_tokens": 21894, "duration_ms": 75815, "tool_uses": 8},
+    "schema-markup": {"total_tokens": 26976, "duration_ms": 99544, "tool_uses": 9},
+    "core-web-vitals": {"total_tokens": 20294, "duration_ms": 76169, "tool_uses": 5},
+    "rubot-seo-audit": {"total_tokens": 21814, "duration_ms": 108375, "tool_uses": 5},
+    "tanstack-form": {"total_tokens": 61544, "duration_ms": 110319, "tool_uses": 9},
+    "cloudflare-workers": {"total_tokens": 20176, "duration_ms": 53642, "tool_uses": 7},
+    "social-sharing": {"total_tokens": 22195, "duration_ms": 76512, "tool_uses": 5},
+    "tanstack-table": {"total_tokens": 52875, "duration_ms": 97352, "tool_uses": 9},
+    "elysiajs": {"total_tokens": 21430, "duration_ms": 70868, "tool_uses": 5},
+    "crawl-config": {"total_tokens": 21421, "duration_ms": 70066, "tool_uses": 5},
+    "tanstack-db": {"total_tokens": 25108, "duration_ms": 95941, "tool_uses": 8},
+    "multilanguage": {"total_tokens": null, "duration_ms": null, "tool_uses": null},
+    "wcag-audit": {"total_tokens": null, "duration_ms": null, "tool_uses": null},
+    "wcag-fix": {"total_tokens": null, "duration_ms": null, "tool_uses": null},
+    "url-state-management": {"total_tokens": null, "duration_ms": null, "tool_uses": null}
+  },
+  "notes": "Last 4 agents completed but timing data was not captured from notifications (arrived during batch processing). All outputs verified present on disk."
+}

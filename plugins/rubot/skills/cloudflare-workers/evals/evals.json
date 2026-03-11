@@ -1,0 +1,23 @@
+{
+  "skill_name": "cloudflare-workers",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I need to cache our product catalog API responses in KV — the catalog only updates once a day so I want a 24-hour TTL. The worker already exists at src/index.ts with an Env interface. The KV namespace should be called PRODUCT_CACHE.",
+      "expected_output": "The skill should: 1) Add a KV namespace binding to wrangler.toml with binding = 'PRODUCT_CACHE' and provide the CLI command to create the namespace ('bunx wrangler kv namespace create PRODUCT_CACHE'). 2) Update the Env interface in src/index.ts to include PRODUCT_CACHE: KVNamespace. 3) Implement a caching pattern in the fetch handler that checks KV first with 'await env.PRODUCT_CACHE.get(cacheKey, { type: \"json\" })', returns cached data if present, otherwise fetches from the upstream API and stores with 'await env.PRODUCT_CACHE.put(cacheKey, JSON.stringify(data), { expirationTtl: 86400 })' (86400 seconds = 24 hours). The cache key should be derived from the request URL path. Include proper Content-Type: application/json headers on responses.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "We need a background worker that runs every 6 hours to pull exchange rates from an external API and store them in KV so our main app can read them without hitting rate limits. Set up the scheduled handler and the wrangler cron trigger.",
+      "expected_output": "The skill should: 1) Add a cron trigger to wrangler.toml under [triggers] with crons = ['0 */6 * * *'] (every 6 hours). 2) Add a KV namespace binding for storing exchange rates. 3) Implement the scheduled handler that exports a 'scheduled' method alongside the existing 'fetch' method. The scheduled handler should fetch exchange rates from the external API, parse the JSON response, and store each rate in KV with a sensible key structure (e.g., 'rate:USD:EUR'). Include error handling with try/catch, console.error logging for failures, and ctx.waitUntil() for any async cleanup. The fetch handler should remain functional, potentially serving a health check endpoint. Show the ScheduledEvent type with event.cron for routing different cron schedules.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Our frontend at app.example.com is calling our worker API at api.example.com and getting CORS errors. I also want proper error handling that returns JSON error bodies instead of plain text 'Internal Server Error'. The worker handles POST /api/webhooks and GET /api/status.",
+      "expected_output": "The skill should implement: 1) A corsHeaders function that returns Access-Control-Allow-Origin for 'https://app.example.com' (not wildcard, since it's a known origin), Access-Control-Allow-Methods for 'GET, POST, OPTIONS', Access-Control-Allow-Headers for 'Content-Type, Authorization', and Access-Control-Max-Age for '86400'. 2) OPTIONS preflight handling that returns 204 with CORS headers. 3) CORS headers appended to all responses using a wrapper pattern. 4) Structured error handling with try/catch in the main fetch handler that returns JSON error responses like { error: 'message', status: 400 } with Content-Type: application/json. Different error types (ValidationError for 400, NotFoundError for 404, generic for 500) should return appropriate status codes. The two routes (POST /api/webhooks and GET /api/status) should be routed with method + pathname checks.",
+      "files": []
+    }
+  ]
+}

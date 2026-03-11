@@ -1,0 +1,23 @@
+{
+  "skill_name": "tanstack-router",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I need to set up file-based routing for my property management app. There's a /properties listing page that fetches from our API, and each property has a detail page at /properties/$propertyId that loads the property data plus its tenant info. The detail page should show a skeleton while loading and a 'Property not found' message if the ID doesn't exist. Can you scaffold the route files in src/routes/?",
+      "expected_output": "Creates src/routes/properties/index.tsx with a loader that fetches the property list, and src/routes/properties/$propertyId.tsx with a loader that fetches property + tenant data using params.propertyId. The detail route should use notFound() for missing properties, define a pendingComponent with a skeleton, and a notFoundComponent. Both routes use createFileRoute, export Route, and access loader data via Route.useLoaderData().",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "We have a _auth layout route that checks the session, but now I need to add role-based guards. Specifically, routes under /admin should only be accessible to users with the 'admin:access' permission, and /admin/billing requires 'billing:manage' on top of that. The auth layout already passes user context through beforeLoad. Set this up in src/routes/_auth/admin.tsx and src/routes/_auth/admin/billing.tsx.",
+      "expected_output": "Creates or modifies src/routes/_auth/admin.tsx as a layout route with a beforeLoad guard that checks context.user.roles for 'admin:access' permission, redirecting to /unauthorized on failure. Creates src/routes/_auth/admin/billing.tsx with a nested beforeLoad that checks 'billing:manage' permission from the same context. Both use redirect() from @tanstack/react-router. The admin layout uses Outlet to render child routes.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "My booking search page at src/routes/bookings.tsx needs proper URL search params. Users should be able to filter by status (pending, confirmed, cancelled), date range (checkIn and checkOut as ISO strings), sort by date or price, and paginate. All of these should be in the URL so they can share links. The page should re-fetch when any search param changes.",
+      "expected_output": "Modifies src/routes/bookings.tsx to define a Zod schema for search params (status as optional enum, checkIn/checkOut as optional strings, sort with default 'date', page with default 1). Uses validateSearch with the schema. Implements loaderDeps to declare which search params trigger a re-fetch. The component uses Route.useSearch() to read params and Route.useNavigate() with search updater functions to modify them without losing other params. Navigation preserves existing params via spread.",
+      "files": []
+    }
+  ]
+}

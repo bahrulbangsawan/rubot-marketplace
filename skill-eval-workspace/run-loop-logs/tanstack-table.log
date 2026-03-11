@@ -1,0 +1,6 @@
+Split: 12 train, 8 test (holdout=0.4)
+
+============================================================
+Iteration 1/3
+Description: Implements TanStack Table for headless, type-safe data tables in React applications. Use when building a data grid, sortable table, filterable table, paginated table, row selection table, column resizing, table with search, DataTable component, or server-side table. Also use when working with useReactTable, createColumnHelper, flexRender, getCoreRowModel, getSortedRowModel, getFilteredRowModel, getPaginationRowModel, or any TanStack Table API.
+============================================================

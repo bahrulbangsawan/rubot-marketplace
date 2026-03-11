@@ -1,0 +1,6 @@
+Split: 12 train, 8 test (holdout=0.4)
+
+============================================================
+Iteration 1/3
+Description: Implements TanStack DB for reactive, local-first client stores in React applications. Use when building a local-first app, adding offline-first data support, implementing real-time sync, creating a reactive data store, using live queries, building optimistic UI patterns, setting up a client-side database, configuring a sync engine, integrating with ElectricSQL or PowerSync, or working with cross-collection queries and differential dataflow.
+============================================================

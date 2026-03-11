@@ -1,0 +1,32 @@
+{
+  "skill": "social-sharing",
+  "configuration": "with_skill",
+  "expectations": [
+    {
+      "text": "Response generates complete OG meta tags (title, description, image, url, type)",
+      "passed": true,
+      "evidence": "generateSocialMeta function produces og:title, og:description, og:image, og:url, og:type along with og:image:width, og:image:height, og:image:alt, og:site_name, og:locale"
+    },
+    {
+      "text": "Response generates Twitter Card meta tags with summary_large_image",
+      "passed": true,
+      "evidence": "Function includes twitter:card with content 'summary_large_image', plus twitter:title, twitter:description, twitter:image, twitter:image:alt, twitter:site"
+    },
+    {
+      "text": "Response creates dynamic OG image endpoint",
+      "passed": true,
+      "evidence": "src/routes/api/og.tsx creates an API route using createAPIFileRoute('/api/og') that generates a 1200x630 ImageResponse with title and author from query params using @vercel/og"
+    },
+    {
+      "text": "Response uses absolute URLs (https://devnotes.sh)",
+      "passed": true,
+      "evidence": "URLs are constructed as absolute: const url = `https://devnotes.sh/blog/${post.slug}` and const ogImage = `https://devnotes.sh/api/og?...`"
+    },
+    {
+      "text": "Response integrates in route head() function using loaderData",
+      "passed": true,
+      "evidence": "Blog post route uses head: ({ loaderData }) => { const { post } = loaderData; ... return { meta: [...generateSocialMeta({...})] } }"
+    }
+  ],
+  "pass_rate": 1.0
+}

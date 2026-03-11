@@ -1,0 +1,32 @@
+{
+  "skill": "rbac-auth",
+  "configuration": "with_skill",
+  "expectations": [
+    {
+      "text": "Response uses resource:action permission pattern (e.g., booking:read)",
+      "passed": true,
+      "evidence": "Permissions follow 'resource:action' pattern consistently: 'booking:read', 'booking:create', 'booking:update', 'booking:delete', 'member:read', 'room:create', 'billing:update', etc."
+    },
+    {
+      "text": "Response defines role-permission mappings following least-privilege",
+      "passed": true,
+      "evidence": "Three roles with progressively restricted permissions: admin gets all 18 permissions, staff gets 7 (booking CRUD + read-only member/room/billing), member gets only 3 (booking:read, booking:create, room:read). This follows least-privilege."
+    },
+    {
+      "text": "Response includes Drizzle pgTable schemas for roles and permissions",
+      "passed": true,
+      "evidence": "Section 4 defines pgTable schemas: \"export const roles = pgTable('roles', {...})\" and \"export const permissions = pgTable('permissions', {...})\" with full column definitions."
+    },
+    {
+      "text": "Response creates junction tables (user_roles, role_permissions)",
+      "passed": true,
+      "evidence": "Both junction tables defined: \"export const userRoles = pgTable('user_roles', {...})\" and \"export const rolePermissions = pgTable('role_permissions', {...})\" with composite primary keys."
+    },
+    {
+      "text": "Response includes foreign keys and indexes",
+      "passed": true,
+      "evidence": "Foreign keys: \".references(() => users.id, { onDelete: 'cascade' })\", \".references(() => roles.id, { onDelete: 'cascade' })\", etc. Indexes: \"userIdx: index('user_roles_user_idx').on(table.userId)\", \"roleIdx: index('user_roles_role_idx').on(table.roleId)\", and more."
+    }
+  ],
+  "pass_rate": 1.0
+}

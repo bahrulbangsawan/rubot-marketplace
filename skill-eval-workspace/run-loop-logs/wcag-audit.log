@@ -1,0 +1,6 @@
+Split: 12 train, 8 test (holdout=0.4)
+
+============================================================
+Iteration 1/3
+Description: Audit websites and components for WCAG 2.2 Level AA accessibility compliance. Use when auditing accessibility, generating accessibility reports, creating remediation plans, checking for a11y issues, running accessibility checks, or when users mention "WCAG", "accessibility audit", "a11y", "screen reader issues", "keyboard navigation problems", "contrast issues", "focus management", "accessible", "is my site accessible", "accessibility compliance", "ADA compliance check", "disability access", "inclusive design review", or "pre-launch accessibility check". Also use when reviewing pull requests or components for accessibility compliance, before deploying to production, checking Section 508 compliance, or evaluating assistive technology support.
+============================================================

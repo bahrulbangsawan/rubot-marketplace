@@ -1,0 +1,17 @@
+{
+  "skill_name": "url-state-management",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I have a product catalog page at /products in my TanStack Start app. I need URL-driven filters and sorting. The filters are: search query (text), category (one of 'electronics', 'clothing', 'home', 'sports'), price range min/max (integers), in_stock (boolean). Sorting should support 'price_asc', 'price_desc', 'newest', 'popular'. Plus pagination with page number. When someone changes a filter, page should reset to 1. I want all this in the URL so customers can share filtered views like /products?q=headphones&category=electronics&sort=price_asc&page=2.",
+      "expected_output": "Should produce a centralized search params definition object using parseAsString for q with empty default, parseAsStringEnum for category, parseAsInteger for price_min/price_max, parseAsBoolean for in_stock with default false, parseAsStringLiteral or parseAsStringEnum for sort with default 'newest', and parseAsInteger for page with default 1. Should use useQueryStates to consume all params in the product list component. Filter change handlers should call setParams with page reset to 1 (e.g., setParams({category: 'electronics', page: 1})). Should include a TanStack Router route definition with validateSearch using createStandardSchemaV1. Should show clearOnDefault: true so clean URLs don't have ?page=1&in_stock=false clutter.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "I'm building an analytics dashboard at /dashboard with three tabs: overview, revenue, users. Each tab should be persisted in the URL as ?tab=overview. The revenue tab has a date range picker that should also be in the URL as start and end ISO dates. When I switch tabs, the date range should stay. Navigating between tabs should push to history so the back button works. Use nuqs with my TanStack Start app.",
+      "expected_output": "Should produce search params with parseAsStringLiteral for tab with values ['overview', 'revenue', 'users'] and default 'overview', plus parseAsIsoDateTime for start_date and end_date with sensible defaults (e.g., 30 days ago and today). The tab param should use history: 'push' so tab switches create browser history entries, while date range changes use the default 'replace'. Should show a Tabs component (shadcn) with value bound to the tab query state and onValueChange calling setTab. The revenue tab should render a date range picker bound to start_date/end_date params. Should demonstrate that switching tabs preserves existing date range params because useQueryStates only updates the params you pass to setParams.",
+      "files": []
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "skill_name": "tanstack-query",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I have a kanban board in src/components/kanban-board.tsx where users drag tasks between columns (todo, in-progress, done). When they drop a task, it needs to update the status instantly without waiting for the server. If the API call to PATCH /api/tasks/:id fails, it should snap back to the original column. Can you wire up the optimistic mutation for updating task status?",
+      "expected_output": "Implements a useMutation hook with mutationFn calling PATCH /api/tasks/:id with the new status. The onMutate callback cancels outgoing queries for ['tasks'], snapshots the current cache, and optimistically updates the task's status in the query data. onError rolls back using the snapshot from context. onSettled invalidates ['tasks'] to re-sync with the server. The mutation is typed with the Task interface and uses useQueryClient for cache operations.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "We have a customer list at /customers and clicking a row navigates to /customers/$customerId. The detail page takes a second to load because it fetches order history too. I want to prefetch the customer detail when the user hovers over a row in the list so it loads instantly when they click. The query options are in src/lib/queries/customers.ts already. Hook it up in the CustomerRow component.",
+      "expected_output": "In the CustomerRow component, uses useQueryClient to get the query client instance. Adds an onMouseEnter handler that calls queryClient.prefetchQuery with the customerQueryOptions(customerId) from the existing query options factory. The detail page component uses useQuery with the same customerQueryOptions so it reads from the now-warm cache. The prefetch call does not block or show loading state on the list.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "I'm building an inventory management system. When a user updates a product's stock count via PUT /api/products/:id, I need to invalidate: the specific product detail query, the product list query, AND the dashboard stats query that shows total inventory value. But I don't want to invalidate unrelated queries. Set up the mutation with targeted cache invalidation in src/features/inventory/hooks/use-update-stock.ts.",
+      "expected_output": "Creates a custom hook useUpdateStock that wraps useMutation. The mutationFn calls PUT /api/products/:id with the new stock data. The onSuccess callback performs three targeted invalidations: queryClient.invalidateQueries with queryKey ['products', productId] for the detail, queryKey ['products'] with exact: false for the list, and queryKey ['dashboard', 'stats'] for the dashboard. Uses a query key factory pattern if one exists. Does not use broad invalidation that would affect unrelated caches.",
+      "files": []
+    }
+  ]
+}

@@ -12,11 +12,11 @@ This hook activates when:
 
 1. **Check for rubot workspace**:
    ```
-   Look for: .claude/rubot/rubot.local.md
+   Look for: .claude/rubot/rubot.local.yaml
    ```
 
 2. **If workspace exists, load context**:
-   - Read `.claude/rubot/rubot.local.md` for project configuration
+   - Read `.claude/rubot/rubot.local.yaml` for project configuration
    - Check for active plan at `.claude/rubot/plan.md`
    - Check for validation status at `.claude/rubot/validation-report.md`
 
@@ -27,7 +27,7 @@ This hook activates when:
 ```
 RUBOT WORKSPACE DETECTED
 
-Project: [name from rubot.local.md]
+Project: [name from rubot.local.yaml]
 Stack: [detected stack]
 
 Active Plan: [Yes/No]
@@ -44,12 +44,12 @@ Quick Commands:
   /rubot-check   - Run validation checks
   /rubot-commit  - Commit changes
 
-Inactive Agents: [list from rubot.local.md or "None"]
+Inactive Agents: [list from rubot.local.yaml or "None"]
 ```
 
 ## Context Information to Extract
 
-### From rubot.local.md
+### From rubot.local.yaml
 
 | Field | Description |
 |-------|-------------|

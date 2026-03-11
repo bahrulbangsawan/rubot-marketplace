@@ -1,0 +1,17 @@
+{
+  "skill_name": "env-check",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I just cloned the repo on a new MacBook and ran bun install, but I haven't set anything else up yet. Can you check if my environment is good to go before I start working on the app?",
+      "expected_output": "The skill should run all validation categories: check critical tools (bun, node, git), check optional tools (wrangler, gh), verify configuration files exist (package.json, bun.lockb/bun.lock, wrangler.toml, .env/.env.local), detect project stack components in package.json (ElysiaJS, Drizzle, tRPC, Zod, Neon, TanStack), and check for a validate script. Output should use [PASS]/[FAIL]/[WARN] status indicators. On a fresh clone, it should likely report [WARN] for missing .env.local and possibly [WARN] for wrangler not being authenticated. It should provide remediation steps for each failing check, like 'cp .env.example .env.local' for missing env and 'wrangler login' for auth.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "I'm trying to run bun run dev but it keeps crashing with 'DATABASE_URL is not defined'. I think my .env file might be messed up. Also not sure if I even have wrangler installed. Can you check everything?",
+      "expected_output": "The skill should run environment checks and specifically surface the missing DATABASE_URL. It should check for .env and .env.local file existence, then verify that database connection variables (DATABASE_URL, NEON_*, POSTGRES_*) are present without revealing their values. It should check wrangler installation via 'command -v wrangler' and report [FAIL] or [WARN] if missing. It should also check all critical tools, project dependencies, and config files. The output should pinpoint that DATABASE_URL is not set in .env.local and provide the remediation: add 'DATABASE_URL=postgresql://user:pass@host/dbname' to .env.local. If wrangler is missing, it should show how to install with 'bun add -g wrangler'.",
+      "files": []
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "skill_name": "cf-workers-setup",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I've got a TanStack Start app in apps/web/ of our monorepo — it uses bun and already has a vite.config.ts with the TanStack plugin. I need to deploy it to Cloudflare Workers. Set the whole thing up for me.",
+      "expected_output": "The skill should detect: 1) bun as package manager (from bun.lockb/bun.lock), 2) TanStack Start as framework (from @tanstack/react-start in apps/web/package.json), 3) monorepo structure (apps/ directory exists). It should then follow the TANSTACK.md dedicated setup path. Install wrangler and @cloudflare/vite-plugin at apps/web/ level, and @cloudflare/workers-types at root level. Generate wrangler.jsonc in apps/web/ with the project name from package.json, today's date as compatibility_date, nodejs_compat flag, and observability enabled. Merge the cloudflare() plugin as the first plugin in the existing vite.config.ts without removing the TanStack plugin. Add deploy script to apps/web/package.json. Run the build from apps/web/ and verify dist/ output contains client/ and server/ directories. Report all changes made.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "I have a plain Vite + React app (no SSR, no framework — just React with react-router). I want to put it on Cloudflare Workers so it's fast globally. The project is at the root level, not a monorepo. Using npm.",
+      "expected_output": "The skill should detect: 1) npm as package manager (from package-lock.json), 2) Vite as framework (vite in dependencies without TanStack/Remix/Astro). It should install @cloudflare/vite-plugin and wrangler as dev dependencies with 'npm install -D'. Create wrangler.jsonc at project root with $schema, project name from package.json, today's date, nodejs_compat flag, and observability. Update vite.config.ts to add cloudflare() as the first plugin while preserving the existing React plugin and any other config. Add deploy script to package.json. Run 'npm run build' and verify dist/ output. Since this is a non-SSR SPA, it should handle the static asset deployment correctly.",
+      "files": []
+    }
+  ]
+}

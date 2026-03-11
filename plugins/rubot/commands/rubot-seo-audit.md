@@ -1,18 +1,26 @@
 ---
 name: rubot-seo-audit
-description: Run a comprehensive SEO audit with Chrome DevTools integration
+description: Run a comprehensive SEO audit on a URL with live page analysis. Use when the user wants to check their site's SEO health, validate meta tags, test structured data, review social sharing previews, measure Core Web Vitals, or audit before deploying to production.
+argument-hint: <url>
+allowed-tools:
+  - WebFetch
+  - WebSearch
+  - AskUserQuestion
+  - Read
+  - Bash
+  - Glob
+  - Grep
 ---
 
 # SEO Audit Command
 
-Run a comprehensive SEO audit on a URL using Chrome DevTools MCP for live page analysis.
+Run a comprehensive SEO audit on a URL with live page analysis.
 
 ## Prerequisites
 
 Before running this command:
-1. Ensure Chrome DevTools MCP server is connected
-2. Have the target URL ready (local dev server or production)
-3. Dev server should be running if auditing locally
+1. Have the target URL ready (local dev server or production)
+2. Dev server should be running if auditing locally
 
 ## Execution Steps
 
@@ -52,146 +60,26 @@ questions:
 
 If the answer is "No, private/internal", recommend anti-indexing measures instead of SEO optimization.
 
-### Step 3: Navigate to Target URL
+### Step 3: Fetch and Analyze Target URL
 
-```
-mcp__chrome-devtools__navigate_page({
-  url: "<target_url>",
-  type: "url"
-})
-```
+Use WebFetch to retrieve the target URL and parse the HTML to collect all SEO-relevant data:
 
-### Step 4: Run Performance Trace
+- **Meta Tags**: title, description, canonical, robots, viewport
+- **Open Graph**: all og: meta tags
+- **Twitter Cards**: all twitter: meta tags
+- **Structured Data**: JSON-LD scripts
+- **Headings**: h1/h2/h3 hierarchy and counts
+- **Images**: total, missing alt text, missing dimensions
+- **Links**: internal vs external counts
+- **Technical**: HTTPS, lang, charset
 
-```
-mcp__chrome-devtools__performance_start_trace({
-  reload: true,
-  autoStop: true
-})
-```
+### Step 4: Verify robots.txt and sitemap.xml
 
-### Step 5: Collect SEO Metrics
+Use WebFetch to check these critical files:
+- `<base_url>/robots.txt` - verify accessibility and content
+- `<base_url>/sitemap.xml` - verify accessibility and structure
 
-Run this script to collect all SEO-relevant data:
-
-```javascript
-mcp__chrome-devtools__evaluate_script({
-  function: `() => {
-    const results = {
-      url: window.location.href,
-      timestamp: new Date().toISOString(),
-
-      // Meta Tags
-      meta: {
-        title: document.title,
-        titleLength: document.title?.length || 0,
-        description: document.querySelector('meta[name="description"]')?.content || null,
-        descriptionLength: document.querySelector('meta[name="description"]')?.content?.length || 0,
-        canonical: document.querySelector('link[rel="canonical"]')?.href || null,
-        robots: document.querySelector('meta[name="robots"]')?.content || null,
-        viewport: document.querySelector('meta[name="viewport"]')?.content || null,
-      },
-
-      // Open Graph
-      openGraph: Array.from(document.querySelectorAll('meta[property^="og:"]'))
-        .reduce((acc, el) => {
-          acc[el.getAttribute('property')] = el.content;
-          return acc;
-        }, {}),
-
-      // Twitter Cards
-      twitter: Array.from(document.querySelectorAll('meta[name^="twitter:"]'))
-        .reduce((acc, el) => {
-          acc[el.name] = el.content;
-          return acc;
-        }, {}),
-
-      // Structured Data
-      structuredData: Array.from(document.querySelectorAll('script[type="application/ld+json"]'))
-        .map(el => {
-          try { return JSON.parse(el.textContent); }
-          catch { return { error: 'Invalid JSON' }; }
-        }),
-
-      // Headings
-      headings: {
-        h1: Array.from(document.querySelectorAll('h1')).map(el => el.textContent.trim()),
-        h1Count: document.querySelectorAll('h1').length,
-        h2Count: document.querySelectorAll('h2').length,
-        h3Count: document.querySelectorAll('h3').length,
-      },
-
-      // Images
-      images: {
-        total: document.querySelectorAll('img').length,
-        withoutAlt: document.querySelectorAll('img:not([alt])').length,
-        withEmptyAlt: document.querySelectorAll('img[alt=""]').length,
-        withoutDimensions: document.querySelectorAll('img:not([width]):not([height])').length,
-      },
-
-      // Links
-      links: {
-        internal: document.querySelectorAll('a[href^="/"], a[href^="' + window.location.origin + '"]').length,
-        external: document.querySelectorAll('a[href^="http"]:not([href^="' + window.location.origin + '"])').length,
-        withoutText: document.querySelectorAll('a:not(:has(*)):empty, a:not([aria-label])').length,
-      },
-
-      // Technical
-      technical: {
-        https: window.location.protocol === 'https:',
-        lang: document.documentElement.lang || null,
-        charset: document.characterSet,
-      }
-    };
-
-    return results;
-  }`
-})
-```
-
-### Step 6: Analyze Core Web Vitals
-
-After the performance trace completes, analyze insights:
-
-```
-mcp__chrome-devtools__performance_analyze_insight({
-  insightSetId: "<insight_set_id>",
-  insightName: "LCPBreakdown"
-})
-
-mcp__chrome-devtools__performance_analyze_insight({
-  insightSetId: "<insight_set_id>",
-  insightName: "CLS"
-})
-```
-
-### Step 7: Check Network for SEO Resources
-
-```
-mcp__chrome-devtools__list_network_requests({
-  resourceTypes: ["document"]
-})
-```
-
-### Step 8: Verify robots.txt and sitemap.xml
-
-Navigate and check these critical files:
-
-```
-// Check robots.txt
-mcp__chrome-devtools__navigate_page({
-  url: "<base_url>/robots.txt",
-  type: "url"
-})
-
-// Check sitemap.xml
-mcp__chrome-devtools__navigate_page({
-  url: "<base_url>/sitemap.xml",
-  type: "url"
-})
-```
-
-### Step 9: Generate Audit Report
+### Step 5: Generate Audit Report
 
 Compile all findings into the validation report format:
 

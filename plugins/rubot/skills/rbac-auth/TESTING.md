@@ -497,162 +497,136 @@ describe('RBAC Database Queries', () => {
 });
 ```
 
-## E2E Tests (Playwright)
+## E2E Tests (agent-browser)
 
 ### Permission Flow Tests
 
-```typescript
-// e2e/rbac.spec.ts
-import { test, expect } from '@playwright/test';
+```bash
+# e2e/rbac - Admin User Tests
 
-test.describe('RBAC E2E Tests', () => {
-  test.describe('Admin User', () => {
-    test.beforeEach(async ({ page }) => {
-      // Login as admin
-      await page.goto('/login');
-      await page.fill('[name="email"]', 'admin@example.com');
-      await page.fill('[name="password"]', 'adminpassword');
-      await page.click('button[type="submit"]');
-      await page.waitForURL('/dashboard');
-    });
+# Login as admin
+agent-browser open http://localhost:3000/login
+agent-browser snapshot -i
+agent-browser fill @email "admin@example.com"
+agent-browser fill @password "adminpassword"
+agent-browser click @submit
+agent-browser wait --text "Dashboard"
 
-    test('can access admin panel', async ({ page }) => {
-      await page.goto('/admin');
-      await expect(page.locator('h1')).toContainText('Admin');
-    });
+# Test: can access admin panel
+agent-browser open http://localhost:3000/admin
+agent-browser snapshot -i
+# Verify h1 contains "Admin"
 
-    test('can see all navigation items', async ({ page }) => {
-      await expect(page.locator('[data-testid="nav-users"]')).toBeVisible();
-      await expect(page.locator('[data-testid="nav-settings"]')).toBeVisible();
-      await expect(page.locator('[data-testid="nav-roles"]')).toBeVisible();
-    });
+# Test: can see all navigation items
+agent-browser snapshot -i
+# Verify nav-users, nav-settings, nav-roles are visible in snapshot
 
-    test('can delete users', async ({ page }) => {
-      await page.goto('/users');
-      await page.click('[data-testid="user-row"]:first-child [data-testid="delete-btn"]');
-      await page.click('[data-testid="confirm-delete"]');
-      await expect(page.locator('[data-testid="toast"]')).toContainText('deleted');
-    });
-  });
+# Test: can delete users
+agent-browser open http://localhost:3000/users
+agent-browser snapshot -i
+agent-browser click @delete-btn  # First user row delete button
+agent-browser click @confirm-delete
+agent-browser wait --text "deleted"
+agent-browser snapshot -i
+# Verify toast shows "deleted"
+```
 
-  test.describe('Staff User', () => {
-    test.beforeEach(async ({ page }) => {
-      // Login as staff
-      await page.goto('/login');
-      await page.fill('[name="email"]', 'staff@example.com');
-      await page.fill('[name="password"]', 'staffpassword');
-      await page.click('button[type="submit"]');
-      await page.waitForURL('/dashboard');
-    });
+```bash
+# e2e/rbac - Staff User Tests
 
-    test('cannot access admin panel', async ({ page }) => {
-      await page.goto('/admin');
-      await expect(page).toHaveURL('/unauthorized');
-    });
+# Login as staff
+agent-browser open http://localhost:3000/login
+agent-browser snapshot -i
+agent-browser fill @email "staff@example.com"
+agent-browser fill @password "staffpassword"
+agent-browser click @submit
+agent-browser wait --text "Dashboard"
 
-    test('does not see admin navigation items', async ({ page }) => {
-      await expect(page.locator('[data-testid="nav-settings"]')).not.toBeVisible();
-      await expect(page.locator('[data-testid="nav-roles"]')).not.toBeVisible();
-    });
+# Test: cannot access admin panel
+agent-browser open http://localhost:3000/admin
+agent-browser snapshot -i
+# Verify redirected to /unauthorized
 
-    test('can view but not delete bookings', async ({ page }) => {
-      await page.goto('/bookings');
-      await expect(page.locator('[data-testid="booking-row"]')).toBeVisible();
-      await expect(page.locator('[data-testid="delete-btn"]')).not.toBeVisible();
-    });
-  });
+# Test: does not see admin navigation items
+agent-browser snapshot -i
+# Verify nav-settings and nav-roles are NOT in snapshot
 
-  test.describe('Member User', () => {
-    test.beforeEach(async ({ page }) => {
-      // Login as member
-      await page.goto('/login');
-      await page.fill('[name="email"]', 'member@example.com');
-      await page.fill('[name="password"]', 'memberpassword');
-      await page.click('button[type="submit"]');
-      await page.waitForURL('/dashboard');
-    });
+# Test: can view but not delete bookings
+agent-browser open http://localhost:3000/bookings
+agent-browser snapshot -i
+# Verify booking rows visible but delete buttons are NOT visible
+```
 
-    test('can only see own bookings', async ({ page }) => {
-      await page.goto('/bookings');
-      const bookings = page.locator('[data-testid="booking-row"]');
-      const count = await bookings.count();
+```bash
+# e2e/rbac - Member User Tests
 
-      for (let i = 0; i < count; i++) {
-        await expect(bookings.nth(i)).toContainText('member@example.com');
-      }
-    });
+# Login as member
+agent-browser open http://localhost:3000/login
+agent-browser snapshot -i
+agent-browser fill @email "member@example.com"
+agent-browser fill @password "memberpassword"
+agent-browser click @submit
+agent-browser wait --text "Dashboard"
 
-    test('cannot access users page', async ({ page }) => {
-      await page.goto('/users');
-      await expect(page).toHaveURL('/unauthorized');
-    });
-  });
+# Test: can only see own bookings
+agent-browser open http://localhost:3000/bookings
+agent-browser snapshot -i
+# Verify all booking rows contain "member@example.com"
 
-  test.describe('Unauthenticated User', () => {
-    test('is redirected to login from protected routes', async ({ page }) => {
-      await page.goto('/dashboard');
-      await expect(page).toHaveURL(/.*login.*/);
-    });
+# Test: cannot access users page
+agent-browser open http://localhost:3000/users
+agent-browser snapshot -i
+# Verify redirected to /unauthorized
+```
 
-    test('can access public routes', async ({ page }) => {
-      await page.goto('/');
-      await expect(page.locator('h1')).toBeVisible();
-    });
-  });
-});
+```bash
+# e2e/rbac - Unauthenticated User Tests
+
+# Test: is redirected to login from protected routes
+agent-browser open http://localhost:3000/dashboard
+agent-browser snapshot -i
+# Verify redirected to /login
+
+# Test: can access public routes
+agent-browser open http://localhost:3000/
+agent-browser snapshot -i
+# Verify h1 is visible
 ```
 
 ### Permission Boundary Tests
 
-```typescript
-// e2e/permission-boundaries.spec.ts
-import { test, expect } from '@playwright/test';
+```bash
+# e2e/permission-boundaries - API bypass test
 
-test.describe('Permission Boundary Tests', () => {
-  test('API rejects request when frontend bypassed', async ({ page, request }) => {
-    // Login as member
-    await page.goto('/login');
-    await page.fill('[name="email"]', 'member@example.com');
-    await page.fill('[name="password"]', 'memberpassword');
-    await page.click('button[type="submit"]');
-    await page.waitForURL('/dashboard');
+# Login as member
+agent-browser open http://localhost:3000/login
+agent-browser snapshot -i
+agent-browser fill @email "member@example.com"
+agent-browser fill @password "memberpassword"
+agent-browser click @submit
+agent-browser wait --text "Dashboard"
 
-    // Extract auth cookie
-    const cookies = await page.context().cookies();
-    const authCookie = cookies.find(c => c.name === 'session');
+# Try to access admin API directly via JavaScript
+agent-browser eval "fetch('/api/users/some-id', { method: 'DELETE', credentials: 'include' }).then(r => r.json().then(b => console.log('STATUS:', r.status, 'BODY:', JSON.stringify(b))))"
+agent-browser console
+# Verify STATUS: 403 and BODY contains "Forbidden"
+```
 
-    // Try to access admin API directly
-    const response = await request.delete('/api/users/some-id', {
-      headers: {
-        Cookie: `session=${authCookie?.value}`,
-      },
-    });
+```bash
+# e2e/permission-boundaries - Hidden button bypass test
 
-    expect(response.status()).toBe(403);
-    const body = await response.json();
-    expect(body.error).toBe('Forbidden');
-  });
+# Login as staff (no delete permission)
+agent-browser open http://localhost:3000/login
+agent-browser snapshot -i
+agent-browser fill @email "staff@example.com"
+agent-browser fill @password "staffpassword"
+agent-browser click @submit
+agent-browser open http://localhost:3000/bookings
 
-  test('hidden buttons cannot be invoked via console', async ({ page }) => {
-    // Login as staff (no delete permission)
-    await page.goto('/login');
-    await page.fill('[name="email"]', 'staff@example.com');
-    await page.fill('[name="password"]', 'staffpassword');
-    await page.click('button[type="submit"]');
-    await page.goto('/bookings');
-
-    // Try to invoke delete via JavaScript
-    const response = await page.evaluate(async () => {
-      const res = await fetch('/api/bookings/test-id', {
-        method: 'DELETE',
-        credentials: 'include',
-      });
-      return { status: res.status, body: await res.json() };
-    });
-
-    expect(response.status).toBe(403);
-  });
-});
+# Try to invoke delete via JavaScript
+agent-browser eval "fetch('/api/bookings/test-id', { method: 'DELETE', credentials: 'include' }).then(r => console.log('STATUS:', r.status))"
+agent-browser console
+# Verify STATUS: 403
 ```
 
 ## Test Coverage Checklist
@@ -723,7 +697,7 @@ jobs:
         run: bun test src/server/trpc/__tests__/rbac
 
       - name: Run E2E Tests
-        run: bunx playwright test e2e/rbac
+        run: bunx agent-browser test e2e/rbac
 ```
 
 ## Agent Collaboration

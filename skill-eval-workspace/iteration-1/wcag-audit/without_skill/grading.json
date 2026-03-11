@@ -1,0 +1,32 @@
+{
+  "skill": "wcag-audit",
+  "configuration": "without_skill",
+  "expectations": [
+    {
+      "text": "Response includes automated testing phase (axe-core/Lighthouse)",
+      "passed": true,
+      "evidence": "Section 'Automated Testing' includes commands for axe-core ('npx axe http://localhost:3000') and Lighthouse ('npx lighthouse http://localhost:3000 --only-categories=accessibility'). Notes automated tools only catch 30-40% of issues."
+    },
+    {
+      "text": "Response includes manual testing phase (keyboard, screen reader)",
+      "passed": true,
+      "evidence": "Section 'Keyboard Navigation' covers tabbing through page, carousel keyboard control, form submission via keyboard, focus traps, and visible focus indicators. Section 'Screen Reader' covers VoiceOver/NVDA testing for headings, labels, carousel announcements."
+    },
+    {
+      "text": "Response categorizes issues by severity",
+      "passed": true,
+      "evidence": "Section 'Prioritized Fix Order' categorizes into Critical, High, Medium, and Low with examples for each. Provides a clear ordering for the one-week timeline."
+    },
+    {
+      "text": "Response references specific WCAG success criteria",
+      "passed": true,
+      "evidence": "References specific WCAG 2.2 criteria: 2.4.11 (Focus Not Obscured), 2.5.7 (Dragging Movements), 2.5.8 (Target Size), 3.2.6 (Consistent Help), 3.3.7 (Redundant Entry), 3.3.8 (Accessible Authentication). However, section-specific checks use descriptive text rather than SC numbers."
+    },
+    {
+      "text": "Response produces a structured audit report",
+      "passed": false,
+      "evidence": "Response provides a useful checklist and guidance but is structured more as advisory content than a formal audit report. No scoring framework, no weighted categories, no section-by-section WCAG checklist with SC numbers, no formal remediation plan with effort estimates. The format is more of a 'what to check' guide than a structured audit report template."
+    }
+  ],
+  "pass_rate": 0.8
+}

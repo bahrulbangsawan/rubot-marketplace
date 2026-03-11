@@ -1,0 +1,23 @@
+{
+  "skill_name": "drizzle-orm",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I'm starting a multi-tenant SaaS for invoice management. I need a Drizzle schema with these tables: organizations (id, name, slug, plan, created_at), users (id, email, name, org_id FK, role enum of 'owner'|'admin'|'member', is_active), invoices (id, org_id FK, number like INV-0001, client_name, client_email, status enum 'draft'|'sent'|'paid'|'overdue', amount_cents integer, due_date, created_by FK to users, created_at). Add proper indexes on org_id columns and a unique composite index on (org_id, number) for invoices. Also set up the Drizzle relations so I can query users with their org and invoices with their creator.",
+      "expected_output": "Should produce pgTable definitions for organizations, users, and invoices with correct column types (serial for ids, text for strings, integer for amount_cents, timestamp for dates, pgEnum for status/role). Should include relations() calls defining organizations hasMany users, organizations hasMany invoices, users belongTo organizations, invoices belongTo organizations, invoices belongTo users (creator). Should have index on users.org_id, invoices.org_id, and a uniqueIndex on invoices(org_id, number). Should export InferSelectModel and InferInsertModel types for each table.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Using my invoices SaaS schema, I need to write these Drizzle queries: 1) Get all invoices for org_id=5 that are overdue, joined with the creator's name and email, sorted by due_date ascending. 2) A dashboard summary query that returns total_invoices, total_paid_amount, total_outstanding_amount, and count by status for a given org_id — all in one query using sql template. 3) A transaction that creates an invoice and updates the organization's last_invoice_number counter atomically.",
+      "expected_output": "Should produce three queries: (1) a select with innerJoin between invoices and users on created_by, filtered by eq(invoices.orgId, 5) and eq(invoices.status, 'overdue'), ordered by asc(invoices.dueDate), selecting specific columns including creator name/email. (2) A raw sql query or select with sql<number> aggregations using count(), sum with CASE/FILTER for paid vs outstanding amounts, grouped by status, filtered by org_id. (3) A db.transaction() block that inserts the invoice with .returning(), then updates organizations.lastInvoiceNumber using sql`last_invoice_number + 1`, with proper error handling and tx.rollback().",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "I need to set up Drizzle migrations for my invoices SaaS. I'm using NeonDB as the database. Walk me through: the drizzle.config.ts pointing at my schema in src/db/schema/, the connection setup using @neondatabase/serverless with the Pool adapter for transactions, and the workflow for generating and applying migrations. My DATABASE_URL is in .env.",
+      "expected_output": "Should produce a drizzle.config.ts using defineConfig with dialect 'postgresql', schema pointing to './src/db/schema/index.ts', out to './drizzle', and dbCredentials.url from process.env.DATABASE_URL. Should show the db client setup importing Pool from @neondatabase/serverless and drizzle from drizzle-orm/neon-serverless, creating the pool and exporting the db instance with the schema object. Should include the migration commands: 'bunx drizzle-kit generate' to create SQL migration files, 'bunx drizzle-kit migrate' to apply them, and 'bunx drizzle-kit push' for rapid dev iteration. Should mention the schema/index.ts barrel file re-exporting all table definitions.",
+      "files": []
+    }
+  ]
+}

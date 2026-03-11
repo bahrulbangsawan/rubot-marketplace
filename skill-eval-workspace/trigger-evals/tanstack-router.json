@@ -1,0 +1,82 @@
+[
+  {
+    "query": "set up file-based routing for my TanStack Start app — I need routes for /, /about, /dashboard, and /dashboard/settings",
+    "should_trigger": true
+  },
+  {
+    "query": "add a beforeLoad guard on /_auth that redirects unauthenticated users to /login with a redirect search param",
+    "should_trigger": true
+  },
+  {
+    "query": "create a route at /posts/$postId that loads data via a loader and shows a notFoundComponent when the post doesn't exist",
+    "should_trigger": true
+  },
+  {
+    "query": "my routeTree.gen.ts is stale and the new /settings route isn't being recognized — how do I regenerate it?",
+    "should_trigger": true
+  },
+  {
+    "query": "add validated search params to /bookings with page (number, default 1), status (enum), and sort (enum) using Zod",
+    "should_trigger": true
+  },
+  {
+    "query": "implement a layout route at /_dashboard.tsx with a sidebar and Outlet, then nest /overview and /analytics under it",
+    "should_trigger": true
+  },
+  {
+    "query": "create a catch-all $.tsx route that renders a custom 404 page with a 'Go home' link",
+    "should_trigger": true
+  },
+  {
+    "query": "split the admin panel into admin.tsx (with beforeLoad auth check) and admin.lazy.tsx (with the component) for code splitting",
+    "should_trigger": true
+  },
+  {
+    "query": "I'm getting a hydration mismatch because my route loader accesses window.localStorage — how do I fix this in TanStack Router?",
+    "should_trigger": true
+  },
+  {
+    "query": "set up createRootRouteWithContext to pass queryClient and user auth state through the router context",
+    "should_trigger": true
+  },
+  {
+    "query": "add a useQuery hook that fetches /api/users and caches the result for 5 minutes with staleTime",
+    "should_trigger": false
+  },
+  {
+    "query": "implement a useMutation for creating a new booking with optimistic update and cache invalidation",
+    "should_trigger": false
+  },
+  {
+    "query": "configure React Router v6 with createBrowserRouter and nested route objects",
+    "should_trigger": false
+  },
+  {
+    "query": "add a redirect from /old-blog/:slug to /blog/:slug in my nginx config",
+    "should_trigger": false
+  },
+  {
+    "query": "write a pgTable schema for the routes table with columns id, path, and component_name",
+    "should_trigger": false
+  },
+  {
+    "query": "set up Next.js app router with layout.tsx and page.tsx for the /dashboard route",
+    "should_trigger": false
+  },
+  {
+    "query": "implement URL state management using nuqs for the search filters on the products page",
+    "should_trigger": false
+  },
+  {
+    "query": "navigate the headless browser to http://localhost:3000/settings and take a screenshot",
+    "should_trigger": false
+  },
+  {
+    "query": "fix the responsive breakpoint on the navigation bar — the hamburger menu doesn't show below md",
+    "should_trigger": false
+  },
+  {
+    "query": "add the requirePermission middleware to the /admin tRPC procedure in the backend",
+    "should_trigger": false
+  }
+]

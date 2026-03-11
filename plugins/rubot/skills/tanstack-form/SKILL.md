@@ -1,8 +1,12 @@
 ---
 name: tanstack-form
+version: 1.1.0
 description: |
-  Implements TanStack Form for type-safe, headless form management in React applications. Use when building forms with complex validation, async validation, dynamic fields, field arrays, or integrating with Zod schemas. Covers form state, field management, validation patterns, and shadcn/ui integration.
-version: 1.0.0
+  Implements TanStack Form (@tanstack/react-form) for type-safe, headless form management in React. ACTIVATE THIS SKILL when the user wants to: build forms with useForm, use form.Field with children render prop, add Zod validation via zodValidator adapter, create dynamic field arrays with pushValue/removeValue, build multi-step wizard forms with per-step validation, add async validation with onChangeAsyncDebounceMs, display field errors via field.state.meta.errors, disable submit with form.Subscribe watching form.state.canSubmit, convert manual useState-based forms to TanStack Form, wire forms to TanStack Query useMutation, fix field.handleChange not triggering re-renders, fix TypeScript errors on nested field names like 'address.city', fix double submission (missing e.preventDefault), or fix missing validatorAdapter: zodValidator().
+
+  Trigger on: "useForm", "form.Field", "zodValidator", "field.handleChange", "form.Subscribe", "field array", "multi-step form", "wizard form", "async validation on blur", "TanStack Form", "form state management", "form error display".
+
+  DO NOT trigger for: React Hook Form, Formik, Zod-only schemas, Typebox/Elysia validation, vanilla HTML forms, TanStack Table, or search bar debouncing.
 agents:
   - tanstack
   - shadcn-ui-designer
@@ -10,45 +14,42 @@ agents:
 
 # TanStack Form Skill
 
-This skill provides comprehensive guidance for implementing TanStack Form for type-safe, performant form management with headless architecture and deep validation integration.
+> Type-safe, headless form management with granular reactivity and deep validation integration
 
-## Documentation Verification (MANDATORY)
+## When to Use
 
-Before implementing any form pattern from this skill:
-
-1. **Use Context7 MCP** to verify current TanStack Form API:
-   - `mcp__context7__resolve-library-id` with libraryName: "tanstack-form"
-   - `mcp__context7__query-docs` for specific patterns (validation, field arrays)
-
-2. **Use Exa MCP** for latest integration patterns:
-   - `mcp__exa__web_search_exa` for "TanStack Form Zod validation 2024"
-   - `mcp__exa__get_code_context_exa` for shadcn/ui form examples
-
-3. **Use AskUserQuestion** when requirements are unclear:
-   - Validation requirements
-   - Form submission handling
-   - Dynamic field needs
+- Building any form that needs validation (login, registration, settings, checkout)
+- Implementing multi-step or wizard forms with per-step validation
+- Managing dynamic form fields or field arrays (add/remove items)
+- Integrating Zod schemas for compile-time safe form validation
+- Handling async validation (e.g., checking email uniqueness on blur)
+- Building forms with complex state (dirty tracking, touched fields, submission status)
+- Connecting forms to TanStack Query mutations for API submission
+- Replacing manual useState-based form management with a structured approach
 
 ## Quick Reference
 
-### Core Concepts
-
 | Concept | Description |
 |---------|-------------|
-| **Form** | Top-level form state container |
-| **Field** | Individual input state and validation |
-| **FieldApi** | Programmatic access to field state |
-| **Validator** | Sync/async validation adapters |
-| **Field Array** | Dynamic list of fields |
-| **Form State** | Centralized state (values, errors, touched) |
+| **useForm** | Hook that creates a form instance with typed state and submission |
+| **form.Field** | Render-prop component binding a single field to form state |
+| **FieldApi** | Programmatic access to field value, errors, and meta |
+| **Validator Adapter** | Bridges external schemas (Zod, Valibot) to TanStack Form |
+| **Field Array** | Dynamic list of fields with push, remove, and swap operations |
+| **form.Subscribe** | Subscribes to specific form state slices for conditional rendering |
+| **form.state** | Centralized state object (values, errors, isSubmitting, isDirty) |
 
-### Key Principles
+## Core Principles
 
-1. **Headless**: No UI opinions, works with any component library
-2. **Type-Safe**: Full TypeScript inference for form values
-3. **Granular Subscriptions**: Only re-render what changed
-4. **Validation Adapters**: Zod, Valibot, Yup, ArkType support
-5. **Framework Agnostic**: Core logic shared across React, Vue, etc.
+1. **Headless Form Management over Controlled Inputs** -- TanStack Form separates form logic from UI rendering, so you can pair it with any component library (shadcn/ui, Radix, custom). This avoids coupling validation and state to specific input components, making forms portable and testable.
+
+2. **Field-Level Validation Improves UX** -- Validating each field independently (onChange, onBlur) gives users immediate feedback without waiting for form submission. This reduces form abandonment and makes errors discoverable at the moment the user can fix them.
+
+3. **Zod Integration Provides Compile-Time Safety** -- Using `zodValidator()` as the adapter means your runtime validation schema and your TypeScript types stay in sync. Schema changes that break field contracts surface as type errors during development, not as silent bugs in production.
+
+4. **Granular Subscriptions Prevent Wasted Renders** -- Each `form.Field` only re-renders when its own state changes, not when any field in the form changes. This keeps large forms performant without manual memoization.
+
+5. **Single Source of Truth for Form State** -- All values, errors, touched status, and submission state live inside `useForm`. No parallel `useState` calls means no sync bugs and a predictable data flow.
 
 ## Implementation Guides
 
@@ -59,9 +60,9 @@ For detailed implementation, see:
 - [PATTERNS.md](PATTERNS.md) - Field arrays, dynamic fields, nested forms
 - [INTEGRATION.md](INTEGRATION.md) - React, Query, shadcn/ui integration
 
-## Quick Start Patterns
+## Quick Start
 
-### 1. Basic Form Setup
+A minimal form using `useForm` with typed fields and submit handling:
 
 ```typescript
 import { useForm } from '@tanstack/react-form';
@@ -73,12 +74,8 @@ interface LoginForm {
 
 function LoginPage() {
   const form = useForm<LoginForm>({
-    defaultValues: {
-      email: '',
-      password: '',
-    },
+    defaultValues: { email: '', password: '' },
     onSubmit: async ({ value }) => {
-      // Handle form submission
       await loginUser(value);
     },
   });
@@ -136,427 +133,63 @@ function LoginPage() {
 }
 ```
 
-### 2. Form with Zod Validation
+## Common Patterns
+
+### Zod Validation
+
+Attach `zodValidator()` as the adapter and pass Zod schemas at form or field level. Supports sync onChange/onBlur and async validation with debounce. For detailed examples including async email checks, password validation, and cross-field validation, see [VALIDATION.md](VALIDATION.md).
 
 ```typescript
-import { useForm } from '@tanstack/react-form';
 import { zodValidator } from '@tanstack/zod-form-adapter';
 import { z } from 'zod';
 
-const userSchema = z.object({
-  name: z.string().min(2, 'Name must be at least 2 characters'),
-  email: z.string().email('Invalid email address'),
-  age: z.number().min(18, 'Must be 18 or older'),
+const form = useForm<UserForm>({
+  defaultValues: { name: '', email: '' },
+  validatorAdapter: zodValidator(),
+  validators: { onSubmit: userSchema },
+  onSubmit: async ({ value }) => { /* ... */ },
 });
 
-type UserForm = z.infer<typeof userSchema>;
-
-function CreateUserForm() {
-  const form = useForm<UserForm>({
-    defaultValues: {
-      name: '',
-      email: '',
-      age: 0,
-    },
-    validatorAdapter: zodValidator(),
-    validators: {
-      // Form-level validation on submit
-      onSubmit: userSchema,
-    },
-    onSubmit: async ({ value }) => {
-      await createUser(value);
-    },
-  });
-
-  return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        form.handleSubmit();
-      }}
-    >
-      <form.Field
-        name="name"
-        validators={{
-          onChange: z.string().min(2, 'Name must be at least 2 characters'),
-        }}
-        children={(field) => (
-          <div>
-            <Label>Name</Label>
-            <Input
-              value={field.state.value}
-              onChange={(e) => field.handleChange(e.target.value)}
-              onBlur={field.handleBlur}
-            />
-            <FieldError field={field} />
-          </div>
-        )}
-      />
-
-      <form.Field
-        name="email"
-        validators={{
-          onChange: z.string().email('Invalid email'),
-          onChangeAsyncDebounceMs: 500,
-          onChangeAsync: async ({ value }) => {
-            // Async validation - check if email exists
-            const exists = await checkEmailExists(value);
-            if (exists) return 'Email already registered';
-            return undefined;
-          },
-        }}
-        children={(field) => (
-          <div>
-            <Label>Email</Label>
-            <Input
-              type="email"
-              value={field.state.value}
-              onChange={(e) => field.handleChange(e.target.value)}
-              onBlur={field.handleBlur}
-            />
-            <FieldError field={field} />
-            {field.state.meta.isValidating && (
-              <span className="text-muted-foreground text-sm">
-                Checking availability...
-              </span>
-            )}
-          </div>
-        )}
-      />
-
-      <form.Field
-        name="age"
-        validators={{
-          onChange: z.number().min(18, 'Must be 18 or older'),
-        }}
-        children={(field) => (
-          <div>
-            <Label>Age</Label>
-            <Input
-              type="number"
-              value={field.state.value}
-              onChange={(e) => field.handleChange(Number(e.target.value))}
-              onBlur={field.handleBlur}
-            />
-            <FieldError field={field} />
-          </div>
-        )}
-      />
-
-      <form.Subscribe
-        selector={(state) => [state.canSubmit, state.isSubmitting]}
-        children={([canSubmit, isSubmitting]) => (
-          <Button type="submit" disabled={!canSubmit || isSubmitting}>
-            {isSubmitting ? 'Creating...' : 'Create User'}
-          </Button>
-        )}
-      />
-    </form>
-  );
-}
-
-// Reusable error display component
-function FieldError({ field }: { field: FieldApi<any, any, any, any> }) {
-  return field.state.meta.errors.length > 0 ? (
-    <p className="text-destructive text-sm mt-1">
-      {field.state.meta.errors.join(', ')}
-    </p>
-  ) : null;
-}
-```
-
-### 3. Field Arrays (Dynamic Fields)
-
-```typescript
-import { useForm } from '@tanstack/react-form';
-
-interface TeamForm {
-  teamName: string;
-  members: Array<{ name: string; role: string }>;
-}
-
-function TeamForm() {
-  const form = useForm<TeamForm>({
-    defaultValues: {
-      teamName: '',
-      members: [{ name: '', role: '' }],
-    },
-    onSubmit: async ({ value }) => {
-      await createTeam(value);
-    },
-  });
-
-  return (
-    <form onSubmit={(e) => { e.preventDefault(); form.handleSubmit(); }}>
-      <form.Field
-        name="teamName"
-        children={(field) => (
-          <div>
-            <Label>Team Name</Label>
-            <Input
-              value={field.state.value}
-              onChange={(e) => field.handleChange(e.target.value)}
-            />
-          </div>
-        )}
-      />
-
-      <form.Field
-        name="members"
-        mode="array"
-        children={(field) => (
-          <div className="space-y-4">
-            <Label>Team Members</Label>
-
-            {field.state.value.map((_, index) => (
-              <div key={index} className="flex gap-2">
-                <form.Field
-                  name={`members[${index}].name`}
-                  children={(subField) => (
-                    <Input
-                      placeholder="Name"
-                      value={subField.state.value}
-                      onChange={(e) => subField.handleChange(e.target.value)}
-                    />
-                  )}
-                />
-
-                <form.Field
-                  name={`members[${index}].role`}
-                  children={(subField) => (
-                    <Input
-                      placeholder="Role"
-                      value={subField.state.value}
-                      onChange={(e) => subField.handleChange(e.target.value)}
-                    />
-                  )}
-                />
-
-                <Button
-                  type="button"
-                  variant="destructive"
-                  onClick={() => field.removeValue(index)}
-                >
-                  Remove
-                </Button>
-              </div>
-            ))}
-
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => field.pushValue({ name: '', role: '' })}
-            >
-              Add Member
-            </Button>
-          </div>
-        )}
-      />
-
-      <Button type="submit">Create Team</Button>
-    </form>
-  );
-}
-```
-
-### 4. Form with TanStack Query Mutation
-
-```typescript
-import { useForm } from '@tanstack/react-form';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { zodValidator } from '@tanstack/zod-form-adapter';
-
-const productSchema = z.object({
-  name: z.string().min(1, 'Name is required'),
-  price: z.number().positive('Price must be positive'),
-  description: z.string().optional(),
-});
-
-type ProductForm = z.infer<typeof productSchema>;
-
-function CreateProductForm({ onSuccess }: { onSuccess?: () => void }) {
-  const queryClient = useQueryClient();
-
-  const createMutation = useMutation({
-    mutationFn: (data: ProductForm) =>
-      fetch('/api/products', {
-        method: 'POST',
-        body: JSON.stringify(data),
-      }).then((r) => r.json()),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['products'] });
-      onSuccess?.();
-    },
-  });
-
-  const form = useForm<ProductForm>({
-    defaultValues: {
-      name: '',
-      price: 0,
-      description: '',
-    },
-    validatorAdapter: zodValidator(),
-    validators: {
-      onSubmit: productSchema,
-    },
-    onSubmit: async ({ value }) => {
-      await createMutation.mutateAsync(value);
-    },
-  });
-
-  return (
-    <form onSubmit={(e) => { e.preventDefault(); form.handleSubmit(); }}>
-      <form.Field
-        name="name"
-        children={(field) => (
-          <div>
-            <Label>Product Name</Label>
-            <Input
-              value={field.state.value}
-              onChange={(e) => field.handleChange(e.target.value)}
-            />
-            <FieldError field={field} />
-          </div>
-        )}
-      />
-
-      <form.Field
-        name="price"
-        children={(field) => (
-          <div>
-            <Label>Price</Label>
-            <Input
-              type="number"
-              step="0.01"
-              value={field.state.value}
-              onChange={(e) => field.handleChange(Number(e.target.value))}
-            />
-            <FieldError field={field} />
-          </div>
-        )}
-      />
-
-      <form.Field
-        name="description"
-        children={(field) => (
-          <div>
-            <Label>Description</Label>
-            <Textarea
-              value={field.state.value}
-              onChange={(e) => field.handleChange(e.target.value)}
-            />
-          </div>
-        )}
-      />
-
-      {createMutation.isError && (
-        <Alert variant="destructive">
-          <AlertDescription>
-            {createMutation.error.message}
-          </AlertDescription>
-        </Alert>
-      )}
-
-      <form.Subscribe
-        selector={(state) => [state.canSubmit, state.isSubmitting]}
-        children={([canSubmit, isSubmitting]) => (
-          <Button type="submit" disabled={!canSubmit || isSubmitting}>
-            {isSubmitting ? 'Creating...' : 'Create Product'}
-          </Button>
-        )}
-      />
-    </form>
-  );
-}
-```
-
-### 5. Edit Form with Initial Data
-
-```typescript
-import { useForm } from '@tanstack/react-form';
-import { useQuery, useMutation } from '@tanstack/react-query';
-
-function EditUserForm({ userId }: { userId: string }) {
-  // Fetch existing data
-  const { data: user, isLoading } = useQuery({
-    queryKey: ['users', userId],
-    queryFn: () => fetchUser(userId),
-  });
-
-  const updateMutation = useMutation({
-    mutationFn: (data: UserForm) => updateUser(userId, data),
-  });
-
-  const form = useForm<UserForm>({
-    defaultValues: {
-      name: user?.name ?? '',
-      email: user?.email ?? '',
-    },
-    onSubmit: async ({ value }) => {
-      await updateMutation.mutateAsync(value);
-    },
-  });
-
-  // Reset form when data loads
-  useEffect(() => {
-    if (user) {
-      form.reset({
-        name: user.name,
-        email: user.email,
-      });
-    }
-  }, [user]);
-
-  if (isLoading) return <FormSkeleton />;
-
-  return (
-    <form onSubmit={(e) => { e.preventDefault(); form.handleSubmit(); }}>
-      {/* Form fields */}
-    </form>
-  );
-}
-```
-
-## Form State Reference
-
-### Form State Properties
-
-```typescript
-const form = useForm({ /* ... */ });
-
-// Access form state
-form.state.values;        // Current form values
-form.state.errors;        // Form-level errors
-form.state.isValid;       // No errors present
-form.state.isValidating;  // Async validation in progress
-form.state.isSubmitting;  // Submit in progress
-form.state.isSubmitted;   // Form was submitted
-form.state.canSubmit;     // Valid and not submitting
-form.state.isDirty;       // Values changed from defaults
-form.state.isTouched;     // Any field was touched
-```
-
-### Field State Properties
-
-```typescript
+// Field-level validation
 <form.Field
-  name="email"
-  children={(field) => {
-    // Access field state
-    field.state.value;           // Current value
-    field.state.meta.errors;     // Field errors array
-    field.state.meta.isTouched;  // Field was blurred
-    field.state.meta.isDirty;    // Value changed
-    field.state.meta.isValidating; // Async validation running
-
-    // Field methods
-    field.handleChange(value);   // Update value
-    field.handleBlur();          // Mark as touched
-    field.setValue(value);       // Set value programmatically
-    field.validate();            // Trigger validation
-  }}
+  name="name"
+  validators={{ onChange: z.string().min(2, 'Too short') }}
+  children={(field) => (/* ... */)}
 />
 ```
+
+### Field Arrays
+
+Use `mode="array"` on a field to manage dynamic lists with `pushValue()`, `removeValue()`, and index-based sub-fields. For complete examples including validated arrays, reorderable lists, and computed totals, see [PATTERNS.md](PATTERNS.md).
+
+### TanStack Query Integration
+
+Combine `useForm` with `useMutation` for create/update flows and `useQuery` for edit forms with initial data loading. Invalidate query cache on success. For full mutation, edit form, and async validation examples, see [INTEGRATION.md](INTEGRATION.md).
+
+### Multi-Step and Dynamic Forms
+
+Build wizard forms with per-step Zod schema validation, conditional field rendering via `form.Subscribe`, and dynamic field generation from config objects. For complete multi-step, accordion, and dynamic field examples, see [PATTERNS.md](PATTERNS.md).
+
+## Form State Quick Reference
+
+```typescript
+// Form state
+form.state.values        // Current form values
+form.state.canSubmit      // Valid and not submitting
+form.state.isSubmitting   // Submit in progress
+form.state.isDirty        // Values changed from defaults
+form.state.errors         // Form-level errors
+
+// Field state (inside field.children callback)
+field.state.value              // Current value
+field.state.meta.errors        // Validation errors array
+field.state.meta.isTouched     // Field was blurred
+field.state.meta.isValidating  // Async validation running
+field.handleChange(value)      // Update value
+field.handleBlur()             // Mark as touched
+```
+
+For complete form state properties, field methods, form options, input type patterns, nested fields, conditional fields, and error handling, see [FUNDAMENTALS.md](FUNDAMENTALS.md).
 
 ## Integration with Rubot Agents
 
@@ -581,31 +214,52 @@ form.state.isTouched;     // Any field was touched
 "Form with data loading" → tanstack, backend-master
 ```
 
+## Troubleshooting
+
+| Problem | Cause | Solution |
+|---------|-------|----------|
+| Form not re-rendering on field change | Field subscription not set up | Ensure you use `form.Field` with the `children` render prop; do not read `form.state.values` directly in the parent component |
+| Zod errors not showing on fields | Validator adapter missing or misconfigured | Pass `validatorAdapter: zodValidator()` to `useForm` and import from `@tanstack/zod-form-adapter` |
+| Field array resets when adding items | Missing or duplicate key prop on mapped items | Use a stable key (e.g., field index or unique ID) on each rendered array item; avoid using `Math.random()` |
+| Async validation fires too often | No debounce configured | Add `asyncDebounceMs` to the field's `validators` config (e.g., `validators: { onChangeAsync: schema, onChangeAsyncDebounceMs: 500 }`) |
+| Submit handler not called | Missing `e.preventDefault()` on form element | Always call `e.preventDefault()` and `e.stopPropagation()` in the native `onSubmit` before `form.handleSubmit()` |
+| TypeScript errors on field names | Form type not inferred correctly | Pass an explicit generic to `useForm<MyFormType>()` and ensure `defaultValues` matches the type |
+| Stale values after programmatic reset | Using cached reference to old form state | Call `form.reset()` and let the render cycle update; do not cache `form.state.values` in a variable |
+| Validation runs but field shows no error | Displaying errors in wrong location | Read errors from `field.state.meta.errors` inside the `form.Field` children callback, not from a parent component |
+| Form values lost on component remount | Form instance recreated on each mount | Define `useForm` at the appropriate component level; avoid creating forms inside conditionally rendered branches |
+
 ## Constraints
 
-- **No uncontrolled inputs** - Always use field.state.value
-- **No manual state** - Don't use useState for form values
-- **Type inference** - Define form type for type safety
-- **Validation adapters** - Use zodValidator() for Zod schemas
-- **Headless design** - Form provides logic, shadcn/ui provides UI
-
-## Anti-Patterns to Avoid
-
-| Anti-Pattern | Problem | Correct Approach |
-|--------------|---------|------------------|
-| `useState` for form | Duplicate state, sync issues | Use `useForm` |
-| Manual validation | Type-unsafe, verbose | Use Zod adapter |
-| Inline onChange | No touched/dirty tracking | Use `field.handleChange` |
-| Submit without prevent | Page reload | `e.preventDefault()` |
-| No error display | Poor UX | Show `field.state.meta.errors` |
+- **No uncontrolled inputs** -- Always bind `value` to `field.state.value` and changes to `field.handleChange`
+- **No manual useState for form data** -- All form values must live inside `useForm`; parallel state causes sync bugs
+- **Always use validator adapter** -- Pass `zodValidator()` to `useForm` when using Zod schemas; raw Zod `.parse()` calls bypass form error propagation
+- **Headless architecture** -- TanStack Form provides logic only; pair with shadcn/ui or another component library for rendering
+- **Type your forms** -- Always provide a TypeScript interface to `useForm<T>()` for full inference across fields
+- **Prevent default on submit** -- Native form `onSubmit` must call `e.preventDefault()` before `form.handleSubmit()`
+- **Never mutate field state directly** -- Use `field.handleChange()`, `field.handleBlur()`, and `form.reset()` instead of direct assignment
 
 ## Verification Checklist
 
-- [ ] Form uses `useForm` hook
-- [ ] All fields use `form.Field` component
-- [ ] Validation uses Zod adapter
-- [ ] Submit button shows loading state
-- [ ] Errors display below fields
-- [ ] Form resets on successful submit (if needed)
-- [ ] Async validation has debounce
-- [ ] No useState for form values
+- [ ] Form uses `useForm` hook with explicit type parameter
+- [ ] All fields use `form.Field` component with `children` render prop
+- [ ] Validation uses `zodValidator()` adapter with Zod schemas
+- [ ] `e.preventDefault()` and `e.stopPropagation()` called in form `onSubmit`
+- [ ] Submit button shows loading state via `form.state.isSubmitting`
+- [ ] Validation errors display below each field from `field.state.meta.errors`
+- [ ] Async validators include `asyncDebounceMs` to prevent excessive requests
+- [ ] No `useState` calls used for form field values
+- [ ] Field arrays use stable keys on mapped items
+- [ ] Form resets on successful submit when appropriate (`form.reset()`)
+- [ ] Multi-step forms validate per-step before advancing
+
+## References
+
+- [TanStack Form Documentation](https://tanstack.com/form/latest)
+- [TanStack Zod Form Adapter](https://tanstack.com/form/latest/docs/framework/react/guides/validation#adapter-based-validation-zod-yup-valibot)
+- [Zod Documentation](https://zod.dev)
+- [FUNDAMENTALS.md](FUNDAMENTALS.md) -- Form setup and field management
+- [VALIDATION.md](VALIDATION.md) -- Sync/async validation and Zod integration
+- [PATTERNS.md](PATTERNS.md) -- Field arrays, dynamic fields, multi-step forms
+- [INTEGRATION.md](INTEGRATION.md) -- React, TanStack Query, shadcn/ui integration
+- [TanStack Form Examples](https://tanstack.com/form/latest/docs/framework/react/examples/simple)
+- [shadcn/ui Form Components](https://ui.shadcn.com/docs/components/form)

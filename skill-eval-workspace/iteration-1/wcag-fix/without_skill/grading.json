@@ -1,0 +1,32 @@
+{
+  "skill": "wcag-fix",
+  "configuration": "without_skill",
+  "expectations": [
+    {
+      "text": "Response adds role=dialog and aria-modal=true",
+      "passed": true,
+      "evidence": "Code uses role=\"alertdialog\" and aria-modal=\"true\" on the dialog div element"
+    },
+    {
+      "text": "Response implements focus trapping within the modal",
+      "passed": true,
+      "evidence": "A useEffect sets up a keydown listener for Tab key, queries focusable elements inside dialogRef, and cycles focus between first and last elements on Tab/Shift+Tab with e.preventDefault()"
+    },
+    {
+      "text": "Response adds Escape key handler to close",
+      "passed": true,
+      "evidence": "A separate useEffect adds a keydown listener: if (e.key === 'Escape') { onCancel(); }"
+    },
+    {
+      "text": "Response saves and restores focus to triggering element",
+      "passed": true,
+      "evidence": "useEffect saves: previousFocusRef.current = document.activeElement as HTMLElement when open=true, and restores: previousFocusRef.current.focus() when open becomes false"
+    },
+    {
+      "text": "Response uses role=alertdialog for destructive action",
+      "passed": true,
+      "evidence": "Code uses role=\"alertdialog\" with explanation: 'role=\"alertdialog\" and aria-modal=\"true\" -- tells screen readers this is a modal dialog that requires user action'"
+    }
+  ],
+  "pass_rate": 1.0
+}

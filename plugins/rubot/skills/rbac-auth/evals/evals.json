@@ -1,0 +1,23 @@
+{
+  "skill_name": "rbac-auth",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I'm building a booking management app for a coworking space. I need RBAC with three roles: admin (full access), staff (can manage bookings and view members), and member (can only create and view their own bookings). The resources are bookings, members, rooms, and billing. Can you set up the permissions map, role definitions, and the Drizzle schema for the roles/permissions tables?",
+      "expected_output": "Should generate a centralized PERMISSIONS constant using resource:action pattern (e.g., 'booking:read', 'booking:create', 'room:update', 'billing:manage'), a ROLES object mapping admin/staff/member to their respective permission arrays following least-privilege, and Drizzle pgTable schemas for roles, permissions, user_roles, and role_permissions junction tables with proper foreign keys and indexes.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "I already have the RBAC permissions set up for my coworking app. Now I need to protect my tRPC router endpoints. The bookingRouter has list, create, update, and cancel procedures. Staff should be able to do all four, but members can only list and create. Admin can do everything plus a generateReport procedure. Show me the requirePermission middleware and how to wire it into the router.",
+      "expected_output": "Should produce a reusable requirePermission tRPC middleware that extracts user roles from ctx.session, calls hasPermission to check against the required permission, and throws TRPCError with UNAUTHORIZED for missing sessions and FORBIDDEN for missing permissions. The bookingRouter should chain .use(requirePermission('booking:read')) on list, 'booking:create' on create, 'booking:update' on update, 'booking:delete' on cancel, and 'report:generate' on generateReport. Should also show a protectedProcedure base that ensures authentication before permission checks.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "I need a role management page for the admin panel of my coworking space app. It should show a table of all roles (admin, staff, member) with columns for each permission group (Bookings, Members, Rooms, Billing). Each cell has toggle switches for read/create/update/delete. When an admin flips a toggle it should update the role's permissions via a tRPC mutation. Use shadcn/ui components and the RequirePermission wrapper so only admins can see this page.",
+      "expected_output": "Should generate a React component wrapped in RequirePermission with permission='admin:access'. The page should use a TanStack Table or grid layout showing roles as rows and permission groups as columns. Each cell renders shadcn Switch components bound to the role's current permissions. Toggling a switch calls a tRPC mutation like roleRouter.updatePermissions with the role name and updated permission array. Should include optimistic updates via TanStack Query's useMutation with onMutate/onSettled, and a useRequirePermission hook at the route level to redirect non-admins to /unauthorized.",
+      "files": []
+    }
+  ]
+}

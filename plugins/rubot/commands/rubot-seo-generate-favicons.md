@@ -1,6 +1,14 @@
 ---
 name: rubot-seo-generate-favicons
-description: Set up favicon structure and meta tags for the project
+description: Set up complete favicon structure and meta tags for the project. Use when adding favicons, creating Apple touch icons, setting up Android chrome icons, generating site.webmanifest, configuring browserconfig.xml, or when the browser tab shows no icon.
+allowed-tools:
+  - Write
+  - Edit
+  - AskUserQuestion
+  - Glob
+  - Grep
+  - Read
+  - Bash
 ---
 
 # SEO Generate Favicons Command
@@ -269,7 +277,7 @@ Save as `public/favicon.svg`
 ### Testing Checklist
 
 - [ ] Browser tab shows favicon
-- [ ] Chrome DevTools > Application > Manifest works
+- [ ] Browser DevTools > Application > Manifest works
 - [ ] iOS "Add to Home Screen" shows icon
 - [ ] Android "Add to Home Screen" shows icon
 - [ ] Windows tile displays correctly

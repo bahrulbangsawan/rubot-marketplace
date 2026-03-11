@@ -1,0 +1,37 @@
+{
+  "skill": "crawl-config",
+  "configuration": "without_skill",
+  "expectations": [
+    {
+      "text": "Response creates a TanStack Start API route for robots.txt",
+      "passed": true,
+      "evidence": "Code creates src/routes/robots.txt.ts using createAPIFileRoute('/robots.txt') with a GET handler that returns a Response with text/plain content type"
+    },
+    {
+      "text": "Response blocks /app/, /api/, /auth/, /admin/ for default user-agent",
+      "passed": true,
+      "evidence": "Production rules include: User-agent: *\nAllow: /\nDisallow: /app/\nDisallow: /api/\nDisallow: /auth/\nDisallow: /admin/"
+    },
+    {
+      "text": "Response allows GPTBot/ClaudeBot for /blog/ and /docs/ only",
+      "passed": true,
+      "evidence": "Production rules include sections for GPTBot and ClaudeBot each with Allow: /blog/, Allow: /docs/, Disallow: /"
+    },
+    {
+      "text": "Response blocks AhrefsBot and SemrushBot entirely",
+      "passed": true,
+      "evidence": "Production rules include: User-agent: AhrefsBot\nDisallow: / and User-agent: SemrushBot\nDisallow: /"
+    },
+    {
+      "text": "Response switches behavior based on environment (staging vs production)",
+      "passed": true,
+      "evidence": "Code checks isStaging (hostname or APP_ENV) and isProduction (NODE_ENV && !isStaging). Non-production returns 'User-agent: *\nDisallow: /' while production returns full rules"
+    },
+    {
+      "text": "Response includes Sitemap directive",
+      "passed": true,
+      "evidence": "Production rules include: Sitemap: https://appflow.io/sitemap.xml"
+    }
+  ],
+  "pass_rate": 1.0
+}

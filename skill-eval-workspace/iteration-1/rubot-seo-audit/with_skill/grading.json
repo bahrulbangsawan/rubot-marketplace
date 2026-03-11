@@ -1,0 +1,32 @@
+{
+  "skill": "rubot-seo-audit",
+  "configuration": "with_skill",
+  "expectations": [
+    {
+      "text": "Response covers technical SEO checks (robots.txt, sitemap, HTTPS)",
+      "passed": true,
+      "evidence": "Step 1 'Technical SEO' (30% weight) includes detailed table with checks for robots.txt, sitemap.xml, HTTPS enforcement, mobile viewport, canonical URL, and page language. Also flags noindex as a red flag to check immediately."
+    },
+    {
+      "text": "Response analyzes on-page SEO (title, meta description, headings)",
+      "passed": true,
+      "evidence": "Step 2 'On-Page SEO' (30% weight) covers title tag (30-60 chars), meta description (120-160 chars), H1 count (exactly 1), heading hierarchy, image alt text, internal links, and content length (300+ words)."
+    },
+    {
+      "text": "Response checks structured data / JSON-LD",
+      "passed": true,
+      "evidence": "Step 3 'Structured Data' (15% weight) checks for JSON-LD presence, schema type validity, required properties per type, and JSON validity. Mentions Product, Offer, SoftwareApplication, and WebPage types."
+    },
+    {
+      "text": "Response evaluates Core Web Vitals (LCP, INP, CLS)",
+      "passed": true,
+      "evidence": "Step 5 'Core Web Vitals' (15% weight) covers LCP (<2.5s), INP (<200ms), and CLS (<0.1) with specific concerns about hero video impact. Includes video-specific checks for poster attribute, dimensions, lazy loading, and CDN."
+    },
+    {
+      "text": "Response provides prioritized recommendations",
+      "passed": true,
+      "evidence": "Section 'Most Likely Causes of the Traffic Drop' provides 6 issues ranked P0-P2 by probability. Output section mentions prioritized recommendations grouped by P0 (Critical) through P3 (Low). Uses a severity matrix throughout."
+    }
+  ],
+  "pass_rate": 1.0
+}

@@ -1,0 +1,27 @@
+{
+  "skill": "react-grab",
+  "configuration": "without_skill",
+  "expectations": [
+    {
+      "text": "Response installs react-grab as dev dependency",
+      "passed": true,
+      "evidence": "Shows 'npm install -D react-grab' command and notes 'Installing as a dev dependency keeps it out of your production dependency manifest.'"
+    },
+    {
+      "text": "Response uses import.meta.env.DEV for Vite dev-only check",
+      "passed": true,
+      "evidence": "Both Option A (index.html) and Option B (src/main.tsx) use 'if (import.meta.env.DEV) { import(\"react-grab\"); }'. Explains 'Vite replaces import.meta.env.DEV with a boolean at build time.'"
+    },
+    {
+      "text": "Response adds script in index.html before </head>",
+      "passed": true,
+      "evidence": "Option A shows 'Add a script tag in your index.html before </head>' with the script block containing import.meta.env.DEV guard."
+    },
+    {
+      "text": "Response confirms react-grab is excluded from production builds",
+      "passed": true,
+      "evidence": "Section 4 'Confirm it is excluded from production' instructs to run 'npm run build' and inspect dist/ to verify no references to react-grab are present. Explains Vite's build process eliminates it entirely."
+    }
+  ],
+  "pass_rate": 1.0
+}

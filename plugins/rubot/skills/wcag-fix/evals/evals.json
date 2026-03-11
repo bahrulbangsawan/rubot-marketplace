@@ -1,0 +1,23 @@
+{
+  "skill_name": "wcag-fix",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "we have a custom modal component at src/components/confirm-dialog.tsx that just uses a div with z-50 and a backdrop, no accessibility at all. need to make it properly accessible with focus trap, escape to close, screen reader announcements, the whole deal. it gets triggered from a delete button on our data table rows",
+      "expected_output": "Adds role=dialog and aria-modal=true to the dialog container. Adds aria-labelledby pointing to the dialog title and aria-describedby pointing to the dialog description. Implements focus trapping that cycles Tab/Shift+Tab within the modal's focusable elements (close button, cancel button, confirm button). Saves document.activeElement before opening and restores focus to the triggering delete button on close. Adds Escape key handler to dismiss the dialog. Ensures the backdrop prevents interaction with content behind (inert attribute on the rest of the page or aria-hidden on siblings). Adds a visible close button with aria-label='Close dialog'. Ensures the first focusable element receives focus on open. All buttons have accessible names. The confirm/delete button clearly communicates the destructive action. Uses role=alertdialog if the action is destructive.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "our contact form at src/components/contact-form.tsx is a mess for accessibility, none of the inputs have labels (just placeholder text), theres no indication of which fields are required, and when validation fails it just turns the border red with no text explanation. need to fix all of this for WCAG AA",
+      "expected_output": "Adds visible label elements with htmlFor matching each input's id for every field (name, email, phone, message). Marks required fields with a visual asterisk (aria-hidden=true) plus sr-only text saying required, and adds aria-required=true to the inputs. Replaces color-only error indication (red border) with descriptive error text below each field using role=alert, connected to the input via aria-describedby. Adds aria-invalid=true on fields with errors. Adds an ErrorSummary component at the top of the form when submission fails, with role=alert, a heading counting the errors, and links to each invalid field. Adds autocomplete attributes (autocomplete=name, autocomplete=email, autocomplete=tel). Ensures all error messages describe what went wrong and how to fix it (e.g., 'Enter a valid email address like name@example.com' not just 'Invalid'). Preserves placeholder text as supplementary hints, not as the only label.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "I built a custom dropdown select component at src/components/language-picker.tsx for choosing a language, it works with mouse clicks but has zero keyboard support. need arrow key navigation, enter to select, escape to close, and it should work properly with screen readers. its basically a button that toggles a div with a list of options",
+      "expected_output": "Adds role=listbox to the options container and role=option to each option item. Adds aria-haspopup=listbox and aria-expanded (true/false) to the trigger button. Adds aria-activedescendant on the listbox pointing to the currently highlighted option's id. Implements keyboard handlers: Enter/Space to open the dropdown and select the highlighted option, Escape to close without selecting, ArrowDown/ArrowUp to move highlight between options (wrapping at edges), Home/End to jump to first/last option, and type-ahead character matching to jump to options starting with the typed letter. Manages focus so that when opened the first or previously selected option is highlighted, and when closed focus returns to the trigger button. Adds aria-selected=true on the currently selected option. Adds aria-label or aria-labelledby on the trigger button connecting it to a visible label. Uses focus-visible ring styles on the highlighted option for keyboard users. Ensures minimum 24x24px target size on each option.",
+      "files": []
+    }
+  ]
+}

@@ -1,23 +1,52 @@
 ---
 name: crawl-config
+version: 1.1.0
 description: |
-  Generate and configure crawl directives for search engines and AI crawlers. Use when setting up robots.txt, generating sitemap.xml from routes, configuring AI bot policies, or optimizing crawl budget.
-
-  Covers: robots.txt templates, sitemap.xml generation, AI crawler directives, TanStack Start API routes, and Cloudflare Workers integration.
+  Generate and configure robots.txt and sitemap.xml for search engines and AI crawlers. Use when setting up robots.txt rules (Disallow, Allow, Crawl-delay, Sitemap directive), generating sitemap.xml from routes (static, dynamic from database, with lastmod/changefreq/priority), creating sitemap index for large sites (50,000+ URLs), generating image sitemaps (image:loc, image:title, image:caption), configuring AI bot policies (GPTBot, ClaudeBot, CCBot, Google-Extended, AhrefsBot, SemrushBot), blocking aggressive scrapers, or setting up environment-specific crawl rules (staging Disallow: /). Also use when users mention "robots.txt", "sitemap.xml", "sitemap errors in Search Console", "pages not being indexed", "staging site showing in Google", "block AI scrapers", "allow Googlebot", "crawl budget", "Crawl-delay", "bot management", "duplicate URLs in sitemap", "sitemap 404 errors", "sub-sitemaps", "xhtml:link alternates in sitemap", "TanStack Start /robots.txt API route", or "Cloudflare Worker edge sitemap from KV". NOT for: noindex meta tags, Google Search Console setup, canonical URL tags, Cloudflare WAF bot blocking, JSON-LD structured data, SSR/prerendering for indexing, hreflang tags, server-side rate limiting, URL redirects/301s, or Open Graph meta tags.
+agents:
+  - seo-master
 ---
 
 # Crawl Configuration Skill
 
-> robots.txt and sitemap.xml generation
+> Complete robots.txt and sitemap.xml generation for search engines and AI crawlers
 
 ## When to Use
 
 Use this skill when:
-- Setting up robots.txt for a new site
-- Generating sitemap.xml from routes
-- Configuring crawl directives for AI bots
-- Managing indexing for different environments
-- Optimizing crawl budget
+- Setting up robots.txt for a new site or reconfiguring an existing one
+- Generating sitemap.xml from application routes (static or dynamic)
+- Configuring crawl directives for AI bots (GPTBot, ClaudeBot, Google-Extended)
+- Managing indexing for different environments (production, staging, development)
+- Optimizing crawl budget for large sites with many pages
+- Debugging why pages are not appearing in search engine results
+- Blocking unwanted scrapers or aggressive bots from consuming resources
+- Creating environment-aware crawl rules that differ between production and staging
+
+## Quick Reference
+
+| Concept | Purpose | Key File |
+|---------|---------|----------|
+| robots.txt | Tells crawlers what they can/cannot access | `/robots.txt` (site root) |
+| sitemap.xml | Lists all pages for search engine discovery | `/sitemap.xml` (site root) |
+| Sitemap Index | Splits large sitemaps into manageable chunks | `/sitemap-index.xml` |
+| Crawl-delay | Rate-limits bot requests (advisory) | Inside `robots.txt` |
+| AI Crawler Directives | Controls AI training bot access | Inside `robots.txt` |
+| Image Sitemap | Helps search engines discover images | Namespace extension in sitemap |
+
+## Core Principles
+
+### 1. robots.txt Controls Access and Crawl Budget
+**WHY:** Search engines have a limited crawl budget for each site. Every request spent on irrelevant pages (API endpoints, admin panels, auth flows) is a request NOT spent on your important content. A well-structured robots.txt ensures crawlers focus on pages that matter for indexing and ranking, while keeping private sections out of search results.
+
+### 2. AI Crawler Management Is a Strategic Decision
+**WHY:** AI crawlers (GPTBot, ClaudeBot, CCBot, Google-Extended) use your content for model training. Allowing or blocking them is a business decision about content licensing, competitive advantage, and training data contribution. There is no universal right answer -- each site must decide based on whether the visibility/traffic benefits outweigh the content usage implications.
+
+### 3. Sitemap Structure Directly Affects Page Discovery
+**WHY:** Without a sitemap, search engines rely solely on link-following to discover pages. Orphan pages (those with no internal links) will never be found. A comprehensive sitemap with accurate `lastmod` dates and logical priority signals tells crawlers exactly what exists, what changed recently, and what matters most -- dramatically improving discovery speed for new and updated content.
+
+### 4. Environment Separation Prevents Indexing Accidents
+**WHY:** If staging or development environments get indexed, they create duplicate content issues, leak unfinished features to users, and dilute your production site's authority. Always block all crawlers on non-production environments with a blanket `Disallow: /` rule.
 
 ## robots.txt
 
@@ -223,13 +252,13 @@ Disallow: /
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://example.com/</loc>
-    <lastmod>2024-01-15</lastmod>
+    <lastmod>2026-01-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://example.com/about</loc>
-    <lastmod>2024-01-10</lastmod>
+    <lastmod>2026-01-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -243,15 +272,15 @@ Disallow: /
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <sitemap>
     <loc>https://example.com/sitemap-pages.xml</loc>
-    <lastmod>2024-01-15</lastmod>
+    <lastmod>2026-01-15</lastmod>
   </sitemap>
   <sitemap>
     <loc>https://example.com/sitemap-blog.xml</loc>
-    <lastmod>2024-01-15</lastmod>
+    <lastmod>2026-01-15</lastmod>
   </sitemap>
   <sitemap>
     <loc>https://example.com/sitemap-products.xml</loc>
-    <lastmod>2024-01-14</lastmod>
+    <lastmod>2026-01-14</lastmod>
   </sitemap>
 </sitemapindex>
 ```
@@ -389,31 +418,6 @@ export function discoverRoutes(): string[] {
 | About, Contact | 0.6 | monthly |
 | Legal pages | 0.3 | yearly |
 
-## Validation
-
-### robots.txt Testing
-
-```
-// Check robots.txt accessibility
-mcp__chrome-devtools__navigate_page({
-  url: "https://example.com/robots.txt",
-  type: "url"
-})
-
-// Take snapshot to verify content
-mcp__chrome-devtools__take_snapshot()
-```
-
-### sitemap.xml Validation
-
-```
-// Check sitemap.xml
-mcp__chrome-devtools__navigate_page({
-  url: "https://example.com/sitemap.xml",
-  type: "url"
-})
-```
-
 ## Cloudflare Workers Integration
 
 ```ts
@@ -460,9 +464,53 @@ export default {
 5. Update lastmod only when content changes
 6. Don't include noindex pages
 
+## Troubleshooting
+
+| Problem | Likely Cause | Solution |
+|---------|-------------|----------|
+| Pages not indexed despite being in sitemap | robots.txt is blocking the pages, or pages have `noindex` meta tag | Check robots.txt rules are not disallowing the URLs; verify no `<meta name="robots" content="noindex">` tag exists on the pages |
+| robots.txt not being read by crawlers | File is not at the domain root, or returns a non-200 status | Ensure robots.txt is served at `https://yourdomain.com/robots.txt` (not in a subdirectory); verify it returns HTTP 200 with `text/plain` content type |
+| Sitemap returns 404 in Search Console | Sitemap URL in robots.txt does not match actual sitemap location | Verify the `Sitemap:` directive uses the exact URL where the sitemap is hosted; check for protocol mismatches (http vs https) |
+| AI bots still crawling despite being blocked | Not all AI bots respect robots.txt; new bots appear frequently | robots.txt is advisory; for strict blocking, use server-side user-agent filtering or Cloudflare WAF rules to reject requests at the network level |
+| Staging site appearing in search results | Staging environment is not blocking crawlers | Add `User-agent: * / Disallow: /` to staging robots.txt; also add `<meta name="robots" content="noindex">` as a fallback and use `X-Robots-Tag: noindex` HTTP header |
+| Sitemap lastmod dates causing re-crawl storms | Updating lastmod on every deploy even when content has not changed | Only update `lastmod` when the page content actually changes; use content hashing or database timestamps instead of deploy timestamps |
+| Google ignoring priority and changefreq | Google has stated it largely ignores these signals | Focus on accurate `lastmod` dates and logical sitemap structure instead; priority and changefreq are hints only |
+| Large sitemap causing timeout | Too many URLs in a single sitemap file | Split into multiple sitemaps using a sitemap index; keep each sub-sitemap under 50,000 URLs and 50MB |
+
+## Constraints
+
+- **robots.txt is advisory, not enforceable.** Well-behaved crawlers respect it, but malicious bots can and do ignore it. For true access control, use server-side authentication or firewall rules.
+- **Sitemap inclusion does not guarantee indexing.** A sitemap tells search engines a page exists, but search engines still decide independently whether to crawl and index each URL based on quality, relevance, and crawl budget.
+- **robots.txt cannot selectively hide content.** Blocking a URL via robots.txt prevents crawling but does not prevent indexing if other sites link to that URL. Use `noindex` meta tags to prevent indexing.
+- **Crawl-delay is not universally supported.** Google ignores `Crawl-delay`; Bing and some other crawlers respect it. Use Google Search Console's crawl rate settings for Google-specific throttling.
+- **AI crawler landscape changes rapidly.** New AI bots and user-agent strings appear frequently. Periodically review and update AI crawler rules to stay current.
+- **Priority values are relative, not absolute.** A priority of 1.0 on every page is equivalent to having no priority at all. Use priority to signal relative importance within your own site only.
+- **Sitemap size limits are strict.** Each sitemap file must not exceed 50,000 URLs or 50MB uncompressed. Exceeding these limits causes the entire file to be rejected.
+
+## Verification Checklist
+
+Before considering crawl configuration complete, verify:
+
+- [ ] `robots.txt` is accessible at the exact domain root (`/robots.txt`)
+- [ ] `robots.txt` returns HTTP 200 with `Content-Type: text/plain`
+- [ ] `Sitemap:` directive in robots.txt uses full absolute HTTPS URL
+- [ ] Sitemap XML is valid (well-formed XML, correct namespace declaration)
+- [ ] Sitemap contains only canonical URLs (no duplicates, no redirects, no noindex pages)
+- [ ] `lastmod` dates reflect actual content change dates, not deploy timestamps
+- [ ] Non-production environments (staging, dev) block all crawlers with `Disallow: /`
+- [ ] AI crawler rules match the project's content licensing strategy
+- [ ] No CSS or JS files required for rendering are accidentally blocked
+- [ ] Sitemap files stay under 50,000 URLs and 50MB per file
+- [ ] Sitemap index is used if total URLs exceed 50,000
+- [ ] Submitted sitemap to Google Search Console and verified no errors reported
+- [ ] robots.txt tested with Google's robots.txt Tester tool
+- [ ] All sitemap URLs return HTTP 200 (no 404s, no redirects)
+
 ## References
 
 - Google robots.txt: https://developers.google.com/search/docs/crawling-indexing/robots/intro
 - Google Sitemaps: https://developers.google.com/search/docs/crawling-indexing/sitemaps/overview
 - Sitemaps Protocol: https://www.sitemaps.org/protocol.html
 - AI Crawler Guidelines: https://platform.openai.com/docs/gptbot
+- Google Search Console Crawl Stats: https://support.google.com/webmasters/answer/9679690
+- Bing Webmaster Crawl Control: https://www.bing.com/webmasters/help/crawl-control-55a30302

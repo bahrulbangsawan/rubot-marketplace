@@ -1,8 +1,8 @@
 ---
 name: tanstack-db
+version: 1.1.0
 description: |
-  Implements TanStack DB for reactive, local-first client stores in React applications. Use when building apps with live queries, optimistic mutations, real-time sync, offline-first data, or cross-collection queries. Covers collections, transactions, sync engines (Electric, PowerSync, Query), and differential dataflow.
-version: 1.0.0
+  Implements TanStack DB (@tanstack/db) for reactive, local-first client stores in React. Use when building a local-first or offline-first app, adding real-time sync, creating reactive data collections, using live queries (useLiveQuery), building optimistic UI with instant mutations, setting up a client-side database, configuring sync engines, integrating with ElectricSQL or PowerSync, working with cross-collection joins, or migrating from TanStack Query to TanStack DB via queryCollectionOptions. Also use when users mention "local-first", "offline-first", "real-time sync", "reactive data store", "live queries", "useLiveQuery not updating", "optimistic mutations", "client-side database", "sync engine", "ElectricSQL", "PowerSync", "collection.update()", "collection.insert()", "createTransaction", "autoCommit", "batch transaction", "clear collections on logout", "getKey", "eq/and/gt operators from @tanstack/db", "where/orderBy/limit", "differential dataflow", or "TanStack DB". NOT for: server-side databases (PostgreSQL, D1, Drizzle ORM), TanStack Query without DB, Supabase Realtime, Firebase Firestore, Zustand/Jotai state management, IndexedDB/idb-keyval, or TanStack Form.
 agents:
   - tanstack
   - neon-master
@@ -10,7 +10,53 @@ agents:
 
 # TanStack DB Skill
 
-This skill provides comprehensive guidance for implementing TanStack DB - a reactive client store for building super fast apps on sync.
+> Reactive, local-first client store for building super-fast apps on sync
+
+## When to Use
+
+- Building a local-first or offline-first application that works without network connectivity
+- Adding reactive live queries that auto-update UI when underlying data changes
+- Implementing optimistic mutations that apply instantly and sync in the background
+- Setting up a sync engine (ElectricSQL, PowerSync, TanStack Query) for server persistence
+- Performing cross-collection joins to combine data from multiple client-side collections
+- Migrating from TanStack Query to a reactive, collection-based data architecture
+- Building collaborative or real-time features where multiple users edit the same data
+- Replacing manual React state management with a normalized, reactive data layer
+
+## Quick Reference
+
+| Concept | Description |
+|---------|-------------|
+| **Collection** | Typed, normalized, reactive set of objects (like a client-side table) |
+| **Live Query** | Reactive query that auto-updates when underlying data changes |
+| **Transaction** | Atomic unit of mutations with optimistic state management |
+| **Sync Engine** | Backend integration (Electric, PowerSync, Query) for data sync |
+| **Differential Dataflow** | Engine that enables sub-millisecond incremental query updates |
+| **Optimistic Mutation** | Local change applied immediately before server confirmation |
+| **getKey** | Function that returns a unique identifier for each item in a collection |
+| **useLiveQuery** | React hook that subscribes to a live query and re-renders on changes |
+
+## Core Principles
+
+### 1. Local-First Improves UX by Eliminating Network Latency
+
+Reads from an in-memory collection return in microseconds, not the hundreds of milliseconds a network round-trip requires. Users experience instant UI because data is always available locally. When the network is unavailable, the app continues to function normally because it reads from and writes to the local store. The sync engine reconciles changes when connectivity returns. This architecture eliminates loading spinners for cached data and makes the app feel native.
+
+### 2. Differential Dataflow Makes Reactivity Efficient at Scale
+
+Traditional approaches re-run entire queries when any data changes. TanStack DB uses differential dataflow to compute only the delta between the old and new result sets. This means a live query over 100,000 rows updates in approximately 0.7ms when a single row changes, rather than re-scanning all rows. The practical result is that you can have dozens of live queries active simultaneously without degrading interaction responsiveness.
+
+### 3. Sync Engines Abstract Server Persistence Complexity
+
+Without a sync engine, you must manually manage optimistic updates, rollbacks on failure, conflict resolution, and reconnection logic. Sync engines (ElectricSQL, PowerSync, TanStack Query adapter) handle this entire layer. They maintain a persistent connection to the backend, apply server-confirmed state back to collections, and handle conflict resolution. You write mutation handlers that call your API; the sync engine handles everything else.
+
+### 4. Optimistic-by-Default Eliminates Perceived Latency
+
+Every mutation in TanStack DB applies to the local collection immediately. The UI updates before the server responds. If the server rejects the mutation, the transaction rolls back automatically. This means users never wait for a spinner after clicking a button or submitting a form. The optimistic state is tracked per-transaction, so you can show pending indicators without blocking interaction.
+
+### 5. Type Safety Prevents Runtime Data Errors
+
+Collections enforce Zod schemas at the boundary where data enters the system. TypeScript inference flows from the schema through live queries to React components. This catches shape mismatches, missing fields, and invalid types at compile time rather than in production.
 
 ## Documentation Verification (MANDATORY)
 
@@ -21,33 +67,13 @@ Before implementing any DB pattern from this skill:
    - `mcp__context7__query-docs` for specific patterns (collections, live queries, sync)
 
 2. **Use Exa MCP** for latest integration patterns:
-   - `mcp__exa__web_search_exa` for "TanStack DB reactive store 2024"
+   - `mcp__exa__web_search_exa` for "TanStack DB reactive store 2026"
    - `mcp__exa__get_code_context_exa` for Electric/PowerSync examples
 
 3. **Use AskUserQuestion** when requirements are unclear:
    - Sync engine choice (Electric, PowerSync, Query)
    - Offline-first requirements
    - Real-time sync needs
-
-## Quick Reference
-
-### Core Concepts
-
-| Concept | Description |
-|---------|-------------|
-| **Collection** | Typed, normalized, reactive set of objects (like a client-side table) |
-| **Live Query** | Reactive query that auto-updates when underlying data changes |
-| **Transaction** | Atomic unit of mutations with optimistic state management |
-| **Sync Engine** | Backend integration (Electric, PowerSync, Query) for data sync |
-| **Differential Dataflow** | Engine that enables sub-millisecond incremental query updates |
-
-### Key Principles
-
-1. **Local-First**: Data stored in memory for instant access without network delays
-2. **Reactive**: Live queries auto-update components when data changes
-3. **Optimistic**: Mutations apply instantly, sync in background
-4. **Type-Safe**: Full TypeScript inference with Zod schema support
-5. **Incremental**: Queries update in ~0.7ms even for 100k+ rows
 
 ## Implementation Guides
 
@@ -96,12 +122,12 @@ export const todoCollection = createCollection({
   schema: todoSchema,
   getKey: (todo) => todo.id,
 
-  // Sync configuration (required)
+  // Sync configuration (required even for local-only)
   sync: {
     sync: () => {}, // Placeholder for local-only
   },
 
-  // Mutation handlers
+  // Mutation handlers for server persistence
   onInsert: async ({ transaction }) => {
     const mutations = transaction.mutations
     await Promise.all(
@@ -133,7 +159,7 @@ import { eq } from '@tanstack/db'
 import { todoCollection } from './collections'
 
 function TodoList() {
-  // Live query - auto-updates when data changes
+  // Live query - auto-updates when data changes anywhere
   const { data: todos } = useLiveQuery((q) =>
     q.from({ todo: todoCollection })
       .where(({ todo }) => eq(todo.completed, false))
@@ -187,7 +213,7 @@ function AddTodo() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
 
-    // Insert with optimistic update
+    // Insert with optimistic update - UI updates immediately
     todoCollection.insert({
       id: crypto.randomUUID(),
       text,
@@ -217,7 +243,7 @@ function AddTodo() {
 import { createCollection } from '@tanstack/react-db'
 import { queryCollectionOptions } from '@tanstack/query-db-collection'
 
-// Incremental adoption - use existing Query patterns
+// Incremental adoption - use existing Query patterns as a sync engine
 export const todoCollection = createCollection(
   queryCollectionOptions({
     id: 'todos',
@@ -250,6 +276,7 @@ const todoCollection = createCollection({ /* ... */ })
 const listCollection = createCollection({ /* ... */ })
 
 function TodosWithLists() {
+  // Join across collections - like a SQL join but reactive and in-memory
   const { data } = useLiveQuery((q) =>
     q.from({ todos: todoCollection })
       .join(
@@ -317,7 +344,7 @@ export const todoCollection = createCollection(
 ```typescript
 import { createTransaction } from '@tanstack/react-db'
 
-// Create transaction that won't auto-commit
+// Create transaction that won't auto-commit (for batching)
 const batchTx = createTransaction({
   autoCommit: false,
   mutationFn: async ({ transaction }) => {
@@ -325,7 +352,7 @@ const batchTx = createTransaction({
   },
 })
 
-// Perform multiple operations
+// Perform multiple operations atomically
 batchTx.mutate(() => {
   for (let i = 0; i < 5; i++) {
     todoCollection.insert({
@@ -423,13 +450,13 @@ q.from({ todo: todoCollection })
 
 ## Collection Types
 
-| Type | Use Case | Persistence |
-|------|----------|-------------|
-| `queryCollectionOptions` | Migrate from TanStack Query | Query cache |
-| `electricCollectionOptions` | Real-time Postgres sync | Electric shapes |
-| `powerSyncCollectionOptions` | Offline-first with SQLite | PowerSync + backend |
-| `localStorageCollectionOptions` | Small local state | localStorage |
-| Local-only | UI state, temp data | Memory only |
+| Type | Use Case | Persistence | Best For |
+|------|----------|-------------|----------|
+| `queryCollectionOptions` | Migrate from TanStack Query | Query cache | Incremental adoption |
+| `electricCollectionOptions` | Real-time Postgres sync | Electric shapes | Multi-user real-time apps |
+| `powerSyncCollectionOptions` | Offline-first with SQLite | PowerSync + backend | Mobile-first offline apps |
+| `localStorageCollectionOptions` | Small local state | localStorage | User preferences, settings |
+| Local-only | UI state, temp data | Memory only | Ephemeral UI state |
 
 ## Integration with Rubot Agents
 
@@ -455,37 +482,66 @@ q.from({ todo: todoCollection })
 "Optimistic mutations" → tanstack, shadcn-ui-designer
 ```
 
-## Constraints
-
-- **Beta Status** - TanStack DB is currently in beta
-- **React Required** - Primary support is React via `@tanstack/react-db`
-- **Sync Required** - Collections need a `sync` config (even if placeholder)
-- **Key Required** - Every collection needs a `getKey` function
-- **Schema Recommended** - Use Zod schemas for type safety and validation
-
 ## Anti-Patterns to Avoid
 
 | Anti-Pattern | Problem | Correct Approach |
 |--------------|---------|------------------|
-| No schema | Poor type inference | Define Zod schema |
-| Missing getKey | Can't identify items | Always provide getKey |
-| Direct state mutation | Breaks reactivity | Use collection.update() |
-| Ignoring transactions | Lost optimistic state | Await isPersisted |
-| No error handling | Silent failures | Handle onInsert/onUpdate errors |
+| No schema | Poor type inference, no validation | Define Zod schema for every collection |
+| Missing getKey | Cannot identify or deduplicate items | Always provide getKey returning unique ID |
+| Direct state mutation | Breaks reactivity and optimistic tracking | Use collection.update() with draft callback |
+| Ignoring transactions | Lost optimistic state on failure | Await isPersisted before confirming to user |
+| No error handling | Silent failures, stuck optimistic state | Handle errors in onInsert/onUpdate/onDelete |
+| Storing derived data | Stale data, wasted memory | Use live queries to derive data reactively |
+| Not clearing on logout | Previous user data leaks to next session | Clear collections on auth state change |
+
+## Troubleshooting
+
+| Issue | Cause | Fix |
+|-------|-------|-----|
+| Live query not updating | Component not subscribed to collection changes | Verify you are using `useLiveQuery` hook (not a plain variable), and that the collection is the same instance referenced in the query |
+| Sync conflicts between clients | No conflict resolution strategy defined | Configure conflict resolution in your sync engine (last-write-wins, merge, or custom resolver) and test with concurrent edits |
+| Data persists after logout | Collections retain in-memory state across auth changes | Clear all collections on auth state change by calling `collection.clear()` or reinitializing collections on logout |
+| Optimistic update not rolling back | Server error not propagated back to transaction | Ensure mutation handlers (onInsert/onUpdate/onDelete) throw on failure so the transaction can roll back automatically |
+| Stale data after reconnection | Sync engine not re-fetching after network recovery | Verify sync engine reconnection logic; Electric and PowerSync handle this automatically, but custom sync requires manual reconnect handling |
+| TypeScript errors in live query | Schema mismatch between collection and query select | Ensure Zod schema matches the shape returned by your API; use `z.infer<typeof schema>` for the collection type |
+| Duplicate items in collection | getKey returns non-unique values | Verify getKey returns a truly unique identifier (UUID, database ID); check for duplicate IDs in API responses |
+| Performance degrades with many live queries | Too many active subscriptions recalculating simultaneously | Consolidate related queries where possible; differential dataflow is efficient but not free at scale |
+
+## Constraints
+
+- **Early-stage library**: TanStack DB is relatively new and under active development. APIs may change between minor versions. Pin your dependency version and check the changelog before upgrading.
+- **Requires sync engine for server persistence**: Collections are in-memory only. Without a sync engine (Electric, PowerSync, Query adapter), data is lost on page refresh. Even local-only apps need at minimum `localStorageCollectionOptions` for persistence.
+- **React-only**: Primary support is React via `@tanstack/react-db`. Other framework adapters may not be available or may lag behind the React implementation.
+- **Sync config required**: Every collection requires a `sync` configuration object, even for local-only use cases. Omitting it causes a runtime error.
+- **Key function required**: Every collection requires a `getKey` function that returns a unique identifier. There is no auto-generated key mechanism.
+- **Schema recommended**: While technically optional, omitting a Zod schema removes type inference and runtime validation. Always define a schema.
+- **No built-in persistence layer**: TanStack DB does not include its own database or persistence. It relies entirely on sync engines or browser storage APIs for durability.
+- **Conflict resolution is sync-engine-dependent**: TanStack DB itself does not resolve conflicts. Your chosen sync engine (Electric, PowerSync) determines how concurrent edits from multiple clients are merged.
 
 ## Verification Checklist
 
-- [ ] Schema defined with Zod
-- [ ] getKey returns unique identifier
-- [ ] Sync configuration provided
-- [ ] Mutation handlers implemented
-- [ ] Error handling in place
-- [ ] Optimistic state tested
-- [ ] Offline behavior verified (if applicable)
-- [ ] Performance tested with large datasets
+After implementing TanStack DB in your application, verify:
 
-## Sources
+- [ ] Every collection has a Zod schema defined with correct field types
+- [ ] Every collection has a `getKey` function returning a unique identifier
+- [ ] Sync configuration is provided for each collection (even if placeholder for local-only)
+- [ ] Mutation handlers (onInsert, onUpdate, onDelete) are implemented and tested
+- [ ] Error handling exists in all mutation handlers with proper throw behavior
+- [ ] Optimistic updates apply immediately in the UI without waiting for server response
+- [ ] Optimistic state rolls back correctly when the server rejects a mutation
+- [ ] Live queries update the UI when data changes from any source (local mutation, sync)
+- [ ] Collections are cleared on user logout to prevent data leakage
+- [ ] Offline behavior works correctly: reads succeed, writes queue, sync resumes on reconnect
+- [ ] Performance tested with realistic data volumes (1,000+ items per collection)
+- [ ] Cross-collection joins return correct results and update reactively
+- [ ] TypeScript compilation passes with no type errors in collection definitions or live queries
+- [ ] Sync engine reconnects and re-syncs after network interruption
+
+## References
 
 - [TanStack DB Overview](https://tanstack.com/db/latest/docs/overview)
 - [TanStack DB Quick Start](https://tanstack.com/db/latest/docs/quick-start)
 - [TanStack DB GitHub](https://github.com/TanStack/db)
+- [ElectricSQL Documentation](https://electric-sql.com/docs)
+- [PowerSync Documentation](https://docs.powersync.com)
+- [TanStack Query Integration](https://tanstack.com/query/latest)

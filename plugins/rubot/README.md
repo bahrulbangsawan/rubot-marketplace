@@ -1,6 +1,6 @@
 # rubot
 
-**Strict Multi-Agent Orchestration Governor v2.9.0**
+**Strict Multi-Agent Orchestration Governor v2.13.0**
 
 `rubot` enforces deterministic, mandatory multi-agent consultation for all significant tasks in complex Claude Code projects. It acts as a project manager ensuring no decision is made without consensus from all relevant domain experts.
 
@@ -32,9 +32,9 @@ In multi-domain projects (backend, database, SSR, hydration, performance, respon
 | lazy-load-master | Code splitting, lazy loading, dynamic imports | Independent |
 | neon-master | PostgreSQL, NeonDB, schema design | Independent |
 | plan-supervisor | Plan.md tracking, task completion verification | Independent (always required) |
-| qa-tester | Playwright, Chrome DevTools testing | Independent (always required) |
+| qa-tester | agent-browser testing | Independent (always required) |
 | responsive-master | Tailwind responsive layouts | **Sub-agent of shadcn-ui-designer** |
-| seo-master | SEO, Chrome DevTools auditing, Core Web Vitals | Independent (user-confirmed) |
+| seo-master | SEO, Core Web Vitals | Independent (user-confirmed) |
 | **shadcn-ui-designer** | **UI components, design system (FRONTEND OWNER)** | **Team Lead** |
 | tanstack | TanStack Start/Router/Query full-stack | Independent |
 | theme-master | Tailwind themes, OKLCH colors | **Sub-agent of shadcn-ui-designer** |
@@ -54,7 +54,7 @@ In multi-domain projects (backend, database, SSR, hydration, performance, respon
 | Command | Description |
 |---------|-------------|
 | `/rubot` | Invoke the main orchestration governor for multi-domain tasks |
-| `/rubot-init` | Initialize or sync the rubot workspace configuration |
+| `/rubot-init` | Initialize or sync the rubot workspace — generates AGENTS.md, CLAUDE.md, and rubot.local.yaml with file selection and subfolder support |
 | `/rubot-plan` | Generate a structured execution plan with agent orchestration |
 | `/rubot-execute` | Execute the approved plan from the workspace |
 | `/rubot-check` | Run validation and invoke verification agents |
@@ -71,13 +71,55 @@ In multi-domain projects (backend, database, SSR, hydration, performance, respon
 
 | Command | Description |
 |---------|-------------|
-| `/rubot-seo-audit` | Comprehensive SEO audit with Chrome DevTools live inspection |
+| `/rubot-seo-audit` | Comprehensive SEO audit |
 | `/rubot-seo-check-schema` | Validate structured data and JSON-LD schema markup |
 | `/rubot-seo-check-og` | Check Open Graph and Twitter Card meta tags |
 | `/rubot-seo-check-vitals` | Audit Core Web Vitals (LCP, INP, CLS) |
 | `/rubot-seo-generate-robots` | Generate robots.txt with proper directives |
 | `/rubot-seo-generate-sitemap` | Generate sitemap.xml from project routes |
 | `/rubot-seo-generate-favicons` | Set up complete favicon structure and meta tags |
+
+### Setup Commands
+
+| Command | Description |
+|---------|-------------|
+| `/rubot-setup-agent-browser` | Install and configure agent-browser CLI for headless browser automation |
+| `/rubot-setup-cf-workers` | Set up Cloudflare Workers deployment — detects framework, installs wrangler, generates config |
+| `/rubot-setup-react-grab` | Install react-grab for AI-assisted element inspection in React apps |
+| `/rubot-setup-react-grab-mcp` | Add MCP server integration to react-grab for Claude Code |
+| `/rubot-setup-localdb` | Set up local PostgreSQL Docker database with Drizzle ORM integration |
+
+### Testing & QA Commands
+
+| Command | Description |
+|---------|-------------|
+| `/rubot-test-browser` | Run E2E browser tests using agent-browser and dogfood exploratory testing |
+
+### Responsive & Layout Commands
+
+| Command | Description |
+|---------|-------------|
+| `/rubot-responsive-audit` | Audit and fix responsive layout issues across all breakpoints (xs/sm/md/lg) |
+| `/rubot-global-layout` | Build a persistent global layout with shared Navbar and Footer wrapping all routes |
+
+### Accessibility Commands
+
+| Command | Description |
+|---------|-------------|
+| `/rubot-wcag-audit` | Run WCAG 2.2 Level AA accessibility audit on a URL or codebase |
+| `/rubot-wcag-fix` | Fix WCAG 2.2 accessibility issues across the codebase |
+
+### i18n Commands
+
+| Command | Description |
+|---------|-------------|
+| `/rubot-multilanguage` | Implement full multilingual support with language switcher, localized routing, and bilingual copywriting |
+
+### Security Commands
+
+| Command | Description |
+|---------|-------------|
+| `/rubot-skills-security-check` | Run ClawSec security advisory scan, skill integrity verification, and guarded install checks |
 
 ## Command Examples
 
@@ -116,7 +158,7 @@ Secondary: tanstack, debug-master, qa-tester
 3. [backend-master] Create auth endpoints (login, logout, refresh)
 4. [tanstack] Add auth context and protected route wrapper
 5. [debug-master] Validate type safety across auth flow
-6. [qa-tester] Test auth flows with Playwright
+6. [qa-tester] Test auth flows with agent-browser
 
 ## Validation Checklist
 - [ ] Token generation works correctly
@@ -140,8 +182,11 @@ Set up the rubot workspace for a new or existing project.
 ```
 ## Rubot Workspace Initialization
 
-✓ Created .claude/rubot/ directory
-✓ Generated rubot.local.md configuration
+### File Selection
+? Which files would you like to generate or update?
+  ● Both (AGENTS.md + CLAUDE.md) — recommended for first-time setup
+  ○ AGENTS.md only
+  ○ CLAUDE.md only
 
 ### Project Configuration Detected:
 - Framework: TanStack Start
@@ -149,14 +194,15 @@ Set up the rubot workspace for a new or existing project.
 - Database: NeonDB with Drizzle
 - UI: shadcn/ui
 
-### Optional: Boilerplate Cleanup
-Would you like to clean up template boilerplate?
-- [ ] Remove ASCII art and demo content
-- [ ] Rename routes (/sign-in → /login)
-- [ ] Simplify header/footer components
-- [ ] Rewrite README.md
+✓ Created .claude/rubot/ directory
+✓ Generated rubot.local.yaml configuration
+✓ Generated CLAUDE.md with browser testing and rubot commands
+✓ Generated AGENTS.md with browser testing and validation checklist
+✓ agent-browser: installed (v1.2.0)
 
-[Yes] [No] [Skip for now]
+### Update generated files anytime:
+  /rubot-init           — regenerate CLAUDE.md, AGENTS.md, rubot.local.yaml
+  /rubot-init src/      — regenerate only src/AGENTS.md
 ```
 
 ---
@@ -594,7 +640,7 @@ Show available commands and usage information.
 ### SEO Commands
 | Command | Description |
 |---------|-------------|
-| /rubot-seo-audit | Full SEO audit with Chrome DevTools |
+| /rubot-seo-audit | Full SEO audit |
 | /rubot-seo-check-schema | Validate JSON-LD markup |
 | /rubot-seo-check-og | Check Open Graph tags |
 | /rubot-seo-check-vitals | Audit Core Web Vitals |
@@ -676,7 +722,7 @@ Would you like to automatically fix the 2 critical issues?
 
 #### `/rubot-seo-audit` - Comprehensive SEO Audit
 
-Perform full SEO audit using Chrome DevTools.
+Perform full SEO audit.
 
 **Example:**
 ```
@@ -1186,7 +1232,7 @@ Every rubot orchestration produces:
 
 ## Components
 
-- **Commands**: 20 slash commands for complete workflow orchestration
+- **Commands**: 32 slash commands for complete workflow orchestration
   - `/rubot` - Main orchestration entry point
   - `/rubot-init` - Workspace initialization
   - `/rubot-plan` - Execution planning
@@ -1207,6 +1253,18 @@ Every rubot orchestration produces:
   - `/rubot-seo-generate-robots` - robots.txt generation
   - `/rubot-seo-generate-sitemap` - sitemap.xml generation
   - `/rubot-seo-generate-favicons` - Favicon setup
+  - `/rubot-setup-agent-browser` - agent-browser CLI setup
+  - `/rubot-setup-cf-workers` - Cloudflare Workers deployment setup
+  - `/rubot-setup-react-grab` - react-grab element inspection setup
+  - `/rubot-setup-react-grab-mcp` - react-grab MCP integration
+  - `/rubot-setup-localdb` - Local PostgreSQL Docker database setup
+  - `/rubot-test-browser` - E2E browser testing
+  - `/rubot-responsive-audit` - Responsive layout audit
+  - `/rubot-wcag-audit` - WCAG 2.2 accessibility audit
+  - `/rubot-wcag-fix` - WCAG 2.2 accessibility fixes
+  - `/rubot-global-layout` - Global layout with Navbar/Footer
+  - `/rubot-multilanguage` - Multilingual i18n implementation
+  - `/rubot-skills-security-check` - ClawSec security scanning
 - **Hooks**: 8 lifecycle hooks
   - `pre-commit-validation` - Blocks commits without validation
   - `dangerous-command-guard` - Guards destructive commands
@@ -1217,7 +1275,7 @@ Every rubot orchestration produces:
   - `session-context-loader` - Loads workspace at session start
   - `validation-reminder` - Reminds about uncommitted changes
 - **Agent**: `rubot` - Proactive orchestrator that coordinates all 16 subagents
-- **Skills**: 18 domain-specific skill sets
+- **Skills**: 26 domain-specific skill sets
   - `orchestration` - Domain classification and coordination knowledge
   - `env-check` - Environment validation
   - `rbac-auth` - Role-based access control implementation
@@ -1231,12 +1289,20 @@ Every rubot orchestration produces:
   - `elysiajs` - High-performance HTTP servers
   - `biome` - Fast linting and formatting
   - `cloudflare-workers` - Edge computing
-  - `rubot-seo-audit` - Comprehensive SEO auditing with Chrome DevTools
+  - `rubot-seo-audit` - Comprehensive SEO auditing
   - `schema-markup` - Schema.org JSON-LD implementation
   - `core-web-vitals` - LCP, INP, CLS optimization
   - `social-sharing` - Open Graph and Twitter Cards
   - `crawl-config` - robots.txt and sitemap.xml
-- **Templates**: Markdown templates for generated documents
+  - `responsive-design` - Mobile-first responsive layouts
+  - `agent-browser` - Headless browser automation CLI
+  - `cf-workers-setup` - Cloudflare Workers deployment setup
+  - `global-layout` - Persistent global layout patterns
+  - `react-grab` - AI-assisted element inspection
+  - `wcag-audit` - WCAG 2.2 accessibility auditing
+  - `wcag-fix` - Accessible component patterns
+  - `multilanguage` - Full i18n implementation
+- **Templates**: 9 templates for generated documents
 
 ## Templates
 
@@ -1244,11 +1310,15 @@ Located in `~/.claude/plugins/rubot/templates/`:
 
 | Template | Purpose | Used By |
 |----------|---------|---------|
-| `rubot.local.md.template` | Workspace configuration | `/rubot-init` |
+| `rubot.local.yaml.template` | Workspace configuration | `/rubot-init` |
+| `rootAGENTS.md.template` | Root AGENTS.md with browser testing and rubot commands | `/rubot-init` |
+| `subAGENTS.md.template` | Subfolder AGENTS.md with scoped browser testing | `/rubot-init <path>` |
 | `README.md.template` | Project README for boilerplate cleanup | `/rubot-init` |
 | `plan.md.template` | Execution plan with checklists | `/rubot-plan` |
 | `validation-report.md.template` | Validation results report | `/rubot-check` |
 | `index.css.template` | CSS theme reference | `theme-master` |
+| `components.json.template` | shadcn/ui registry configuration | `shadcn-ui-designer` |
+| `commit-message.template` | Conventional commit message format | `/rubot-commit` |
 
 ### Plan Lifecycle & Archival
 
@@ -1270,12 +1340,20 @@ This preserves plan history for reference.
 When initialized, rubot creates:
 
 ```
-.claude/rubot/
-  rubot.local.md              # Project configuration
-  plan.md                     # Current execution plan
-  validation-report.md        # Latest validation results
-  [timestamp]-plan.md         # Archived completed plans
+project-root/
+  CLAUDE.md                       # Project overview (generated)
+  AGENTS.md                       # Agent guidance (generated)
+  .claude/rubot/
+    rubot.local.yaml              # Project configuration (source of truth)
+    plan.md                       # Current execution plan
+    validation-report.md          # Latest validation results
+    [timestamp]-plan.md           # Archived completed plans
+  src/
+    AGENTS.md                     # Subfolder agent guidance (optional)
 ```
+
+Update generated files: `/rubot-init` (choose AGENTS.md, CLAUDE.md, or both)
+Update subfolder only: `/rubot-init src/`
 
 ## Installation
 

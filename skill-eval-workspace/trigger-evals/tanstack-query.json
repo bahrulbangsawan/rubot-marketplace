@@ -1,0 +1,82 @@
+[
+  {
+    "query": "add a useQuery hook to fetch the list of bookings from /api/bookings with a 5-minute staleTime and retry 3 times on failure",
+    "should_trigger": true
+  },
+  {
+    "query": "implement an optimistic update for toggling a todo's completed status — show the change immediately and rollback if the PATCH request fails",
+    "should_trigger": true
+  },
+  {
+    "query": "data disappears when I navigate away from the users page and come back — the list shows a loading spinner again every time",
+    "should_trigger": true
+  },
+  {
+    "query": "set up a query key factory with queryKeys.users.all, queryKeys.users.detail(id), and queryKeys.users.list(filters) patterns",
+    "should_trigger": true
+  },
+  {
+    "query": "build an infinite scroll list for posts using useInfiniteQuery with cursor-based pagination from /api/posts?cursor=",
+    "should_trigger": true
+  },
+  {
+    "query": "after creating a new user via useMutation, the users list doesn't update — I need to invalidate the cache properly",
+    "should_trigger": true
+  },
+  {
+    "query": "prefetch the user profile data on hover so navigation to /users/$userId feels instant",
+    "should_trigger": true
+  },
+  {
+    "query": "configure the QueryClient with sensible defaults: 1 minute staleTime, 5 minute gcTime, refetch on window focus enabled",
+    "should_trigger": true
+  },
+  {
+    "query": "I have a dependent query — fetch the user first, then use their organizationId to fetch the org details. The second query should only run when the user data is available.",
+    "should_trigger": true
+  },
+  {
+    "query": "integrate TanStack Query with the TanStack Router loader — use ensureQueryData in the /users route loader so data is in cache before the component renders",
+    "should_trigger": true
+  },
+  {
+    "query": "add a createFileRoute for /settings with validateSearch and a beforeLoad auth guard",
+    "should_trigger": false
+  },
+  {
+    "query": "write a pgTable schema for the bookings table with id, user_id, date, and status columns",
+    "should_trigger": false
+  },
+  {
+    "query": "set up Zustand store for the shopping cart state with add, remove, and clear actions",
+    "should_trigger": false
+  },
+  {
+    "query": "implement server-sent events (SSE) endpoint in ElysiaJS for real-time order status updates",
+    "should_trigger": false
+  },
+  {
+    "query": "add a form with useForm from TanStack Form — fields for name, email, and phone with Zod validation",
+    "should_trigger": false
+  },
+  {
+    "query": "fetch data from the Stripe API in a Cloudflare Worker to get subscription status",
+    "should_trigger": false
+  },
+  {
+    "query": "fix the hydration mismatch — the server renders a different timestamp than the client because of timezone differences",
+    "should_trigger": false
+  },
+  {
+    "query": "set up WebSocket connection for live chat messages between users",
+    "should_trigger": false
+  },
+  {
+    "query": "implement local-first reactive data with TanStack DB collections and useLiveQuery",
+    "should_trigger": false
+  },
+  {
+    "query": "add Redis caching layer in the backend API to cache database query results for 10 minutes",
+    "should_trigger": false
+  }
+]

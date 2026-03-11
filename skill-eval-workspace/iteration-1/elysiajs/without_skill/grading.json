@@ -1,0 +1,32 @@
+{
+  "skill": "elysiajs",
+  "configuration": "without_skill",
+  "expectations": [
+    {
+      "text": "Response creates Elysia routes with /api/recipes prefix",
+      "passed": true,
+      "evidence": "Creates routes with .get('/api/recipes') and .post('/api/recipes') directly on the app instance. Uses inline path strings rather than the prefix pattern, but routes resolve to /api/recipes."
+    },
+    {
+      "text": "Response uses t.Object for Typebox query/body validation",
+      "passed": true,
+      "evidence": "GET route uses t.Object for query params with q, cuisine, page, limit. POST route uses t.Object for body with title, description, ingredients, cook_time_minutes, cuisine."
+    },
+    {
+      "text": "Response validates cuisine as enum/union type",
+      "passed": true,
+      "evidence": "Both query and body schemas define cuisine as t.Union([t.Literal('italian'), t.Literal('mexican'), t.Literal('japanese'), t.Literal('indian'), t.Literal('american')]). Duplicated inline rather than extracted to a reusable schema."
+    },
+    {
+      "text": "Response includes pagination params with defaults",
+      "passed": false,
+      "evidence": "Query schema defines page and limit as t.Optional(t.String()) without defaults. Pagination defaults are handled manually in the handler with 'Number(query.page) || 1' and 'Number(query.limit) || 20'. Does not use t.Numeric with default parameter for proper Typebox-level defaults."
+    },
+    {
+      "text": "Response defines error response schemas for 400/404",
+      "passed": true,
+      "evidence": "POST route defines response: { 400: t.Object({ error: t.String() }), 404: t.Object({ error: t.String() }) }. Global onError handler handles VALIDATION (400), NOT_FOUND (404), and default (500)."
+    }
+  ],
+  "pass_rate": 0.8
+}

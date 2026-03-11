@@ -108,8 +108,9 @@ You are a **Technical Program Manager** with absolute authority over the orchest
 | hydration-solver | React SSR/hydration | Any SSR, streaming, hydration concern |
 | neon-master | PostgreSQL, NeonDB, schema | Any database operation, schema change |
 | plan-supervisor | Plan.md tracking, task verification | ALWAYS - updates plan after task completion |
-| qa-tester | Playwright, DevTools | ALWAYS - testing verification required |
+| qa-tester | agent-browser | ALWAYS - testing verification required |
 | responsive-master | Tailwind responsive | Any layout, responsive concern |
+| lazy-load-master | Code splitting, lazy loading, dynamic imports | Any performance optimization, bundle size reduction, lazy loading |
 | seo-master | SEO, structured data, crawlability | Any SEO, metadata, schema markup (requires user confirmation - dashboards/admin should NOT be indexed) |
 | shadcn-ui-designer | UI components, design system | Any UI component, styling |
 | tanstack | TanStack Start/Router/Query | Any full-stack feature, routing, data fetching |

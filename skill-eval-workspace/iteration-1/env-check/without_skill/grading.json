@@ -1,0 +1,32 @@
+{
+  "skill": "env-check",
+  "configuration": "without_skill",
+  "expectations": [
+    {
+      "text": "Response checks for critical tools (bun, node, git)",
+      "passed": true,
+      "evidence": "Tools Installed section lists Bun v1.3.6, Node.js v25.2.1, Git v2.50.1, and GitHub CLI v2.83.2 as installed and working."
+    },
+    {
+      "text": "Response uses PASS/FAIL/WARN status indicators",
+      "passed": false,
+      "evidence": "The response does not use PASS/FAIL/WARN status indicators. It uses plain text descriptions like 'installed and working' and bulleted potential issues without structured status labels."
+    },
+    {
+      "text": "Response checks for .env/.env.local files",
+      "passed": true,
+      "evidence": "Potential Issues item 3: 'No .env file. If your application needs environment variables (database URLs, API keys, etc.), you will need to create one.'"
+    },
+    {
+      "text": "Response provides remediation steps for failures",
+      "passed": true,
+      "evidence": "Recommendations section provides steps: work in correct project directory, run 'bun install', set up .env file, install Wrangler globally with commands."
+    },
+    {
+      "text": "Response detects project stack from package.json",
+      "passed": false,
+      "evidence": "The response notes there is no package.json but does not describe or attempt any stack detection capability. It simply says this is a plugin repo, not an app."
+    }
+  ],
+  "pass_rate": 0.6
+}

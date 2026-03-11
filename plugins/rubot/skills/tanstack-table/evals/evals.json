@@ -1,0 +1,23 @@
+{
+  "skill_name": "tanstack-table",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I need a data table for our order management page at src/features/orders/components/orders-table.tsx. It should display columns for order ID, customer name, total amount, status (with colored badges), and created date. Users need to sort by any column and filter by customer name with a text input and by status with a dropdown. Use shadcn/ui Table components and createColumnHelper for type safety.",
+      "expected_output": "Creates an Order interface and uses createColumnHelper<Order>() to define typed columns. Implements sorting with getSortedRowModel and SortingState, plus filtering with getFilteredRowModel and ColumnFiltersState. The status column renders a Badge component with variant based on status value. Header cells for sortable columns include click handlers via column.toggleSorting() with visual sort direction indicators. Adds a text Input above the table for customer name filtering using column.setFilterValue(), and a Select dropdown for status filtering. Uses shadcn/ui Table, TableHeader, TableRow, TableHead, TableBody, TableCell with flexRender for rendering.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Our products table in src/features/products/components/products-table.tsx needs server-side pagination because we have 50k+ products. The current page and page size should be stored in the URL search params so users can bookmark or share page links. The API endpoint is GET /api/products?page=1&pageSize=20&sort=name&order=asc. Wire up the table to sync pagination state with URL params via TanStack Router's useSearch and useNavigate.",
+      "expected_output": "Implements a table with manualPagination: true and manualSorting: true since data comes from the server. Reads pagination and sort state from URL search params using Route.useSearch() or useSearch(). Updates URL params on state change via useNavigate with search updater functions. Passes pageCount from the API response (total / pageSize) to the table. The useQuery hook depends on the URL search params for page, pageSize, sort, and order. Pagination controls use table.nextPage(), table.previousPage(), table.getCanNextPage(), etc. The table state (pagination, sorting) is controlled externally from URL params rather than internal useState.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "I need to add row selection to our users table at src/features/admin/components/users-table.tsx so admins can select multiple users and perform bulk actions like 'Deactivate Selected', 'Export Selected', or 'Assign Role'. There should be a checkbox column, a header checkbox for select-all, and a toolbar that appears when rows are selected showing the count and action buttons.",
+      "expected_output": "Adds RowSelectionState with useState and passes it to useReactTable with enableRowSelection: true and onRowSelectionChange. Defines a checkbox display column using columnHelper.display() with id 'select' that renders a Checkbox in both the header (for select-all via table.getToggleAllRowsSelectedHandler()) and each row (via row.getToggleSelectedHandler()). Adds a conditional toolbar that appears when Object.keys(rowSelection).length > 0, showing the selected count via table.getFilteredSelectedRowModel().rows.length. Action buttons call handlers that access the selected rows via table.getFilteredSelectedRowModel().rows.map(row => row.original). After bulk action completion, resets selection via setRowSelection({}).",
+      "files": []
+    }
+  ]
+}

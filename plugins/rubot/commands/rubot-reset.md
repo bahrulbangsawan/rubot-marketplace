@@ -18,7 +18,7 @@ Reset the rubot workspace to a clean state, allowing users to start fresh or rec
 ### Option 1: Soft Reset (Recommended)
 - Clears plan.md (sets to empty template)
 - Clears validation-report.md
-- Preserves rubot.local.md configuration
+- Preserves rubot.local.yaml configuration
 - Does NOT affect git or code changes
 
 ### Option 2: Hard Reset

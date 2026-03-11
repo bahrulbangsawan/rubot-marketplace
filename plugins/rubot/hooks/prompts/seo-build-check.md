@@ -127,7 +127,7 @@ This hook works with:
 
 ## Workspace Context
 
-If a rubot workspace exists (`.claude/rubot.local.md`), check:
+If a rubot workspace exists (`.claude/rubot.local.yaml`), check:
 - Has `/rubot-seo-audit` been run in this session?
 - When was the last validation report generated?
 - Are there any SEO-related blockers in the plan?

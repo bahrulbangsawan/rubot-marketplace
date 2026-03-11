@@ -1,0 +1,82 @@
+[
+  {
+    "query": "check my setup — I just cloned the repo and want to make sure bun, node, and wrangler are all installed correctly",
+    "should_trigger": true
+  },
+  {
+    "query": "bun: command not found — what do I need to install before I can run the project?",
+    "should_trigger": true
+  },
+  {
+    "query": "wrangler whoami returns an error about expired token — is my deployment environment ready?",
+    "should_trigger": true
+  },
+  {
+    "query": "I'm getting 'error: lockfile version mismatch' when running bun install — what version of bun do I need?",
+    "should_trigger": true
+  },
+  {
+    "query": "verify my tools are set up: I need node 20+, bun 1.1+, git, and the gh CLI for this project",
+    "should_trigger": true
+  },
+  {
+    "query": "can you run a prerequisites check before I start the project init? I want to know if anything's missing",
+    "should_trigger": true
+  },
+  {
+    "query": "I'm setting up CI on GitHub Actions and need to validate that the runner has bun, node, and wrangler at the right versions",
+    "should_trigger": true
+  },
+  {
+    "query": "my build fails with MODULE_NOT_FOUND for drizzle-orm but it's in package.json — is my environment broken?",
+    "should_trigger": true
+  },
+  {
+    "query": "which tools do I need installed before running /rubot-init on a fresh Mac?",
+    "should_trigger": true
+  },
+  {
+    "query": "after upgrading bun, my bun.lockb file isn't working anymore — how do I migrate to the new bun.lock format?",
+    "should_trigger": true
+  },
+  {
+    "query": "add a DATABASE_URL environment variable to wrangler.toml for the Neon connection string",
+    "should_trigger": false
+  },
+  {
+    "query": "write a health check endpoint in ElysiaJS that returns { status: 'ok' } at /api/health",
+    "should_trigger": false
+  },
+  {
+    "query": "set up biome.json with noUnusedVariables and noExplicitAny rules for the project",
+    "should_trigger": false
+  },
+  {
+    "query": "run bunx drizzle-kit generate to create a migration for the new bookings table",
+    "should_trigger": false
+  },
+  {
+    "query": "check if the responsive layout works on mobile by auditing the Tailwind breakpoint classes",
+    "should_trigger": false
+  },
+  {
+    "query": "deploy the worker to Cloudflare Workers production using wrangler deploy --env production",
+    "should_trigger": false
+  },
+  {
+    "query": "check if my .env.local has all the required variables for Neon, Cloudflare, and Resend",
+    "should_trigger": false
+  },
+  {
+    "query": "run agent-browser to check if the staging site loads correctly on Chrome",
+    "should_trigger": false
+  },
+  {
+    "query": "install the @tanstack/react-query package and set up the QueryClient provider",
+    "should_trigger": false
+  },
+  {
+    "query": "validate that the RBAC permissions in src/lib/permissions.ts match the database role_permissions table",
+    "should_trigger": false
+  }
+]

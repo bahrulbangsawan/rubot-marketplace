@@ -1,0 +1,82 @@
+[
+  {
+    "query": "Our LCP is 4.8 seconds on mobile according to PageSpeed Insights. The hero image is 2MB and loaded lazily. Help me fix the loading strategy and add preload hints",
+    "should_trigger": true
+  },
+  {
+    "query": "CLS is 0.35 on our blog pages because images load without width/height attributes and the web font causes a reflow. Fix both issues",
+    "should_trigger": true
+  },
+  {
+    "query": "INP is 450ms on our dashboard because the filter handler processes 10,000 items synchronously. Break it into chunks and yield to the main thread between batches",
+    "should_trigger": true
+  },
+  {
+    "query": "PageSpeed score dropped from 92 to 54 after we added a third-party chat widget. How do I lazy load it so it doesn't block LCP and inflate INP?",
+    "should_trigger": true
+  },
+  {
+    "query": "Set up performance budgets for our CI pipeline — max 200KB JS, 50KB CSS, 200KB largest image. Fail the build if any budget is exceeded",
+    "should_trigger": true
+  },
+  {
+    "query": "Our TTFB is 1.9 seconds because the TanStack Start loader does 3 sequential database queries before rendering. How do I parallelize them and add edge caching?",
+    "should_trigger": true
+  },
+  {
+    "query": "Lighthouse performance score fluctuates between 60-85 on repeated runs. How do I get stable measurements, and should I focus on lab data or CrUX field data?",
+    "should_trigger": true
+  },
+  {
+    "query": "Mobile users report our product listing page feels laggy. INP is fine on desktop but 520ms on a Moto G Power. The DOM has 3200 nodes — should I virtualize the list?",
+    "should_trigger": true
+  },
+  {
+    "query": "CLS is 0 in development but 0.28 in production. We have a consent banner and two ad slots that inject content without reserved space. How do I fix this?",
+    "should_trigger": true
+  },
+  {
+    "query": "Add fetchPriority='high' to our LCP hero image, inline the critical above-fold CSS, and convert the hero from PNG to WebP with responsive srcset",
+    "should_trigger": true
+  },
+  {
+    "query": "Run a full SEO audit on https://mysite.com with scoring across technical SEO, on-page, structured data, social sharing, and performance",
+    "should_trigger": false
+  },
+  {
+    "query": "Audit our site for WCAG 2.2 Level AA accessibility compliance — check keyboard navigation, screen reader support, and color contrast",
+    "should_trigger": false
+  },
+  {
+    "query": "Our API response time is 800ms for the /api/products endpoint. Optimize the Drizzle query by adding indexes and reducing N+1 queries",
+    "should_trigger": false
+  },
+  {
+    "query": "Reduce our Docker image size from 1.2GB to under 200MB by switching to a multi-stage build with alpine base",
+    "should_trigger": false
+  },
+  {
+    "query": "The React app re-renders the entire component tree when any state changes. Add React.memo and useMemo to prevent unnecessary renders on the user list",
+    "should_trigger": false
+  },
+  {
+    "query": "Configure nginx caching headers for static assets — set Cache-Control max-age to 1 year for hashed files and no-cache for HTML",
+    "should_trigger": false
+  },
+  {
+    "query": "Our TanStack Table renders 500 rows and scrolling is janky. Implement virtualization with @tanstack/react-virtual",
+    "should_trigger": false
+  },
+  {
+    "query": "Set up webpack bundle analyzer to visualize which dependencies contribute the most to our JavaScript bundle size",
+    "should_trigger": false
+  },
+  {
+    "query": "Add image optimization to our build pipeline — compress PNGs with pngquant and convert JPEGs to WebP using sharp in a postbuild script",
+    "should_trigger": false
+  },
+  {
+    "query": "Our Cloudflare Worker is hitting the 3MB bundle size limit. Identify the largest dependencies and lazy-load them",
+    "should_trigger": false
+  }
+]

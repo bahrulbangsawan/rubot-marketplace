@@ -1,0 +1,32 @@
+{
+  "skill": "url-state-management",
+  "configuration": "with_skill",
+  "expectations": [
+    {
+      "text": "Response uses nuqs parseAs* functions for typed URL params",
+      "passed": true,
+      "evidence": "productSearchParams uses parseAsString, parseAsInteger, parseAsBoolean, parseAsStringLiteral for q, category, min, max, in_stock, sort, page parameters"
+    },
+    {
+      "text": "Response implements useQueryStates for multiple params",
+      "passed": true,
+      "evidence": "FilterPanel and Toolbar both use: const [params, setParams] = useQueryStates(productSearchParams) to manage all params together"
+    },
+    {
+      "text": "Response resets page to 1 when filters change",
+      "passed": true,
+      "evidence": "updateFilter function includes: setParams({ ...updates, page: 1 }); // Always reset page. Toolbar sort change also sets page: 1"
+    },
+    {
+      "text": "Response integrates with TanStack Router validateSearch",
+      "passed": true,
+      "evidence": "Route uses: validateSearch: createStandardSchemaV1(productSearchParams, { partialOutput: true }) to bridge nuqs params into TanStack Router's search validation"
+    },
+    {
+      "text": "Response uses clearOnDefault for clean URLs",
+      "passed": true,
+      "evidence": "Response explains clearOnDefault behavior: 'page=1, in_stock=false, sort=newest, and q= (empty) are all absent from the URL when they equal their defaults -- this is clearOnDefault in action, keeping URLs clean and shareable'. Parsers use .withDefault() which enables clearOnDefault by default in nuqs"
+    }
+  ],
+  "pass_rate": 1.0
+}

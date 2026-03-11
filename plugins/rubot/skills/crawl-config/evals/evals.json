@@ -1,0 +1,17 @@
+{
+  "skill_name": "crawl-config",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I need a robots.txt for our SaaS app at https://appflow.io. Public marketing pages should be crawlable, but /app/, /api/, /auth/, and /admin/ must be blocked. I also want to let GPTBot and ClaudeBot crawl our /blog/ and /docs/ sections but block them from everything else. Block AhrefsBot and SemrushBot entirely — they're hammering our server. Oh, and we have staging at staging.appflow.io that should block all bots. Generate this as a TanStack Start API route that switches behavior based on environment.",
+      "expected_output": "A TanStack Start API route at /robots.txt that: (1) In production, outputs a comprehensive robots.txt with User-agent:* allowing / but disallowing /app/, /api/, /auth/, /admin/, and /_/, (2) Specific AI crawler sections — GPTBot, ChatGPT-User, anthropic-ai, Claude-Web, and Google-Extended each with Allow:/blog/ and Allow:/docs/ but Disallow:/, (3) Blocks AhrefsBot, SemrushBot, MJ12bot, and DotBot with Disallow:/, (4) Includes Sitemap directive pointing to https://appflow.io/sitemap.xml, (5) In non-production environments, outputs a blanket Disallow:/ for all user agents, (6) Returns correct Content-Type:text/plain header with appropriate Cache-Control. The route should use process.env.NODE_ENV or a SITE_URL env var to determine environment.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "I need to generate a dynamic sitemap.xml for our TanStack Start app. We have static pages (/, /about, /pricing, /blog, /contact), dynamic blog posts from our CMS at /blog/$slug, and product pages at /products/$slug from our Drizzle database. The site is https://craftmarket.co and it's deployed on Cloudflare Workers. I want proper priority and changefreq values and the sitemap should auto-discover all static routes from the TanStack route tree.",
+      "expected_output": "A TanStack Start API route at /sitemap.xml that: (1) Discovers static routes from the TanStack route tree using routeTree.gen, filtering out dynamic ($param) and API routes, (2) Adds static pages with appropriate priority values (homepage 1.0, /pricing 0.9, /blog 0.9, /about and /contact 0.6-0.7) and changefreq (homepage daily, blog daily, about/contact monthly), (3) Fetches dynamic blog posts and maps them to sitemap entries with /blog/{slug}, lastmod from updatedAt or publishedAt, changefreq monthly, priority 0.7, (4) Fetches products from Drizzle and maps to /products/{slug} with lastmod, changefreq weekly, priority 0.8, (5) Generates valid XML with proper xmlns declaration, (6) Returns Content-Type:application/xml with cache headers. Should mention the 50,000 URL limit per sitemap and suggest using a sitemap index if the site grows. Could optionally show a Cloudflare Workers edge-cached variant using KV storage.",
+      "files": []
+    }
+  ]
+}

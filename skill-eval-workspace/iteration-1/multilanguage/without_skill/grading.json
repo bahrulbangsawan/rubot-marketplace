@@ -1,0 +1,32 @@
+{
+  "skill": "multilanguage",
+  "configuration": "without_skill",
+  "expectations": [
+    {
+      "text": "Response creates src/i18n/ directory structure",
+      "passed": true,
+      "evidence": "Response creates files under src/i18n/ including config.ts, context.tsx, useTranslation.ts, locales/id.json, locales/en.json, and a barrel export index.ts"
+    },
+    {
+      "text": "Response sets Indonesian as DEFAULT_LANGUAGE",
+      "passed": true,
+      "evidence": "Code includes: export const defaultLanguage: Language = 'id'"
+    },
+    {
+      "text": "Response creates locale JSON files for id and en",
+      "passed": true,
+      "evidence": "Response includes src/i18n/locales/id.json and src/i18n/locales/en.json with translation keys for nav, home, about, contact, footer"
+    },
+    {
+      "text": "Response implements useTranslation hook with dotted key paths",
+      "passed": true,
+      "evidence": "The useTranslation hook splits key by '.' and traverses: const keys = key.split('.'); for (const k of keys) { value = value[k] }. Usage shows t('home.title') and t('contact.form.name')"
+    },
+    {
+      "text": "Response creates LanguageProvider with React context",
+      "passed": true,
+      "evidence": "src/i18n/context.tsx creates I18nContext with createContext and exports I18nProvider component that wraps children with I18nContext.Provider, managing language, setLanguage, and translations"
+    }
+  ],
+  "pass_rate": 1.0
+}

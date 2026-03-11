@@ -1,0 +1,32 @@
+{
+  "skill": "wcag-audit",
+  "configuration": "with_skill",
+  "expectations": [
+    {
+      "text": "Response includes automated testing phase (axe-core/Lighthouse)",
+      "passed": true,
+      "evidence": "Phase 1 'Automated Testing' includes commands for axe-core ('npx axe http://localhost:3000 --rules wcag2aa,wcag22aa') and Lighthouse ('npx lighthouse http://localhost:3000 --only-categories=accessibility'). Notes automated tools catch ~30-40% of issues."
+    },
+    {
+      "text": "Response includes manual testing phase (keyboard, screen reader)",
+      "passed": true,
+      "evidence": "Phase 3 'Manual Keyboard Testing' covers tabbing, reverse tab, activation, carousel controls, escape, skip nav, focus traps, and focus visibility with a detailed table. Phase 4 'Screen Reader Testing' covers VoiceOver testing for landmarks, headings, carousel, forms, and dynamic content."
+    },
+    {
+      "text": "Response categorizes issues by severity",
+      "passed": true,
+      "evidence": "Remediation Plan has four phases: 'Phase 1: Critical Fixes (Days 1-2)', 'Phase 2: High Priority (Days 3-4)', 'Phase 3: Medium Priority (Days 5-6)', 'Phase 4: Low Priority (Post-Launch Backlog)'. Each lists issues with priority numbers, fixes, effort estimates, and WCAG SC references."
+    },
+    {
+      "text": "Response references specific WCAG success criteria",
+      "passed": true,
+      "evidence": "Extensively references specific WCAG success criteria throughout: 1.1.1, 1.3.1, 1.3.2, 1.3.5, 1.4.1, 1.4.3, 1.4.4, 1.4.10, 1.4.11, 1.4.12, 2.1.1, 2.1.2, 2.2.2, 2.3.1, 2.4.1, 2.4.2, 2.4.3, 2.4.4, 2.4.6, 2.4.7, 2.4.11, 2.5.7, 2.5.8, 3.1.1, 3.2.6, 3.3.1, 3.3.3, 3.3.7, 3.3.8, 4.1.2, 4.1.3. Section-by-section checklists reference SC numbers for every requirement."
+    },
+    {
+      "text": "Response produces a structured audit report",
+      "passed": true,
+      "evidence": "Report follows a formal structure: Executive Summary, Five-Phase Methodology (automated, semi-automated, keyboard, screen reader, visual), Section-by-Section Checklist (Hero, Feature Cards, Testimonial Carousel, Pricing Table, Contact Form, Page-Level), Scoring Framework with weighted categories, Remediation Plan phased by severity, and Verification Checklist."
+    }
+  ],
+  "pass_rate": 1.0
+}

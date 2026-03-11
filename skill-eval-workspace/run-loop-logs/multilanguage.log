@@ -1,0 +1,6 @@
+Split: 12 train, 8 test (holdout=0.4)
+
+============================================================
+Iteration 1/3
+Description: Provides patterns, translation file structures, and component examples for implementing full multilingual (i18n) support in TanStack Start applications. Use when adding multi-language support, internationalization, language switching, translated routes, localized content, bilingual pages, hreflang tags, or language detection. Also use when the user mentions "i18n", "multilanguage", "language switcher", "translated content", "localized routes", "bilingual", "multilingual", "bahasa", or wants to support multiple languages on their website. Covers translation file organization, type-safe translation hooks, prefix-based localized routing, language detection and preference persistence, language switcher UI components with flag icons, SEO localization (hreflang, localized meta), and content translation best practices.
+============================================================

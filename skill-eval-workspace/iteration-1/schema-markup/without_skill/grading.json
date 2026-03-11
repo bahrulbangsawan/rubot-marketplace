@@ -1,0 +1,27 @@
+{
+  "skill": "schema-markup",
+  "configuration": "without_skill",
+  "expectations": [
+    {
+      "text": "Response generates Organization JSON-LD with sameAs array",
+      "passed": true,
+      "evidence": "Organization schema includes sameAs array with Twitter, LinkedIn, and GitHub URLs."
+    },
+    {
+      "text": "Response generates WebSite JSON-LD with SearchAction",
+      "passed": true,
+      "evidence": "WebSite schema includes potentialAction with @type SearchAction, target URL with {search_term_string}, and query-input. However, uses the older flat target string format rather than the EntryPoint type structure."
+    },
+    {
+      "text": "Response uses absolute URLs (https://buildstack.dev)",
+      "passed": true,
+      "evidence": "All URLs use absolute format: https://buildstack.dev, https://buildstack.dev/images/logo.svg. Explicitly notes logo URL must be absolute."
+    },
+    {
+      "text": "Response shows integration in TanStack Start root layout",
+      "passed": true,
+      "evidence": "Shows integration in src/routes/__root.tsx using createRootRoute with script tags containing JSON.stringify of schemas. Also mentions head() export as an alternative but does not show its implementation."
+    }
+  ],
+  "pass_rate": 1.0
+}

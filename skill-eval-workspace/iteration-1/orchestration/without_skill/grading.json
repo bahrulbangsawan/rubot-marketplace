@@ -1,0 +1,27 @@
+{
+  "skill": "orchestration",
+  "configuration": "without_skill",
+  "expectations": [
+    {
+      "text": "Response identifies multiple domains (database, backend, frontend, responsive)",
+      "passed": true,
+      "evidence": "Sections cover '1. Start with the Database (PostgreSQL)', '2. Build the tRPC Endpoints', '3. Build the Frontend Data Table', and '4. Make It Responsive' -- four distinct domains."
+    },
+    {
+      "text": "Response names specific agents or specializations for each domain",
+      "passed": false,
+      "evidence": "The response does not name any agents or specializations. It describes what to do in each domain but never assigns named agents like neon-master, backend-master, etc."
+    },
+    {
+      "text": "Response provides a sequential execution plan with ordering rationale",
+      "passed": true,
+      "evidence": "'Suggested Order of Work' section lists 7 numbered steps with implicit rationale ('Start with the database schema. Once that is solid, everything else falls into place.'). However, no explicit rationale per step."
+    },
+    {
+      "text": "Response includes verification/testing step at the end",
+      "passed": true,
+      "evidence": "Step 7 in the Suggested Order of Work: 'Testing -- Verify all CRUD operations, edge cases (empty states, error handling, validation)'."
+    }
+  ],
+  "pass_rate": 0.75
+}

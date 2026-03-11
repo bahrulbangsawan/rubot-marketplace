@@ -1,0 +1,82 @@
+[
+  {
+    "query": "Generate a robots.txt for our SaaS app at crmpro.com. We want to allow all search engines to crawl public pages but block /api/, /dashboard/, /admin/, and /auth/ paths. Also block GPTBot and CCBot entirely.",
+    "should_trigger": true
+  },
+  {
+    "query": "Our staging environment at staging.example.com is showing up in Google search results. I need a robots.txt that blocks all crawlers with Disallow: / for non-production environments.",
+    "should_trigger": true
+  },
+  {
+    "query": "Create a dynamic sitemap.xml in TanStack Start that includes all static pages and fetches blog posts from the database. Each URL needs loc, lastmod from the database updatedAt field, changefreq, and priority.",
+    "should_trigger": true
+  },
+  {
+    "query": "I want to allow ClaudeBot and GPTBot to crawl our /blog/ and /docs/ sections but block them from everything else. What user-agent strings do I need for Anthropic and OpenAI crawlers?",
+    "should_trigger": true
+  },
+  {
+    "query": "Google Search Console says our sitemap has errors. Some URLs return 404 and there are duplicate entries. How do I ensure the sitemap only contains canonical URLs that return HTTP 200?",
+    "should_trigger": true
+  },
+  {
+    "query": "Our site has over 80,000 product pages. I need a sitemap index that splits products into sub-sitemaps of 50,000 URLs each, plus separate sitemaps for blog posts and static pages.",
+    "should_trigger": true
+  },
+  {
+    "query": "Set up an image sitemap with image:loc, image:title, and image:caption for our portfolio pages. Google isn't discovering the images on our photography site.",
+    "should_trigger": true
+  },
+  {
+    "query": "Implement a TanStack Start API route at /robots.txt that returns environment-specific crawl rules. Production allows crawling, staging and dev return Disallow: /. Include the Sitemap directive pointing to our sitemap.xml.",
+    "should_trigger": true
+  },
+  {
+    "query": "AhrefsBot and SemrushBot are making thousands of requests per minute and slowing down our site. Add Disallow rules for these bots and also add Crawl-delay: 10 for other aggressive crawlers.",
+    "should_trigger": true
+  },
+  {
+    "query": "Generate a Cloudflare Worker that serves our sitemap.xml at the edge. It should read URL entries from KV storage and return well-formed XML with proper Content-Type headers and caching.",
+    "should_trigger": true
+  },
+  {
+    "query": "Add noindex meta tags to our admin pages so they don't appear in Google search results. The pages are behind authentication but some are leaking into the index.",
+    "should_trigger": false
+  },
+  {
+    "query": "Set up Google Search Console and submit our site for indexing. I need to verify ownership using a DNS TXT record and then request indexing of our new pages.",
+    "should_trigger": false
+  },
+  {
+    "query": "Implement canonical URL tags on all pages to prevent duplicate content issues. Our blog posts are accessible at both /blog/post-title and /posts/post-title.",
+    "should_trigger": false
+  },
+  {
+    "query": "Configure Cloudflare WAF to block bot traffic based on user-agent, IP reputation, and request rate. I need firewall rules, not robots.txt directives.",
+    "should_trigger": false
+  },
+  {
+    "query": "Add structured data JSON-LD for our local business pages. Include name, address, phone, opening hours, and aggregate rating for Google Knowledge Panel.",
+    "should_trigger": false
+  },
+  {
+    "query": "Our React SPA isn't being indexed by Google because the content is rendered client-side. I need to set up prerendering or SSR so Googlebot can see the page content.",
+    "should_trigger": false
+  },
+  {
+    "query": "Set up hreflang tags for our multilingual site so Google serves the correct language version in search results for Indonesian and English users.",
+    "should_trigger": false
+  },
+  {
+    "query": "Implement server-side rate limiting on our API endpoints. Too many requests from the same IP should return 429 Too Many Requests with a Retry-After header.",
+    "should_trigger": false
+  },
+  {
+    "query": "I need to set up redirects for our old URLs after a site migration. /old-about should 301 redirect to /about and /old-blog/* should redirect to /blog/*.",
+    "should_trigger": false
+  },
+  {
+    "query": "Create Open Graph meta tags for better social media sharing. When our links are shared on Facebook and LinkedIn, they should show the page title, description, and a 1200x630 preview image.",
+    "should_trigger": false
+  }
+]

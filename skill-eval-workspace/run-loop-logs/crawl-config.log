@@ -1,0 +1,6 @@
+Split: 12 train, 8 test (holdout=0.4)
+
+============================================================
+Iteration 1/3
+Description: Generate and configure crawl directives for search engines and AI crawlers. Use when setting up robots.txt, generating sitemap.xml from routes, configuring AI bot policies (GPTBot, ClaudeBot, Google-Extended), optimizing crawl budget, or blocking aggressive scrapers. Also use when users mention "bots crawling my site", "sitemap not found", "pages not being indexed", "block AI scrapers", "allow Googlebot", "my site isn't indexed", "generate robots.txt", "create sitemap", "crawl budget optimization", "bot management", "search engine access", "why aren't my pages showing up", "robots txt not working", "sitemap errors in search console", or need environment-specific crawl rules.
+============================================================

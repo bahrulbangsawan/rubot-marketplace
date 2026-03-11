@@ -1,0 +1,32 @@
+{
+  "skill": "core-web-vitals",
+  "configuration": "with_skill",
+  "expectations": [
+    {
+      "text": "Response identifies hero image as LCP element",
+      "passed": true,
+      "evidence": "Opening diagnosis states the hero image (3200x1800 PNG at 2.4MB) is the LCP element. Provides a breakdown table showing where the 4.8s is spent across TTFB, HTML parse, image discovery, image download, and image decode."
+    },
+    {
+      "text": "Response recommends format conversion (WebP/AVIF)",
+      "passed": true,
+      "evidence": "Action item 1 'Convert to WebP/AVIF and resize' shows sharp-cli commands for both WebP (quality 80) and AVIF (quality 65) conversion with resize to 1600px. Includes responsive srcset with multiple widths."
+    },
+    {
+      "text": "Response recommends image preload with fetchPriority=high",
+      "passed": true,
+      "evidence": "Action item 2 shows a <link preload> with rel='preload', href, as='image', type='image/webp', and fetchpriority='high'. The img element also uses fetchPriority='high' and loading='eager'."
+    },
+    {
+      "text": "Response includes TanStack Start code examples",
+      "passed": true,
+      "evidence": "Action item 2 shows a TanStack Start-specific route file at app/routes/features.tsx using createFileRoute('/features') with a head() function that injects the preload link. Notes this is 'the TanStack Start-specific pattern'."
+    },
+    {
+      "text": "Response addresses CDN/caching via Cloudflare",
+      "passed": true,
+      "evidence": "Action item 3 'Serve via Cloudflare CDN' addresses that the image loads from origin with no CDN. Recommends serving through Cloudflare's edge network with 'Cache-Control: public, max-age=31536000, immutable'. Notes the app is already on Cloudflare Workers."
+    }
+  ],
+  "pass_rate": 1.0
+}

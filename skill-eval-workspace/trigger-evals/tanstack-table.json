@@ -1,0 +1,82 @@
+[
+  {
+    "query": "Build a DataTable component for our user management page at src/components/users-table.tsx. It needs sortable columns for name, email, role, and status with getSortedRowModel and column header click handlers.",
+    "should_trigger": true
+  },
+  {
+    "query": "My TanStack Table re-renders the entire table on every keystroke in the global filter input. The columns array is defined inside the component. How do I fix this performance issue?",
+    "should_trigger": true
+  },
+  {
+    "query": "I need server-side pagination for our orders table. The API at /api/orders accepts page and pageSize query params and returns { data, totalCount }. Set up manualPagination with useReactTable.",
+    "should_trigger": true
+  },
+  {
+    "query": "Add row selection with checkboxes to our products table. I need a select-all checkbox in the header, individual row checkboxes, and a bulk delete button that shows the count of selected rows.",
+    "should_trigger": true
+  },
+  {
+    "query": "Implement column visibility toggles using a DropdownMenu from shadcn/ui. Users should be able to show/hide the 'email', 'phone', and 'address' columns while 'name' stays always visible.",
+    "should_trigger": true
+  },
+  {
+    "query": "I need virtual scrolling for a table with 50,000 rows. Set up @tanstack/react-virtual with useReactTable so we render only visible rows in the viewport.",
+    "should_trigger": true
+  },
+  {
+    "query": "Create column definitions using createColumnHelper<Invoice> for our invoices table. Columns: invoiceNumber (string), client (accessor function combining firstName + lastName), amount (formatted as currency), dueDate (formatted date), status (badge component).",
+    "should_trigger": true
+  },
+  {
+    "query": "Add a faceted filter for the 'status' column that shows checkboxes for 'active', 'pending', 'cancelled' with counts next to each option. Use getFilteredRowModel and ColumnFiltersState.",
+    "should_trigger": true
+  },
+  {
+    "query": "The sorting state resets whenever our data refetches from the API. I need to make sorting controlled with useState so it persists across data updates. Currently using internal table state.",
+    "should_trigger": true
+  },
+  {
+    "query": "Add column pinning to our wide analytics table so the 'Metric Name' column stays fixed on the left when users scroll horizontally. Use ColumnPinningState with column.pin('left').",
+    "should_trigger": true
+  },
+  {
+    "query": "Create a responsive pricing cards layout with three tiers using CSS grid. Each card has a title, price, feature list, and CTA button.",
+    "should_trigger": false
+  },
+  {
+    "query": "I need to display tabular data in a simple HTML table with Tailwind styling. Just a static table, no sorting or filtering needed. About 10 rows of contact information.",
+    "should_trigger": false
+  },
+  {
+    "query": "Build a Kanban board where tasks can be dragged between 'To Do', 'In Progress', and 'Done' columns using dnd-kit. Each column shows task cards.",
+    "should_trigger": false
+  },
+  {
+    "query": "Set up a TanStack Query useQuery hook to fetch user data from /api/users and display it in a list with loading and error states.",
+    "should_trigger": false
+  },
+  {
+    "query": "I need to export our database query results to CSV. The user clicks a download button and gets a CSV file with headers matching the column names.",
+    "should_trigger": false
+  },
+  {
+    "query": "Create a comparison table where users can select 2-4 products and see their specs side by side. It's a static layout, not a data grid.",
+    "should_trigger": false
+  },
+  {
+    "query": "Implement a spreadsheet-like component where users can edit cell values inline, add new rows, and the changes save to the database. Like Google Sheets.",
+    "should_trigger": false
+  },
+  {
+    "query": "Add aria-sort attributes to our existing table headers and make the sort buttons keyboard accessible. The table already works, I just need the accessibility fixes.",
+    "should_trigger": false
+  },
+  {
+    "query": "Build a data visualization dashboard with charts showing revenue over time, user growth, and conversion rates using Recharts. Include a summary table below.",
+    "should_trigger": false
+  },
+  {
+    "query": "I need pagination for a blog post list. Show 10 posts per page with Previous/Next buttons. The posts come from TanStack Query and there's no table involved.",
+    "should_trigger": false
+  }
+]

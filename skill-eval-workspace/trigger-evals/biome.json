@@ -1,0 +1,82 @@
+[
+  {
+    "query": "set up biome.json for the project with recommended lint rules, tab indentation, single quotes, and import sorting enabled",
+    "should_trigger": true
+  },
+  {
+    "query": "biome check is reporting noUnusedVariables on line 15 of src/utils/helpers.ts for the variable 'tempResult' — how do I fix or suppress it?",
+    "should_trigger": true
+  },
+  {
+    "query": "migrate from ESLint + Prettier to Biome — run the automatic migration and clean up old config files",
+    "should_trigger": true
+  },
+  {
+    "query": "add a biome-ignore comment for noExplicitAny on the external API response handler — the third-party SDK returns any and we can't type it",
+    "should_trigger": true
+  },
+  {
+    "query": "bunx biome ci . passes locally but fails in GitHub Actions with different formatting — how do I fix the version drift?",
+    "should_trigger": true
+  },
+  {
+    "query": "configure biome to disable noConsoleLog for test files (*.test.ts and *.spec.ts) using overrides",
+    "should_trigger": true
+  },
+  {
+    "query": "add a pre-commit hook that runs biome check --staged --no-errors-on-unmatched before allowing commits",
+    "should_trigger": true
+  },
+  {
+    "query": "run biome check --write . to auto-fix all safe lint and formatting issues across the project",
+    "should_trigger": true
+  },
+  {
+    "query": "set up VS Code to use Biome as the default formatter with format-on-save and organize-imports-on-save",
+    "should_trigger": true
+  },
+  {
+    "query": "add useSortedClasses to biome.json nursery rules so Tailwind classes get sorted with cn and clsx support",
+    "should_trigger": true
+  },
+  {
+    "query": "fix the TypeScript error: Property 'name' does not exist on type 'User | undefined' at src/components/UserCard.tsx:23",
+    "should_trigger": false
+  },
+  {
+    "query": "configure prettier to use single quotes, trailing commas, and 2-space indentation in .prettierrc",
+    "should_trigger": false
+  },
+  {
+    "query": "add ESLint with @typescript-eslint/parser and the react-hooks plugin for the project",
+    "should_trigger": false
+  },
+  {
+    "query": "run bun run validate to check for type errors and build failures before deploying",
+    "should_trigger": false
+  },
+  {
+    "query": "the Drizzle migration failed with a syntax error in the generated SQL — fix the schema definition",
+    "should_trigger": false
+  },
+  {
+    "query": "set up husky with lint-staged to run TypeScript type checking on staged .ts files",
+    "should_trigger": false
+  },
+  {
+    "query": "add a GitHub Action workflow that runs tsc --noEmit to catch type errors on every push",
+    "should_trigger": false
+  },
+  {
+    "query": "format the JSON response in the ElysiaJS API to use camelCase keys instead of snake_case",
+    "should_trigger": false
+  },
+  {
+    "query": "configure SWC as the TypeScript compiler for faster builds in the Bun project",
+    "should_trigger": false
+  },
+  {
+    "query": "add the tailwindcss-animate plugin to tailwind.config.ts for shadcn/ui component animations",
+    "should_trigger": false
+  }
+]

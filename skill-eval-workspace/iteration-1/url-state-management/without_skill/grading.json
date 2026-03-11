@@ -1,0 +1,32 @@
+{
+  "skill": "url-state-management",
+  "configuration": "without_skill",
+  "expectations": [
+    {
+      "text": "Response uses nuqs parseAs* functions for typed URL params",
+      "passed": false,
+      "evidence": "Response does not use nuqs at all. It uses TanStack Router's built-in validateSearch with a Zod schema and useNavigate/useSearch for URL state management instead of nuqs parseAs* functions"
+    },
+    {
+      "text": "Response implements useQueryStates for multiple params",
+      "passed": false,
+      "evidence": "Response does not use nuqs useQueryStates. It uses TanStack Router's useSearch() to read params and useNavigate() with search callback to update multiple params"
+    },
+    {
+      "text": "Response resets page to 1 when filters change",
+      "passed": true,
+      "evidence": "updateFilters function includes: navigate({ search: (prev) => ({ ...prev, ...updates, page: 1 }) })"
+    },
+    {
+      "text": "Response integrates with TanStack Router validateSearch",
+      "passed": true,
+      "evidence": "Route uses: validateSearch: (search) => productSearchSchema.parse(search) with a Zod schema to validate search params"
+    },
+    {
+      "text": "Response uses clearOnDefault for clean URLs",
+      "passed": false,
+      "evidence": "Response explicitly notes this limitation: 'Default values still appear in the URL unless you manually strip them before navigating, which adds boilerplate.' No clearOnDefault behavior is implemented"
+    }
+  ],
+  "pass_rate": 0.4
+}

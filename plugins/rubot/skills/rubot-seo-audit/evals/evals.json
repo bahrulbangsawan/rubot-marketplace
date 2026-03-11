@@ -1,0 +1,17 @@
+{
+  "skill_name": "rubot-seo-audit",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Can you do a full SEO audit on https://acmecorp.io/pricing? We just redesigned it last week and organic traffic tanked. I want to know if we broke any meta tags, structured data, or if there are indexing issues. Also check if the Core Web Vitals are still passing — the page has a big hero video now.",
+      "expected_output": "A structured SEO audit report covering: technical SEO checks (robots.txt accessibility, sitemap.xml presence, HTTPS enforcement, mobile viewport), on-page SEO analysis (title tag length, meta description, H1 count, heading hierarchy, image alt coverage, canonical URL), structured data validation (JSON-LD presence and type validation), social sharing tag completeness (OG and Twitter Card tags), Core Web Vitals measurements (LCP, INP, CLS with pass/fail against thresholds), and a prioritized list of recommendations explaining what likely caused the traffic drop.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "We're launching a new product page at /products/smart-thermostat tomorrow morning. I need a pre-launch SEO check before it goes live. The page is on our staging at https://staging.homedevices.com/products/smart-thermostat. Make sure everything is ready for Google — schema markup, meta tags, OG images, the works. Flag anything that would prevent it from ranking.",
+      "expected_output": "A pre-launch SEO audit report that verifies: staging environment robots.txt is not blocking crawlers in production config, the page has a proper title tag under 60 chars with the product name, meta description under 160 chars with a compelling CTA, exactly one H1 tag, complete heading hierarchy, all images have alt text, canonical URL points to the production domain, JSON-LD Product schema with required fields (name, offers, price, availability), Open Graph tags with 1200x630 image, Twitter Card meta tags, and Core Web Vitals projections. Should flag any blocking issues like missing structured data fields, noindex tags, or broken canonical references to production URL.",
+      "files": []
+    }
+  ]
+}

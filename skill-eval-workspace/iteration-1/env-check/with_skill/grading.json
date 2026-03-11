@@ -1,0 +1,32 @@
+{
+  "skill": "env-check",
+  "configuration": "with_skill",
+  "expectations": [
+    {
+      "text": "Response checks for critical tools (bun, node, git)",
+      "passed": true,
+      "evidence": "Critical Tools table checks bun (1.3.6), node (v25.2.1), and git (2.50.1) with version comparisons against minimum required versions."
+    },
+    {
+      "text": "Response uses PASS/FAIL/WARN status indicators",
+      "passed": true,
+      "evidence": "Uses [PASS], [FAIL], [WARN], and [INFO] status indicators throughout. Examples: '[PASS]' for bun/node/git, '[FAIL]' for missing package.json, '[WARN]' for missing .env files."
+    },
+    {
+      "text": "Response checks for .env/.env.local files",
+      "passed": true,
+      "evidence": "Project Configuration Files table includes '.env / .env.local' with status '[WARN] Missing' and '.env.example' with status '[WARN] Missing'."
+    },
+    {
+      "text": "Response provides remediation steps for failures",
+      "passed": true,
+      "evidence": "'What to do next' section provides numbered remediation steps: install Wrangler instructions, set up app project instructions, create .env.local file, and a re-run command for verification."
+    },
+    {
+      "text": "Response detects project stack from package.json",
+      "passed": true,
+      "evidence": "Stack Detection section states: 'No package.json found, so stack detection could not run. Once you have an app project with a package.json, the following components would be detected: ElysiaJS, Drizzle ORM, tRPC, Zod, Neon, TanStack libraries, Hono, and others.' This demonstrates the feature exists even though no package.json was present."
+    }
+  ],
+  "pass_rate": 1.0
+}

@@ -1,0 +1,32 @@
+{
+  "skill": "tanstack-table",
+  "configuration": "without_skill",
+  "expectations": [
+    {
+      "text": "Response uses createColumnHelper<Order>() for type safety",
+      "passed": true,
+      "evidence": "Code includes: const columnHelper = createColumnHelper<Order>(); and uses columnHelper.accessor() for all column definitions"
+    },
+    {
+      "text": "Response implements getSortedRowModel and SortingState",
+      "passed": true,
+      "evidence": "Code imports SortingState, uses useState<SortingState>([]), and passes getSortedRowModel: getSortedRowModel() and onSortingChange: setSorting to useReactTable"
+    },
+    {
+      "text": "Response implements getFilteredRowModel and ColumnFiltersState",
+      "passed": true,
+      "evidence": "Code imports ColumnFiltersState, uses useState<ColumnFiltersState>([]), and passes getFilteredRowModel: getFilteredRowModel() and onColumnFiltersChange: setColumnFilters to useReactTable"
+    },
+    {
+      "text": "Response renders status column with Badge component",
+      "passed": true,
+      "evidence": "Status column cell renders <Badge variant={getStatusBadgeVariant(status)}> with a function mapping each OrderStatus to a variant (default, secondary, outline, destructive)"
+    },
+    {
+      "text": "Response uses shadcn/ui Table components with flexRender",
+      "passed": true,
+      "evidence": "Code imports Table, TableBody, TableCell, TableHead, TableHeader, TableRow from @/components/ui/table and uses flexRender for both header and cell rendering"
+    }
+  ],
+  "pass_rate": 1.0
+}

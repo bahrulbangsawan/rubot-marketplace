@@ -1,0 +1,32 @@
+{
+  "skill": "multilanguage",
+  "configuration": "with_skill",
+  "expectations": [
+    {
+      "text": "Response creates src/i18n/ directory structure",
+      "passed": true,
+      "evidence": "Response explicitly shows a file structure under src/i18n/ with subdirectories: index.ts, types.ts, context.tsx, locales/, hooks/, utils/, components/"
+    },
+    {
+      "text": "Response sets Indonesian as DEFAULT_LANGUAGE",
+      "passed": true,
+      "evidence": "Code includes: export const DEFAULT_LANGUAGE: SupportedLanguage = 'id'"
+    },
+    {
+      "text": "Response creates locale JSON files for id and en",
+      "passed": true,
+      "evidence": "Response includes full src/i18n/locales/id.json and src/i18n/locales/en.json with comprehensive translation keys for nav, common, pages, forms, footer, meta, errors, a11y"
+    },
+    {
+      "text": "Response implements useTranslation hook with dotted key paths",
+      "passed": true,
+      "evidence": "The useTranslation hook in src/i18n/hooks/use-translation.ts splits key by '.' and traverses the translations object: key.split('.').reduce(...). Usage example shows t('pages.contact.title') and t('footer.copyright', { year: 2026, brand: 'MyApp' })"
+    },
+    {
+      "text": "Response creates LanguageProvider with React context",
+      "passed": true,
+      "evidence": "src/i18n/context.tsx creates LanguageContext with createContext and exports LanguageProvider component that wraps children with LanguageContext.Provider, managing language state, translations, and setLanguage function"
+    }
+  ],
+  "pass_rate": 1.0
+}

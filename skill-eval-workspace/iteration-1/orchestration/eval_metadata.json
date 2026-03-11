@@ -1,0 +1,6 @@
+{
+  "eval_id": 1,
+  "eval_name": "multi-domain-user-management",
+  "prompt": "I need to build a user management page — it needs a postgres table for roles and permissions, tRPC endpoints for CRUD, a data table with sorting and filtering on the frontend, and the whole thing needs to be responsive on mobile. Where do we start?",
+  "assertions": []
+}

@@ -1,0 +1,82 @@
+[
+  {
+    "query": "open http://localhost:3000/login in headless Chrome, fill the email field with admin@acme.com, fill the password field, and click the Login button",
+    "should_trigger": true
+  },
+  {
+    "query": "take a screenshot of the dashboard page at https://staging.myapp.com/dashboard after logging in",
+    "should_trigger": true
+  },
+  {
+    "query": "run agent-browser snapshot -i on the homepage to see all interactive elements and their refs",
+    "should_trigger": true
+  },
+  {
+    "query": "test the checkout flow: navigate to /cart, click 'Proceed to Checkout', fill the shipping form, and verify the confirmation page shows 'Order placed'",
+    "should_trigger": true
+  },
+  {
+    "query": "check if there are any console errors on the /settings page after clicking the 'Save' button",
+    "should_trigger": true
+  },
+  {
+    "query": "emulate an iPhone 14 device in agent-browser and verify that the mobile navigation drawer opens when clicking the hamburger icon",
+    "should_trigger": true
+  },
+  {
+    "query": "start a performance trace on the products page, scroll to the bottom, then stop the trace and check for long tasks",
+    "should_trigger": true
+  },
+  {
+    "query": "use agent-browser eval to extract all h2 elements from the /blog page and count how many articles are listed",
+    "should_trigger": true
+  },
+  {
+    "query": "after deploying, use agent-browser to verify the signup form works at https://prod.myapp.com/signup — fill name, email, submit, and check for the success message",
+    "should_trigger": true
+  },
+  {
+    "query": "test offline mode: set offline on, try navigating to /dashboard, check if the PWA fallback page renders, then set offline off",
+    "should_trigger": true
+  },
+  {
+    "query": "write a Playwright e2e test file at tests/login.spec.ts for the login flow with page.goto and page.fill",
+    "should_trigger": false
+  },
+  {
+    "query": "set up Cypress for component testing with cy.mount and configure the cypress.config.ts",
+    "should_trigger": false
+  },
+  {
+    "query": "add a viewport meta tag to the HTML head to ensure proper mobile rendering",
+    "should_trigger": false
+  },
+  {
+    "query": "implement a web scraping function in Node.js using cheerio to parse the HTML from a competitor's pricing page",
+    "should_trigger": false
+  },
+  {
+    "query": "fix the responsive layout on the /products page — the grid overflows on screens below 576px",
+    "should_trigger": false
+  },
+  {
+    "query": "set up unit tests for the hasPermission utility function using bun:test with expect().toBe()",
+    "should_trigger": false
+  },
+  {
+    "query": "add a puppeteer script to generate PDF invoices from the /invoices/:id route",
+    "should_trigger": false
+  },
+  {
+    "query": "check if the SEO meta tags are rendering correctly by inspecting the page source HTML",
+    "should_trigger": false
+  },
+  {
+    "query": "create a Chrome extension manifest.json for the product feedback widget",
+    "should_trigger": false
+  },
+  {
+    "query": "configure the Content-Security-Policy header to allow inline scripts and frame-ancestors for the embed page",
+    "should_trigger": false
+  }
+]

@@ -1,0 +1,32 @@
+{
+  "skill": "tanstack-router",
+  "configuration": "without_skill",
+  "expectations": [
+    {
+      "text": "Response creates route files using createFileRoute",
+      "passed": true,
+      "evidence": "Both routes use createFileRoute: \"export const Route = createFileRoute('/properties/')({...})\" and \"export const Route = createFileRoute('/properties/$propertyId')({...})\"."
+    },
+    {
+      "text": "Response includes a loader function that fetches data",
+      "passed": true,
+      "evidence": "Both routes define loader functions that fetch from /api/properties and /api/properties/$propertyId respectively."
+    },
+    {
+      "text": "Response uses notFound() for missing properties",
+      "passed": false,
+      "evidence": "The response uses \"throw new Error('Property not found')\" instead of TanStack Router's notFound() function. The notFound import is not present."
+    },
+    {
+      "text": "Response defines a pendingComponent with skeleton UI",
+      "passed": false,
+      "evidence": "No pendingComponent is defined on either route. The response suggests adding a loading check inside the component (\"if (!property) { return <div>Loading...</div>; }\") but this is not a pendingComponent with skeleton UI."
+    },
+    {
+      "text": "Response uses Route.useLoaderData() to access data",
+      "passed": true,
+      "evidence": "Both components use Route.useLoaderData(): \"const properties = Route.useLoaderData();\" and \"const { property, tenants } = Route.useLoaderData();\"."
+    }
+  ],
+  "pass_rate": 0.6
+}

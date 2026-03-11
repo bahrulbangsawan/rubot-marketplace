@@ -1,0 +1,32 @@
+{
+  "skill": "wcag-fix",
+  "configuration": "with_skill",
+  "expectations": [
+    {
+      "text": "Response adds role=dialog and aria-modal=true",
+      "passed": true,
+      "evidence": "Code uses role=\"alertdialog\" (which is a more specific type of dialog) and aria-modal=\"true\" on the dialog div element"
+    },
+    {
+      "text": "Response implements focus trapping within the modal",
+      "passed": true,
+      "evidence": "handleKeyDown callback implements Tab/Shift+Tab cycling: queries all focusable elements inside dialogRef, wraps focus from last to first element on Tab and first to last on Shift+Tab using e.preventDefault()"
+    },
+    {
+      "text": "Response adds Escape key handler to close",
+      "passed": true,
+      "evidence": "handleKeyDown includes: if (e.key === 'Escape') { e.stopPropagation(); onCancel(); return; }"
+    },
+    {
+      "text": "Response saves and restores focus to triggering element",
+      "passed": true,
+      "evidence": "useEffect saves trigger: triggerRef.current = document.activeElement as HTMLElement when open=true, and restores: triggerRef.current?.focus() when open=false"
+    },
+    {
+      "text": "Response uses role=alertdialog for destructive action",
+      "passed": true,
+      "evidence": "Code uses role=\"alertdialog\" with explanation: 'Alert dialogs tell assistive technology that the user must acknowledge the content before continuing. Since this is a delete confirmation, alertdialog is the correct role.'"
+    }
+  ],
+  "pass_rate": 1.0
+}

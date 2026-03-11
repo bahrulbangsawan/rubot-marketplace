@@ -1,0 +1,82 @@
+[
+  {
+    "query": "add role-based access control to the app — I need admin, staff, and member roles with different permission sets",
+    "should_trigger": true
+  },
+  {
+    "query": "create a requirePermission('booking:create') tRPC middleware that throws FORBIDDEN if the user lacks the permission",
+    "should_trigger": true
+  },
+  {
+    "query": "build a <RequirePermission permission='admin:access'> wrapper component that hides children from unauthorized users",
+    "should_trigger": true
+  },
+  {
+    "query": "design the database schema for users, roles, and permissions tables with Drizzle — I need a many-to-many relationship between roles and permissions",
+    "should_trigger": true
+  },
+  {
+    "query": "my admin user is getting a 403 on the /api/users endpoint even though they should have user:read — how do I debug the permission check?",
+    "should_trigger": true
+  },
+  {
+    "query": "implement a useRequirePermission hook that redirects to /unauthorized if the current user lacks the specified permission",
+    "should_trigger": true
+  },
+  {
+    "query": "add a centralized PERMISSIONS constant with resource:action format — booking:read, booking:create, booking:update, booking:delete, admin:access",
+    "should_trigger": true
+  },
+  {
+    "query": "the UI still shows the 'Delete User' button to staff members even though they don't have user:delete — fix the frontend guard",
+    "should_trigger": true
+  },
+  {
+    "query": "after changing a user's role from member to admin, the permission change doesn't take effect until they log out and back in",
+    "should_trigger": true
+  },
+  {
+    "query": "set up authorization middleware that distinguishes between 401 (not logged in) and 403 (logged in but no permission) for the booking API",
+    "should_trigger": true
+  },
+  {
+    "query": "add a login form with email and password fields using TanStack Form and shadcn Input components",
+    "should_trigger": false
+  },
+  {
+    "query": "implement JWT token generation and validation in the ElysiaJS authentication endpoint",
+    "should_trigger": false
+  },
+  {
+    "query": "add a beforeLoad guard on the /_auth layout route that redirects to /login if there's no session",
+    "should_trigger": false
+  },
+  {
+    "query": "set up OAuth2 with Google sign-in using the googleapis package in the backend",
+    "should_trigger": false
+  },
+  {
+    "query": "create a pgTable for user_sessions with columns id, user_id, token, and expires_at",
+    "should_trigger": false
+  },
+  {
+    "query": "hash the user password with bcrypt before storing it in the database",
+    "should_trigger": false
+  },
+  {
+    "query": "add rate limiting to the /api/login endpoint to prevent brute force attacks",
+    "should_trigger": false
+  },
+  {
+    "query": "set up CORS headers on the ElysiaJS server to allow requests from localhost:3000",
+    "should_trigger": false
+  },
+  {
+    "query": "implement row-level security in PostgreSQL so users can only see their own records",
+    "should_trigger": false
+  },
+  {
+    "query": "add Content-Security-Policy headers to the Cloudflare Workers response",
+    "should_trigger": false
+  }
+]

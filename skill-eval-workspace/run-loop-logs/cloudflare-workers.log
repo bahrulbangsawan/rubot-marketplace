@@ -1,0 +1,6 @@
+Split: 12 train, 8 test (holdout=0.4)
+
+============================================================
+Iteration 1/3
+Description: Implements Cloudflare Workers for serverless deployment and edge computing. Use when deploying applications to Cloudflare Workers, configuring wrangler.toml, setting up KV store, D1 database, R2 storage, implementing Workers secrets, creating cron trigger schedules, or optimizing for deploy to edge on the global CDN. Also use when working with Durable Objects, Cache API, environment bindings, CORS middleware, or V8 isolate architecture.
+============================================================
