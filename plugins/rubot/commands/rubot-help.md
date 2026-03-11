@@ -51,7 +51,7 @@ COMMANDS (29)
 ────────────────────────────────────────────────────────────────
 
   Core Workflow:
-    /rubot-init       Initialize or sync rubot workspace
+    /rubot-init       Initialize workspace (generates CLAUDE.md by default)
     /rubot-plan       Create structured execution plan
     /rubot-execute    Execute the approved plan
     /rubot-check      Run validation and verification

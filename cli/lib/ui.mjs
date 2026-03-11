@@ -81,6 +81,29 @@ export function confirm(question) {
   })
 }
 
+// Simple numbered choice prompt
+export function choose(question, options, defaultIndex = 0) {
+  return new Promise((resolve) => {
+    const rl = createInterface({ input: process.stdin, output: process.stdout })
+    console.log()
+    console.log(`  ${question}`)
+    console.log()
+    for (let i = 0; i < options.length; i++) {
+      const marker = i === defaultIndex ? cyan('▸') : ' '
+      const label = i === defaultIndex ? bold(options[i]) : options[i]
+      console.log(`  ${marker} ${dim(`${i + 1}.`)} ${label}`)
+    }
+    console.log()
+    rl.question(`  ${dim(`Choose [1-${options.length}]`)} ${dim(`(default: ${defaultIndex + 1}):`)} `, (answer) => {
+      rl.close()
+      const num = parseInt(answer, 10)
+      if (!answer.trim()) resolve(defaultIndex)
+      else if (num >= 1 && num <= options.length) resolve(num - 1)
+      else resolve(defaultIndex)
+    })
+  })
+}
+
 // Error and exit
 export function fatal(message) {
   console.error(`${symbols.error} ${message}`)

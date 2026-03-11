@@ -54,7 +54,7 @@ In multi-domain projects (backend, database, SSR, hydration, performance, respon
 | Command | Description |
 |---------|-------------|
 | `/rubot` | Invoke the main orchestration governor for multi-domain tasks |
-| `/rubot-init` | Initialize or sync the rubot workspace — generates AGENTS.md, CLAUDE.md, and rubot.local.yaml with file selection and subfolder support |
+| `/rubot-init` | Initialize or sync the rubot workspace — generates CLAUDE.md (default), AGENTS.md, and rubot.local.yaml with file selection and subfolder support |
 | `/rubot-plan` | Generate a structured execution plan with agent orchestration |
 | `/rubot-execute` | Execute the approved plan from the workspace |
 | `/rubot-check` | Run validation and invoke verification agents |
@@ -204,9 +204,9 @@ Set up the rubot workspace for a new or existing project.
 
 ### File Selection
 ? Which files would you like to generate or update?
-  ● Both (AGENTS.md + CLAUDE.md) — recommended for first-time setup
-  ○ AGENTS.md only
-  ○ CLAUDE.md only
+  ● CLAUDE.md (default) — project instructions for Claude Code
+  ○ Both (CLAUDE.md + AGENTS.md) — recommended for monorepos or large projects
+  ○ AGENTS.md only — hierarchical agent guidance for subdirectories
 
 ### Project Configuration Detected:
 - Framework: TanStack Start
@@ -221,8 +221,8 @@ Set up the rubot workspace for a new or existing project.
 ✓ agent-browser: installed (v1.2.0)
 
 ### Update generated files anytime:
-  /rubot-init           — regenerate CLAUDE.md, AGENTS.md, rubot.local.yaml
-  /rubot-init src/      — regenerate only src/AGENTS.md
+  /rubot-init           — regenerate CLAUDE.md and rubot.local.yaml
+  /rubot-init src/      — regenerate only src/CLAUDE.md
 ```
 
 ---
@@ -1370,8 +1370,9 @@ Located in `~/.claude/plugins/rubot/templates/`:
 | Template | Purpose | Used By |
 |----------|---------|---------|
 | `rubot.local.yaml.template` | Workspace configuration | `/rubot-init` |
-| `rootAGENTS.md.template` | Root AGENTS.md with browser testing and rubot commands | `/rubot-init` |
-| `subAGENTS.md.template` | Subfolder AGENTS.md with scoped browser testing | `/rubot-init <path>` |
+| `rootAGENTS.md.template` | Root AGENTS.md with browser testing and rubot commands | `/rubot-init` (when AGENTS.md selected) |
+| `subAGENTS.md.template` | Subfolder AGENTS.md with scoped browser testing | `/rubot-init <path>` (when AGENTS.md requested) |
+| `subCLAUDE.md.template` | Subfolder CLAUDE.md with scoped guidance (default) | `/rubot-init <path>` |
 | `README.md.template` | Project README for boilerplate cleanup | `/rubot-init` |
 | `plan.md.template` | Execution plan with checklists | `/rubot-plan` |
 | `validation-report.md.template` | Validation results report | `/rubot-check` |
@@ -1409,10 +1410,10 @@ project-root/
     validation-report.md          # Latest validation results
     [timestamp]-plan.md           # Archived completed plans
   src/
-    AGENTS.md                     # Subfolder agent guidance (optional)
+    CLAUDE.md                     # Subfolder guidance (default, or AGENTS.md if requested)
 ```
 
-Update generated files: `/rubot-init` (choose AGENTS.md, CLAUDE.md, or both)
+Update generated files: `/rubot-init` (choose CLAUDE.md, AGENTS.md, or both)
 Update subfolder only: `/rubot-init src/`
 
 ## Installation

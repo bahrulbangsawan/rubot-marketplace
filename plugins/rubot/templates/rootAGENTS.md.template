@@ -142,7 +142,7 @@ Manage this project using rubot slash commands:
 
 | Command | Purpose |
 |---------|---------|
-| `/rubot-init` | Regenerate AGENTS.md, CLAUDE.md, and rubot.local.yaml |
+| `/rubot-init` | Regenerate CLAUDE.md, AGENTS.md, and rubot.local.yaml |
 | `/rubot-plan` | Create structured execution plan |
 | `/rubot-execute` | Execute the approved plan |
 | `/rubot-check` | Run validation and verification |

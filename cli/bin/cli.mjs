@@ -70,7 +70,7 @@ function showHelp() {
     remove, rm   Uninstall component(s) — interactive or direct
     search       Search available components
     update       Update installed components
-    init         Create a new SKILL.md template
+    init         Generate CLAUDE.md, AGENTS.md, or SKILL.md template
 
   \x1b[2mOptions:\x1b[0m
     --type, -t   Component type: skill, command, agent, hook, template

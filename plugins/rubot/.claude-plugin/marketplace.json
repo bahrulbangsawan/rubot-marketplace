@@ -165,7 +165,7 @@
         },
         {
           "name": "rubot-init",
-          "description": "Initialize or sync the rubot workspace — generates AGENTS.md, CLAUDE.md, and rubot.local.yaml with file selection and subfolder support"
+          "description": "Initialize or sync the rubot workspace — generates CLAUDE.md (default), AGENTS.md, and rubot.local.yaml with file selection and subfolder support"
         },
         {
           "name": "rubot-plan",
@@ -924,11 +924,12 @@
       ]
     },
     "templates": {
-      "count": 10,
+      "count": 11,
       "list": [
         "rubot.local.yaml.template",
         "rootAGENTS.md.template",
         "subAGENTS.md.template",
+        "subCLAUDE.md.template",
         "plan.md.template",
         "validation-report.md.template",
         "README.md.template",
