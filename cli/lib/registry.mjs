@@ -36,6 +36,7 @@ export async function getComponentCatalog(type) {
     ...(item.role ? { role: item.role } : {}),
     ...(item.event ? { event: item.event } : {}),
     ...(item.agents ? { agents: item.agents } : {}),
+    ...(item.requires ? { requires: item.requires } : {}),
   }))
 }
 

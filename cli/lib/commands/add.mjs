@@ -166,6 +166,38 @@ async function installHooks(hookNames, global) {
   return installed
 }
 
+// ── Dependency resolution ──
+
+async function resolveDependencies(toInstall, global) {
+  // Collect all required skill names from components being installed
+  const requiredSkills = new Set()
+  for (const [type, names] of Object.entries(toInstall)) {
+    if (type === 'hook' || type === 'template') continue
+    const catalog = await getComponentCatalog(type)
+    for (const name of names) {
+      const item = catalog.find((c) => c.name === name)
+      if (item?.requires) {
+        for (const dep of item.requires) requiredSkills.add(dep)
+      }
+    }
+  }
+
+  if (requiredSkills.size === 0) return []
+
+  // Remove skills already in the install list
+  const explicitSkills = new Set(toInstall.skill || [])
+  for (const name of explicitSkills) requiredSkills.delete(name)
+
+  // Remove skills already installed locally
+  const missing = []
+  for (const name of requiredSkills) {
+    const dest = getComponentPath('skill', name, global)
+    if (!existsSync(dest)) missing.push(name)
+  }
+
+  return missing
+}
+
 // ── Unified installer ──
 
 async function installComponents(toInstall, global) {
@@ -175,15 +207,30 @@ async function installComponents(toInstall, global) {
     return
   }
 
+  // Auto-resolve skill dependencies
+  const deps = await resolveDependencies(toInstall, global)
+  if (deps.length > 0) {
+    if (!toInstall.skill) toInstall.skill = []
+    toInstall.skill.unshift(...deps)
+    console.log()
+    console.log(`  ${cyan('+')} ${bold(String(deps.length))} required skill(s): ${deps.join(', ')}`)
+  }
+
+  const finalCount = Object.values(toInstall).reduce((sum, names) => sum + names.length, 0)
   const location = global
     ? bold('global') + dim(' (~/.claude/)')
     : bold('local') + dim(' (.claude/)')
   console.log()
-  console.log(`  Installing ${bold(String(totalCount))} component(s) to ${location}`)
+  console.log(`  Installing ${bold(String(finalCount))} component(s) to ${location}`)
   console.log()
 
+  // Install skills first (dependencies before dependents)
   let installed = 0
-  for (const [type, names] of Object.entries(toInstall)) {
+  const orderedTypes = ['skill', ...Object.keys(toInstall).filter((t) => t !== 'skill')]
+  for (const type of orderedTypes) {
+    const names = toInstall[type]
+    if (!names || names.length === 0) continue
+
     if (type === 'hook') {
       installed += await installHooks(names, global)
       continue

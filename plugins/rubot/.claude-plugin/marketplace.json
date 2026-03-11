@@ -214,31 +214,54 @@
         },
         {
           "name": "rubot-seo-audit",
-          "description": "Comprehensive SEO audit"
+          "description": "Comprehensive SEO audit",
+          "requires": [
+            "core-web-vitals",
+            "schema-markup",
+            "social-sharing"
+          ]
         },
         {
           "name": "rubot-seo-check-schema",
-          "description": "Validate structured data and JSON-LD schema markup"
+          "description": "Validate structured data and JSON-LD schema markup",
+          "requires": [
+            "schema-markup"
+          ]
         },
         {
           "name": "rubot-seo-check-og",
-          "description": "Check Open Graph and Twitter Card meta tags"
+          "description": "Check Open Graph and Twitter Card meta tags",
+          "requires": [
+            "social-sharing"
+          ]
         },
         {
           "name": "rubot-seo-check-vitals",
-          "description": "Audit Core Web Vitals (LCP, INP, CLS)"
+          "description": "Audit Core Web Vitals (LCP, INP, CLS)",
+          "requires": [
+            "core-web-vitals"
+          ]
         },
         {
           "name": "rubot-seo-generate-robots",
-          "description": "Generate robots.txt with proper directives"
+          "description": "Generate robots.txt with proper directives",
+          "requires": [
+            "crawl-config"
+          ]
         },
         {
           "name": "rubot-seo-generate-sitemap",
-          "description": "Generate sitemap.xml from project routes"
+          "description": "Generate sitemap.xml from project routes",
+          "requires": [
+            "crawl-config"
+          ]
         },
         {
           "name": "rubot-seo-generate-favicons",
-          "description": "Set up complete favicon structure and meta tags"
+          "description": "Set up complete favicon structure and meta tags",
+          "requires": [
+            "social-sharing"
+          ]
         },
         {
           "name": "rubot-setup-agent-browser",
@@ -246,7 +269,10 @@
         },
         {
           "name": "rubot-setup-cf-workers",
-          "description": "Set up Cloudflare Workers deployment — detects framework, installs wrangler, generates config"
+          "description": "Set up Cloudflare Workers deployment — detects framework, installs wrangler, generates config",
+          "requires": [
+            "cf-workers-setup"
+          ]
         },
         {
           "name": "rubot-setup-react-grab",
@@ -262,31 +288,58 @@
         },
         {
           "name": "rubot-test-browser",
-          "description": "Run E2E browser tests using agent-browser and dogfood exploratory testing skill"
+          "description": "Run E2E browser tests using agent-browser and dogfood exploratory testing skill",
+          "requires": [
+            "agent-browser"
+          ]
         },
         {
           "name": "rubot-responsive-audit",
-          "description": "Audit and fix responsive layout issues across all breakpoints (xs/sm/md/lg)"
+          "description": "Audit and fix responsive layout issues across all breakpoints (xs/sm/md/lg)",
+          "requires": [
+            "responsive-design"
+          ]
         },
         {
           "name": "rubot-design-audit",
-          "description": "Audit design token usage, component consistency, and carousel functionality with OpenSpec planning"
+          "description": "Audit design token usage, component consistency, and carousel functionality with OpenSpec planning",
+          "requires": [
+            "design-tokens",
+            "component-consistency"
+          ]
         },
         {
           "name": "rubot-wcag-audit",
-          "description": "Run WCAG 2.2 Level AA accessibility audit on a URL or codebase"
+          "description": "Run WCAG 2.2 Level AA accessibility audit on a URL or codebase",
+          "requires": [
+            "wcag-audit"
+          ]
         },
         {
           "name": "rubot-wcag-fix",
-          "description": "Fix WCAG 2.2 accessibility issues across the codebase"
+          "description": "Fix WCAG 2.2 accessibility issues across the codebase",
+          "requires": [
+            "wcag-fix",
+            "wcag-audit"
+          ]
         },
         {
           "name": "rubot-global-layout",
-          "description": "Build a persistent global layout with shared Navbar and Footer wrapping all routes"
+          "description": "Build a persistent global layout with shared Navbar and Footer wrapping all routes",
+          "requires": [
+            "global-layout",
+            "responsive-design"
+          ]
         },
         {
           "name": "rubot-multilanguage",
-          "description": "Implement full multilingual support with language switcher, localized routing, and bilingual copywriting"
+          "description": "Implement full multilingual support with language switcher, localized routing, and bilingual copywriting",
+          "requires": [
+            "multilanguage",
+            "global-layout",
+            "schema-markup",
+            "social-sharing"
+          ]
         },
         {
           "name": "rubot-skills-security-check",
@@ -294,19 +347,60 @@
         },
         {
           "name": "rubot-security-audit",
-          "description": "Run comprehensive OWASP ASVS 5.0.0 security audit with scored compliance reporting"
+          "description": "Run comprehensive OWASP ASVS 5.0.0 security audit with scored compliance reporting",
+          "requires": [
+            "owasp-asvs-audit",
+            "owasp-encoding-sanitization",
+            "owasp-validation-logic",
+            "owasp-web-frontend-security",
+            "owasp-api-security",
+            "owasp-file-handling",
+            "owasp-authentication",
+            "owasp-session-management",
+            "owasp-authorization",
+            "owasp-self-contained-tokens",
+            "owasp-oauth-oidc",
+            "owasp-cryptography",
+            "owasp-secure-communication",
+            "owasp-configuration-security",
+            "owasp-data-protection",
+            "owasp-secure-coding",
+            "owasp-security-logging",
+            "owasp-webrtc-security",
+            "rbac-auth"
+          ]
         },
         {
           "name": "rubot-implement-figma",
-          "description": "Implement pixel-perfect UI from Figma designs — generates section-figma.yaml template or implements sections from a YAML config using Figma MCP"
+          "description": "Implement pixel-perfect UI from Figma designs — generates section-figma.yaml template or implements sections from a YAML config using Figma MCP",
+          "requires": [
+            "figma-slicing",
+            "responsive-design",
+            "design-tokens"
+          ]
         },
         {
           "name": "rubot-geo-audit",
-          "description": "Run comprehensive GEO (Generative Engine Optimization) audit for AI search visibility with composite score and prioritized action plan"
+          "description": "Run comprehensive GEO (Generative Engine Optimization) audit for AI search visibility with composite score and prioritized action plan",
+          "requires": [
+            "geo",
+            "geo-audit",
+            "geo-citability",
+            "geo-platform-optimizer",
+            "geo-technical",
+            "geo-content",
+            "geo-schema",
+            "geo-crawlers",
+            "geo-report",
+            "geo-report-pdf"
+          ]
         },
         {
           "name": "rubot-fix-prompt",
-          "description": "Rewrite vague prompts into specific, actionable Claude Code instructions with verification criteria and file references"
+          "description": "Rewrite vague prompts into specific, actionable Claude Code instructions with verification criteria and file references",
+          "requires": [
+            "prompt-fixer"
+          ]
         }
       ]
     },
@@ -316,37 +410,50 @@
         {
           "name": "pre-commit-validation",
           "event": "PreToolUse",
-          "tools": ["Bash"],
+          "tools": [
+            "Bash"
+          ],
           "description": "Blocks commits if validation has not passed"
         },
         {
           "name": "dangerous-command-guard",
           "event": "PreToolUse",
-          "tools": ["Bash"],
+          "tools": [
+            "Bash"
+          ],
           "description": "Guards against destructive git/system commands"
         },
         {
           "name": "seo-build-check",
           "event": "PreToolUse",
-          "tools": ["Bash"],
+          "tools": [
+            "Bash"
+          ],
           "description": "Pre-deployment SEO checklist reminder before build/deploy commands"
         },
         {
           "name": "auto-plan-update",
           "event": "PostToolUse",
-          "tools": ["Edit", "Write"],
+          "tools": [
+            "Edit",
+            "Write"
+          ],
           "description": "Suggests plan updates after file modifications"
         },
         {
           "name": "seo-meta-check",
           "event": "PostToolUse",
-          "tools": ["Write"],
+          "tools": [
+            "Write"
+          ],
           "description": "Validates SEO meta tags after page/route creation"
         },
         {
           "name": "seo-image-check",
           "event": "PostToolUse",
-          "tools": ["Write"],
+          "tools": [
+            "Write"
+          ],
           "description": "Checks image alt text and dimensions for accessibility"
         },
         {
@@ -366,302 +473,453 @@
       "list": [
         {
           "name": "orchestration",
-          "agents": ["rubot"],
+          "agents": [
+            "rubot"
+          ],
           "description": "Domain classification and agent coordination"
         },
         {
           "name": "env-check",
-          "agents": ["cloudflare", "debug-master"],
+          "agents": [
+            "cloudflare",
+            "debug-master"
+          ],
           "description": "Environment validation"
         },
         {
           "name": "tanstack-router",
-          "agents": ["tanstack", "hydration-solver"],
+          "agents": [
+            "tanstack",
+            "hydration-solver"
+          ],
           "description": "TanStack Router patterns"
         },
         {
           "name": "tanstack-query",
-          "agents": ["tanstack", "backend-master"],
+          "agents": [
+            "tanstack",
+            "backend-master"
+          ],
           "description": "TanStack Query patterns"
         },
         {
           "name": "tanstack-form",
-          "agents": ["tanstack", "shadcn-ui-designer"],
+          "agents": [
+            "tanstack",
+            "shadcn-ui-designer"
+          ],
           "description": "TanStack Form patterns"
         },
         {
           "name": "tanstack-table",
-          "agents": ["tanstack", "shadcn-ui-designer"],
+          "agents": [
+            "tanstack",
+            "shadcn-ui-designer"
+          ],
           "description": "TanStack Table patterns"
         },
         {
           "name": "tanstack-db",
-          "agents": ["tanstack", "neon-master"],
+          "agents": [
+            "tanstack",
+            "neon-master"
+          ],
           "description": "TanStack DB local-first patterns"
         },
         {
           "name": "rbac-auth",
-          "agents": ["backend-master", "neon-master", "tanstack"],
+          "agents": [
+            "backend-master",
+            "neon-master",
+            "tanstack"
+          ],
           "description": "Role-based access control"
         },
         {
           "name": "url-state-management",
-          "agents": ["tanstack", "shadcn-ui-designer", "hydration-solver"],
+          "agents": [
+            "tanstack",
+            "shadcn-ui-designer",
+            "hydration-solver"
+          ],
           "description": "nuqs URL state management"
         },
         {
           "name": "drizzle-orm",
-          "agents": ["neon-master", "backend-master"],
+          "agents": [
+            "neon-master",
+            "backend-master"
+          ],
           "description": "Type-safe database operations with Drizzle ORM"
         },
         {
           "name": "elysiajs",
-          "agents": ["backend-master"],
+          "agents": [
+            "backend-master"
+          ],
           "description": "High-performance HTTP servers with ElysiaJS"
         },
         {
           "name": "biome",
-          "agents": ["debug-master"],
+          "agents": [
+            "debug-master"
+          ],
           "description": "Fast linting and formatting with Biome"
         },
         {
           "name": "cloudflare-workers",
-          "agents": ["cloudflare"],
+          "agents": [
+            "cloudflare"
+          ],
           "description": "Edge computing with Cloudflare Workers"
         },
         {
           "name": "rubot-seo-audit",
-          "agents": ["seo-master", "qa-tester"],
+          "agents": [
+            "seo-master",
+            "qa-tester"
+          ],
           "description": "Comprehensive SEO auditing"
         },
         {
           "name": "schema-markup",
-          "agents": ["seo-master"],
+          "agents": [
+            "seo-master"
+          ],
           "description": "Schema.org JSON-LD structured data implementation"
         },
         {
           "name": "core-web-vitals",
-          "agents": ["seo-master", "responsive-master"],
+          "agents": [
+            "seo-master",
+            "responsive-master"
+          ],
           "description": "LCP, INP, CLS measurement and optimization"
         },
         {
           "name": "social-sharing",
-          "agents": ["seo-master", "shadcn-ui-designer"],
+          "agents": [
+            "seo-master",
+            "shadcn-ui-designer"
+          ],
           "description": "Open Graph and Twitter Card meta tags"
         },
         {
           "name": "crawl-config",
-          "agents": ["seo-master"],
+          "agents": [
+            "seo-master"
+          ],
           "description": "robots.txt and sitemap.xml generation"
         },
         {
           "name": "responsive-design",
-          "agents": ["responsive-master", "shadcn-ui-designer"],
+          "agents": [
+            "responsive-master",
+            "shadcn-ui-designer"
+          ],
           "description": "Mobile-first responsive layouts with strict relative unit enforcement"
         },
         {
           "name": "design-tokens",
-          "agents": ["shadcn-ui-designer", "theme-master", "responsive-master"],
+          "agents": [
+            "shadcn-ui-designer",
+            "theme-master",
+            "responsive-master"
+          ],
           "description": "Design token consistency enforcement — CSS variables, OKLCH colors, typography, spacing, radius, shadows"
         },
         {
           "name": "component-consistency",
-          "agents": ["shadcn-ui-designer", "responsive-master"],
+          "agents": [
+            "shadcn-ui-designer",
+            "responsive-master"
+          ],
           "description": "Component pattern consistency audit — carousel fixes, card standardization, button/grid/form uniformity"
         },
         {
           "name": "agent-browser",
-          "agents": ["qa-tester", "seo-master"],
+          "agents": [
+            "qa-tester",
+            "seo-master"
+          ],
           "description": "Headless browser automation CLI reference"
         },
         {
           "name": "cf-workers-setup",
-          "agents": ["rubot", "cloudflare"],
+          "agents": [
+            "rubot",
+            "cloudflare"
+          ],
           "description": "Cloudflare Workers deployment setup and configuration"
         },
         {
           "name": "global-layout",
-          "agents": ["shadcn-ui-designer", "responsive-master"],
+          "agents": [
+            "shadcn-ui-designer",
+            "responsive-master"
+          ],
           "description": "Persistent global layout with shared Navbar and Footer patterns"
         },
         {
           "name": "react-grab",
-          "agents": ["qa-tester", "shadcn-ui-designer"],
+          "agents": [
+            "qa-tester",
+            "shadcn-ui-designer"
+          ],
           "description": "AI-assisted element inspection for React apps"
         },
         {
           "name": "wcag-audit",
-          "agents": ["seo-master", "responsive-master", "shadcn-ui-designer"],
+          "agents": [
+            "seo-master",
+            "responsive-master",
+            "shadcn-ui-designer"
+          ],
           "description": "WCAG 2.2 Level AA accessibility auditing"
         },
         {
           "name": "wcag-fix",
-          "agents": ["shadcn-ui-designer", "responsive-master", "seo-master"],
+          "agents": [
+            "shadcn-ui-designer",
+            "responsive-master",
+            "seo-master"
+          ],
           "description": "Accessible component patterns and WCAG 2.2 fixes"
         },
         {
           "name": "multilanguage",
-          "agents": ["shadcn-ui-designer", "seo-master", "responsive-master", "tanstack"],
+          "agents": [
+            "shadcn-ui-designer",
+            "seo-master",
+            "responsive-master",
+            "tanstack"
+          ],
           "description": "Full i18n implementation with localized routing, translation system, and language switcher"
         },
         {
           "name": "owasp-asvs-audit",
-          "agents": ["debug-master", "backend-master"],
+          "agents": [
+            "debug-master",
+            "backend-master"
+          ],
           "description": "Master OWASP ASVS 5.0.0 audit orchestration across all 17 chapters"
         },
         {
           "name": "owasp-encoding-sanitization",
-          "agents": ["debug-master"],
+          "agents": [
+            "debug-master"
+          ],
           "description": "ASVS V1: Encoding, sanitization, and injection prevention verification"
         },
         {
           "name": "owasp-validation-logic",
-          "agents": ["debug-master"],
+          "agents": [
+            "debug-master"
+          ],
           "description": "ASVS V2: Input validation and business logic security verification"
         },
         {
           "name": "owasp-web-frontend-security",
-          "agents": ["debug-master"],
+          "agents": [
+            "debug-master"
+          ],
           "description": "ASVS V3: Web frontend security — CSP, CORS, cookies, security headers"
         },
         {
           "name": "owasp-api-security",
-          "agents": ["debug-master"],
+          "agents": [
+            "debug-master"
+          ],
           "description": "ASVS V4: API and web service security — GraphQL, WebSocket, HTTP validation"
         },
         {
           "name": "owasp-file-handling",
-          "agents": ["debug-master"],
+          "agents": [
+            "debug-master"
+          ],
           "description": "ASVS V5: File upload, storage, and download security verification"
         },
         {
           "name": "owasp-authentication",
-          "agents": ["debug-master"],
+          "agents": [
+            "debug-master"
+          ],
           "description": "ASVS V6: Authentication — passwords, MFA, FIDO, IdP integration"
         },
         {
           "name": "owasp-session-management",
-          "agents": ["debug-master"],
+          "agents": [
+            "debug-master"
+          ],
           "description": "ASVS V7: Session management — timeouts, termination, abuse prevention"
         },
         {
           "name": "owasp-authorization",
-          "agents": ["debug-master"],
+          "agents": [
+            "debug-master"
+          ],
           "description": "ASVS V8: Authorization — RBAC, ABAC, least privilege, multi-tenant isolation"
         },
         {
           "name": "owasp-self-contained-tokens",
-          "agents": ["debug-master"],
+          "agents": [
+            "debug-master"
+          ],
           "description": "ASVS V9: Self-contained token (JWT/SAML) security verification"
         },
         {
           "name": "owasp-oauth-oidc",
-          "agents": ["debug-master"],
+          "agents": [
+            "debug-master"
+          ],
           "description": "ASVS V10: OAuth 2.0 and OpenID Connect security verification"
         },
         {
           "name": "owasp-cryptography",
-          "agents": ["debug-master"],
+          "agents": [
+            "debug-master"
+          ],
           "description": "ASVS V11: Cryptography — algorithms, hashing, key management, PQC readiness"
         },
         {
           "name": "owasp-secure-communication",
-          "agents": ["debug-master"],
+          "agents": [
+            "debug-master"
+          ],
           "description": "ASVS V12: Secure communication — TLS, HTTPS, mTLS, certificate management"
         },
         {
           "name": "owasp-configuration-security",
-          "agents": ["debug-master"],
+          "agents": [
+            "debug-master"
+          ],
           "description": "ASVS V13: Configuration — secret management, information leakage, hardening"
         },
         {
           "name": "owasp-data-protection",
-          "agents": ["debug-master"],
+          "agents": [
+            "debug-master"
+          ],
           "description": "ASVS V14: Data protection — classification, encryption at rest, client-side storage"
         },
         {
           "name": "owasp-secure-coding",
-          "agents": ["debug-master"],
+          "agents": [
+            "debug-master"
+          ],
           "description": "ASVS V15: Secure coding — dependencies, SBOM, defensive coding, concurrency"
         },
         {
           "name": "owasp-security-logging",
-          "agents": ["debug-master"],
+          "agents": [
+            "debug-master"
+          ],
           "description": "ASVS V16: Security logging and error handling — structured logs, event capture"
         },
         {
           "name": "owasp-webrtc-security",
-          "agents": ["debug-master"],
+          "agents": [
+            "debug-master"
+          ],
           "description": "ASVS V17: WebRTC security — TURN servers, media encryption, signaling"
         },
         {
           "name": "figma-slicing",
-          "agents": ["shadcn-ui-designer", "frontend"],
+          "agents": [
+            "shadcn-ui-designer",
+            "frontend"
+          ],
           "description": "Pixel-perfect Figma-to-code implementation using Figma MCP tools with design system extraction"
         },
         {
           "name": "geo",
-          "agents": ["seo-master"],
+          "agents": [
+            "seo-master"
+          ],
           "description": "Master GEO-SEO analysis tool — orchestrates all GEO sub-skills for AI search engine visibility optimization"
         },
         {
           "name": "geo-audit",
-          "agents": ["seo-master"],
+          "agents": [
+            "seo-master"
+          ],
           "description": "Full GEO+SEO audit orchestration with parallel subagent delegation and composite GEO Score (0-100)"
         },
         {
           "name": "geo-citability",
-          "agents": ["seo-master"],
+          "agents": [
+            "seo-master"
+          ],
           "description": "AI citability scoring — analyzes content for citation readiness by ChatGPT, Claude, Perplexity, Gemini"
         },
         {
           "name": "geo-crawlers",
-          "agents": ["seo-master"],
+          "agents": [
+            "seo-master"
+          ],
           "description": "AI crawler access analysis — robots.txt, meta tags, HTTP headers for GPTBot, ClaudeBot, PerplexityBot"
         },
         {
           "name": "geo-llmstxt",
-          "agents": ["seo-master"],
+          "agents": [
+            "seo-master"
+          ],
           "description": "llms.txt standard analysis and generation for AI system discoverability"
         },
         {
           "name": "geo-brand-mentions",
-          "agents": ["seo-master"],
+          "agents": [
+            "seo-master"
+          ],
           "description": "Brand mention scanning across AI-cited platforms (YouTube, Reddit, Wikipedia, LinkedIn)"
         },
         {
           "name": "geo-platform-optimizer",
-          "agents": ["seo-master"],
+          "agents": [
+            "seo-master"
+          ],
           "description": "Platform-specific AI search optimization for Google AI Overviews, ChatGPT, Perplexity, Gemini, Bing Copilot"
         },
         {
           "name": "geo-schema",
-          "agents": ["seo-master"],
+          "agents": [
+            "seo-master"
+          ],
           "description": "Schema.org structured data audit and JSON-LD generation optimized for AI discoverability"
         },
         {
           "name": "geo-content",
-          "agents": ["seo-master"],
+          "agents": [
+            "seo-master"
+          ],
           "description": "Content quality and E-E-A-T assessment for AI citability — experience, expertise, authoritativeness, trustworthiness"
         },
         {
           "name": "geo-technical",
-          "agents": ["seo-master"],
+          "agents": [
+            "seo-master"
+          ],
           "description": "Technical SEO audit with GEO-specific checks — crawlability, indexability, security, Core Web Vitals, SSR"
         },
         {
           "name": "geo-report",
-          "agents": ["seo-master"],
+          "agents": [
+            "seo-master"
+          ],
           "description": "Professional client-facing GEO report generation with scores, findings, and prioritized actions"
         },
         {
           "name": "geo-report-pdf",
-          "agents": ["seo-master"],
+          "agents": [
+            "seo-master"
+          ],
           "description": "GEO PDF report generator using ReportLab — score gauges, bar charts, color-coded tables, action plans"
         },
         {
           "name": "prompt-fixer",
-          "agents": ["debug-master"],
+          "agents": [
+            "debug-master"
+          ],
           "description": "Rewrite vague prompts into specific, actionable Claude Code instructions using official best practices"
         }
       ]
