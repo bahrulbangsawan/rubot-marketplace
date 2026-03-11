@@ -4,22 +4,44 @@ CLI tool to install and manage skills from [rubot-marketplace](https://github.co
 
 ## Installation
 
+### One-line install (recommended)
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/bahrulbangsawan/rubot-marketplace/main/cli/install.sh | sh
+```
+
+This automatically handles permissions, sets up your PATH, and installs `rubot` globally — no `sudo` needed.
+
 ### Run directly with npx (no install needed)
 
 ```bash
 npx @bahrulbangsawan/rubot <command>
 ```
 
-### Install globally
+### Install globally with npm
 
 ```bash
 npm install -g @bahrulbangsawan/rubot
 ```
 
+> **Note:** If you get an `EACCES` permission error, use the one-line installer above — it fixes npm permissions automatically.
+
 Then use:
 
 ```bash
 rubot <command>
+```
+
+### Uninstall
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/bahrulbangsawan/rubot-marketplace/main/cli/install.sh | sh -s -- --uninstall
+```
+
+Or manually:
+
+```bash
+npm uninstall -g @bahrulbangsawan/rubot
 ```
 
 ### Requirements
