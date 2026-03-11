@@ -173,6 +173,14 @@ export function multiSelect({ items, message, pageSize = 15 }) {
           const it = filtered[i]
           const oi = items.indexOf(it)
           const cur = i === cursor
+
+          if (it.disabled) {
+            const pre = cur ? cyan('>') : ' '
+            const nm = it.name.padEnd(maxN + 2)
+            out.push(`  ${pre} ${dim('✓')} ${dim(nm)} ${dim(it.disabledReason || 'installed')}`)
+            continue
+          }
+
           const sel = selected.has(oi)
           const pre = cur ? cyan('>') : ' '
           const chk = sel ? green('◉') : dim('◯')
@@ -185,7 +193,8 @@ export function multiSelect({ items, message, pageSize = 15 }) {
       }
 
       out.push('')
-      out.push(`  ${dim(`${selected.size} of ${items.length} selected`)}`)
+      const selectableCount = items.filter((it) => !it.disabled).length
+      out.push(`  ${dim(`${selected.size} of ${selectableCount} selected`)}`)
 
       renderedLines = out.length
       process.stdout.write('\x1B[?25l' + out.join('\n') + '\n')
@@ -244,14 +253,15 @@ export function multiSelect({ items, message, pageSize = 15 }) {
         cursor = Math.min(filtered.length - 1, cursor + 1)
         if (cursor >= scroll + pageSize) scroll = cursor - pageSize + 1
       } else if (str === ' ') {
-        if (filtered[cursor]) {
+        if (filtered[cursor] && !filtered[cursor].disabled) {
           const oi = items.indexOf(filtered[cursor])
           selected.has(oi) ? selected.delete(oi) : selected.add(oi)
         }
       } else if (str === 'a') {
-        // Toggle all (operates on full list, not filtered)
-        if (selected.size === items.length) selected.clear()
-        else items.forEach((_, i) => selected.add(i))
+        // Toggle all selectable (operates on full list, not filtered)
+        const selectable = items.reduce((ids, it, i) => { if (!it.disabled) ids.push(i); return ids }, [])
+        if (selectable.every((i) => selected.has(i))) selectable.forEach((i) => selected.delete(i))
+        else selectable.forEach((i) => selected.add(i))
       } else if (str === '/') {
         filterMode = true
         filter = ''

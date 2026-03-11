@@ -22,6 +22,38 @@ import {
   TYPE_LABELS,
 } from '../ui.mjs'
 
+// ── Mark already-installed items as disabled ──
+
+function markInstalled(catalog, type, global) {
+  if (type === 'hook') return markInstalledHooks(catalog, global)
+  return catalog.map((item) => {
+    const dest = getComponentPath(type, item.name, global)
+    if (existsSync(dest)) {
+      return { ...item, disabled: true, disabledReason: 'installed' }
+    }
+    return item
+  })
+}
+
+function markInstalledHooks(catalog, global) {
+  const settingsPath = getSettingsPath(global)
+  let hooks = {}
+  if (existsSync(settingsPath)) {
+    try {
+      const settings = JSON.parse(readFileSync(settingsPath, 'utf8'))
+      hooks = settings.hooks || {}
+    } catch { /* ignore */ }
+  }
+  const allPrompts = Object.values(hooks).flat().map((h) => (h.prompt || '').toUpperCase())
+  return catalog.map((item) => {
+    const prefix = item.name.replace(/-/g, ' ').toUpperCase()
+    if (allPrompts.some((p) => p.startsWith(prefix))) {
+      return { ...item, disabled: true, disabledReason: 'installed' }
+    }
+    return item
+  })
+}
+
 // ── Skill installation (directory with multiple files) ──
 
 async function fetchAndWriteSkillFiles(skillPath, destDir, entries) {
@@ -355,8 +387,9 @@ export async function run({ flags, positional }) {
       const catalog = await getComponentCatalog(type)
       if (catalog.length === 0) continue
       console.log()
+      const items = markInstalled(catalog, type, flags.global)
       const selected = await multiSelect({
-        items: catalog,
+        items,
         message: `Select ${TYPE_LABELS[type].toLowerCase()} to install:`,
       })
       if (selected.length > 0) {
@@ -405,8 +438,9 @@ export async function run({ flags, positional }) {
     if (catalog.length === 0) continue
 
     console.log()
+    const items = markInstalled(catalog, type, flags.global)
     const selected = await multiSelect({
-      items: catalog,
+      items,
       message: `Select ${TYPE_LABELS[type].toLowerCase()} to install:`,
     })
     if (selected.length > 0) {
