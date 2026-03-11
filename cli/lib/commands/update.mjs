@@ -19,7 +19,7 @@ import { bold, dim, cyan, green, symbols, createSpinner, ALL_TYPES, TYPE_LABELS 
 
 // ── Skills: version-compared update ──
 
-async function updateSkills(global) {
+async function updateSkills(global, catalog) {
   const dir = getComponentDir('skill', global)
   if (!existsSync(dir)) return 0
 
@@ -28,8 +28,12 @@ async function updateSkills(global) {
 
   if (entries.length === 0) return 0
 
+  const catalogNames = new Set(catalog.map((c) => c.name))
+
   let updated = 0
   for (const entry of entries) {
+    if (!catalogNames.has(entry.name)) continue
+
     const skillDir = join(dir, entry.name)
     const localContent = readFileSync(join(skillDir, 'SKILL.md'), 'utf8')
     const localVersion = localContent.match(/^version:\s*(.+)$/m)?.[1]?.trim()
@@ -86,7 +90,7 @@ async function updateSkills(global) {
 
 // ── Single-file components: always re-download ──
 
-async function updateFiles(type, global) {
+async function updateFiles(type, global, catalog) {
   const dir = getComponentDir(type, global)
   if (!existsSync(dir)) return 0
 
@@ -97,9 +101,12 @@ async function updateFiles(type, global) {
 
   if (files.length === 0) return 0
 
+  const catalogNames = new Set(catalog.map((c) => c.name))
+
   let updated = 0
   for (const file of files) {
     const name = ext ? file.slice(0, -ext.length) : file
+    if (!catalogNames.has(name)) continue
     const filePath = join(dir, file)
     const localContent = readFileSync(filePath, 'utf8')
 
@@ -204,13 +211,19 @@ export async function run({ flags }) {
   console.log(`  ${bold('Checking for updates...')}`)
   console.log()
 
+  // Pre-fetch catalogs so we only update marketplace components
+  const catalogs = {}
+  for (const type of types) {
+    if (type !== 'hook') catalogs[type] = await getComponentCatalog(type)
+  }
+
   let totalUpdated = 0
 
   for (const global of [false, true]) {
     for (const type of types) {
-      if (type === 'skill') totalUpdated += await updateSkills(global)
+      if (type === 'skill') totalUpdated += await updateSkills(global, catalogs.skill)
       else if (type === 'hook') totalUpdated += await updateHooks(global)
-      else totalUpdated += await updateFiles(type, global)
+      else totalUpdated += await updateFiles(type, global, catalogs[type])
     }
   }
 
