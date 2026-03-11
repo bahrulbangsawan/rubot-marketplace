@@ -130,3 +130,9 @@ if (!loader) {
 
 const mod = await loader()
 await mod.run({ flags, positional })
+
+// Show update notification after commands (skip for 'update' itself)
+if (command !== 'update') {
+  const { notifyUpdates } = await import('../lib/update-notifier.mjs')
+  await notifyUpdates()
+}

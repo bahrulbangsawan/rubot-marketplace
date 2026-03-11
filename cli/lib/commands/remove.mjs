@@ -48,9 +48,12 @@ function getInstalledHooks(global) {
     const installed = []
     for (const [event, entries] of Object.entries(settings.hooks)) {
       for (const entry of entries) {
-        const colonIdx = entry.prompt.indexOf(':')
+        // New format: { matcher, hooks: [{ type, prompt }] }
+        const innerHook = (entry.hooks || [])[0]
+        if (!innerHook) continue
+        const colonIdx = innerHook.prompt.indexOf(':')
         if (colonIdx > 0) {
-          const prefix = entry.prompt.slice(0, colonIdx).trim()
+          const prefix = innerHook.prompt.slice(0, colonIdx).trim()
           const name = prefix.toLowerCase().replace(/\s+/g, '-')
           installed.push({ name, description: `${event} hook` })
         }
@@ -96,9 +99,10 @@ function removeHooks(hookNames, global) {
       const prefix = hookName.replace(/-/g, ' ').toUpperCase()
       for (const [event, entries] of Object.entries(settings.hooks)) {
         const before = entries.length
-        settings.hooks[event] = entries.filter(
-          (e) => !e.prompt.toUpperCase().startsWith(prefix)
-        )
+        settings.hooks[event] = entries.filter((entry) => {
+          const innerHook = (entry.hooks || [])[0]
+          return !innerHook || !innerHook.prompt.toUpperCase().startsWith(prefix)
+        })
         removed += before - settings.hooks[event].length
         if (settings.hooks[event].length === 0) delete settings.hooks[event]
       }

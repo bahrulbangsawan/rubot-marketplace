@@ -33,6 +33,7 @@ export async function getComponentCatalog(type) {
   return section.list.map((item) => ({
     name: item.name,
     description: item.description || '',
+    ...(item.version ? { version: item.version } : {}),
     ...(item.role ? { role: item.role } : {}),
     ...(item.event ? { event: item.event } : {}),
     ...(item.agents ? { agents: item.agents } : {}),

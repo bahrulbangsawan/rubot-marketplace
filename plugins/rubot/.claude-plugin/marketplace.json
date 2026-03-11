@@ -476,7 +476,8 @@
           "agents": [
             "rubot"
           ],
-          "description": "Domain classification and agent coordination"
+          "description": "Domain classification and agent coordination",
+          "version": "2.8.0"
         },
         {
           "name": "env-check",
@@ -484,7 +485,8 @@
             "cloudflare",
             "debug-master"
           ],
-          "description": "Environment validation"
+          "description": "Environment validation",
+          "version": "1.1.0"
         },
         {
           "name": "tanstack-router",
@@ -492,7 +494,8 @@
             "tanstack",
             "hydration-solver"
           ],
-          "description": "TanStack Router patterns"
+          "description": "TanStack Router patterns",
+          "version": "1.1.0"
         },
         {
           "name": "tanstack-query",
@@ -500,7 +503,8 @@
             "tanstack",
             "backend-master"
           ],
-          "description": "TanStack Query patterns"
+          "description": "TanStack Query patterns",
+          "version": "1.1.0"
         },
         {
           "name": "tanstack-form",
@@ -508,7 +512,8 @@
             "tanstack",
             "shadcn-ui-designer"
           ],
-          "description": "TanStack Form patterns"
+          "description": "TanStack Form patterns",
+          "version": "1.1.0"
         },
         {
           "name": "tanstack-table",
@@ -516,7 +521,8 @@
             "tanstack",
             "shadcn-ui-designer"
           ],
-          "description": "TanStack Table patterns"
+          "description": "TanStack Table patterns",
+          "version": "1.1.0"
         },
         {
           "name": "tanstack-db",
@@ -524,7 +530,8 @@
             "tanstack",
             "neon-master"
           ],
-          "description": "TanStack DB local-first patterns"
+          "description": "TanStack DB local-first patterns",
+          "version": "1.1.0"
         },
         {
           "name": "rbac-auth",
@@ -533,7 +540,8 @@
             "neon-master",
             "tanstack"
           ],
-          "description": "Role-based access control"
+          "description": "Role-based access control",
+          "version": "1.1.0"
         },
         {
           "name": "url-state-management",
@@ -542,7 +550,8 @@
             "shadcn-ui-designer",
             "hydration-solver"
           ],
-          "description": "nuqs URL state management"
+          "description": "nuqs URL state management",
+          "version": "1.1.0"
         },
         {
           "name": "drizzle-orm",
@@ -550,28 +559,32 @@
             "neon-master",
             "backend-master"
           ],
-          "description": "Type-safe database operations with Drizzle ORM"
+          "description": "Type-safe database operations with Drizzle ORM",
+          "version": "1.1.0"
         },
         {
           "name": "elysiajs",
           "agents": [
             "backend-master"
           ],
-          "description": "High-performance HTTP servers with ElysiaJS"
+          "description": "High-performance HTTP servers with ElysiaJS",
+          "version": "1.1.0"
         },
         {
           "name": "biome",
           "agents": [
             "debug-master"
           ],
-          "description": "Fast linting and formatting with Biome"
+          "description": "Fast linting and formatting with Biome",
+          "version": "1.1.0"
         },
         {
           "name": "cloudflare-workers",
           "agents": [
             "cloudflare"
           ],
-          "description": "Edge computing with Cloudflare Workers"
+          "description": "Edge computing with Cloudflare Workers",
+          "version": "1.1.0"
         },
         {
           "name": "rubot-seo-audit",
@@ -579,14 +592,16 @@
             "seo-master",
             "qa-tester"
           ],
-          "description": "Comprehensive SEO auditing"
+          "description": "Comprehensive SEO auditing",
+          "version": "1.1.0"
         },
         {
           "name": "schema-markup",
           "agents": [
             "seo-master"
           ],
-          "description": "Schema.org JSON-LD structured data implementation"
+          "description": "Schema.org JSON-LD structured data implementation",
+          "version": "1.1.0"
         },
         {
           "name": "core-web-vitals",
@@ -594,7 +609,8 @@
             "seo-master",
             "responsive-master"
           ],
-          "description": "LCP, INP, CLS measurement and optimization"
+          "description": "LCP, INP, CLS measurement and optimization",
+          "version": "1.1.0"
         },
         {
           "name": "social-sharing",
@@ -602,14 +618,16 @@
             "seo-master",
             "shadcn-ui-designer"
           ],
-          "description": "Open Graph and Twitter Card meta tags"
+          "description": "Open Graph and Twitter Card meta tags",
+          "version": "1.1.0"
         },
         {
           "name": "crawl-config",
           "agents": [
             "seo-master"
           ],
-          "description": "robots.txt and sitemap.xml generation"
+          "description": "robots.txt and sitemap.xml generation",
+          "version": "1.1.0"
         },
         {
           "name": "responsive-design",
@@ -617,7 +635,8 @@
             "responsive-master",
             "shadcn-ui-designer"
           ],
-          "description": "Mobile-first responsive layouts with strict relative unit enforcement"
+          "description": "Mobile-first responsive layouts with strict relative unit enforcement",
+          "version": "1.1.0"
         },
         {
           "name": "design-tokens",
@@ -626,7 +645,8 @@
             "theme-master",
             "responsive-master"
           ],
-          "description": "Design token consistency enforcement — CSS variables, OKLCH colors, typography, spacing, radius, shadows"
+          "description": "Design token consistency enforcement — CSS variables, OKLCH colors, typography, spacing, radius, shadows",
+          "version": "1.0.0"
         },
         {
           "name": "component-consistency",
@@ -634,7 +654,8 @@
             "shadcn-ui-designer",
             "responsive-master"
           ],
-          "description": "Component pattern consistency audit — carousel fixes, card standardization, button/grid/form uniformity"
+          "description": "Component pattern consistency audit — carousel fixes, card standardization, button/grid/form uniformity",
+          "version": "1.0.0"
         },
         {
           "name": "agent-browser",
@@ -642,7 +663,8 @@
             "qa-tester",
             "seo-master"
           ],
-          "description": "Headless browser automation CLI reference"
+          "description": "Headless browser automation CLI reference",
+          "version": "1.1.0"
         },
         {
           "name": "cf-workers-setup",
@@ -650,7 +672,8 @@
             "rubot",
             "cloudflare"
           ],
-          "description": "Cloudflare Workers deployment setup and configuration"
+          "description": "Cloudflare Workers deployment setup and configuration",
+          "version": "1.1.0"
         },
         {
           "name": "global-layout",
@@ -658,7 +681,8 @@
             "shadcn-ui-designer",
             "responsive-master"
           ],
-          "description": "Persistent global layout with shared Navbar and Footer patterns"
+          "description": "Persistent global layout with shared Navbar and Footer patterns",
+          "version": "1.1.0"
         },
         {
           "name": "react-grab",
@@ -666,7 +690,8 @@
             "qa-tester",
             "shadcn-ui-designer"
           ],
-          "description": "AI-assisted element inspection for React apps"
+          "description": "AI-assisted element inspection for React apps",
+          "version": "1.1.0"
         },
         {
           "name": "wcag-audit",
@@ -675,7 +700,8 @@
             "responsive-master",
             "shadcn-ui-designer"
           ],
-          "description": "WCAG 2.2 Level AA accessibility auditing"
+          "description": "WCAG 2.2 Level AA accessibility auditing",
+          "version": "1.1.0"
         },
         {
           "name": "wcag-fix",
@@ -684,7 +710,8 @@
             "responsive-master",
             "seo-master"
           ],
-          "description": "Accessible component patterns and WCAG 2.2 fixes"
+          "description": "Accessible component patterns and WCAG 2.2 fixes",
+          "version": "1.1.0"
         },
         {
           "name": "multilanguage",
@@ -694,7 +721,8 @@
             "responsive-master",
             "tanstack"
           ],
-          "description": "Full i18n implementation with localized routing, translation system, and language switcher"
+          "description": "Full i18n implementation with localized routing, translation system, and language switcher",
+          "version": "1.1.0"
         },
         {
           "name": "owasp-asvs-audit",
@@ -702,126 +730,144 @@
             "debug-master",
             "backend-master"
           ],
-          "description": "Master OWASP ASVS 5.0.0 audit orchestration across all 17 chapters"
+          "description": "Master OWASP ASVS 5.0.0 audit orchestration across all 17 chapters",
+          "version": "1.1.0"
         },
         {
           "name": "owasp-encoding-sanitization",
           "agents": [
             "debug-master"
           ],
-          "description": "ASVS V1: Encoding, sanitization, and injection prevention verification"
+          "description": "ASVS V1: Encoding, sanitization, and injection prevention verification",
+          "version": "1.1.0"
         },
         {
           "name": "owasp-validation-logic",
           "agents": [
             "debug-master"
           ],
-          "description": "ASVS V2: Input validation and business logic security verification"
+          "description": "ASVS V2: Input validation and business logic security verification",
+          "version": "1.1.0"
         },
         {
           "name": "owasp-web-frontend-security",
           "agents": [
             "debug-master"
           ],
-          "description": "ASVS V3: Web frontend security — CSP, CORS, cookies, security headers"
+          "description": "ASVS V3: Web frontend security — CSP, CORS, cookies, security headers",
+          "version": "1.1.0"
         },
         {
           "name": "owasp-api-security",
           "agents": [
             "debug-master"
           ],
-          "description": "ASVS V4: API and web service security — GraphQL, WebSocket, HTTP validation"
+          "description": "ASVS V4: API and web service security — GraphQL, WebSocket, HTTP validation",
+          "version": "1.1.0"
         },
         {
           "name": "owasp-file-handling",
           "agents": [
             "debug-master"
           ],
-          "description": "ASVS V5: File upload, storage, and download security verification"
+          "description": "ASVS V5: File upload, storage, and download security verification",
+          "version": "1.1.0"
         },
         {
           "name": "owasp-authentication",
           "agents": [
             "debug-master"
           ],
-          "description": "ASVS V6: Authentication — passwords, MFA, FIDO, IdP integration"
+          "description": "ASVS V6: Authentication — passwords, MFA, FIDO, IdP integration",
+          "version": "1.1.0"
         },
         {
           "name": "owasp-session-management",
           "agents": [
             "debug-master"
           ],
-          "description": "ASVS V7: Session management — timeouts, termination, abuse prevention"
+          "description": "ASVS V7: Session management — timeouts, termination, abuse prevention",
+          "version": "1.1.0"
         },
         {
           "name": "owasp-authorization",
           "agents": [
             "debug-master"
           ],
-          "description": "ASVS V8: Authorization — RBAC, ABAC, least privilege, multi-tenant isolation"
+          "description": "ASVS V8: Authorization — RBAC, ABAC, least privilege, multi-tenant isolation",
+          "version": "1.1.0"
         },
         {
           "name": "owasp-self-contained-tokens",
           "agents": [
             "debug-master"
           ],
-          "description": "ASVS V9: Self-contained token (JWT/SAML) security verification"
+          "description": "ASVS V9: Self-contained token (JWT/SAML) security verification",
+          "version": "1.1.0"
         },
         {
           "name": "owasp-oauth-oidc",
           "agents": [
             "debug-master"
           ],
-          "description": "ASVS V10: OAuth 2.0 and OpenID Connect security verification"
+          "description": "ASVS V10: OAuth 2.0 and OpenID Connect security verification",
+          "version": "1.1.0"
         },
         {
           "name": "owasp-cryptography",
           "agents": [
             "debug-master"
           ],
-          "description": "ASVS V11: Cryptography — algorithms, hashing, key management, PQC readiness"
+          "description": "ASVS V11: Cryptography — algorithms, hashing, key management, PQC readiness",
+          "version": "1.1.0"
         },
         {
           "name": "owasp-secure-communication",
           "agents": [
             "debug-master"
           ],
-          "description": "ASVS V12: Secure communication — TLS, HTTPS, mTLS, certificate management"
+          "description": "ASVS V12: Secure communication — TLS, HTTPS, mTLS, certificate management",
+          "version": "1.1.0"
         },
         {
           "name": "owasp-configuration-security",
           "agents": [
             "debug-master"
           ],
-          "description": "ASVS V13: Configuration — secret management, information leakage, hardening"
+          "description": "ASVS V13: Configuration — secret management, information leakage, hardening",
+          "version": "1.1.0"
         },
         {
           "name": "owasp-data-protection",
           "agents": [
             "debug-master"
           ],
-          "description": "ASVS V14: Data protection — classification, encryption at rest, client-side storage"
+          "description": "ASVS V14: Data protection — classification, encryption at rest, client-side storage",
+          "version": "1.1.0"
         },
         {
           "name": "owasp-secure-coding",
           "agents": [
             "debug-master"
           ],
-          "description": "ASVS V15: Secure coding — dependencies, SBOM, defensive coding, concurrency"
+          "description": "ASVS V15: Secure coding — dependencies, SBOM, defensive coding, concurrency",
+          "version": "1.1.0"
         },
         {
           "name": "owasp-security-logging",
           "agents": [
             "debug-master"
           ],
-          "description": "ASVS V16: Security logging and error handling — structured logs, event capture"
+          "description": "ASVS V16: Security logging and error handling — structured logs, event capture",
+          "version": "1.1.0"
         },
         {
           "name": "owasp-webrtc-security",
           "agents": [
             "debug-master"
           ],
-          "description": "ASVS V17: WebRTC security — TURN servers, media encryption, signaling"
+          "description": "ASVS V17: WebRTC security — TURN servers, media encryption, signaling",
+          "version": "1.1.0"
         },
         {
           "name": "figma-slicing",
@@ -829,98 +875,112 @@
             "shadcn-ui-designer",
             "frontend"
           ],
-          "description": "Pixel-perfect Figma-to-code implementation using Figma MCP tools with design system extraction"
+          "description": "Pixel-perfect Figma-to-code implementation using Figma MCP tools with design system extraction",
+          "version": "1.1.0"
         },
         {
           "name": "geo",
           "agents": [
             "seo-master"
           ],
-          "description": "Master GEO-SEO analysis tool — orchestrates all GEO sub-skills for AI search engine visibility optimization"
+          "description": "Master GEO-SEO analysis tool — orchestrates all GEO sub-skills for AI search engine visibility optimization",
+          "version": "2.16.0"
         },
         {
           "name": "geo-audit",
           "agents": [
             "seo-master"
           ],
-          "description": "Full GEO+SEO audit orchestration with parallel subagent delegation and composite GEO Score (0-100)"
+          "description": "Full GEO+SEO audit orchestration with parallel subagent delegation and composite GEO Score (0-100)",
+          "version": "1.1.0"
         },
         {
           "name": "geo-citability",
           "agents": [
             "seo-master"
           ],
-          "description": "AI citability scoring — analyzes content for citation readiness by ChatGPT, Claude, Perplexity, Gemini"
+          "description": "AI citability scoring — analyzes content for citation readiness by ChatGPT, Claude, Perplexity, Gemini",
+          "version": "1.1.0"
         },
         {
           "name": "geo-crawlers",
           "agents": [
             "seo-master"
           ],
-          "description": "AI crawler access analysis — robots.txt, meta tags, HTTP headers for GPTBot, ClaudeBot, PerplexityBot"
+          "description": "AI crawler access analysis — robots.txt, meta tags, HTTP headers for GPTBot, ClaudeBot, PerplexityBot",
+          "version": "1.1.0"
         },
         {
           "name": "geo-llmstxt",
           "agents": [
             "seo-master"
           ],
-          "description": "llms.txt standard analysis and generation for AI system discoverability"
+          "description": "llms.txt standard analysis and generation for AI system discoverability",
+          "version": "1.1.0"
         },
         {
           "name": "geo-brand-mentions",
           "agents": [
             "seo-master"
           ],
-          "description": "Brand mention scanning across AI-cited platforms (YouTube, Reddit, Wikipedia, LinkedIn)"
+          "description": "Brand mention scanning across AI-cited platforms (YouTube, Reddit, Wikipedia, LinkedIn)",
+          "version": "1.1.0"
         },
         {
           "name": "geo-platform-optimizer",
           "agents": [
             "seo-master"
           ],
-          "description": "Platform-specific AI search optimization for Google AI Overviews, ChatGPT, Perplexity, Gemini, Bing Copilot"
+          "description": "Platform-specific AI search optimization for Google AI Overviews, ChatGPT, Perplexity, Gemini, Bing Copilot",
+          "version": "1.1.0"
         },
         {
           "name": "geo-schema",
           "agents": [
             "seo-master"
           ],
-          "description": "Schema.org structured data audit and JSON-LD generation optimized for AI discoverability"
+          "description": "Schema.org structured data audit and JSON-LD generation optimized for AI discoverability",
+          "version": "1.1.0"
         },
         {
           "name": "geo-content",
           "agents": [
             "seo-master"
           ],
-          "description": "Content quality and E-E-A-T assessment for AI citability — experience, expertise, authoritativeness, trustworthiness"
+          "description": "Content quality and E-E-A-T assessment for AI citability — experience, expertise, authoritativeness, trustworthiness",
+          "version": "1.1.0"
         },
         {
           "name": "geo-technical",
           "agents": [
             "seo-master"
           ],
-          "description": "Technical SEO audit with GEO-specific checks — crawlability, indexability, security, Core Web Vitals, SSR"
+          "description": "Technical SEO audit with GEO-specific checks — crawlability, indexability, security, Core Web Vitals, SSR",
+          "version": "1.1.0"
         },
         {
           "name": "geo-report",
           "agents": [
             "seo-master"
           ],
-          "description": "Professional client-facing GEO report generation with scores, findings, and prioritized actions"
+          "description": "Professional client-facing GEO report generation with scores, findings, and prioritized actions",
+          "version": "1.1.0"
         },
         {
           "name": "geo-report-pdf",
           "agents": [
             "seo-master"
           ],
-          "description": "GEO PDF report generator using ReportLab — score gauges, bar charts, color-coded tables, action plans"
+          "description": "GEO PDF report generator using ReportLab — score gauges, bar charts, color-coded tables, action plans",
+          "version": "1.1.0"
         },
         {
           "name": "prompt-fixer",
           "agents": [
             "debug-master"
           ],
-          "description": "Rewrite vague prompts into specific, actionable Claude Code instructions using official best practices"
+          "description": "Rewrite vague prompts into specific, actionable Claude Code instructions using official best practices",
+          "version": "1.0.0"
         }
       ]
     },

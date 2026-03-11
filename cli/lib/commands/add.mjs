@@ -44,7 +44,10 @@ function markInstalledHooks(catalog, global) {
       hooks = settings.hooks || {}
     } catch { /* ignore */ }
   }
-  const allPrompts = Object.values(hooks).flat().map((h) => (h.prompt || '').toUpperCase())
+  // Extract prompts from nested hooks arrays: { matcher, hooks: [{ type, prompt }] }
+  const allPrompts = Object.values(hooks)
+    .flat()
+    .flatMap((entry) => (entry.hooks || []).map((h) => (h.prompt || '').toUpperCase()))
   return catalog.map((item) => {
     const prefix = item.name.replace(/-/g, ' ').toUpperCase()
     if (allPrompts.some((p) => p.startsWith(prefix))) {
@@ -128,13 +131,15 @@ async function installSingleFile(type, name, global) {
 function buildHookLookup(remoteConfig, catalogHooks) {
   // Map marketplace hook names to their actual hook entries from hooks.json
   // by matching the hook name (kebab-case) to the prompt prefix (UPPER CASE)
+  // New format: { matcher, hooks: [{ type, prompt }] }
   const result = new Map()
   for (const hook of catalogHooks) {
     const prefix = hook.name.replace(/-/g, ' ').toUpperCase()
     for (const [event, entries] of Object.entries(remoteConfig.hooks)) {
       for (const entry of entries) {
-        if (entry.prompt.toUpperCase().startsWith(prefix)) {
-          result.set(hook.name, { event, ...entry })
+        const innerHook = (entry.hooks || [])[0]
+        if (innerHook && innerHook.prompt.toUpperCase().startsWith(prefix)) {
+          result.set(hook.name, { event, matcher: entry.matcher, type: innerHook.type, prompt: innerHook.prompt })
         }
       }
     }
@@ -171,8 +176,8 @@ async function installHooks(hookNames, global) {
 
     // Skip if already installed (match by prompt prefix)
     const prefix = hookName.replace(/-/g, ' ').toUpperCase()
-    const already = settings.hooks[event].some((h) =>
-      h.prompt.toUpperCase().startsWith(prefix)
+    const already = settings.hooks[event].some((entry) =>
+      (entry.hooks || []).some((h) => h.prompt.toUpperCase().startsWith(prefix))
     )
     if (already) {
       spinner.stop('')
@@ -181,8 +186,7 @@ async function installHooks(hookNames, global) {
       continue
     }
 
-    const hookEntry = { type, prompt }
-    if (matcher) hookEntry.matcher = matcher
+    const hookEntry = { matcher: matcher || '', hooks: [{ type, prompt }] }
     settings.hooks[event].push(hookEntry)
     installed++
   }

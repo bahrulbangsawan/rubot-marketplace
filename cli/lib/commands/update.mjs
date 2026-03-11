@@ -16,6 +16,7 @@ import {
 } from '../github.mjs'
 import { getComponentCatalog } from '../registry.mjs'
 import { bold, dim, cyan, green, symbols, createSpinner, ALL_TYPES, TYPE_LABELS } from '../ui.mjs'
+import { clearUpdateCache } from '../update-notifier.mjs'
 
 // ── Skills: version-compared update ──
 
@@ -152,22 +153,31 @@ async function updateHooks(global) {
     let updated = 0
 
     // For each installed hook, check if the prompt has changed
+    // New format: { matcher, hooks: [{ type, prompt }] }
     for (const [event, localEntries] of Object.entries(settings.hooks)) {
       const remoteEntries = remoteConfig.hooks[event] || []
 
       for (let i = 0; i < localEntries.length; i++) {
         const local = localEntries[i]
-        const colonIdx = local.prompt.indexOf(':')
+        const localInner = (local.hooks || [])[0]
+        if (!localInner) continue
+
+        const colonIdx = localInner.prompt.indexOf(':')
         if (colonIdx <= 0) continue
 
-        const prefix = local.prompt.slice(0, colonIdx).trim().toUpperCase()
+        const prefix = localInner.prompt.slice(0, colonIdx).trim().toUpperCase()
 
         // Find matching remote entry
-        const remote = remoteEntries.find((r) => r.prompt.toUpperCase().startsWith(prefix))
-        if (remote && remote.prompt !== local.prompt) {
-          localEntries[i] = { ...local, prompt: remote.prompt }
-          if (remote.matcher) localEntries[i].matcher = remote.matcher
-          updated++
+        const remote = remoteEntries.find((r) => {
+          const rInner = (r.hooks || [])[0]
+          return rInner && rInner.prompt.toUpperCase().startsWith(prefix)
+        })
+        if (remote) {
+          const remoteInner = remote.hooks[0]
+          if (remoteInner.prompt !== localInner.prompt) {
+            localEntries[i] = { matcher: remote.matcher || '', hooks: [{ ...localInner, prompt: remoteInner.prompt }] }
+            updated++
+          }
         }
       }
     }
@@ -234,4 +244,7 @@ export async function run({ flags }) {
     console.log(`  ${symbols.success} Updated ${bold(String(totalUpdated))} component(s)`)
   }
   console.log()
+
+  // Clear the update notification cache so it re-checks next time
+  clearUpdateCache()
 }
