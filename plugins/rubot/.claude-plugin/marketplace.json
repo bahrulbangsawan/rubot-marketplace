@@ -157,7 +157,7 @@
       ]
     },
     "commands": {
-      "count": 37,
+      "count": 38,
       "list": [
         {
           "name": "rubot",
@@ -284,6 +284,10 @@
         {
           "name": "rubot-setup-localdb",
           "description": "Set up local PostgreSQL Docker database with Drizzle ORM integration"
+        },
+        {
+          "name": "rubot-setup-agentation",
+          "description": "Add Agentation visual feedback toolbar to a React project (dev-only)"
         },
         {
           "name": "rubot-test-browser",
