@@ -1,306 +1,469 @@
 ---
 name: prompt-fixer
-version: 1.0.0
+version: 3.1.0
 description: |
-  Rewrites vague, ambiguous prompts into specific, actionable Claude Code instructions using official best practices. Analyzes the user's intent, scans the codebase for relevant context (file paths, patterns, frameworks), and produces a copy-ready prompt with verification criteria, scoped file references, and phased execution steps.
+  Rewrites vague prompts into a strict task-based execution plan (MAIN PROBLEM / GOALS / CONTEXT / mandatory RULES / numbered TASKs with ID, ISSUES, FILE RELATED, SOLUTION / VERIFICATION / EXECUTION). Runs parallel Explore agents, discovers connected MCPs and installed skills, recommends them, enforces engineering rules from rule banks, and defaults the rewrite to plan mode. Output is a single copy-ready prompt — no preamble, no commentary.
   MUST activate for: "fix my prompt", "improve this prompt", "rewrite this prompt", "make this prompt better", "this prompt is too vague", "help me write a better prompt", "prompt engineering", "how should I ask Claude to", "rephrase this for Claude", or when the user provides a clearly vague instruction and asks for help making it more specific.
   Also activate when: "Claude keeps doing the wrong thing", "Claude doesn't understand what I want", "how do I get better results", "why does Claude keep failing", or the user references the `/rubot-fix-prompt` command.
   Do NOT activate for: actually executing the rewritten prompt, general coding tasks, SEO audits, design audits, security audits, environment checks, or any task where the user wants implementation rather than prompt improvement.
-  Covers: prompt rewriting, prompt engineering, vague-to-specific transformation, verification criteria injection, file path scoping, phased execution planning, and codebase-aware context enrichment.
+  Covers: prompt rewriting, prompt engineering, vague-to-specific transformation, strict task-based output format, mandatory RULES enforcement, verification injection, file path scoping, phased execution, codebase-aware enrichment, skill recommendation, MCP recommendation, plan-mode-by-default.
 agents:
   - debug-master
 ---
 
 # Prompt Fixer Skill
 
-> Transform vague instructions into precise, verifiable Claude Code prompts that produce correct results on the first attempt.
+Rewrite vague prompts into a strict, technical, todo-based instruction with mandatory engineering rules. Grounded in parallel codebase research. Single copy-ready output. No commentary.
 
-## Why This Matters
+## Goal
 
-Claude Code's performance degrades as context fills with failed approaches and corrections. A vague prompt like "make the dashboard look better" forces Claude to guess intent, often producing code that solves the wrong problem. Two rounds of corrections later, the context is polluted and performance drops further.
+Produce a prompt that:
+1. Names the problem in one sentence.
+2. Lists measurable goals.
+3. Surfaces installed skills and connected MCPs.
+4. Enforces engineering rules from rule banks.
+5. Decomposes work into numbered TASKs with stable IDs.
+6. Pins each task to real files and concrete solutions.
+7. Includes runnable verification.
+8. Defaults to plan mode.
 
-A well-written prompt gives Claude:
-1. **Clear scope** — which files, which components, what boundaries
-2. **Verification criteria** — how to confirm the work is correct
-3. **Existing patterns** — what conventions to follow in the codebase
-4. **Phased execution** — explore → plan → implement → verify
+## Tool Strategy (run BEFORE rewriting, in parallel)
 
-The result: correct output on the first attempt, clean context, happy developer.
+| Tool | Purpose |
+|------|---------|
+| `Agent` (`Explore`) | Codebase map: framework, paths, reference files |
+| `Agent` (`Explore`) | Find similar existing implementation |
+| `ListMcpResourcesTool` | Connected MCPs (figma, shadcn, notion, drive, sandbox) |
+| `Bash` | List skills in `plugins/rubot/skills/`, `.claude/skills/`, `~/.claude/skills/` |
+| `Read` | `package.json` / `wrangler.toml` / `pyproject.toml` |
+| `WebFetch` | Doc/design URL only if user provided one |
+| `TeamCreate` | Optional fan-out, requires `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` |
+
+Rules:
+- Never invent file paths. Discovery is the only source.
+- Never recommend skills that aren't installed.
+- Never recommend MCPs that aren't connected.
+
+## Strict Output Format
+
+Output ONLY this template inside a fenced code block. No preamble. No commentary.
+
+```
+MAIN PROBLEM: <one-sentence problem statement>
+
+GOALS:
+- <measurable outcome>
+- <measurable outcome>
+- <measurable outcome>
+
+CONTEXT:
+- Framework: <detected framework + version>
+- Activate skills: `<skill1>`, `<skill2>`
+- Use MCP: `<mcp>` via `<tool>` for <purpose>
+- Reference: `<path>` (existing pattern to follow)
+
+RULES:
+- <universal rule>
+- <universal rule>
+- <domain rule, if applicable>
+- <domain rule, if applicable>
+
+1. <Imperative Title>
+-> TASK ID: TASK-001
+-> ISSUES: <specific symptom, current state, line numbers if known>
+-> FILE RELATED: `<path>:<line-range>` or "new file: <path>"
+-> SOLUTION: <technical, step-by-step; max 3 steps>
+
+2. <Imperative Title>
+-> TASK ID: TASK-002
+-> ISSUES: <...>
+-> FILE RELATED: <...>
+-> SOLUTION: <...>
+
+VERIFICATION:
+- <test command / build check / screenshot diff / a11y scan>
+- <metric or condition that confirms done>
+
+EXECUTION: Start in plan mode (`EnterPlanMode`). Present the plan and wait for approval before writing any code.
+
+reply 'go' to execute.
+```
+
+### Format Rules (non-negotiable)
+
+| Field | Rule |
+|-------|------|
+| `MAIN PROBLEM` | One sentence. Present tense. Names the gap. |
+| `GOALS` | Bulleted. Measurable outcomes only. No "make it nicer." |
+| `CONTEXT` | Omit empty lines. Drop block if all empty. |
+| `RULES` | **Mandatory.** Never omitted, never empty. Universal bank always included. Domain banks added by task signal. Minimum 4 rules. |
+| Task numbering | Sequential from 1. |
+| `TASK ID` | `TASK-NNN` zero-padded. Stable across edits. |
+| Title | Imperative form ("Replace arbitrary values", not "Arbitrary values fix"). |
+| `ISSUES` | Specific. Cite line numbers, current state, error text. |
+| `FILE RELATED` | Real path. Line range when narrowable. `"new file: <path>"` when creating. |
+| `SOLUTION` | Imperative. ≤3 steps. No prose paragraphs. |
+| `VERIFICATION` | At least one runnable check. |
+| `EXECUTION` | Required for multi-file/architectural. For trivial: `EXECUTION: Direct execution OK — single-line change.` |
+| Closing | Exact text: `reply 'go' to execute.` (lowercase) |
+
+### Forbidden in Output
+
+- `Original Prompt` section
+- `Issues Identified` section
+- `Why This Is Better` section
+- Empty or missing `RULES` block
+- Any preamble, commentary, or explanation outside the template
+
+## Rule Banks
+
+`RULES` is mandatory in every output. Assemble from these banks:
+
+### Universal (always include)
+
+- Follow existing patterns, naming, and conventions in the codebase.
+- Use real file paths only — no invented paths.
+- Fix root causes; never suppress errors.
+- No regressions: existing tests must pass after every change.
+
+### Frontend (add when task signal: UI / component / page / style / responsive / a11y)
+
+- Follow the existing design system: tokens from `index.css` (colors, spacing, radius, typography). No arbitrary Tailwind values (`p-[13px]`, `text-[15px]`, `bg-[#aaa]`).
+- Mobile-first responsive: design xs, scale up via sm/md/lg.
+- WCAG 2.2 AA: ARIA on interactive elements, keyboard navigation, visible focus, contrast ≥4.5:1.
+- UX visibility: render loading, error, empty, and success states explicitly — no silent failures.
+- Reuse `shadcn/ui` primitives before building custom components.
+
+### Backend (add when task signal: API / route / server / database)
+
+- Validate all input at the boundary with Zod (or framework equivalent).
+- Parameterized queries — never string-concatenated SQL.
+- Secure cookies: `HttpOnly`, `Secure`, `SameSite=Lax|Strict`.
+- Structured error responses — never leak stack traces.
+
+### Security (add when task signal: auth / secrets / crypto)
+
+- Constant-time comparison for secrets and password hashes.
+- Never log secrets, tokens, or PII.
+- Use platform crypto (`crypto.subtle`, `bcrypt`) — no hand-rolled crypto.
+
+### Selection logic
+
+- Universal → always.
+- Frontend → triggered by: "UI", "component", "page", "style", "design", "responsive", "mobile", "Tailwind", "shadcn", "carousel", "card", "form", "modal", "accessibility", "a11y", "WCAG", "ARIA", "keyboard".
+- Backend → triggered by: "API", "endpoint", "route", "server", "database", "schema", "migration", "query", "model".
+- Security → triggered by: "auth", "login", "password", "session", "token", "secret", "crypto", "hash", "encrypt", "JWT", "OAuth".
+- Multiple banks may apply — combine. Deduplicate overlapping rules.
 
 ## Transformation Patterns
 
-Apply these 7 patterns (derived from the official Claude Code best practices) to rewrite any vague prompt:
+### Pattern 1 — Verification
 
-### Pattern 1: Add Verification Criteria
+Encode "how do we know it's correct?" into the `VERIFICATION` block. Always runnable: test command, build, screenshot diff, axe-core, lighthouse, curl + grep, etc.
 
-The single highest-leverage improvement. Claude performs dramatically better when it can check its own work.
+### Pattern 2 — Real Paths
 
-| Vague | Fixed |
-|-------|-------|
-| "implement email validation" | "write a validateEmail function. Test cases: user@example.com → true, invalid → false, user@.com → false. Run the tests after implementing" |
-| "make the dashboard look better" | "[paste screenshot] implement this design. Take a screenshot of the result and compare it to the original. List differences and fix them" |
-| "fix the build" | "the build fails with this error: [paste error]. Fix it and verify the build succeeds. Address the root cause, don't suppress the error" |
+Every `FILE RELATED` value must come from discovery. Add line ranges (`src/foo.ts:42-58`) when narrowable.
 
-**How to apply:** Ask "how will we know this is done correctly?" and encode the answer into the prompt.
+### Pattern 3 — Reference Pattern
 
-### Pattern 2: Scope to Specific Files and Components
+The second Explore agent surfaces a similar implementation. Pin it in `CONTEXT.Reference` so Claude follows the existing convention.
 
-Vague scope makes Claude read dozens of files searching for context, burning tokens and degrading performance.
+### Pattern 4 — Symptom + Root-Cause Hint
 
-| Vague | Fixed |
-|-------|-------|
-| "add tests for foo" | "write a test for src/utils/foo.ts covering the edge case where the user is logged out. Avoid mocks" |
-| "fix the login bug" | "users report that login fails after session timeout. Check the auth flow in src/auth/, especially token refresh. Write a failing test that reproduces the issue, then fix it" |
-| "add a calendar widget" | "look at how existing widgets are implemented on the home page. HotDogWidget.tsx is a good example. Follow the pattern to implement a new calendar widget" |
+`ISSUES` field: describe symptom + likely cause + observable trigger. Example: `"Login fails after 30min idle. Likely token-refresh race in src/auth/refresh.ts:88. Reproduces with backgrounded tab."`
 
-**How to apply:** Scan the codebase for relevant files and reference them by path.
+### Pattern 5 — Phase via TASK Decomposition
 
-### Pattern 3: Reference Existing Patterns
+Multi-file or architectural work → multiple TASKs. One TASK = one logical change. The numbered list IS the phased plan.
 
-Claude produces more consistent code when it can follow an existing pattern in the codebase rather than inventing from scratch.
+### Pattern 6 — Output Format Templating
 
-**How to apply:**
-1. Identify a similar feature/component that already exists
-2. Tell Claude to study it first: "look at how X is implemented in src/components/X.tsx"
-3. Say "follow the same pattern" or "use the same approach"
+When the deliverable is a report/config/structured output, embed the template inside the relevant `SOLUTION` block.
 
-### Pattern 4: Describe Symptoms with Root Cause Hints
+### Pattern 7 — Rich Context
 
-Don't just say "it's broken." Describe what happens, where it likely originates, and what "fixed" looks like.
+In `ISSUES` or `SOLUTION`, use `@<path>` refs, paste error text, paste expected output. Use `[YOUR: ...]` placeholders for user-supplied context (screenshots, secrets, error logs).
 
-| Vague | Fixed |
-|-------|-------|
-| "fix the login bug" | "users report login fails after session timeout. Check src/auth/token-refresh.ts. Write a failing test, then fix the root cause" |
-| "the page is slow" | "the /dashboard page takes 8s to load. Profile the React components for unnecessary re-renders. Check if the data fetch in useEffect has a missing dependency causing repeated calls" |
+### Pattern 8 — Recommend Installed Skills
 
-### Pattern 5: Break Complex Tasks into Phases
+Match task signal → skill from discovery list. Add to `CONTEXT.Activate skills`. Common matches:
 
-For anything touching multiple files or requiring design decisions, use the explore → plan → implement → verify workflow.
+| Task signal | Skill |
+|-------------|-------|
+| responsive, mobile, breakpoints, overflow | `responsive-design` |
+| cards inconsistent, carousel broken, button drift | `component-consistency` |
+| color tokens, `text-[15px]`, arbitrary values, OKLCH | `design-tokens` |
+| accessibility, ARIA, keyboard, contrast, focus | `wcag-fix` |
+| security audit, OWASP, vuln check | `owasp-asvs-audit` (or specific V1-V17) |
+| SEO audit, meta tags | `seo-audit` |
+| AI search, citability, GEO, llms.txt | `geo-audit` |
+| Cloudflare Workers / DO / Agents SDK / queues | `workers-best-practices`, `durable-objects`, `agents-sdk`, `wrangler` |
+| LCP, INP, CLS, "make it faster" | `web-perf`, `performance` |
+| Figma-to-code, pixel-perfect | `figma-slicing` |
+| `settings.json`, hooks, env, permissions | `update-config` |
+| CLAUDE.md audit | `claude-md-improver` |
+| Agentation feedback toolbar | `agentation` |
 
-**Template for complex prompts:**
-```
-1. Explore: Read [specific files/directories] to understand the current [feature/pattern]
-2. Plan: Propose an approach for [goal]. List files that need changes
-3. Implement: Make the changes following [existing pattern/convention]
-4. Verify: Run [tests/build/linter] and fix any failures
-```
+Skip if discovery did not surface the skill in the user's environment.
 
-### Pattern 6: Specify Output Format
+### Pattern 9 — Recommend Connected MCPs
 
-When Claude needs to produce a report, config, or structured output, show the exact format.
+Match task signal → MCP from `ListMcpResourcesTool` output. Add to `CONTEXT.Use MCP`. Common matches:
 
-**How to apply:** Include a template or example of what the output should look like, even if rough.
+| Task signal | MCP + tool |
+|-------------|------------|
+| Figma node extraction, design handoff | `figma` MCP |
+| shadcn component install / lookup | `shadcn` MCP (`get_add_command_for_items`, `view_items_in_registries`, `search_items_in_registries`) |
+| Notion / Drive / Gmail / Calendar context | `claude_ai_Notion`, `claude_ai_Google_Drive`, `claude_ai_Gmail`, `claude_ai_Google_Calendar` |
+| Sandboxed code execution | `Polar-Sandbox` MCP |
 
-### Pattern 7: Provide Rich Context
+Skip if MCP not connected.
 
-Instead of describing where code lives, reference it directly.
+### Pattern 10 — Plan Mode by Default
 
-- Reference files with `@` — e.g., `@src/components/Dashboard.tsx`
-- Paste screenshots for visual changes
-- Paste error messages for debugging
-- Give URLs for documentation or API references
+Multi-file or architectural rewrite → keep `EXECUTION: Start in plan mode (EnterPlanMode)...` line.
 
-## Codebase-Aware Rewriting Process
+Trivial single-line/single-file change → replace with `EXECUTION: Direct execution OK — single-line change.`
 
-When rewriting a prompt, follow these steps to gather context:
+## Examples
 
-### Step 1: Parse User Intent
-
-Identify the core action from the vague prompt:
-- **Build/Add** — new feature, component, endpoint
-- **Fix** — bug, error, broken functionality
-- **Improve** — performance, design, UX, code quality
-- **Refactor** — restructure, rename, reorganize
-- **Configure** — setup, environment, deployment
-- **Test** — add tests, improve coverage
-
-### Step 2: Scan for Relevant Files
-
-Based on the intent, search the codebase:
+### Vague: `make the dashboard look better`
 
 ```
-# For UI changes — find relevant components
-Glob: src/components/**/*.tsx, src/pages/**/*.tsx, app/**/*.tsx
+MAIN PROBLEM: Dashboard mixes hardcoded Tailwind values and inconsistent spacing across breakpoints, breaking visual hierarchy.
 
-# For API changes — find routes and handlers
-Glob: src/api/**/*.ts, src/routes/**/*.ts, app/api/**/*.ts
+GOALS:
+- All spacing/typography/radius values pulled from index.css tokens.
+- Card grid renders consistently across xs/sm/md/lg breakpoints.
+- No visual regressions vs. the current screenshot.
 
-# For style changes — find CSS/theme files
-Glob: **/*.css, **/theme.*, **/tailwind.config.*
+CONTEXT:
+- Framework: Next.js 15 (App Router) + Tailwind CSS 4
+- Activate skills: `design-tokens`, `responsive-design`, `component-consistency`
+- Reference: `src/components/widgets/HotDogWidget.tsx` (token-compliant pattern)
 
-# For config changes — find config files
-Glob: *.config.*, .env*, wrangler.toml
+RULES:
+- Follow existing patterns, naming, and conventions in the codebase.
+- Use real file paths only — no invented paths.
+- No regressions: existing tests must pass.
+- Follow the existing design system: tokens from `index.css` (colors, spacing, radius, typography). No arbitrary Tailwind values (`p-[13px]`, `text-[15px]`, `bg-[#aaa]`).
+- Mobile-first responsive: design xs, scale up via sm/md/lg.
+- WCAG 2.2 AA: ARIA on interactive elements, keyboard navigation, visible focus, contrast ≥4.5:1.
+- UX visibility: render loading, error, empty, and success states explicitly.
+- Reuse `shadcn/ui` primitives before building custom components.
+
+1. Replace arbitrary Tailwind values with tokens
+-> TASK ID: TASK-001
+-> ISSUES: src/pages/dashboard.tsx contains `p-[13px]`, `text-[15px]`, `rounded-[12px]` — bypasses --spacing/--font-sans/--radius.
+-> FILE RELATED: `src/pages/dashboard.tsx:24-180`
+-> SOLUTION:
+   1. Replace arbitrary brackets with token classes (p-3, text-base, rounded-lg).
+   2. Verify token names match index.css :root definitions.
+   3. Run `bun run build` — no Tailwind warnings.
+
+2. Align card grid breakpoints
+-> TASK ID: TASK-002
+-> ISSUES: Cards collapse to 1 column at md but parent container stays at max-w-7xl, leaving dead space.
+-> FILE RELATED: `src/pages/dashboard.tsx:62-95`
+-> SOLUTION:
+   1. Mobile-first grid: grid-cols-1 sm:grid-cols-2 lg:grid-cols-3.
+   2. Set container to max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8.
+   3. Match HotDogWidget card padding pattern.
+
+3. Normalize typography scale
+-> TASK ID: TASK-003
+-> ISSUES: Heading levels jump h1 → h3 → h2 in dashboard sections.
+-> FILE RELATED: `src/pages/dashboard.tsx:24-58`
+-> SOLUTION:
+   1. Reorder to h1 → h2 → h3.
+   2. Apply existing text-display/text-heading/text-body classes.
+
+VERIFICATION:
+- Take a screenshot before and after, diff side-by-side, list deltas.
+- Run `bun run build` — exit 0.
+- Run `bun run lint` — no new warnings.
+
+EXECUTION: Start in plan mode (`EnterPlanMode`). Present the plan and wait for approval before writing any code.
+
+reply 'go' to execute.
 ```
 
-### Step 3: Identify Existing Patterns
-
-Look for similar implementations the rewritten prompt can reference:
-- Same type of component already exists? Reference it
-- Similar API endpoint? Point to it
-- Established naming convention? Mention it
-- Test patterns? Reference an existing test file
-
-### Step 4: Determine Verification Method
-
-Choose the right verification based on the task:
-
-| Task Type | Verification |
-|-----------|-------------|
-| New feature | Unit tests + integration test |
-| Bug fix | Failing test → fix → passing test |
-| UI change | Screenshot comparison (if Chrome extension available) |
-| Refactor | Existing tests still pass |
-| Performance | Benchmark before/after |
-| Config | Build/deploy succeeds |
-
-### Step 5: Compose the Rewritten Prompt
-
-Assemble the improved prompt using the applicable patterns. Structure:
-
-1. **What** — specific action with file paths
-2. **How** — reference existing patterns, constraints, approach
-3. **Verify** — how to confirm it works
-4. **Edge cases** — anything Claude should watch for
-
-## Output Format
-
-Present the rewritten prompt in this exact format so the user can copy it:
-
-```markdown
-## Original Prompt
-> [user's original vague prompt]
-
-## Issues Identified
-- [list what's vague, missing, or problematic about the original]
-
-## Improved Prompt
-```
-
-[the rewritten prompt in a fenced code block — this is what the user copies]
+### Vague: `add authentication`
 
 ```
+MAIN PROBLEM: App has no auth — every route is public, no session handling, no logout.
 
-## Why This Is Better
-- [bullet points explaining each improvement]
+GOALS:
+- Email/password login at /login.
+- Protected routes redirect unauthenticated users to /login.
+- Server-side session with secure HttpOnly cookie.
+- Tests cover login success, login failure, protected access while logged out, logout.
 
-## Tips
-- [optional: suggest breaking into multiple prompts if the task is very large]
-- [optional: suggest using Plan Mode first if the approach is uncertain]
+CONTEXT:
+- Framework: Vite + React 19 + TanStack Router
+- Activate skills: `owasp-authentication`, `owasp-session-management`
+- Reference: `src/routes/index.tsx` (existing route pattern)
+
+RULES:
+- Follow existing patterns, naming, and conventions in the codebase.
+- Use real file paths only — no invented paths.
+- Fix root causes; never suppress errors.
+- No regressions: existing tests must pass.
+- Validate all input at the boundary with Zod.
+- Secure cookies: `HttpOnly`, `Secure`, `SameSite=Lax`.
+- Structured error responses — never leak stack traces.
+- Constant-time comparison for password hashes.
+- Never log secrets, tokens, or PII.
+- Use platform crypto (`bcrypt` for password hashing) — no hand-rolled crypto.
+
+1. Define session storage schema
+-> TASK ID: TASK-001
+-> ISSUES: No session table or cookie infrastructure exists.
+-> FILE RELATED: "new file: src/server/session.ts"
+-> SOLUTION:
+   1. Define Session = { id, userId, expiresAt }.
+   2. Use HttpOnly + SameSite=Lax + Secure cookie named "sid".
+   3. Rotate session on login.
+
+2. Build /login route + form
+-> TASK ID: TASK-002
+-> ISSUES: No login UI.
+-> FILE RELATED: "new file: src/routes/login.tsx"
+-> SOLUTION:
+   1. Mirror src/routes/index.tsx route export pattern.
+   2. POST handler validates credentials with Zod, sets cookie, redirects to /.
+   3. Bcrypt password compare, constant-time.
+
+3. Add route guard for protected paths
+-> TASK ID: TASK-003
+-> ISSUES: All routes accessible without auth.
+-> FILE RELATED: `src/router.tsx:18-44`
+-> SOLUTION:
+   1. Add beforeLoad guard that checks session cookie.
+   2. Redirect to /login when missing/expired.
+   3. Whitelist /login and /signup.
+
+4. Logout endpoint
+-> TASK ID: TASK-004
+-> ISSUES: No way to invalidate session.
+-> FILE RELATED: "new file: src/routes/logout.ts"
+-> SOLUTION:
+   1. POST /logout deletes session row + clears cookie.
+   2. Redirect to /login.
+
+VERIFICATION:
+- Run `bun run test src/server/session.test.ts` — all 4 cases pass.
+- Manual: log in, refresh, access /dashboard, log out, attempt /dashboard → redirected.
+- Run `bun run build` — exit 0.
+
+EXECUTION: Start in plan mode (`EnterPlanMode`). Present the plan and wait for approval before writing any code.
+
+reply 'go' to execute.
 ```
 
-The improved prompt inside the fenced code block must be:
-- **Self-contained** — works without additional context
-- **Copy-paste ready** — no placeholder brackets unless the user needs to fill something in (mark those clearly with `[YOUR: description]`)
-- **Actionable** — Claude can start working immediately after reading it
+### Vague: `fix the bug`
 
-## Common Vague Prompt Rewrites
-
-### "Make it look better"
-
-**Before:** `make the dashboard look better`
-
-**After:**
 ```
-Look at the current dashboard layout in src/pages/dashboard.tsx and the
-components it uses. Take a screenshot of the current state.
+MAIN PROBLEM: [YOUR: paste symptom + reproduction steps + error text]
 
-Improve the visual hierarchy:
-1. Use consistent spacing from the project's spacing tokens (check index.css for --spacing)
-2. Align the card grid to a consistent column layout
-3. Ensure typography follows the existing heading/body hierarchy in the codebase
+GOALS:
+- Failing test reproduces the bug.
+- Root cause fixed (not symptom suppressed).
+- Test passes.
+- Full suite still green.
 
-Take a screenshot after changes and compare with the original. List any
-visual regressions and fix them. Run the build to verify no errors.
-```
+CONTEXT:
+- Framework: <detected>
+- Reference: `<file>` (likely origin from Explore agent)
 
-### "Add authentication"
+RULES:
+- Follow existing patterns, naming, and conventions in the codebase.
+- Use real file paths only — no invented paths.
+- Fix root causes; never suppress errors.
+- No regressions: existing tests must pass.
 
-**Before:** `add authentication`
+1. Reproduce
+-> TASK ID: TASK-001
+-> ISSUES: Bug is not deterministically reproducible in tests.
+-> FILE RELATED: "new file: <test path matching origin>"
+-> SOLUTION:
+   1. Write a failing test that triggers the symptom.
+   2. Confirm it fails for the documented reason.
 
-**After:**
-```
-Read src/routes/ to understand the current routing structure and check
-if any auth utilities already exist in src/lib/ or src/utils/.
+2. Fix root cause
+-> TASK ID: TASK-002
+-> ISSUES: <root cause hypothesis from Explore agent>
+-> FILE RELATED: `<path>:<line>`
+-> SOLUTION:
+   1. Patch the underlying logic.
+   2. No try/catch suppression.
+   3. Add inline comment only if WHY is non-obvious.
 
-Plan an authentication system:
-- Session-based auth using [framework's built-in session handling]
-- Login page at /login with email/password
-- Protected routes that redirect to /login when unauthenticated
-- Logout endpoint that clears the session
+VERIFICATION:
+- Failing test from TASK-001 passes.
+- `bun run test` — full suite green.
 
-Follow the existing route patterns in src/routes/index.tsx for new routes.
-Write tests for: successful login, failed login (wrong password), accessing
-protected route while logged out, and logout. Run all tests after implementing.
-```
+EXECUTION: Start in plan mode (`EnterPlanMode`). Present the plan and wait for approval before writing any code.
 
-### "Fix the bug"
-
-**Before:** `fix the bug`
-
-**After:**
-```
-The [describe symptom] happens when [describe trigger]. The likely cause
-is in src/[relevant-path].
-
-1. Write a failing test that reproduces the issue
-2. Find the root cause (don't just suppress the symptom)
-3. Fix the underlying issue
-4. Verify the test passes
-5. Run the full test suite to check for regressions
+reply 'go' to execute.
 ```
 
-### "Refactor this code"
+### Vague: `rename foo to bar in src/utils.ts`
 
-**Before:** `refactor this file, it's messy`
-
-**After:**
 ```
-Read src/components/Dashboard.tsx and identify:
-1. Duplicated logic that can be extracted into shared utilities
-2. Components that are too large (>200 lines) and should be split
-3. Inconsistencies with patterns used in sibling components
+MAIN PROBLEM: Identifier `foo` is misnamed and should be `bar` for clarity.
 
-Make changes incrementally — one refactor at a time. After each change,
-run the existing tests to verify nothing breaks. Don't change any
-external behavior — the component should work identically after refactoring.
+GOALS:
+- All references updated, no dangling old name.
+
+CONTEXT:
+- Framework: <detected>
+
+RULES:
+- Follow existing patterns, naming, and conventions in the codebase.
+- Use real file paths only — no invented paths.
+- No regressions: existing tests must pass.
+
+1. Rename identifier
+-> TASK ID: TASK-001
+-> ISSUES: `foo` exported from src/utils.ts and consumed by N callers.
+-> FILE RELATED: `src/utils.ts` + all importers
+-> SOLUTION:
+   1. Rename declaration in src/utils.ts.
+   2. Update all imports (rg "foo" -l).
+
+VERIFICATION:
+- `bun run build` — exit 0.
+- `rg "foo" src/` — no matches.
+
+EXECUTION: Direct execution OK — single-line change.
+
+reply 'go' to execute.
 ```
 
-### "Deploy this"
+## Anti-Patterns
 
-**Before:** `deploy this to production`
-
-**After:**
-```
-Check the deployment configuration:
-1. Read wrangler.toml for the current deployment target
-2. Verify wrangler whoami shows valid authentication
-3. Run the full build: bun run build
-4. Run all tests: bun run test
-5. If everything passes, deploy with: wrangler deploy
-
-Report any build or test failures before deploying. Do not deploy if
-tests fail.
-```
-
-## Anti-Patterns to Avoid in Rewritten Prompts
-
-- **Don't over-specify** — leave room for Claude's judgment on implementation details
-- **Don't add unnecessary steps** — if the task is simple, keep the prompt simple
-- **Don't include redundant context** — if Claude can read the file, don't describe its contents
-- **Don't make prompts longer than necessary** — longer prompts consume more context
-- **Don't use `ALWAYS` or `NEVER` excessively** — explain the why instead
+- Don't invent file paths.
+- Don't recommend uninstalled skills or unconnected MCPs.
+- Don't skip plan mode for non-trivial rewrites.
+- Don't pad single-line tasks into multi-task plans.
+- Don't include `Original Prompt` / `Issues Identified` / `Why This Is Better` — ever.
+- Don't omit the `RULES` block — it is mandatory in every output.
+- Don't write prose `SOLUTION` blocks. Imperative steps only.
+- Don't use `ALWAYS` / `NEVER` excessively in `SOLUTION`. State the action.
 
 ## When NOT to Rewrite
 
-Some prompts are intentionally open-ended and should stay that way:
-- **Exploration prompts**: "what would you improve in this file?" — good for discovery
-- **Learning prompts**: "explain how this works" — specificity would limit the answer
-- **Simple tasks**: "rename foo to bar in utils.ts" — already specific enough
-
-If the user's prompt falls into these categories, acknowledge that it's already well-formed and doesn't need rewriting.
+| Prompt category | Action |
+|-----------------|--------|
+| Exploration ("what could we improve?") | Reply: open-ended is the point. Do not rewrite. |
+| Learning ("explain how X works") | Reply: specificity would limit the answer. Do not rewrite. |
+| Already-specific ("rename foo to bar in src/utils.ts") | Reply: `Prompt is already specific. No rewrite needed.` Stop. |
 
 ## References
 
-- Claude Code Best Practices: https://code.claude.com/docs/en/best-practices
-- How Claude Code Works: https://code.claude.com/docs/en/how-claude-code-works
+- Tools Reference: https://code.claude.com/docs/en/tools-reference
+- Best Practices: https://code.claude.com/docs/en/best-practices
+- Subagents: https://code.claude.com/docs/en/sub-agents
 - Common Workflows: https://code.claude.com/docs/en/common-workflows
