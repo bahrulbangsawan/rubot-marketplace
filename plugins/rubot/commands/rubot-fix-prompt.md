@@ -1,6 +1,6 @@
 ---
 name: rubot-fix-prompt
-description: Rewrite a vague prompt into a strict task-based execution plan (MAIN PROBLEM / GOALS / CONTEXT / mandatory RULES / numbered TASKs / VERIFICATION / EXECUTION). Runs parallel Explore agents, discovers connected MCPs and installed skills, and outputs a single copy-ready prompt that defaults to plan mode. Use when the user wants to improve a prompt or transform ambiguous instructions into precise task lists.
+description: Rewrite a vague prompt into a strict task-based execution plan (MAIN PROBLEM / GOALS / CONTEXT / mandatory RULES / numbered TASKs / VERIFICATION / EXECUTION). Runs parallel Explore agents, discovers connected MCPs and installed skills, then asks the user to choose between task-list execution (TaskCreate + TodoWrite), plan mode (EnterPlanMode), or cancel. Use when the user wants to improve a prompt or transform ambiguous instructions into precise task lists.
 argument-hint: <your vague prompt here>
 allowed-tools:
   - Read
@@ -13,6 +13,11 @@ allowed-tools:
   - ListMcpResourcesTool
   - WebFetch
   - TaskCreate
+  - TaskGet
+  - TaskList
+  - TaskUpdate
+  - TaskStop
+  - TodoWrite
   - AskUserQuestion
 ---
 
@@ -65,7 +70,7 @@ Apply Patterns 1-10 from `prompt-fixer` skill. Constraints:
 - MCPs: only those returned by Step 2.3.
 - Each task: imperative title, single TASK ID, specific ISSUES, real FILE RELATED, ≤3-step SOLUTION.
 - Verification: required. At least one runnable check (test, build, screenshot diff, axe-core, lighthouse).
-- Plan mode: required for any multi-file/architectural rewrite.
+- Execution decision: deferred to Step 5 `AskUserQuestion`. The `EXECUTION:` line in the output is always the deferred placeholder.
 - **RULES: mandatory.** Assemble from rule banks in `prompt-fixer` skill:
   - Always include the **Universal** bank.
   - Add **Frontend** bank when task touches UI/components/pages/styles/responsive/a11y.
@@ -113,9 +118,7 @@ VERIFICATION:
 - <test command / build check / screenshot diff / a11y scan>
 - <metric or condition that confirms done>
 
-EXECUTION: Start in plan mode (`EnterPlanMode`). Present the plan and wait for approval before writing any code.
-
-reply 'go' to execute.
+EXECUTION: Awaiting user choice — task-list execution, plan mode, or cancel (see prompt below).
 ```
 
 **Format rules (non-negotiable):**
@@ -128,8 +131,7 @@ reply 'go' to execute.
 - `FILE RELATED` — must be a real path from discovery, with line range if narrowable. Use `"new file: <path>"` when creating.
 - `SOLUTION` — imperative, technical, ≤3 steps. No prose paragraphs.
 - `VERIFICATION` — at least one runnable check.
-- `EXECUTION` — required for multi-file/architectural rewrites. For trivial single-line changes, replace with: `EXECUTION: Direct execution OK — single-line change.`
-- Closing line `reply 'go' to execute.` — exact text, lowercase.
+- `EXECUTION` — always defers to the Step 5 `AskUserQuestion` choice. Do not invent a different execution line.
 
 **Forbidden in output:**
 
@@ -141,27 +143,32 @@ reply 'go' to execute.
 
 ### Step 5 — Next Step
 
+After displaying the rewritten prompt, immediately call `AskUserQuestion` with exactly these three options (no more, no fewer):
+
 ```
 AskUserQuestion:
-  question: "Ready?"
+  question: "How do you want to proceed?"
   header: "Prompt Ready"
   options:
-    - label: "Run it now (plan mode)"
-      description: "EnterPlanMode and execute the rewrite"
-    - label: "Adjust"
-      description: "Tell me which TASK ID to change"
-    - label: "Alternatives"
-      description: "Generate minimal + maximum-detail versions"
-    - label: "Done"
-      description: "I'll copy it myself"
+    - label: "Create tasks list and execute"
+      description: "Convert TASK-NNN entries into TaskCreate/TodoWrite items and run them in order"
+    - label: "Create plan using EnterPlanMode"
+      description: "Enter plan mode, present the plan, and wait for approval before any code change"
+    - label: "Cancel"
+      description: "Stop here — keep the rewritten prompt only"
   multiSelect: false
 ```
 
 **By choice:**
-- **Run it now** → call `EnterPlanMode`, feed the rewritten prompt as plan input.
-- **Adjust** → ask which `TASK-NNN` to change, edit just that task, redisplay full block.
-- **Alternatives** → emit two more code blocks: `MINIMAL` (only verification added) and `MAXIMUM` (full task expansion + every relevant skill/MCP).
-- **Done** → end.
+
+- **Create tasks list and execute** →
+  1. Call `TodoWrite` once with one `pending` todo per `TASK-NNN` (content = imperative title, activeForm = present-progressive form).
+  2. Call `TaskCreate` for each TASK-NNN. Pass the full task body (TASK ID + ISSUES + FILE RELATED + SOLUTION) plus the global RULES block as the agent prompt. Use `subagent_type: general-purpose` unless a more specific subagent fits.
+  3. Track progress with `TaskList` / `TaskGet` / `TaskUpdate`. Mark each TodoWrite item `in_progress` before starting and `completed` immediately on success.
+  4. On user interrupt, call `TaskStop` to halt the active task.
+  5. After the last task finishes, run the `VERIFICATION` checks and report results.
+- **Create plan using EnterPlanMode** → call `EnterPlanMode` and feed the rewritten prompt as plan input. Do not write code until the user approves the plan.
+- **Cancel** → end. Do not call TaskCreate, TodoWrite, or EnterPlanMode.
 
 ## Hard Rules
 
@@ -169,7 +176,7 @@ AskUserQuestion:
 - `RULES` block is **mandatory** in every output. Never empty, never omitted.
 - Real paths only. No inventions.
 - Recommend a skill or MCP when discovery surfaces a match. Skip when none.
-- Default execution = plan mode. Override only on explicit "skip plan mode."
+- Always emit the Step 5 `AskUserQuestion` (Create tasks list / EnterPlanMode / Cancel). Never auto-enter plan mode and never auto-create tasks without the user choosing.
 - `[YOUR: ...]` placeholders only for user-supplied context (screenshots, error logs, secrets).
 - Match length to task size. Single-line fix → 1 task. Multi-file refactor → multi-task.
 - If the original is already specific, reply: `Prompt is already specific. No rewrite needed.` and stop.

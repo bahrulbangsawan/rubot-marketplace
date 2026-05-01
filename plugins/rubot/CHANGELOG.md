@@ -5,6 +5,18 @@ All notable changes to the rubot plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.16.0] - 2026-05-01
+
+### Changed
+
+- **`/rubot-fix-prompt` command + `prompt-fixer` skill (v3.2.0)** — replaced auto plan-mode execution with a 3-option `AskUserQuestion` decision prompt:
+  1. **Create tasks list and execute** — converts each TASK-NNN into a `TodoWrite` + `TaskCreate` pair, tracked via `TaskList` / `TaskGet` / `TaskUpdate` / `TaskStop`.
+  2. **Create plan using EnterPlanMode** — hands the rewritten prompt to plan mode and waits for approval.
+  3. **Cancel** — stops; rewritten prompt remains visible to copy.
+- Added `TaskCreate`, `TaskGet`, `TaskList`, `TaskUpdate`, `TaskStop`, and `TodoWrite` to the command's `allowed-tools` so task-list execution can run end-to-end.
+- Updated `EXECUTION:` line in the strict output template to a deferred placeholder (no auto plan mode, no auto task creation).
+- Refreshed examples, anti-patterns, format rules, and Pattern 10 to reflect user-chosen execution.
+
 ## [2.14.0] - 2026-03-11
 
 ### Added

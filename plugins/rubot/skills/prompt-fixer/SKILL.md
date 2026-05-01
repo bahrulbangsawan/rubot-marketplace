@@ -1,12 +1,12 @@
 ---
 name: prompt-fixer
-version: 3.1.0
+version: 3.2.0
 description: |
-  Rewrites vague prompts into a strict task-based execution plan (MAIN PROBLEM / GOALS / CONTEXT / mandatory RULES / numbered TASKs with ID, ISSUES, FILE RELATED, SOLUTION / VERIFICATION / EXECUTION). Runs parallel Explore agents, discovers connected MCPs and installed skills, recommends them, enforces engineering rules from rule banks, and defaults the rewrite to plan mode. Output is a single copy-ready prompt — no preamble, no commentary.
+  Rewrites vague prompts into a strict task-based execution plan (MAIN PROBLEM / GOALS / CONTEXT / mandatory RULES / numbered TASKs with ID, ISSUES, FILE RELATED, SOLUTION / VERIFICATION / EXECUTION). Runs parallel Explore agents, discovers connected MCPs and installed skills, recommends them, enforces engineering rules from rule banks, then asks the user to choose between task-list execution (TaskCreate + TodoWrite), plan mode (EnterPlanMode), or cancel. Output is a single copy-ready prompt — no preamble, no commentary.
   MUST activate for: "fix my prompt", "improve this prompt", "rewrite this prompt", "make this prompt better", "this prompt is too vague", "help me write a better prompt", "prompt engineering", "how should I ask Claude to", "rephrase this for Claude", or when the user provides a clearly vague instruction and asks for help making it more specific.
   Also activate when: "Claude keeps doing the wrong thing", "Claude doesn't understand what I want", "how do I get better results", "why does Claude keep failing", or the user references the `/rubot-fix-prompt` command.
   Do NOT activate for: actually executing the rewritten prompt, general coding tasks, SEO audits, design audits, security audits, environment checks, or any task where the user wants implementation rather than prompt improvement.
-  Covers: prompt rewriting, prompt engineering, vague-to-specific transformation, strict task-based output format, mandatory RULES enforcement, verification injection, file path scoping, phased execution, codebase-aware enrichment, skill recommendation, MCP recommendation, plan-mode-by-default.
+  Covers: prompt rewriting, prompt engineering, vague-to-specific transformation, strict task-based output format, mandatory RULES enforcement, verification injection, file path scoping, phased execution, codebase-aware enrichment, skill recommendation, MCP recommendation, user-chosen execution (task list / plan mode / cancel), TodoWrite + TaskCreate orchestration.
 agents:
   - debug-master
 ---
@@ -25,9 +25,11 @@ Produce a prompt that:
 5. Decomposes work into numbered TASKs with stable IDs.
 6. Pins each task to real files and concrete solutions.
 7. Includes runnable verification.
-8. Defaults to plan mode.
+8. Defers execution to the user via a 3-option `AskUserQuestion`: task-list execution, plan mode, or cancel.
 
-## Tool Strategy (run BEFORE rewriting, in parallel)
+## Tool Strategy
+
+### Discovery (run BEFORE rewriting, in parallel)
 
 | Tool | Purpose |
 |------|---------|
@@ -39,10 +41,34 @@ Produce a prompt that:
 | `WebFetch` | Doc/design URL only if user provided one |
 | `TeamCreate` | Optional fan-out, requires `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` |
 
+### Decision (run AFTER displaying the rewritten prompt)
+
+| Tool | Purpose |
+|------|---------|
+| `AskUserQuestion` | Single 3-option prompt: task-list execution / plan mode / cancel |
+
+### Execution path A — task-list execution
+
+| Tool | Purpose |
+|------|---------|
+| `TodoWrite` | One pending todo per `TASK-NNN` for visible progress |
+| `TaskCreate` | Spawn one subagent per TASK-NNN with the full task body + RULES |
+| `TaskList` | Poll the queue when checking status |
+| `TaskGet` | Inspect a specific task's output or final state |
+| `TaskUpdate` | Adjust task scope or instructions mid-flight (rare) |
+| `TaskStop` | Halt the active task on user interrupt |
+
+### Execution path B — plan mode
+
+| Tool | Purpose |
+|------|---------|
+| `EnterPlanMode` | Hand the rewritten prompt to plan mode and wait for approval |
+
 Rules:
 - Never invent file paths. Discovery is the only source.
 - Never recommend skills that aren't installed.
 - Never recommend MCPs that aren't connected.
+- Never auto-enter plan mode and never auto-create tasks. The 3-option `AskUserQuestion` is mandatory.
 
 ## Strict Output Format
 
@@ -84,10 +110,10 @@ VERIFICATION:
 - <test command / build check / screenshot diff / a11y scan>
 - <metric or condition that confirms done>
 
-EXECUTION: Start in plan mode (`EnterPlanMode`). Present the plan and wait for approval before writing any code.
-
-reply 'go' to execute.
+EXECUTION: Awaiting user choice — task-list execution, plan mode, or cancel (see prompt below).
 ```
+
+After displaying the block, immediately call `AskUserQuestion` with the 3-option decision prompt (see "Decision Prompt" section).
 
 ### Format Rules (non-negotiable)
 
@@ -104,8 +130,8 @@ reply 'go' to execute.
 | `FILE RELATED` | Real path. Line range when narrowable. `"new file: <path>"` when creating. |
 | `SOLUTION` | Imperative. ≤3 steps. No prose paragraphs. |
 | `VERIFICATION` | At least one runnable check. |
-| `EXECUTION` | Required for multi-file/architectural. For trivial: `EXECUTION: Direct execution OK — single-line change.` |
-| Closing | Exact text: `reply 'go' to execute.` (lowercase) |
+| `EXECUTION` | Always the deferred line: `EXECUTION: Awaiting user choice — task-list execution, plan mode, or cancel (see prompt below).` |
+| Decision prompt | Mandatory `AskUserQuestion` call after the code block (see "Decision Prompt"). |
 
 ### Forbidden in Output
 
@@ -114,6 +140,51 @@ reply 'go' to execute.
 - `Why This Is Better` section
 - Empty or missing `RULES` block
 - Any preamble, commentary, or explanation outside the template
+- A custom `EXECUTION` line that auto-selects plan mode or task execution — the choice is always the user's via the decision prompt
+- A `reply 'go' to execute.` closing line (replaced by the `AskUserQuestion` decision prompt)
+
+## Decision Prompt (mandatory)
+
+After emitting the rewritten prompt code block, call `AskUserQuestion` exactly once with these three options:
+
+```
+AskUserQuestion:
+  question: "How do you want to proceed?"
+  header: "Prompt Ready"
+  options:
+    - label: "Create tasks list and execute"
+      description: "Convert TASK-NNN entries into TaskCreate/TodoWrite items and run them in order"
+    - label: "Create plan using EnterPlanMode"
+      description: "Enter plan mode, present the plan, and wait for approval before any code change"
+    - label: "Cancel"
+      description: "Stop here — keep the rewritten prompt only"
+  multiSelect: false
+```
+
+### Branch — "Create tasks list and execute"
+
+1. Call `TodoWrite` once with one `pending` todo per TASK-NNN.
+   - `content` = imperative title (e.g. "Replace arbitrary Tailwind values with tokens").
+   - `activeForm` = present-progressive (e.g. "Replacing arbitrary Tailwind values with tokens").
+2. For each TASK-NNN, call `TaskCreate`:
+   - Pass `subagent_type: general-purpose` (or a more specific subagent if the task signal matches one — e.g. `Explore` for read-only inspection).
+   - Pass the full task body — TASK ID, ISSUES, FILE RELATED, SOLUTION — plus the global RULES block — as the agent prompt.
+   - Run independent tasks in parallel (one message, multiple TaskCreate calls); run dependent tasks sequentially.
+3. Track progress:
+   - Mark the matching TodoWrite item `in_progress` before the task starts and `completed` immediately after success.
+   - Use `TaskList` for queue overview, `TaskGet` for a specific task's output, `TaskUpdate` to adjust scope mid-flight.
+4. On user interrupt or scope change, call `TaskStop` to halt the active task.
+5. After the final task succeeds, run the `VERIFICATION` checks and report results.
+
+### Branch — "Create plan using EnterPlanMode"
+
+- Call `EnterPlanMode` and feed the rewritten prompt as plan input.
+- Wait for explicit plan approval before any code change.
+
+### Branch — "Cancel"
+
+- Stop. Do not call `TodoWrite`, `TaskCreate`, or `EnterPlanMode`.
+- Leave the rewritten prompt visible so the user can copy it.
 
 ## Rule Banks
 
@@ -220,11 +291,16 @@ Match task signal → MCP from `ListMcpResourcesTool` output. Add to `CONTEXT.Us
 
 Skip if MCP not connected.
 
-### Pattern 10 — Plan Mode by Default
+### Pattern 10 — User Chooses Execution
 
-Multi-file or architectural rewrite → keep `EXECUTION: Start in plan mode (EnterPlanMode)...` line.
+Always emit the deferred `EXECUTION:` line and the 3-option `AskUserQuestion` decision prompt. Do not auto-enter plan mode and do not auto-create tasks.
 
-Trivial single-line/single-file change → replace with `EXECUTION: Direct execution OK — single-line change.`
+The user picks:
+- **Create tasks list and execute** → `TodoWrite` + per-TASK `TaskCreate`, tracked via `TaskList` / `TaskGet` / `TaskUpdate` / `TaskStop`.
+- **Create plan using EnterPlanMode** → `EnterPlanMode` with the rewritten prompt as input.
+- **Cancel** → no execution, prompt remains visible to copy.
+
+For trivial single-line changes, the user typically picks "Cancel" and applies the edit themselves — but the choice is theirs, not yours.
 
 ## Examples
 
@@ -284,9 +360,7 @@ VERIFICATION:
 - Run `bun run build` — exit 0.
 - Run `bun run lint` — no new warnings.
 
-EXECUTION: Start in plan mode (`EnterPlanMode`). Present the plan and wait for approval before writing any code.
-
-reply 'go' to execute.
+EXECUTION: Awaiting user choice — task-list execution, plan mode, or cancel (see prompt below).
 ```
 
 ### Vague: `add authentication`
@@ -357,9 +431,7 @@ VERIFICATION:
 - Manual: log in, refresh, access /dashboard, log out, attempt /dashboard → redirected.
 - Run `bun run build` — exit 0.
 
-EXECUTION: Start in plan mode (`EnterPlanMode`). Present the plan and wait for approval before writing any code.
-
-reply 'go' to execute.
+EXECUTION: Awaiting user choice — task-list execution, plan mode, or cancel (see prompt below).
 ```
 
 ### Vague: `fix the bug`
@@ -404,9 +476,7 @@ VERIFICATION:
 - Failing test from TASK-001 passes.
 - `bun run test` — full suite green.
 
-EXECUTION: Start in plan mode (`EnterPlanMode`). Present the plan and wait for approval before writing any code.
-
-reply 'go' to execute.
+EXECUTION: Awaiting user choice — task-list execution, plan mode, or cancel (see prompt below).
 ```
 
 ### Vague: `rename foo to bar in src/utils.ts`
@@ -437,21 +507,20 @@ VERIFICATION:
 - `bun run build` — exit 0.
 - `rg "foo" src/` — no matches.
 
-EXECUTION: Direct execution OK — single-line change.
-
-reply 'go' to execute.
+EXECUTION: Awaiting user choice — task-list execution, plan mode, or cancel (see prompt below).
 ```
 
 ## Anti-Patterns
 
 - Don't invent file paths.
 - Don't recommend uninstalled skills or unconnected MCPs.
-- Don't skip plan mode for non-trivial rewrites.
+- Don't auto-enter plan mode or auto-create tasks. Always show the 3-option decision prompt.
 - Don't pad single-line tasks into multi-task plans.
 - Don't include `Original Prompt` / `Issues Identified` / `Why This Is Better` — ever.
 - Don't omit the `RULES` block — it is mandatory in every output.
 - Don't write prose `SOLUTION` blocks. Imperative steps only.
 - Don't use `ALWAYS` / `NEVER` excessively in `SOLUTION`. State the action.
+- Don't skip `TodoWrite` when the user picks task-list execution — visible progress is the point.
 
 ## When NOT to Rewrite
 
