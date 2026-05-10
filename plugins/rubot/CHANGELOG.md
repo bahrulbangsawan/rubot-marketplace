@@ -5,6 +5,16 @@ All notable changes to the rubot plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.18.0] - 2026-05-11
+
+### Changed
+
+- **`/rubot-fix-prompt` command + `prompt-fixer` skill (v3.4.0)** — added a hard ban on `git stash` to the emitted plans:
+  - New Universal rule: `DON'T USE ANY GIT STASH COMMANDS` (covers `git stash`, `git stash push|pop|apply|drop|clear`). Stashed work is invisible and easy to lose; recommend `git switch -c wip/<topic>` instead.
+  - Universal rule is appended to every example output (dashboard, auth, bug fix, rename) so rewrites surface it by default.
+  - New anti-pattern: never emit `git stash` instructions in `SOLUTION` or `VERIFICATION` blocks.
+  - Command Hard Rules now require the verbatim Universal stash-ban line in every emitted `RULES` block and forbid stash commands in any task body.
+
 ## [2.16.0] - 2026-05-01
 
 ### Changed

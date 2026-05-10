@@ -1,6 +1,6 @@
 ---
 name: prompt-fixer
-version: 3.3.0
+version: 3.4.0
 description: |
   Rewrites vague prompts into a strict task-based execution plan (MAIN PROBLEM / GOALS / CONTEXT / mandatory RULES / numbered TASKs with ID, AGENT, ISSUES, FILE RELATED, SOLUTION / PARALLEL EXECUTION PLAN / VERIFICATION / EXECUTION). Runs parallel Explore agents, discovers connected MCPs, installed skills, and available subagents, analyzes tasks for parallel agent execution, recommends them, enforces engineering rules from rule banks, then asks the user to choose between task-list execution (TaskCreate + TodoWrite, parallel where possible), plan mode (EnterPlanMode), or cancel. Output is a single copy-ready prompt — no preamble, no commentary.
   MUST activate for: "fix my prompt", "improve this prompt", "rewrite this prompt", "make this prompt better", "this prompt is too vague", "help me write a better prompt", "prompt engineering", "how should I ask Claude to", "rephrase this for Claude", or when the user provides a clearly vague instruction and asks for help making it more specific.
@@ -215,6 +215,7 @@ AskUserQuestion:
 - Use real file paths only — no invented paths.
 - Fix root causes; never suppress errors.
 - No regressions: existing tests must pass after every change.
+- **DON'T USE ANY GIT STASH COMMANDS** (`git stash`, `git stash push`, `git stash pop`, `git stash apply`, `git stash drop`, `git stash clear`). Stashed work is invisible, easy to lose, and conflates unrelated changes. If you need to set work aside, commit it to a scratch branch instead.
 
 ### Frontend (add when task signal: UI / component / page / style / responsive / a11y)
 
@@ -407,6 +408,7 @@ RULES:
 - Follow existing patterns, naming, and conventions in the codebase.
 - Use real file paths only — no invented paths.
 - No regressions: existing tests must pass.
+- DON'T USE ANY GIT STASH COMMANDS — commit to a scratch branch if you need to set work aside.
 - Follow the existing design system: tokens from `index.css` (colors, spacing, radius, typography). No arbitrary Tailwind values (`p-[13px]`, `text-[15px]`, `bg-[#aaa]`).
 - Mobile-first responsive: design xs, scale up via sm/md/lg.
 - WCAG 2.2 AA: ARIA on interactive elements, keyboard navigation, visible focus, contrast ≥4.5:1.
@@ -476,6 +478,7 @@ RULES:
 - Use real file paths only — no invented paths.
 - Fix root causes; never suppress errors.
 - No regressions: existing tests must pass.
+- DON'T USE ANY GIT STASH COMMANDS — commit to a scratch branch if you need to set work aside.
 - Validate all input at the boundary with Zod.
 - Secure cookies: `HttpOnly`, `Secure`, `SameSite=Lax`.
 - Structured error responses — never leak stack traces.
@@ -556,6 +559,7 @@ RULES:
 - Use real file paths only — no invented paths.
 - Fix root causes; never suppress errors.
 - No regressions: existing tests must pass.
+- DON'T USE ANY GIT STASH COMMANDS — commit to a scratch branch if you need to set work aside.
 
 1. Reproduce
 -> TASK ID: TASK-001
@@ -603,6 +607,7 @@ RULES:
 - Follow existing patterns, naming, and conventions in the codebase.
 - Use real file paths only — no invented paths.
 - No regressions: existing tests must pass.
+- DON'T USE ANY GIT STASH COMMANDS — commit to a scratch branch if you need to set work aside.
 
 1. Rename identifier
 -> TASK ID: TASK-001
@@ -638,6 +643,7 @@ EXECUTION: Awaiting user choice — task-list execution (parallel where independ
 - Don't use `ALWAYS` / `NEVER` excessively in `SOLUTION`. State the action.
 - Don't skip `TodoWrite` when the user picks task-list execution — visible progress with `[GROUP N · AGENT: <name>]` prefixes is the point.
 - Don't fan out parallel `TaskCreate` calls in separate messages — group them in a single message so they actually run concurrently.
+- Don't emit any `git stash` instructions in `SOLUTION` or `VERIFICATION` blocks. Stashing is forbidden — recommend a scratch branch (`git switch -c wip/<topic>`) when work needs to be set aside.
 
 ## When NOT to Rewrite
 

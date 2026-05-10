@@ -199,6 +199,7 @@ AskUserQuestion:
 
 - Output the strict template only. No "Original Prompt" / "Issues Identified" / "Why This Is Better".
 - `RULES` block is **mandatory** in every output. Never empty, never omitted.
+- The Universal rule **"DON'T USE ANY GIT STASH COMMANDS"** must appear in every emitted `RULES` block. Pull it verbatim from the `prompt-fixer` skill's Universal bank.
 - `AGENT:` field is **mandatory** on every task. Pulled from discovery.
 - `PARALLEL EXECUTION PLAN` block is **mandatory** in every output. Single-task plans use `Group 1 (sequential)`.
 - Real paths only. No inventions.
@@ -206,6 +207,7 @@ AskUserQuestion:
 - Default to sequential when independence is unclear — false parallelism causes merge conflicts and broken builds.
 - During execution, parallel groups MUST be fanned out via a single message containing multiple `TaskCreate` calls — never serialize a parallel group across messages.
 - Always emit the Step 5 `AskUserQuestion` (Create tasks list / EnterPlanMode / Cancel). Never auto-enter plan mode and never auto-create tasks without the user choosing.
+- Never emit `git stash` / `git stash push|pop|apply|drop|clear` in any `SOLUTION` or `VERIFICATION` block. If a task needs to set work aside, write `git switch -c wip/<topic>` instead.
 - `[YOUR: ...]` placeholders only for user-supplied context (screenshots, error logs, secrets).
 - Match length to task size. Single-line fix → 1 task. Multi-file refactor → multi-task.
 - If the original is already specific, reply: `Prompt is already specific. No rewrite needed.` and stop.
