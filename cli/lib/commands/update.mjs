@@ -162,6 +162,10 @@ async function updateHooks(global) {
         const localInner = (local.hooks || [])[0]
         if (!localInner) continue
 
+        // This updater only manages prompt-prefix hooks; skip command-type
+        // (and any other non-prompt) hooks so they don't crash the run.
+        if (typeof localInner.prompt !== 'string') continue
+
         const colonIdx = localInner.prompt.indexOf(':')
         if (colonIdx <= 0) continue
 
@@ -170,7 +174,7 @@ async function updateHooks(global) {
         // Find matching remote entry
         const remote = remoteEntries.find((r) => {
           const rInner = (r.hooks || [])[0]
-          return rInner && rInner.prompt.toUpperCase().startsWith(prefix)
+          return rInner && typeof rInner.prompt === 'string' && rInner.prompt.toUpperCase().startsWith(prefix)
         })
         if (remote) {
           const remoteInner = remote.hooks[0]
