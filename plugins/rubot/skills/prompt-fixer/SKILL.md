@@ -1,12 +1,12 @@
 ---
 name: prompt-fixer
-version: 3.9.0
+version: 3.10.0
 description: |
-  Rewrites vague prompts into a strict task-based execution plan (MAIN PROBLEM / GOALS / CONTEXT / mandatory RULES / numbered TASKs with ID, AGENT, USE, ISSUES, FILE RELATED, SOLUTION / PARALLEL EXECUTION PLAN / VERIFICATION / EXECUTION) that is **OWASP ASVS 5.0.0 compliant**, **mobile-first responsive by default**, **TanStack-standard by default** (Router with automatic code splitting + Query with optimistic UI + DB for local-first state), **React Doctor-gated** (mandatory `npx react-doctor@latest --fail-on warning` scan after every React change), enforces **mandatory skill detection** via the Step 0-verified `@tanstack/intent` loader and `load <package>#<skill>` before substantial work, requires **validation & commit hooks** (lint/typecheck/test/build/format/react-doctor) after every phase, and emits a **canonical final REPORT block** (TITLE / Agent / Skills Loaded / Files Changed / CHANGES / VALIDATION / DEFERRED / DONE) after task-list execution. Runs parallel Explore agents, discovers connected MCPs, installed skills, validation hooks, and available subagents, **matches each discovered skill and MCP to specific task signals**, embeds explicit `Use skills: …` and `Use MCP: …` directives in CONTEXT, and adds a per-task `USE:` field telling the agent exactly which skills/MCPs to load for that task (e.g. "Use Cloudflare skills and MCP"). Analyzes tasks for parallel agent execution, enforces engineering rules from rule banks (Universal + Frontend/Responsive + Backend + TanStack + Security with V1-V17 chapter mappings), applies blocking rewrite gates before output, then asks the user to choose between task-list execution (TaskCreate + TodoWrite, parallel where possible), plan mode (EnterPlanMode), or cancel. Output is a single copy-ready prompt — no preamble, no commentary. The `rubot-fix-prompt` command halts if the OWASP ASVS 5.0.0 skill suite, `responsive-design`, the `@tanstack/intent` loader, or React Doctor in React projects is unavailable.
+  Rewrites vague prompts into a strict task-based execution plan (MAIN PROBLEM / GOALS / CONTEXT / mandatory RULES / numbered TASKs with ID, AGENT, USE, ISSUES, FILE RELATED, SOLUTION / PARALLEL EXECUTION PLAN / VERIFICATION / EXECUTION) that is **OWASP ASVS 5.0.0 compliant**, **mobile-first responsive by default**, **TanStack-standard by default** (Router with automatic code splitting + Query with optimistic UI + DB for local-first state), **React Doctor-gated** (mandatory `npx react-doctor@latest --fail-on warning` scan after every React change), enforces **mandatory skill detection** via the Step 0-verified `@tanstack/intent` loader and `load <package>#<skill>` before substantial work, requires **validation & commit hooks** (lint/typecheck/test/build/format/react-doctor) after every phase, and emits a **canonical final REPORT block** (TITLE / Agent / Skills Loaded / Files Changed / CHANGES / VALIDATION / DEFERRED / DONE) after task-list execution. Runs parallel Explore agents, discovers connected MCPs, installed skills, validation hooks, and available subagents, **matches each discovered skill and MCP to specific task signals**, embeds explicit `Use skills: …` and `Use MCP: …` directives in CONTEXT, and adds a per-task `USE:` field telling the agent exactly which skills/MCPs to load for that task (e.g. "Use Cloudflare skills and MCP"). Analyzes tasks for parallel agent execution, enforces engineering rules from rule banks (Universal + Frontend/Responsive + Backend + TanStack + Security with V1-V17 chapter mappings), applies blocking rewrite gates before output, then asks the user to choose between task-list execution (TaskCreate/TaskUpdate/TaskList, parallel where possible), plan mode (EnterPlanMode), or cancel. Output is a single copy-ready prompt — no preamble, no commentary. The `rubot-fix-prompt` command halts if the OWASP ASVS 5.0.0 skill suite, `responsive-design`, the `@tanstack/intent` loader, or React Doctor in React projects is unavailable.
   MUST activate for: "fix my prompt", "improve this prompt", "rewrite this prompt", "make this prompt better", "this prompt is too vague", "help me write a better prompt", "prompt engineering", "how should I ask Claude to", "rephrase this for Claude", or when the user provides a clearly vague instruction and asks for help making it more specific.
   Also activate when: "Claude keeps doing the wrong thing", "Claude doesn't understand what I want", "how do I get better results", "why does Claude keep failing", or the user references the `/rubot-fix-prompt` command.
   Do NOT activate for: actually executing the rewritten prompt, general coding tasks, SEO audits, design audits, security audits, environment checks, or any task where the user wants implementation rather than prompt improvement.
-  Covers: prompt rewriting, prompt engineering, vague-to-specific transformation, strict task-based output format, mandatory RULES enforcement, OWASP ASVS 5.0.0 V1-V17 chapter rule mapping, mobile-first responsive enforcement, per-task AGENT assignment, parallel agent execution analysis, dependency-aware grouping, verification injection, file path scoping, phased execution, codebase-aware enrichment, skill recommendation, MCP recommendation, subagent recommendation, user-chosen execution (task list / plan mode / cancel), TodoWrite + TaskCreate orchestration with parallel fan-out.
+  Covers: prompt rewriting, prompt engineering, vague-to-specific transformation, strict task-based output format, mandatory RULES enforcement, OWASP ASVS 5.0.0 V1-V17 chapter rule mapping, mobile-first responsive enforcement, per-task AGENT assignment, parallel agent execution analysis, dependency-aware grouping, verification injection, file path scoping, phased execution, codebase-aware enrichment, skill recommendation, MCP recommendation, subagent recommendation, user-chosen execution (task list / plan mode / cancel), TaskCreate/TaskUpdate/TaskList orchestration with parallel fan-out, terse one-line progress narration.
 agents:
   - debug-master
   - owasp-asvs-audit
@@ -15,7 +15,7 @@ agents:
 
 # Prompt Fixer Skill
 
-Rewrite vague prompts into a strict, technical, todo-based instruction with mandatory engineering rules. Grounded in parallel codebase research. Single copy-ready output. No commentary.
+Rewrite vague prompts into a strict, technical, task-based instruction with mandatory engineering rules. Grounded in parallel codebase research. Single copy-ready output. No commentary.
 
 ## Goal
 
@@ -90,8 +90,7 @@ npx @bahrulbangsawan/rubot add owasp-asvs-audit owasp-encoding-sanitization owas
 
 | Tool | Purpose |
 |------|---------|
-| `TodoWrite` | One pending todo per `TASK-NNN` for visible progress; include `[GROUP N · AGENT: <name>]` prefix per todo so the parallel plan is visible |
-| `TaskCreate` | Spawn one subagent per TASK-NNN with the full task body + RULES; **fan out parallel groups in a single message with multiple `TaskCreate` calls** |
+| `TaskCreate` | Spawn one subagent per TASK-NNN with the full task body + RULES; set `description` = `[GROUP N · AGENT: <name>]` so the queue shows the parallel plan; **fan out parallel groups in a single message with multiple `TaskCreate` calls** |
 | `TaskList` | Poll the queue when checking status |
 | `TaskGet` | Inspect a specific task's output or final state |
 | `TaskUpdate` | Adjust task scope or instructions mid-flight (rare) |
@@ -219,7 +218,7 @@ AskUserQuestion:
   header: "Prompt Ready"
   options:
     - label: "Create tasks list and execute"
-      description: "Convert TASK-NNN entries into TaskCreate/TodoWrite items and run them in order"
+      description: "Spawn each TASK-NNN as a TaskCreate subagent and run them group-by-group"
     - label: "Create plan using EnterPlanMode"
       description: "Enter plan mode, present the plan, and wait for approval before any code change"
     - label: "Cancel"
@@ -229,21 +228,16 @@ AskUserQuestion:
 
 ### Branch — "Create tasks list and execute"
 
-1. Call `TodoWrite` once with one `pending` todo per TASK-NNN.
-   - `content` = `[GROUP N · AGENT: <agent>] <imperative title>` (e.g. `[GROUP 1 · AGENT: frontend-master] Replace arbitrary Tailwind values with tokens`).
-   - `activeForm` = present-progressive form (e.g. `Replacing arbitrary Tailwind values with tokens`).
-   - The group prefix makes the parallel plan visible to the user during execution.
-2. Walk the `PARALLEL EXECUTION PLAN` group-by-group, in order:
-   - For a `(parallel)` group: send **one message containing multiple `TaskCreate` calls** — one per TASK-NNN in the group, each using the per-task `AGENT` value as `subagent_type`. Wait for the entire group to finish before starting the next group.
-   - For a `(sequential)` group or `(sequential after Group N)` group: send `TaskCreate` calls one at a time, each with its per-task `AGENT` value.
+Track the whole run through the Task queue — `TaskCreate` to spawn, `TaskList`/`TaskGet` to monitor, `TaskUpdate` to adjust, `TaskStop` to halt. Do NOT use `TodoWrite`. Narrate tersely — one short line per phase (see "Progress Narration").
+
+1. Walk the `PARALLEL EXECUTION PLAN` group-by-group, in order. Emit ONE short status line before each group and nothing else: `Execute Group 1 (Parallel)` or `Execute Group 2 (Sequential)`.
+   - For a `(parallel)` group: send **one message containing multiple `TaskCreate` calls** — one per TASK-NNN in the group, each using the per-task `AGENT` value as `subagent_type` and `description` = `[GROUP N · AGENT: <agent>] <imperative title>`. Wait for the entire group to finish before starting the next group.
+   - For a `(sequential)` group or `(sequential after Group N)` group: send `TaskCreate` calls one at a time, each with its per-task `AGENT` value and the same `[GROUP N · AGENT: <agent>]` description prefix.
    - Each `TaskCreate` prompt = full task body (TASK ID + AGENT + ISSUES + FILE RELATED + SOLUTION) + the global RULES block.
-3. Track progress:
-   - Mark each TodoWrite item `in_progress` immediately before its `TaskCreate` fires and `completed` immediately after the agent reports success.
-   - For parallel groups, multiple items may be `in_progress` at once — that is the point.
-   - Use `TaskList` for queue overview, `TaskGet` for a specific task's output, `TaskUpdate` to adjust scope mid-flight.
-4. On user interrupt or scope change, call `TaskStop` to halt the active task(s).
-5. After the final group succeeds, run the `VERIFICATION` checks and report results. This is a blocking completion gate: every discovered validation script, hook, and React Doctor run must be represented in the final REPORT as `PASS`, `FAIL`, or `NOT RUN` with a concrete reason.
-6. Emit the canonical REPORT block from Pattern 13 as the final user-facing message. If the message does not match the canonical structure, rewrite it before sending.
+2. Monitor with `TaskList` (queue overview), `TaskGet` (a specific task's output), and `TaskUpdate` (adjust scope mid-flight). The Task queue is the progress tracker — multiple tasks may run at once during a parallel group; that is the point.
+3. On user interrupt or scope change, call `TaskStop` to halt the active task(s).
+4. After the final group succeeds, run the `VERIFICATION` checks and report results. This is a blocking completion gate: every discovered validation script, hook, and React Doctor run must be represented in the final REPORT as `PASS`, `FAIL`, or `NOT RUN` with a concrete reason.
+5. Emit the canonical REPORT block from Pattern 13 as the final user-facing message. If the message does not match the canonical structure, rewrite it before sending.
 
 ### Branch — "Create plan using EnterPlanMode"
 
@@ -253,8 +247,21 @@ AskUserQuestion:
 
 ### Branch — "Cancel"
 
-- Stop. Do not call `TodoWrite`, `TaskCreate`, or `EnterPlanMode`.
+- Stop. Do not call `TaskCreate`, `TaskUpdate`, or `EnterPlanMode`.
 - Leave the rewritten prompt visible so the user can copy it.
+
+## Progress Narration (terse)
+
+Every status line emitted during Step 0 and execution is ONE short, informative line — no rationale, no per-agent breakdown. Keep the strict "Improved Prompt" block and the final REPORT exactly as specified; trim only the conversational narration around them.
+
+| Moment | Emit (example) | Do NOT emit |
+|--------|----------------|-------------|
+| Step 0 passed | `Step 0 passed — all skills present ✅` | "…intent loader resolves, react-doctor available. The task touches UI, so I'll load responsive-design before discovery." |
+| Starting a parallel group | `Execute Group 1 (Parallel)` | "Now I'll fan out Group 1 — TASK-001, TASK-002, TASK-004 — in a single message so they run concurrently. Each agent gets its full task body, the relevant RULES…" |
+| Starting a sequential group | `Execute Group 2 (Sequential)` | a paragraph explaining the dependency chain |
+| Group finished | `Group 1 done ✅` | a per-file recap — that belongs only in the final REPORT |
+
+Do not explain *why* between tool calls — the plan already states the why.
 
 ## Rule Banks
 
@@ -496,7 +503,7 @@ Skip if MCP not connected.
 Always emit the deferred `EXECUTION:` line and the 3-option `AskUserQuestion` decision prompt. Do not auto-enter plan mode and do not auto-create tasks.
 
 The user picks:
-- **Create tasks list and execute** → `TodoWrite` + per-TASK `TaskCreate`, tracked via `TaskList` / `TaskGet` / `TaskUpdate` / `TaskStop`.
+- **Create tasks list and execute** → per-TASK `TaskCreate`, tracked via `TaskList` / `TaskGet` / `TaskUpdate` / `TaskStop`. No `TodoWrite`.
 - **Create plan using EnterPlanMode** → `EnterPlanMode` with the rewritten prompt as input.
 - **Cancel** → no execution, prompt remains visible to copy.
 
@@ -796,7 +803,7 @@ RULES:
    2. Apply existing text-display/text-heading/text-body classes from `design-tokens` token scale.
 
 PARALLEL EXECUTION PLAN:
-- Group 1 (parallel): TASK-001, TASK-002, TASK-003 — all touch dashboard.tsx but on disjoint line ranges (24-180 token swap, 62-95 grid container, 24-58 heading order); each agent works on a different concern. Coordinate by writing back through the same TodoWrite list.
+- Group 1 (parallel): TASK-001, TASK-002, TASK-003 — all touch dashboard.tsx but on disjoint line ranges (24-180 token swap, 62-95 grid container, 24-58 heading order); each agent works on a different concern. Coordinate through the shared Task queue (`TaskList`).
 - Note: if line ranges overlap during execution, fall back to sequential — token swap first, then grid, then headings.
 
 VERIFICATION:
@@ -1088,7 +1095,8 @@ EXECUTION: Awaiting user choice — task-list execution (parallel where independ
 - Don't claim parallelism between tasks that touch the same file or share schema/types — default to sequential when uncertain.
 - Don't write prose `SOLUTION` blocks. Imperative steps only.
 - Don't use `ALWAYS` / `NEVER` excessively in `SOLUTION`. State the action.
-- Don't skip `TodoWrite` when the user picks task-list execution — visible progress with `[GROUP N · AGENT: <name>]` prefixes is the point.
+- Don't use `TodoWrite` for progress — the Task queue (`TaskCreate` / `TaskList` / `TaskGet` / `TaskUpdate` / `TaskStop`) is the tracker. Keep the `[GROUP N · AGENT: <name>]` prefix in each task's `description` so the parallel plan stays visible.
+- Don't narrate execution verbosely. Status is one short line per phase ("Step 0 passed — all skills present ✅", "Execute Group 1 (Parallel)") — no rationale, no per-agent breakdown.
 - Don't fan out parallel `TaskCreate` calls in separate messages — group them in a single message so they actually run concurrently.
 - Don't proceed past Step 0 if the OWASP ASVS 5.0.0 skill suite, `responsive-design`, the `@tanstack/intent` loader, or React Doctor in a React project is incomplete — the command halts.
 - Don't emit any `git stash` instructions in `SOLUTION` or `VERIFICATION` blocks. Stashing is forbidden — recommend a scratch branch (`git switch -c wip/<topic>`) when work needs to be set aside.

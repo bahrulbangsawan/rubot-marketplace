@@ -1,6 +1,6 @@
 ---
 name: rubot-fix-prompt
-description: Rewrite a vague prompt into a strict task-based execution plan (MAIN PROBLEM / GOALS / CONTEXT / mandatory RULES / numbered TASKs with per-task AGENT + USE / PARALLEL EXECUTION PLAN / VERIFICATION / EXECUTION) that is **OWASP ASVS 5.0.0 compliant** and **mobile-first responsive by default**. Requires the OWASP ASVS 5.0.0 skill suite (`owasp-asvs-audit` + V1-V17 chapter skills), `responsive-design`, a resolvable `@tanstack/intent` skill loader, and `react-doctor` for React projects — halts with install instructions if any blocking gate fails. Runs parallel Explore agents, discovers connected MCPs, installed skills, validation hooks, and available subagents, **matches each discovered skill and MCP to specific task signals**, embeds explicit `Use skills: …` / `Use MCP: …` directives in CONTEXT, and adds a per-task `USE:` field telling the agent exactly which skills/MCPs to load for that task (e.g. "Use Cloudflare skills and MCP"). Analyzes which tasks can fan out in parallel, maps each security task signal to the matching OWASP chapter(s), enforces TanStack standards when triggered, then asks the user to choose between task-list execution (TaskCreate + TodoWrite, parallel where possible), plan mode (EnterPlanMode), or cancel. Use when the user wants to improve a prompt or transform ambiguous instructions into precise task lists.
+description: Rewrite a vague prompt into a strict task-based execution plan (MAIN PROBLEM / GOALS / CONTEXT / mandatory RULES / numbered TASKs with per-task AGENT + USE / PARALLEL EXECUTION PLAN / VERIFICATION / EXECUTION) that is **OWASP ASVS 5.0.0 compliant** and **mobile-first responsive by default**. Requires the OWASP ASVS 5.0.0 skill suite (`owasp-asvs-audit` + V1-V17 chapter skills), `responsive-design`, a resolvable `@tanstack/intent` skill loader, and `react-doctor` for React projects — halts with install instructions if any blocking gate fails. Runs parallel Explore agents, discovers connected MCPs, installed skills, validation hooks, and available subagents, **matches each discovered skill and MCP to specific task signals**, embeds explicit `Use skills: …` / `Use MCP: …` directives in CONTEXT, and adds a per-task `USE:` field telling the agent exactly which skills/MCPs to load for that task (e.g. "Use Cloudflare skills and MCP"). Analyzes which tasks can fan out in parallel, maps each security task signal to the matching OWASP chapter(s), enforces TanStack standards when triggered, then asks the user to choose between task-list execution (TaskCreate/TaskUpdate/TaskList, parallel where possible), plan mode (EnterPlanMode), or cancel. Use when the user wants to improve a prompt or transform ambiguous instructions into precise task lists.
 argument-hint: <your vague prompt here>
 allowed-tools:
   - Read
@@ -17,13 +17,12 @@ allowed-tools:
   - TaskList
   - TaskUpdate
   - TaskStop
-  - TodoWrite
   - AskUserQuestion
 ---
 
 # Fix Prompt Command
 
-Rewrite vague prompts into a strict, technical, todo-based instruction with mandatory engineering rules. Output is a single copy-ready prompt — nothing else.
+Rewrite vague prompts into a strict, technical, task-based instruction with mandatory engineering rules. Output is a single copy-ready prompt — nothing else.
 
 ## Prerequisite
 
@@ -127,7 +126,7 @@ fi
 
 Behavior:
 - If exit code is non-zero → halt. Surface the missing list and install command back to the user. Do NOT call Step 1 / Step 2.
-- Otherwise → invoke `Skill` with `skill: "responsive-design"` immediately (so its mobile-first ruleset is in context before discovery), then proceed to Step 1.
+- Otherwise → emit ONE short status line — `Step 0 passed — all skills present ✅` (no recap of which loaders resolved or why) — then invoke `Skill` with `skill: "responsive-design"` (so its mobile-first ruleset is in context before discovery) and proceed to Step 1.
 
 After the prereq check passes, **load the `responsive-design` skill via the `Skill` tool** so its breakpoint system, relative-unit rules, and component patterns are in working context before any discovery or rewrite work begins.
 
@@ -352,7 +351,7 @@ AskUserQuestion:
   header: "Prompt Ready"
   options:
     - label: "Create tasks list and execute"
-      description: "Convert TASK-NNN entries into TaskCreate/TodoWrite items and run them in order"
+      description: "Spawn each TASK-NNN as a TaskCreate subagent and run them group-by-group"
     - label: "Create plan using EnterPlanMode"
       description: "Enter plan mode, present the plan, and wait for approval before any code change"
     - label: "Cancel"
@@ -362,21 +361,18 @@ AskUserQuestion:
 
 **By choice:**
 
-- **Create tasks list and execute** →
-  1. Call `TodoWrite` once with one `pending` todo per `TASK-NNN`.
-     - `content` = `[GROUP N · AGENT: <agent>] <imperative title>` — the prefix surfaces the parallel plan and which agent owns each task.
-     - `activeForm` = present-progressive form (e.g. `Replacing arbitrary Tailwind values with tokens`).
-  2. Walk the `PARALLEL EXECUTION PLAN` group-by-group, in order:
-     - **Parallel group** — send **one message containing multiple `TaskCreate` calls**, one per TASK-NNN in the group. Each `TaskCreate` uses the per-task `AGENT` value as `subagent_type`. Wait for the entire group to finish before starting the next group.
-     - **Sequential group** (single task or `(sequential after Group N)`) — send `TaskCreate` calls one at a time, each using the per-task `AGENT` value.
+- **Create tasks list and execute** → track the run through the Task queue only (`TaskCreate` to spawn, `TaskList`/`TaskGet` to monitor, `TaskUpdate` to adjust, `TaskStop` to halt). Do NOT use `TodoWrite`. Narrate tersely — one short line per phase.
+  1. Walk the `PARALLEL EXECUTION PLAN` group-by-group, in order. Emit ONE short status line before each group and nothing else: `Execute Group 1 (Parallel)` or `Execute Group 2 (Sequential)`.
+     - **Parallel group** — send **one message containing multiple `TaskCreate` calls**, one per TASK-NNN in the group. Each `TaskCreate` uses the per-task `AGENT` value as `subagent_type` and `description` = `[GROUP N · AGENT: <agent>] <imperative title>`. Wait for the entire group to finish before starting the next group.
+     - **Sequential group** (single task or `(sequential after Group N)`) — send `TaskCreate` calls one at a time, each using the per-task `AGENT` value and the same `[GROUP N · AGENT: <agent>]` description prefix.
      - Each `TaskCreate` prompt = full task body (TASK ID + AGENT + ISSUES + FILE RELATED + SOLUTION) + the global RULES block.
-  3. Track progress with `TaskList` / `TaskGet` / `TaskUpdate`. Mark each TodoWrite item `in_progress` before its `TaskCreate` fires and `completed` immediately on success. Multiple items may be `in_progress` at once during parallel groups — that's expected.
-  4. On user interrupt, call `TaskStop` to halt the active task(s).
-  5. After the last group finishes, run the `VERIFICATION` checks (lint / typecheck / test / build / format / commit hooks). This is a blocking completion gate: never emit the final REPORT until each discovered validation hook is either executed and recorded as `PASS`/`FAIL`, or explicitly recorded as `NOT RUN` with a concrete reason.
-  6. **React Doctor gate (mandatory for React projects)**: when the project declares `react`, `next`, `vite`, or `react-native` as a dependency, run `npx react-doctor@latest --fail-on warning` (add `--diff <base-branch>` when scoping to a PR). Parse every diagnostic — state & effects, performance, architecture, security, accessibility. Fix in scope and re-run until exit 0. If a finding cannot be safely fixed, move it to the `DEFERRED` section of the REPORT with an explicit Recommended Action. Do NOT skip this step for React-touching work.
-  7. **Emit the canonical REPORT block** (Pattern 13 in `prompt-fixer` skill) — `TITLE`, `Agent`, `Skills Loaded`, `Total Files Changed`, `CHANGES`, `VALIDATION` (including every discovered validation hook and the react-doctor run for React projects), `DEFERRED` (omit if empty), and the `------------------- DONE -------------------` footer. This is a blocking completion gate: if the report does not match the canonical structure, rewrite the final message before sending it. The report is the final user-facing message of the execution branch.
+  2. Monitor with `TaskList` / `TaskGet` / `TaskUpdate`. The Task queue is the progress tracker — multiple tasks may run at once during a parallel group; that's expected.
+  3. On user interrupt, call `TaskStop` to halt the active task(s).
+  4. After the last group finishes, run the `VERIFICATION` checks (lint / typecheck / test / build / format / commit hooks). This is a blocking completion gate: never emit the final REPORT until each discovered validation hook is either executed and recorded as `PASS`/`FAIL`, or explicitly recorded as `NOT RUN` with a concrete reason.
+  5. **React Doctor gate (mandatory for React projects)**: when the project declares `react`, `next`, `vite`, or `react-native` as a dependency, run `npx react-doctor@latest --fail-on warning` (add `--diff <base-branch>` when scoping to a PR). Parse every diagnostic — state & effects, performance, architecture, security, accessibility. Fix in scope and re-run until exit 0. If a finding cannot be safely fixed, move it to the `DEFERRED` section of the REPORT with an explicit Recommended Action. Do NOT skip this step for React-touching work.
+  6. **Emit the canonical REPORT block** (Pattern 13 in `prompt-fixer` skill) — `TITLE`, `Agent`, `Skills Loaded`, `Total Files Changed`, `CHANGES`, `VALIDATION` (including every discovered validation hook and the react-doctor run for React projects), `DEFERRED` (omit if empty), and the `------------------- DONE -------------------` footer. This is a blocking completion gate: if the report does not match the canonical structure, rewrite the final message before sending it. The report is the final user-facing message of the execution branch.
 - **Create plan using EnterPlanMode** → call `EnterPlanMode` and feed the rewritten prompt as plan input. The plan content MUST surface the `PARALLEL EXECUTION PLAN` block so the user can review fan-out before approving. Do not write code until the user approves the plan.
-- **Cancel** → end. Do not call TaskCreate, TodoWrite, or EnterPlanMode.
+- **Cancel** → end. Do not call TaskCreate, TaskUpdate, or EnterPlanMode.
 
 ## Hard Rules
 
@@ -399,6 +395,8 @@ AskUserQuestion:
 - Default to sequential when independence is unclear — false parallelism causes merge conflicts and broken builds.
 - During execution, parallel groups MUST be fanned out via a single message containing multiple `TaskCreate` calls — never serialize a parallel group across messages.
 - Always emit the Step 5 `AskUserQuestion` (Create tasks list / EnterPlanMode / Cancel). Never auto-enter plan mode and never auto-create tasks without the user choosing.
+- **Never use `TodoWrite`.** Task-list execution is tracked entirely through the Task queue (`TaskCreate` / `TaskList` / `TaskGet` / `TaskUpdate` / `TaskStop`); the `[GROUP N · AGENT: <name>]` prefix lives in each task's `description`.
+- **Narrate tersely.** Every status line emitted during Step 0 and execution is one short, informative line — no rationale, no per-agent breakdown. Use `Step 0 passed — all skills present ✅` and `Execute Group 1 (Parallel)` / `Execute Group 2 (Sequential)`. Keep the strict output template and the final REPORT exactly as specified; trim only the conversational text around them.
 - Never emit `git stash` / `git stash push|pop|apply|drop|clear` in any `SOLUTION` or `VERIFICATION` block. If a task needs to set work aside, write `git switch -c wip/<topic>` instead.
 - `[YOUR: ...]` placeholders only for user-supplied context (screenshots, error logs, secrets).
 - Match length to task size. Single-line fix → 1 task. Multi-file refactor → multi-task.

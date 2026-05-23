@@ -5,6 +5,15 @@ All notable changes to the rubot plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.20.0] - 2026-05-23
+
+### Changed
+
+- **`/rubot-fix-prompt` command + `prompt-fixer` skill (v3.10.0)** — slimmed task execution and progress output:
+  - **Dropped `TodoWrite`.** Task-list execution is now tracked entirely through the Task queue — `TaskCreate` to spawn, `TaskList`/`TaskGet` to monitor, `TaskUpdate` to adjust, `TaskStop` to halt. Removed `TodoWrite` from the command's `allowed-tools`. The `[GROUP N · AGENT: <name>]` prefix moved into each task's `TaskCreate` `description` so the parallel plan stays visible in the queue.
+  - **Terse progress narration.** Added a "Progress Narration (terse)" section: every status line during Step 0 and execution is one short, informative line — `Step 0 passed — all skills present ✅`, `Execute Group 1 (Parallel)`, `Execute Group 2 (Sequential)` — with no rationale or per-agent breakdown. The strict "Improved Prompt" output template and the canonical final REPORT block are unchanged.
+  - New anti-patterns: never use `TodoWrite` for progress; never narrate execution verbosely.
+
 ## [2.18.0] - 2026-05-11
 
 ### Changed
