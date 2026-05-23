@@ -1,6 +1,6 @@
 import { existsSync, rmSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { getComponentDir, getComponentPath, getSettingsPath } from '../paths.mjs'
+import { expandTargets, getComponentDir, getComponentPath, getSettingsPath } from '../paths.mjs'
 import {
   bold,
   cyan,
@@ -15,8 +15,8 @@ import {
 
 // ── Scan installed components by type ──
 
-function getInstalledSkills(global) {
-  const dir = getComponentDir('skill', global)
+function getInstalledSkills(global, target) {
+  const dir = getComponentDir('skill', global, target)
   if (!existsSync(dir)) return []
   return readdirSync(dir, { withFileTypes: true })
     .filter((e) => e.isDirectory() && existsSync(join(dir, e.name, 'SKILL.md')))
@@ -27,8 +27,8 @@ function getInstalledSkills(global) {
     })
 }
 
-function getInstalledFiles(type, global) {
-  const dir = getComponentDir(type, global)
+function getInstalledFiles(type, global, target) {
+  const dir = getComponentDir(type, global, target)
   if (!existsSync(dir)) return []
   const ext = type === 'template' ? '' : '.md'
   return readdirSync(dir)
@@ -39,8 +39,8 @@ function getInstalledFiles(type, global) {
     })
 }
 
-function getInstalledHooks(global) {
-  const settingsPath = getSettingsPath(global)
+function getInstalledHooks(global, target) {
+  const settingsPath = getSettingsPath(global, target)
   if (!existsSync(settingsPath)) return []
   try {
     const settings = JSON.parse(readFileSync(settingsPath, 'utf8'))
@@ -65,30 +65,30 @@ function getInstalledHooks(global) {
   }
 }
 
-function getInstalledComponents(type, global) {
-  if (type === 'skill') return getInstalledSkills(global)
-  if (type === 'hook') return getInstalledHooks(global)
-  return getInstalledFiles(type, global)
+function getInstalledComponents(type, global, target) {
+  if (type === 'skill') return getInstalledSkills(global, target)
+  if (type === 'hook') return getInstalledHooks(global, target)
+  return getInstalledFiles(type, global, target)
 }
 
 // ── Remove functions ──
 
-function removeSkill(name, global) {
-  const dir = getComponentPath('skill', name, global)
+function removeSkill(name, global, target) {
+  const dir = getComponentPath('skill', name, global, target)
   if (!existsSync(dir)) return false
   rmSync(dir, { recursive: true })
   return true
 }
 
-function removeSingleFile(type, name, global) {
-  const path = getComponentPath(type, name, global)
+function removeSingleFile(type, name, global, target) {
+  const path = getComponentPath(type, name, global, target)
   if (!existsSync(path)) return false
   rmSync(path)
   return true
 }
 
-function removeHooks(hookNames, global) {
-  const settingsPath = getSettingsPath(global)
+function removeHooks(hookNames, global, target) {
+  const settingsPath = getSettingsPath(global, target)
   if (!existsSync(settingsPath)) return 0
   try {
     const settings = JSON.parse(readFileSync(settingsPath, 'utf8'))
@@ -116,12 +116,12 @@ function removeHooks(hookNames, global) {
   }
 }
 
-function removeComponents(toRemove, global) {
+function removeComponents(toRemove, global, target) {
   let totalRemoved = 0
 
   for (const [type, names] of Object.entries(toRemove)) {
     if (type === 'hook') {
-      const count = removeHooks(names, global)
+      const count = removeHooks(names, global, target)
       if (count > 0) {
         console.log(`  ${symbols.success} Removed ${bold(String(count))} hook(s) from settings.json`)
       }
@@ -130,7 +130,7 @@ function removeComponents(toRemove, global) {
     }
 
     for (const name of names) {
-      const ok = type === 'skill' ? removeSkill(name, global) : removeSingleFile(type, name, global)
+      const ok = type === 'skill' ? removeSkill(name, global, target) : removeSingleFile(type, name, global, target)
       if (ok) {
         console.log(`  ${symbols.success} Removed ${type}/${bold(name)}`)
         totalRemoved++
@@ -163,7 +163,8 @@ export async function run({ flags, positional }) {
     --type, -t   Component type: skill, command, agent, hook, template
     --skill, -s  Skill name(s) — shorthand for --type skill
     --all        Remove all (of specified type, or everything)
-    --global, -g Remove from ~/.claude/
+    --global, -g Remove globally (~/.claude/ or ~/.codex/)
+    --target     Target runtime: claude, codex, or both
     --yes, -y    Skip confirmation
     `)
     return
@@ -172,6 +173,7 @@ export async function run({ flags, positional }) {
   const types = [...flags.types]
   const names = [...flags.skills, ...positional]
   const global = flags.global
+  const targets = expandTargets(flags.target)
 
   // --skill flag implies --type skill
   if (flags.skills.length > 0 && types.length === 0) {
@@ -189,7 +191,9 @@ export async function run({ flags, positional }) {
       }
     }
     console.log()
-    removeComponents({ [type]: names }, global)
+    for (const target of targets) {
+      removeComponents({ [type]: names }, global, target)
+    }
     return
   }
 
@@ -199,7 +203,7 @@ export async function run({ flags, positional }) {
     for (const name of names) {
       let found = false
       for (const type of ALL_TYPES) {
-        const installed = getInstalledComponents(type, global)
+        const installed = getInstalledComponents(type, global, targets[0])
         if (installed.some((c) => c.name === name)) {
           if (!toRemove[type]) toRemove[type] = []
           toRemove[type].push(name)
@@ -213,7 +217,9 @@ export async function run({ flags, positional }) {
     }
     if (Object.keys(toRemove).length > 0) {
       console.log()
-      removeComponents(toRemove, global)
+      for (const target of targets) {
+        removeComponents(toRemove, global, target)
+      }
     }
     return
   }
@@ -223,7 +229,7 @@ export async function run({ flags, positional }) {
     const removeTypes = types.length > 0 ? types : ALL_TYPES
     const toRemove = {}
     for (const type of removeTypes) {
-      const installed = getInstalledComponents(type, global)
+      const installed = getInstalledComponents(type, global, targets[0])
       if (installed.length > 0) {
         toRemove[type] = installed.map((c) => c.name)
       }
@@ -241,7 +247,9 @@ export async function run({ flags, positional }) {
       }
     }
     console.log()
-    removeComponents(toRemove, global)
+    for (const target of targets) {
+      removeComponents(toRemove, global, target)
+    }
     return
   }
 
@@ -252,7 +260,7 @@ export async function run({ flags, positional }) {
     }
     const toRemove = {}
     for (const type of types) {
-      const installed = getInstalledComponents(type, global)
+      const installed = getInstalledComponents(type, global, targets[0])
       if (installed.length === 0) {
         console.log(`  ${dim(`No ${TYPE_LABELS[type].toLowerCase()} installed.`)}`)
         continue
@@ -276,7 +284,9 @@ export async function run({ flags, positional }) {
         }
       }
       console.log()
-      removeComponents(toRemove, global)
+      for (const target of targets) {
+        removeComponents(toRemove, global, target)
+      }
     }
     return
   }
@@ -289,7 +299,7 @@ export async function run({ flags, positional }) {
   // Step 1: find installed components by type
   const installedByType = {}
   for (const type of ALL_TYPES) {
-    const items = getInstalledComponents(type, global)
+    const items = getInstalledComponents(type, global, targets[0])
     if (items.length > 0) installedByType[type] = items
   }
 
@@ -351,7 +361,10 @@ export async function run({ flags, positional }) {
   }
 
   console.log()
-  const removed = removeComponents(toRemove, global)
+  let removed = 0
+  for (const target of targets) {
+    removed += removeComponents(toRemove, global, target)
+  }
   console.log()
   if (removed > 0) {
     console.log(`  ${symbols.success} ${bold(String(removed))} component(s) removed`)

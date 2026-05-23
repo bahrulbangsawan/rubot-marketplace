@@ -1,8 +1,8 @@
 # rubot
 
-**Strict Multi-Agent Orchestration Governor v2.15.0**
+**Strict Multi-Agent Orchestration Governor v2.19.0**
 
-`rubot` enforces deterministic, mandatory multi-agent consultation for all significant tasks in complex Claude Code projects. It acts as a project manager ensuring no decision is made without consensus from all relevant domain experts.
+`rubot` enforces deterministic, mandatory multi-agent consultation for all significant tasks in complex Claude Code projects. The CLI also supports Codex skill and prompt installation via `--target codex`, so the same skill library can be used from both runtimes.
 
 ## Installation
 
@@ -19,6 +19,26 @@ Then install the rubot plugin:
 ```
 
 After installation, restart Claude Code or run `/rubot-init` to initialize the plugin workspace.
+
+### Codex Compatibility
+
+Use the npm CLI target switch when installing for Codex:
+
+```bash
+npx @bahrulbangsawan/rubot add --target codex --skill prompt-fixer responsive-design
+npx @bahrulbangsawan/rubot add --target codex --type command rubot-fix-prompt
+npx @bahrulbangsawan/rubot list --target codex
+```
+
+Codex target paths:
+
+| Component | Local path | Global path |
+|-----------|------------|-------------|
+| Skills | `.agents/skills/<name>/` | `~/.codex/skills/<name>/` |
+| Commands | `.codex/prompts/<name>.md` | `~/.codex/prompts/<name>.md` |
+| Templates | `.codex/templates/<name>` | `~/.codex/templates/<name>` |
+
+Claude Code remains the default target. Use `--target both` to install compatible skills/prompts for both Claude Code and Codex in one command.
 
 ## Problem Solved
 
@@ -655,7 +675,7 @@ Show available commands and usage information.
 
 **Expected Result:**
 ```
-## Rubot Plugin Help (v2.15.0)
+## Rubot Plugin Help (v2.19.0)
 
 ### Workflow Commands
 | Command | Description |
@@ -1268,7 +1288,7 @@ Every rubot orchestration produces:
 
 ## Components
 
-- **Commands**: 37 slash commands for complete workflow orchestration
+- **Commands**: 38 slash commands for complete workflow orchestration
   - `/rubot` - Main orchestration entry point
   - `/rubot-init` - Workspace initialization
   - `/rubot-plan` - Execution planning

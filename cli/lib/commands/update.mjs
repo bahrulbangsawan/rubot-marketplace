@@ -7,7 +7,7 @@ import {
   rmSync,
 } from 'node:fs'
 import { join, dirname } from 'node:path'
-import { getComponentDir, getComponentPath, getSettingsPath } from '../paths.mjs'
+import { expandTargets, getComponentDir, getSettingsPath } from '../paths.mjs'
 import {
   fetchSkillContents,
   fetchFileContent,
@@ -20,8 +20,8 @@ import { clearUpdateCache } from '../update-notifier.mjs'
 
 // ── Skills: version-compared update ──
 
-async function updateSkills(global, catalog) {
-  const dir = getComponentDir('skill', global)
+async function updateSkills(global, target, catalog) {
+  const dir = getComponentDir('skill', global, target)
   if (!existsSync(dir)) return 0
 
   const entries = readdirSync(dir, { withFileTypes: true })
@@ -91,8 +91,8 @@ async function updateSkills(global, catalog) {
 
 // ── Single-file components: always re-download ──
 
-async function updateFiles(type, global, catalog) {
-  const dir = getComponentDir(type, global)
+async function updateFiles(type, global, target, catalog) {
+  const dir = getComponentDir(type, global, target)
   if (!existsSync(dir)) return 0
 
   const ext = type === 'template' ? '' : '.md'
@@ -133,8 +133,9 @@ async function updateFiles(type, global, catalog) {
 
 // ── Hooks: re-merge from remote ──
 
-async function updateHooks(global) {
-  const settingsPath = getSettingsPath(global)
+async function updateHooks(global, target) {
+  if (target === 'codex') return 0
+  const settingsPath = getSettingsPath(global, target)
   if (!existsSync(settingsPath)) return 0
 
   let settings
@@ -215,11 +216,13 @@ export async function run({ flags }) {
 
   ${dim('Options:')}
     --type, -t   Filter by component type
+    --target     Target runtime: claude, codex, or both
     `)
     return
   }
 
   const types = flags.types.length > 0 ? flags.types : ALL_TYPES
+  const targets = expandTargets(flags.target)
 
   console.log()
   console.log(`  ${bold('Checking for updates...')}`)
@@ -233,11 +236,13 @@ export async function run({ flags }) {
 
   let totalUpdated = 0
 
-  for (const global of [false, true]) {
-    for (const type of types) {
-      if (type === 'skill') totalUpdated += await updateSkills(global, catalogs.skill)
-      else if (type === 'hook') totalUpdated += await updateHooks(global)
-      else totalUpdated += await updateFiles(type, global, catalogs[type])
+  for (const target of targets) {
+    for (const global of [false, true]) {
+      for (const type of types) {
+        if (type === 'skill') totalUpdated += await updateSkills(global, target, catalogs.skill)
+        else if (type === 'hook') totalUpdated += await updateHooks(global, target)
+        else totalUpdated += await updateFiles(type, global, target, catalogs[type])
+      }
     }
   }
 

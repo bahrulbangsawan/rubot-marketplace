@@ -7,7 +7,12 @@ import {
   fetchFileContent,
   fetchHooksConfig,
 } from '../github.mjs'
-import { getComponentPath, getComponentDir, getSettingsPath } from '../paths.mjs'
+import {
+  expandTargets,
+  getComponentPath,
+  getSettingsPath,
+  getTargetLabel,
+} from '../paths.mjs'
 import {
   bold,
   cyan,
@@ -24,10 +29,10 @@ import {
 
 // ── Mark already-installed items as disabled ──
 
-function markInstalled(catalog, type, global) {
-  if (type === 'hook') return markInstalledHooks(catalog, global)
+function markInstalled(catalog, type, global, target) {
+  if (type === 'hook') return markInstalledHooks(catalog, global, target)
   return catalog.map((item) => {
-    const dest = getComponentPath(type, item.name, global)
+    const dest = getComponentPath(type, item.name, global, target)
     if (existsSync(dest)) {
       return { ...item, disabled: true, disabledReason: 'installed' }
     }
@@ -35,8 +40,8 @@ function markInstalled(catalog, type, global) {
   })
 }
 
-function markInstalledHooks(catalog, global) {
-  const settingsPath = getSettingsPath(global)
+function markInstalledHooks(catalog, global, target) {
+  const settingsPath = getSettingsPath(global, target)
   let hooks = {}
   if (existsSync(settingsPath)) {
     try {
@@ -80,8 +85,8 @@ function parseVersion(content) {
   return match ? match[1].trim() : 'unknown'
 }
 
-async function installSkill(name, global) {
-  const destDir = getComponentPath('skill', name, global)
+async function installSkill(name, global, target) {
+  const destDir = getComponentPath('skill', name, global, target)
   if (existsSync(destDir)) {
     console.log(`  ${symbols.bullet} ${dim(`skill/${name} already installed`)}`)
     return false
@@ -105,8 +110,24 @@ async function installSkill(name, global) {
 
 // ── Single-file installation (commands, agents, templates) ──
 
-async function installSingleFile(type, name, global) {
-  const destPath = getComponentPath(type, name, global)
+const CODEX_COMMAND_ADAPTER = `<!-- RUBOT:CODEX_COMPAT_START -->
+Codex compatibility:
+- This prompt was authored as a Claude Code slash command. In Codex, follow the workflow directly.
+- Treat Claude Code tool names as intent: AskUserQuestion means ask a concise question; TaskCreate/TaskList/TaskGet/TaskUpdate/TaskStop mean use available planning or subagent tools, or execute sequentially in this thread; Skill means load the matching Codex skill or read its SKILL.md.
+- Use .codex/rubot/ for Codex-local state when the command says .claude/rubot/ and no .claude/rubot/ exists.
+<!-- RUBOT:CODEX_COMPAT_END -->
+
+`
+
+function addCodexCommandAdapter(content) {
+  if (content.includes('RUBOT:CODEX_COMPAT_START')) return content
+  const match = content.match(/^---\n[\s\S]*?\n---\n/)
+  if (!match) return `${CODEX_COMMAND_ADAPTER}${content}`
+  return `${match[0]}\n${CODEX_COMMAND_ADAPTER}${content.slice(match[0].length)}`
+}
+
+async function installSingleFile(type, name, global, target) {
+  const destPath = getComponentPath(type, name, global, target)
   if (existsSync(destPath)) {
     console.log(`  ${symbols.bullet} ${dim(`${type}/${name} already installed`)}`)
     return false
@@ -117,7 +138,10 @@ async function installSingleFile(type, name, global) {
 
   // Commands/agents: file is name.md; templates: file is name as-is
   const fileName = type === 'template' ? name : `${name}.md`
-  const content = await fetchComponentFile(type, fileName)
+  let content = await fetchComponentFile(type, fileName)
+  if (target === 'codex' && type === 'command') {
+    content = addCodexCommandAdapter(content)
+  }
 
   mkdirSync(dirname(destPath), { recursive: true })
   writeFileSync(destPath, content, 'utf8')
@@ -147,7 +171,12 @@ function buildHookLookup(remoteConfig, catalogHooks) {
   return result
 }
 
-async function installHooks(hookNames, global) {
+async function installHooks(hookNames, global, target) {
+  if (target === 'codex') {
+    console.log(`  ${symbols.bullet} ${dim('hook install skipped: Codex does not support Claude-style hooks')}`)
+    return 0
+  }
+
   const spinner = createSpinner('Installing hooks...')
   spinner.start()
 
@@ -155,7 +184,7 @@ async function installHooks(hookNames, global) {
   const catalogHooks = await getComponentCatalog('hook')
   const lookup = buildHookLookup(remoteConfig, catalogHooks)
 
-  const settingsPath = getSettingsPath(global)
+  const settingsPath = getSettingsPath(global, target)
   let settings = {}
   if (existsSync(settingsPath)) {
     try {
@@ -204,7 +233,7 @@ async function installHooks(hookNames, global) {
 
 // ── Dependency resolution ──
 
-async function resolveDependencies(toInstall, global) {
+async function resolveDependencies(toInstall, global, target) {
   // Collect all required skill names from components being installed
   const requiredSkills = new Set()
   for (const [type, names] of Object.entries(toInstall)) {
@@ -227,7 +256,7 @@ async function resolveDependencies(toInstall, global) {
   // Remove skills already installed locally
   const missing = []
   for (const name of requiredSkills) {
-    const dest = getComponentPath('skill', name, global)
+    const dest = getComponentPath('skill', name, global, target)
     if (!existsSync(dest)) missing.push(name)
   }
 
@@ -236,7 +265,7 @@ async function resolveDependencies(toInstall, global) {
 
 // ── Unified installer ──
 
-async function installComponents(toInstall, global) {
+async function installComponents(toInstall, global, target) {
   const totalCount = Object.values(toInstall).reduce((sum, names) => sum + names.length, 0)
   if (totalCount === 0) {
     console.log(dim('  Nothing to install.'))
@@ -244,7 +273,7 @@ async function installComponents(toInstall, global) {
   }
 
   // Auto-resolve skill dependencies
-  const deps = await resolveDependencies(toInstall, global)
+  const deps = await resolveDependencies(toInstall, global, target)
   if (deps.length > 0) {
     if (!toInstall.skill) toInstall.skill = []
     toInstall.skill.unshift(...deps)
@@ -253,9 +282,11 @@ async function installComponents(toInstall, global) {
   }
 
   const finalCount = Object.values(toInstall).reduce((sum, names) => sum + names.length, 0)
-  const location = global
-    ? bold('global') + dim(' (~/.claude/)')
-    : bold('local') + dim(' (.claude/)')
+  const componentTypes = Object.entries(toInstall)
+    .filter(([, names]) => names?.length > 0)
+    .map(([type]) => type)
+  const labelType = componentTypes.length === 1 ? componentTypes[0] : 'command'
+  const location = bold(getTargetLabel(global, target, labelType))
   console.log()
   console.log(`  Installing ${bold(String(finalCount))} component(s) to ${location}`)
   console.log()
@@ -268,15 +299,15 @@ async function installComponents(toInstall, global) {
     if (!names || names.length === 0) continue
 
     if (type === 'hook') {
-      installed += await installHooks(names, global)
+      installed += await installHooks(names, global, target)
       continue
     }
     for (const name of names) {
       try {
         const ok =
           type === 'skill'
-            ? await installSkill(name, global)
-            : await installSingleFile(type, name, global)
+            ? await installSkill(name, global, target)
+            : await installSingleFile(type, name, global, target)
         if (ok) installed++
       } catch (err) {
         console.error(`  ${symbols.error} Failed to install ${type}/${bold(name)}: ${err.message}`)
@@ -309,7 +340,8 @@ export async function run({ flags, positional }) {
     --type, -t   Component type: skill, command, agent, hook, template
     --skill, -s  Skill name(s) — shorthand for --type skill <names>
     --all        Install all (of specified type, or everything)
-    --global, -g Install to ~/.claude/
+    --global, -g Install globally (~/.claude/ or ~/.codex/)
+    --target     Target runtime: claude, codex, or both
     --yes, -y    Skip confirmation
     `)
     return
@@ -317,6 +349,7 @@ export async function run({ flags, positional }) {
 
   const types = [...flags.types]
   const names = [...flags.skills, ...positional]
+  const targets = expandTargets(flags.target)
 
   // --skill flag implies --type skill
   if (flags.skills.length > 0 && types.length === 0) {
@@ -333,7 +366,9 @@ export async function run({ flags, positional }) {
         return
       }
     }
-    await installComponents({ [type]: names }, flags.global)
+    for (const target of targets) {
+      await installComponents({ [type]: [...names] }, flags.global, target)
+    }
     return
   }
 
@@ -356,7 +391,9 @@ export async function run({ flags, positional }) {
       }
     }
     if (Object.keys(toInstall).length > 0) {
-      await installComponents(toInstall, flags.global)
+      for (const target of targets) {
+        await installComponents(structuredClone(toInstall), flags.global, target)
+      }
     }
     return
   }
@@ -377,7 +414,9 @@ export async function run({ flags, positional }) {
         return
       }
     }
-    await installComponents(toInstall, flags.global)
+    for (const target of targets) {
+      await installComponents(structuredClone(toInstall), flags.global, target)
+    }
     return
   }
 
@@ -391,7 +430,7 @@ export async function run({ flags, positional }) {
       const catalog = await getComponentCatalog(type)
       if (catalog.length === 0) continue
       console.log()
-      const items = markInstalled(catalog, type, flags.global)
+      const items = markInstalled(catalog, type, flags.global, targets[0])
       const selected = await multiSelect({
         items,
         message: `Select ${TYPE_LABELS[type].toLowerCase()} to install:`,
@@ -401,7 +440,9 @@ export async function run({ flags, positional }) {
       }
     }
     if (Object.keys(toInstall).length > 0) {
-      await installComponents(toInstall, flags.global)
+      for (const target of targets) {
+        await installComponents(structuredClone(toInstall), flags.global, target)
+      }
     } else {
       console.log(dim('  Nothing selected.'))
     }
@@ -442,7 +483,7 @@ export async function run({ flags, positional }) {
     if (catalog.length === 0) continue
 
     console.log()
-    const items = markInstalled(catalog, type, flags.global)
+    const items = markInstalled(catalog, type, flags.global, targets[0])
     const selected = await multiSelect({
       items,
       message: `Select ${TYPE_LABELS[type].toLowerCase()} to install:`,
@@ -475,5 +516,7 @@ export async function run({ flags, positional }) {
     }
   }
 
-  await installComponents(toInstall, flags.global)
+  for (const target of targets) {
+    await installComponents(structuredClone(toInstall), flags.global, target)
+  }
 }

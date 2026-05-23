@@ -1,6 +1,6 @@
 # @bahrulbangsawan/rubot
 
-CLI tool to install and manage components from [rubot-marketplace](https://github.com/bahrulbangsawan/rubot-marketplace) for [Claude Code](https://docs.anthropic.com/en/docs/claude-code).
+CLI tool to install and manage components from [rubot-marketplace](https://github.com/bahrulbangsawan/rubot-marketplace) for Claude Code and Codex.
 
 ## Installation
 
@@ -47,21 +47,21 @@ npm uninstall -g @bahrulbangsawan/rubot
 ### Requirements
 
 - Node.js >= 20.0.0
-- Claude Code installed
+- Claude Code or Codex installed
 
 ## Component Types
 
 The CLI manages 5 types of components:
 
-| Type | Count | Install path | Description |
-|------|-------|-------------|-------------|
-| **Skills** | 60 | `.claude/skills/<name>/` | Domain-specific knowledge and patterns |
-| **Commands** | 37 | `.claude/commands/<name>.md` | Workflow commands (slash commands) |
-| **Agents** | 16 | `.claude/agents/<name>.md` | Specialist subagent definitions |
-| **Hooks** | 8 | `.claude/settings.json` | Lifecycle event handlers |
-| **Templates** | 10 | `.claude/templates/<name>` | Project template files |
+| Type | Count | Claude Code path | Codex path | Description |
+|------|-------|------------------|------------|-------------|
+| **Skills** | 60 | `.claude/skills/<name>/` | `.agents/skills/<name>/` locally, `~/.codex/skills/<name>/` globally | Domain-specific knowledge and patterns |
+| **Commands** | 38 | `.claude/commands/<name>.md` | `.codex/prompts/<name>.md` locally, `~/.codex/prompts/<name>.md` globally | Workflow commands/prompts |
+| **Agents** | 16 | `.claude/agents/<name>.md` | `.codex/agents/<name>.md` reference files | Specialist subagent definitions |
+| **Hooks** | 8 | `.claude/settings.json` | Not installed; Codex does not support Claude-style hooks | Lifecycle event handlers |
+| **Templates** | 10 | `.claude/templates/<name>` | `.codex/templates/<name>` | Project template files |
 
-All components are auto-discovered by Claude Code from the `.claude/` directory.
+Claude Code remains the default target and auto-discovers `.claude/`. Codex skills are installed where Codex already discovers them, and commands are installed as Codex prompts with a compatibility adapter.
 
 ## Commands
 
@@ -88,8 +88,15 @@ rubot add --type agent --all
 # Install everything (all types)
 rubot add --all
 
-# Install to global directory (~/.claude/)
+# Install to global directory (~/.claude/ by default)
 rubot add --skill biome --global
+
+# Install for Codex instead of Claude Code
+rubot add --target codex --skill biome
+rubot add --target codex --type command rubot-fix-prompt
+
+# Install to both runtimes
+rubot add --target both --skill biome
 
 # Skip confirmation
 rubot add --all --yes
@@ -100,7 +107,7 @@ rubot add --all --yes
 ```
 ? What would you like to install? (↑↓ move, space toggle, a all, / filter, enter confirm)
   > ◉ skill       60 available
-    ◯ command     37 available
+    ◯ command     38 available
     ◯ agent       16 available
     ◯ hook         8 available
     ◯ template    10 available
@@ -120,7 +127,8 @@ rubot add --all --yes
 | `--type <types>` | `-t` | Component type: skill, command, agent, hook, template |
 | `--skill <names...>` | `-s` | Skill name(s) — shorthand for `--type skill <names>` |
 | `--all` | | Install all (of specified type, or everything) |
-| `--global` | `-g` | Install to `~/.claude/` instead of `.claude/` |
+| `--global` | `-g` | Install globally (`~/.claude/` for Claude Code, `~/.codex/` for Codex) |
+| `--target <target>` | | Runtime target: `claude`, `codex`, or `both` |
 | `--yes` | `-y` | Skip confirmation prompts |
 
 ### `rubot list` — Show installed components
@@ -131,6 +139,7 @@ Display all installed components grouped by type and scope.
 rubot list
 rubot ls
 rubot list --type skill
+rubot list --target codex --type skill
 ```
 
 ### `rubot search` — Search available components
@@ -158,6 +167,7 @@ rubot remove
 
 # Remove specific skill
 rubot remove --skill drizzle-orm
+rubot remove --target codex --skill drizzle-orm
 
 # Remove specific command
 rubot remove --type command rubot-seo-audit
@@ -179,6 +189,7 @@ Check all installed components against the registry and update to latest.
 ```bash
 rubot update
 rubot update --type skill
+rubot update --target codex --type skill
 ```
 
 ### `rubot init` — Create a new skill template
@@ -188,16 +199,20 @@ Scaffold a new `SKILL.md` template for authoring custom skills.
 ```bash
 rubot init my-custom-skill
 rubot init my-custom-skill --global
+rubot init --target codex skill my-custom-skill
+rubot init --target both skill my-custom-skill
 ```
 
 ## Install Locations
 
-Components are installed to one of two scopes:
+Components are installed to one of two scopes and one runtime target:
 
-| Scope | Path | When to use |
-|-------|------|------------|
-| **Local** (default) | `.claude/<type>/` | Project-specific components |
-| **Global** (`--global`) | `~/.claude/<type>/` | Components you want everywhere |
+| Target | Scope | Path | When to use |
+|--------|-------|------|-------------|
+| `claude` | Local (default) | `.claude/<type>/` | Project-specific Claude Code components |
+| `claude` | Global (`--global`) | `~/.claude/<type>/` | Claude Code components you want everywhere |
+| `codex` | Local (default) | `.agents/skills/` for skills, `.codex/prompts/` for commands | Project-specific Codex skills/prompts |
+| `codex` | Global (`--global`) | `~/.codex/skills/`, `~/.codex/prompts/` | Codex skills/prompts you want everywhere |
 
 ## Quick Start
 
@@ -217,6 +232,7 @@ rubot update
 ```
 
 Once installed, Claude Code automatically discovers and uses the components.
+For Codex, use `--target codex`; installed skills appear in Codex skill discovery, and installed commands appear as Codex prompts.
 
 ## License
 

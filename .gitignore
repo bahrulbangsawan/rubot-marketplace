@@ -15,3 +15,7 @@ node_modules/
 # Local files
 *.local.md
 __pycache__/
+
+# Codex local installs (rubot --target codex) & skill-loader state
+.agents/
+skills-lock.json

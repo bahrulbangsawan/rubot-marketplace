@@ -1,6 +1,6 @@
 {
   "name": "@bahrulbangsawan/rubot",
-  "version": "2.1.5",
+  "version": "2.2.0",
   "description": "Install and manage components from rubot-marketplace",
   "type": "module",
   "bin": {
@@ -14,6 +14,8 @@
     "rubot",
     "skills",
     "claude-code",
+    "codex",
+    "openai-codex",
     "ai-agent",
     "cli"
   ],

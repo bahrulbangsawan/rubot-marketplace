@@ -1,6 +1,6 @@
 import { mkdirSync, writeFileSync, existsSync } from 'node:fs'
 import { join, resolve } from 'node:path'
-import { getSkillPath } from '../paths.mjs'
+import { expandTargets, getSkillPath, normalizeTarget } from '../paths.mjs'
 import { bold, dim, cyan, green, yellow, symbols, fatal, confirm, choose } from '../ui.mjs'
 
 // ─── Templates ─────────────────────────────────────────────────────────────────
@@ -318,7 +318,7 @@ function generateAgentsMd(targetDir) {
   console.log()
 }
 
-function generateSkillMd(name, global) {
+function generateSkillMd(name, global, target) {
   if (!name) {
     fatal('Skill name required. Usage: rubot init skill <name>')
   }
@@ -326,7 +326,7 @@ function generateSkillMd(name, global) {
     fatal('Skill name must be lowercase alphanumeric with hyphens only')
   }
 
-  const skillDir = getSkillPath(name, global)
+  const skillDir = getSkillPath(name, global, target)
 
   if (existsSync(skillDir)) {
     fatal(`Skill directory already exists: ${skillDir}`)
@@ -363,7 +363,8 @@ export async function run({ flags, positional }) {
     skill <name>     SKILL.md template for a custom skill
 
   ${dim('Options:')}
-    --global, -g     Install globally (~/.claude/) — only for skill type
+    --global, -g     Install globally (~/.claude/ or ~/.codex/) — only for skill type
+    --target         Target runtime for skills: claude, codex, or both
 
   ${dim('Examples:')}
     rubot init                   Interactive — choose CLAUDE.md or AGENTS.md
@@ -371,42 +372,57 @@ export async function run({ flags, positional }) {
     rubot init agents            Generate root AGENTS.md
     rubot init agents src/api    Generate AGENTS.md in src/api/
     rubot init skill my-skill    Create .claude/skills/my-skill/SKILL.md
+    rubot init --target codex skill my-skill
+    rubot init --target both skill my-skill
     `)
     return
   }
 
   const type = positional[0]?.toLowerCase()
+  const target = normalizeTarget(flags.target)
+  const targets = expandTargets(flags.target)
 
   // Direct type specified
   if (type === 'claude') {
     return generateClaudeMd()
   }
+  if (type === 'codex') {
+    return generateAgentsMd()
+  }
   if (type === 'agents') {
     return generateAgentsMd(positional[1])
   }
   if (type === 'skill') {
-    return generateSkillMd(positional[1], flags.global)
+    for (const t of targets) generateSkillMd(positional[1], flags.global, t)
+    return
   }
 
   // Unknown positional — treat as skill name for backward compat
   if (type && /^[a-z0-9-]+$/.test(type)) {
-    return generateSkillMd(type, flags.global)
+    for (const t of targets) generateSkillMd(type, flags.global, t)
+    return
   }
 
   // No argument — interactive choice (default: CLAUDE.md)
-  const choice = await choose('What would you like to generate?', [
-    'CLAUDE.md  — project instructions for Claude Code',
-    'AGENTS.md  — hierarchical agent guidance',
-    'SKILL.md   — custom skill template',
-  ])
+  const choices = target === 'codex'
+    ? [
+        'AGENTS.md  — Codex project guidance',
+        'SKILL.md   — custom Codex skill template',
+      ]
+    : [
+        'CLAUDE.md  — project instructions for Claude Code',
+        'AGENTS.md  — hierarchical agent guidance',
+        'SKILL.md   — custom skill template',
+      ]
+  const choice = await choose('What would you like to generate?', choices)
 
-  if (choice === 0) {
+  if (target === 'claude' && choice === 0) {
     return generateClaudeMd()
   }
-  if (choice === 1) {
+  if ((target === 'claude' && choice === 1) || (target === 'codex' && choice === 0)) {
     return generateAgentsMd()
   }
-  if (choice === 2) {
+  if ((target === 'claude' && choice === 2) || (target === 'codex' && choice === 1)) {
     const { createInterface } = await import('node:readline')
     const rl = createInterface({ input: process.stdin, output: process.stdout })
     const name = await new Promise((resolve) => {
@@ -415,6 +431,7 @@ export async function run({ flags, positional }) {
         resolve(answer.trim())
       })
     })
-    return generateSkillMd(name, flags.global)
+    for (const t of targets) generateSkillMd(name, flags.global, t)
+    return
   }
 }

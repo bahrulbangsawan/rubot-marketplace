@@ -1,8 +1,8 @@
 # rubot
 
-**Strict Multi-Agent Orchestration Governor v2.15.0**
+**Strict Multi-Agent Orchestration Governor v2.19.0**
 
-`rubot` enforces deterministic, mandatory multi-agent consultation for all significant tasks in complex Claude Code projects. It acts as a project manager ensuring no decision is made without consensus from all relevant domain experts.
+`rubot` enforces deterministic, mandatory multi-agent consultation for all significant tasks in complex Claude Code projects. The npm CLI also supports Codex skill and prompt installation via `--target codex`, so the same skill library can be used from both runtimes.
 
 ## Problem Solved
 
@@ -639,7 +639,7 @@ Show available commands and usage information.
 
 **Expected Result:**
 ```
-## Rubot Plugin Help (v2.15.0)
+## Rubot Plugin Help (v2.19.0)
 
 ### Workflow Commands
 | Command | Description |
@@ -1252,7 +1252,7 @@ Every rubot orchestration produces:
 
 ## Components
 
-- **Commands**: 37 slash commands for complete workflow orchestration
+- **Commands**: 38 slash commands for complete workflow orchestration
   - `/rubot` - Main orchestration entry point
   - `/rubot-init` - Workspace initialization
   - `/rubot-plan` - Execution planning

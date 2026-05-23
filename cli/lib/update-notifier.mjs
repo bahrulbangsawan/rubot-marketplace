@@ -1,7 +1,7 @@
 import { existsSync, readFileSync, writeFileSync, mkdirSync, readdirSync, unlinkSync } from 'node:fs'
 import { join } from 'node:path'
 import { homedir } from 'node:os'
-import { getComponentDir } from './paths.mjs'
+import { TARGETS, getComponentDir } from './paths.mjs'
 import { getComponentCatalog } from './registry.mjs'
 import { yellow, green, dim, bold, cyan } from './ui.mjs'
 
@@ -44,15 +44,17 @@ export function clearUpdateCache() {
 
 function getInstalledSkills() {
   const skills = []
-  for (const global of [false, true]) {
-    const dir = getComponentDir('skill', global)
-    if (!existsSync(dir)) continue
-    const entries = readdirSync(dir, { withFileTypes: true })
-      .filter((e) => e.isDirectory() && existsSync(join(dir, e.name, 'SKILL.md')))
-    for (const entry of entries) {
-      const content = readFileSync(join(dir, entry.name, 'SKILL.md'), 'utf8')
-      const version = content.match(/^version:\s*(.+)$/m)?.[1]?.trim()
-      skills.push({ name: entry.name, version })
+  for (const target of TARGETS) {
+    for (const global of [false, true]) {
+      const dir = getComponentDir('skill', global, target)
+      if (!existsSync(dir)) continue
+      const entries = readdirSync(dir, { withFileTypes: true })
+        .filter((e) => e.isDirectory() && existsSync(join(dir, e.name, 'SKILL.md')))
+      for (const entry of entries) {
+        const content = readFileSync(join(dir, entry.name, 'SKILL.md'), 'utf8')
+        const version = content.match(/^version:\s*(.+)$/m)?.[1]?.trim()
+        skills.push({ name: entry.name, version })
+      }
     }
   }
   // Deduplicate (local takes precedence over global)

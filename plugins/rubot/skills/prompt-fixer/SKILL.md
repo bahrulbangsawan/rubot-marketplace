@@ -1,8 +1,8 @@
 ---
 name: prompt-fixer
-version: 3.6.0
+version: 3.9.0
 description: |
-  Rewrites vague prompts into a strict task-based execution plan (MAIN PROBLEM / GOALS / CONTEXT / mandatory RULES / numbered TASKs with ID, AGENT, USE, ISSUES, FILE RELATED, SOLUTION / PARALLEL EXECUTION PLAN / VERIFICATION / EXECUTION) that is **OWASP ASVS 5.0.0 compliant** and **mobile-first responsive by default**. Runs parallel Explore agents, discovers connected MCPs, installed skills, and available subagents, **matches each discovered skill and MCP to specific task signals**, embeds explicit `Use skills: …` and `Use MCP: …` directives in CONTEXT, and adds a per-task `USE:` field telling the agent exactly which skills/MCPs to load for that task (e.g. "Use Cloudflare skills and MCP"). Analyzes tasks for parallel agent execution, enforces engineering rules from rule banks (Universal + Frontend/Responsive + Backend + Security with V1-V17 chapter mappings), then asks the user to choose between task-list execution (TaskCreate + TodoWrite, parallel where possible), plan mode (EnterPlanMode), or cancel. Output is a single copy-ready prompt — no preamble, no commentary. The `rubot-fix-prompt` command halts if the OWASP ASVS 5.0.0 skill suite is not installed.
+  Rewrites vague prompts into a strict task-based execution plan (MAIN PROBLEM / GOALS / CONTEXT / mandatory RULES / numbered TASKs with ID, AGENT, USE, ISSUES, FILE RELATED, SOLUTION / PARALLEL EXECUTION PLAN / VERIFICATION / EXECUTION) that is **OWASP ASVS 5.0.0 compliant**, **mobile-first responsive by default**, **TanStack-standard by default** (Router with automatic code splitting + Query with optimistic UI + DB for local-first state), **React Doctor-gated** (mandatory `npx react-doctor@latest --fail-on warning` scan after every React change), enforces **mandatory skill detection** via the Step 0-verified `@tanstack/intent` loader and `load <package>#<skill>` before substantial work, requires **validation & commit hooks** (lint/typecheck/test/build/format/react-doctor) after every phase, and emits a **canonical final REPORT block** (TITLE / Agent / Skills Loaded / Files Changed / CHANGES / VALIDATION / DEFERRED / DONE) after task-list execution. Runs parallel Explore agents, discovers connected MCPs, installed skills, validation hooks, and available subagents, **matches each discovered skill and MCP to specific task signals**, embeds explicit `Use skills: …` and `Use MCP: …` directives in CONTEXT, and adds a per-task `USE:` field telling the agent exactly which skills/MCPs to load for that task (e.g. "Use Cloudflare skills and MCP"). Analyzes tasks for parallel agent execution, enforces engineering rules from rule banks (Universal + Frontend/Responsive + Backend + TanStack + Security with V1-V17 chapter mappings), applies blocking rewrite gates before output, then asks the user to choose between task-list execution (TaskCreate + TodoWrite, parallel where possible), plan mode (EnterPlanMode), or cancel. Output is a single copy-ready prompt — no preamble, no commentary. The `rubot-fix-prompt` command halts if the OWASP ASVS 5.0.0 skill suite, `responsive-design`, the `@tanstack/intent` loader, or React Doctor in React projects is unavailable.
   MUST activate for: "fix my prompt", "improve this prompt", "rewrite this prompt", "make this prompt better", "this prompt is too vague", "help me write a better prompt", "prompt engineering", "how should I ask Claude to", "rephrase this for Claude", or when the user provides a clearly vague instruction and asks for help making it more specific.
   Also activate when: "Claude keeps doing the wrong thing", "Claude doesn't understand what I want", "how do I get better results", "why does Claude keep failing", or the user references the `/rubot-fix-prompt` command.
   Do NOT activate for: actually executing the rewritten prompt, general coding tasks, SEO audits, design audits, security audits, environment checks, or any task where the user wants implementation rather than prompt improvement.
@@ -242,7 +242,8 @@ AskUserQuestion:
    - For parallel groups, multiple items may be `in_progress` at once — that is the point.
    - Use `TaskList` for queue overview, `TaskGet` for a specific task's output, `TaskUpdate` to adjust scope mid-flight.
 4. On user interrupt or scope change, call `TaskStop` to halt the active task(s).
-5. After the final group succeeds, run the `VERIFICATION` checks and report results.
+5. After the final group succeeds, run the `VERIFICATION` checks and report results. This is a blocking completion gate: every discovered validation script, hook, and React Doctor run must be represented in the final REPORT as `PASS`, `FAIL`, or `NOT RUN` with a concrete reason.
+6. Emit the canonical REPORT block from Pattern 13 as the final user-facing message. If the message does not match the canonical structure, rewrite it before sending.
 
 ### Branch — "Create plan using EnterPlanMode"
 
@@ -265,6 +266,11 @@ AskUserQuestion:
 - Use real file paths only — no invented paths.
 - Fix root causes; never suppress errors.
 - No regressions: existing tests must pass after every change.
+- **Mandatory skill detection (before substantial work)**: run the Step 0-verified `@tanstack/intent` loader (`bunx @tanstack/intent@latest list` or `npx -y @tanstack/intent@latest list`) to enumerate local project skills. If one local skill clearly matches the task, run `load <package>#<skill>` through the same loader and follow the returned `SKILL.md`. In monorepos, run the check from the workspace root and prefer the package-local skill. Multiple matches → pick the most specific local skill for the concern being changed.
+- **Missing-skill halt**: if the required skill command, package, or local skill is unavailable, STOP immediately, surface what is missing + the install/setup command, and wait for the user to resolve it. Do not guess or invent skill instructions.
+- **Validation & commit hooks (after every agent/phase)**: run every discovered project validation script and hook (`lint`, `typecheck`, `test`, `build`, format-check, pre-commit/pre-push hooks). Do not claim a check passed unless its command was actually run successfully. If a command fails, identify it, explain the cause, fix it if in scope, or record it as `FAIL` plus `DEFERRED` in the final report. Missing checks are not ignored; they are reported as `NOT RUN` with the reason.
+- **React Doctor (MANDATORY for any React/Next.js/Vite/React Native project)**: Step 0 must verify `npx -y react-doctor@latest --version` resolves for React projects. Run `npx react-doctor@latest --fail-on warning` after every React-touching change, BEFORE the agent emits the final REPORT. The CLI scans state & effects, performance, architecture, security, and accessibility against a 0-100 health score (75+ Great, 50-74 Needs work, <50 Critical). For each diagnostic the CLI reports: read it, fix the root cause in scope, and re-run until exit 0. Use `--diff <base-branch>` in PR/branch mode to gate on net-new regressions only. Score < 50 is Critical and must be remediated before the task ends; score < 75 requires fixes unless the user explicitly accepts the regression. One-time agent rule-set install (recommended for new repos): `npx react-doctor@latest install` — teaches the executing agent the rule set so it stops emitting bad patterns in the first place. The agent MUST NOT declare a React task complete with unresolved react-doctor warnings.
+- **Final structured report**: after all tasks finish, emit the canonical REPORT block (see Pattern 13 — Final Structured Report). It is mandatory whenever the user selects task-list execution, and task-list execution is incomplete until this block is the final user-facing message.
 - **DON'T USE ANY GIT STASH COMMANDS** (`git stash`, `git stash push`, `git stash pop`, `git stash apply`, `git stash drop`, `git stash clear`). Stashed work is invisible, easy to lose, and conflates unrelated changes. If you need to set work aside, commit it to a scratch branch instead.
 
 ### Frontend & Responsive (add when task signal: UI / component / page / style / responsive / a11y) — MANDATORY for any UI task
@@ -279,6 +285,7 @@ AskUserQuestion:
 - **WCAG 2.2 AA**: ARIA on interactive elements, keyboard navigation, visible focus ring, contrast ≥4.5:1 (≥3:1 for large text).
 - **UX visibility**: render loading, error, empty, and success states explicitly — no silent failures.
 - Reuse `shadcn/ui` primitives before building custom components.
+- **React Doctor (mandatory before task completion)**: run `npx react-doctor@latest --fail-on warning` after every React change and resolve every diagnostic (state & effects, performance, architecture, security, a11y) before emitting the REPORT. Use `--diff <base>` to scope to net-new regressions in branch/PR mode. The agent re-runs the CLI until it exits 0 or marks unresolved findings as `DEFERRED` with explicit justification.
 
 ### Backend (add when task signal: API / route / server / database)
 
@@ -289,6 +296,22 @@ AskUserQuestion:
 - Rate-limit by IP + account; return `429` with `Retry-After`.
 - Secure cookies: `HttpOnly`, `Secure`, `SameSite=Lax|Strict`.
 - Structured error responses — never leak stack traces or DB errors.
+
+### TanStack Standards (add when project uses TanStack Router/Query/DB or task signal touches routing, data fetching, mutations, optimistic UI)
+
+Default to TanStack for React projects unless the user explicitly opts out. When this bank applies, every emitted rule is non-negotiable:
+
+- **Router**: use TanStack Router with automatic code splitting (see https://tanstack.com/router/latest/docs/guide/automatic-code-splitting). Follow the official file-naming conventions (https://tanstack.com/router/latest/docs/routing/file-naming-conventions). Route-level splitting is the default — never ship a single monolithic bundle.
+- **Query (server state)**: use TanStack Query for fetching, caching, and mutations. Use optimistic updates by default for any interaction that mutates server state (https://tanstack.com/query/latest/docs/framework/react/guides/optimistic-updates).
+- **DB (local-first state)**: use TanStack DB for local-first collections, syncing, and optimistic actions when applicable (https://tanstack.com/db/latest/docs/reference/functions/createOptimisticAction).
+- **Default mutation strategy** (apply to every user-triggered mutation):
+  1. Show optimistic UI immediately.
+  2. Sync through the DB/Query layer.
+  3. Roll back safely on error.
+  4. Revalidate / reconcile server state after completion.
+  5. Keep UI state, query state, and DB state consistent.
+- **No bypass**: do not introduce alternative routing/data libraries (react-router, SWR, Apollo, Zustand for server state) unless the user explicitly requests it. Prefer existing repo patterns.
+- **React Doctor gate**: TanStack code is React code — the `npx react-doctor@latest --fail-on warning` run from the Universal bank applies here too. Pay particular attention to state-and-effects and architecture diagnostics around `useQuery`/`useMutation` usage.
 
 ### Security — OWASP ASVS 5.0.0 (mandatory when task signal touches ANY V1-V17 domain)
 
@@ -381,6 +404,7 @@ Pick only chapters whose domain the task touches; include at least the chapter's
 - Universal → always.
 - Frontend & Responsive → triggered by: "UI", "component", "page", "style", "design", "responsive", "mobile", "breakpoint", "Tailwind", "shadcn", "carousel", "card", "form", "modal", "navbar", "footer", "hero", "drawer", "accessibility", "a11y", "WCAG", "ARIA", "keyboard", "touch target", "viewport". **The full responsive ruleset is mandatory whenever this bank applies** — mobile-first, relative units, touch targets, no horizontal scroll.
 - Backend → triggered by: "API", "endpoint", "route", "server", "database", "schema", "migration", "query", "model", "ORM", "Drizzle", "Prisma", "Hono", "tRPC".
+- TanStack Standards → triggered by: "TanStack", "Router", "Query", "useQuery", "useMutation", "TanStack DB", "createOptimisticAction", "optimistic UI", "mutation", "route", "code splitting", "data fetching", "local-first", "collection", "sync", OR detection of `@tanstack/*` in `package.json`. **Mandatory** for any data-mutation or routing task in a TanStack project.
 - Security (OWASP ASVS 5.0.0) → **mandatory** when ANY task signal touches: "auth", "login", "password", "session", "token", "secret", "crypto", "hash", "encrypt", "JWT", "OAuth", "OIDC", "cookies", "CORS", "CSP", "headers", "input", "validation", "sanitization", "XSS", "SQL injection", "file upload", "PII", "logging", "config", "env", "WebRTC". Map each task signal to the matching V1-V17 chapter(s) and emit `[Vn]`-prefixed rules.
 - Multiple banks may apply — combine. Deduplicate overlapping rules.
 
@@ -388,7 +412,9 @@ Pick only chapters whose domain the task touches; include at least the chapter's
 
 ### Pattern 1 — Verification
 
-Encode "how do we know it's correct?" into the `VERIFICATION` block. Always runnable: test command, build, screenshot diff, axe-core, lighthouse, curl + grep, etc.
+Encode "how do we know it's correct?" into the `VERIFICATION` block. Include every validation script and hook discovered by the command (`lint`, `typecheck`, `test`, `build`, format-check, pre-commit/pre-push). Always include at least one runnable check: test command, build, screenshot diff, axe-core, lighthouse, curl + grep, etc. If a standard check is absent, the final REPORT records it as `NOT RUN` with the reason; absence is never silently ignored.
+
+**React projects (Next.js / Vite / React Native / any `react` dep): `npx react-doctor@latest --fail-on warning` is mandatory in the VERIFICATION block.** It scans state & effects, performance, architecture, security, and accessibility against a 0-100 health score. Add `--diff <base-branch>` when verification should be scoped to PR-touched files only. The agent runs it, parses diagnostics, fixes them in scope, and re-runs until exit 0 — only then does the verification step pass.
 
 ### Pattern 2 — Real Paths
 
@@ -416,7 +442,7 @@ In `ISSUES` or `SOLUTION`, use `@<path>` refs, paste error text, paste expected 
 
 ### Pattern 8 — Recommend Installed Skills
 
-Match task signal → skill from discovery list. Add to `CONTEXT.Activate skills`. Common matches:
+Match task signal → skill from discovery list. Add to `CONTEXT.Use skills`. Common matches:
 
 | Task signal | Skill |
 |-------------|-------|
@@ -614,6 +640,93 @@ If discovery surfaced no relevant skill or MCP for a specific task, write `USE: 
 ```
 -> USE: none — task is a single-file rename, no skill/MCP applies.
 ```
+
+### Pattern 13 — Final Structured Report (post-execution)
+
+After every task in the task-list-execution branch completes (or the user explicitly stops), emit a single REPORT block in the canonical format below. The report is mandatory whenever the user picks **"Create tasks list and execute"**. Skip only on **"Cancel"** or plan-mode-without-execution.
+
+**Canonical format (emit verbatim, fill the placeholders):**
+
+```text
+------------------- REPORT -------------------
+
+[TITLE]
+
+Agent: [Agent name or role]
+Skills Loaded: [List loaded skills, or "None"]
+Total Files Changed: [Number]
+
+------------------- CHANGES -------------------
+
+1. [CREATE | UPDATE | DELETE]: @[file-path]
+   Explanation:
+   [Clear explanation of what changed and why.]
+
+2. [CREATE | UPDATE | DELETE]: @[file-path]
+   Explanation:
+   [Clear explanation of what changed and why.]
+
+3. [CREATE | UPDATE | DELETE]: @[file-path]
+   Explanation:
+   [Clear explanation of what changed and why.]
+
+------------------- VALIDATION -------------------
+
+- [PASS | FAIL | NOT RUN]: [command]
+  Result:
+  [Brief result or reason it was not run.]
+
+- [PASS | FAIL | NOT RUN]: [command]
+  Result:
+  [Brief result or reason it was not run.]
+
+------------------- DEFERRED -------------------
+
+1. Task:
+   [Deferred task name]
+
+   Related Files:
+   @[file-path]
+
+   Explanation:
+   [Why this was deferred.]
+
+   Recommended Action:
+   [Next step to complete it.]
+
+------------------- DONE -------------------
+```
+
+**Report rules:**
+
+- **TITLE** — short imperative description of the overall change (e.g. "Migrate dashboard to TanStack Router + Query").
+- **Agent** — the primary agent that executed the work, or "multiple (per task)" when parallel groups used different agents.
+- **Skills Loaded** — list every skill the agent loaded via `Skill` tool or via the Step 0-verified `@tanstack/intent` loader. Write `"None"` only when truly none loaded.
+- **Total Files Changed** — integer; counts CREATE + UPDATE + DELETE entries.
+- **CHANGES** — one entry per touched file, prefixed with the operation (`CREATE`, `UPDATE`, or `DELETE`). Path begins with `@` so editors render it as a clickable mention. Explanation is one or two sentences: what changed AND why.
+- **VALIDATION** — list every validation command from the `VERIFICATION` block of the rewrite plus any commit/lint hooks that ran. Status is `PASS`, `FAIL`, or `NOT RUN`. Never claim `PASS` unless the command actually ran successfully; if the command never executed, mark it `NOT RUN` with the reason (e.g. "no test runner configured", "skipped on user interrupt").
+- **DEFERRED** — entries for any task or check that was scoped out, skipped, or punted. Each has: Task name, Related Files (`@`-prefixed paths), Explanation (why deferred), Recommended Action (next step). Omit the DEFERRED block entirely if nothing was deferred.
+- The `------------------- DONE -------------------` footer terminates the report — nothing follows it in the same message.
+
+**Forbidden in the report:**
+
+- Inventing files that weren't actually touched.
+- Marking a check `PASS` without running its command.
+- Hiding deferred work — anything not done belongs in DEFERRED.
+- Prose paragraphs outside the prescribed sections.
+
+### Pattern 14 — Blocking Enforcement Gates
+
+Before emitting the rewritten prompt, run this gate list against the draft. If any gate fails, regenerate the draft instead of showing it.
+
+- **Universal gate**: `RULES` includes mandatory skill detection, missing-skill halt, validation/commit hooks, React Doctor, final structured REPORT, and no `git stash`.
+- **Intent loader gate**: all local skill references come from discovery, and every task that needs a local skill uses the Step 0-verified `@tanstack/intent` loader through `USE:`.
+- **Validation gate**: `VERIFICATION` includes discovered project validation scripts/hooks. Missing standard checks must be represented in the final REPORT as `NOT RUN` with a reason.
+- **React gate**: React/Next/Vite/React Native projects include `npx react-doctor@latest --fail-on warning` in `VERIFICATION`; execution cannot complete while unresolved warnings remain.
+- **TanStack gate**: if the repo contains `@tanstack/*` or tasks touch routing/data fetching/mutations/local-first state, `RULES` includes TanStack Router automatic code splitting, official file naming, TanStack Query optimistic updates, and DB/local-first consistency where applicable.
+- **Report gate**: the final structured REPORT requirement appears in `RULES`, and task-list execution is incomplete until the Pattern 13 REPORT is the final user-facing message.
+- **OWASP gate**: every security rule emitted from the Security bank is prefixed with its `[Vn]` chapter.
+- **Responsive gate**: UI tasks include the full responsive ruleset, not a summary.
 
 ## Examples
 
@@ -977,8 +1090,14 @@ EXECUTION: Awaiting user choice — task-list execution (parallel where independ
 - Don't use `ALWAYS` / `NEVER` excessively in `SOLUTION`. State the action.
 - Don't skip `TodoWrite` when the user picks task-list execution — visible progress with `[GROUP N · AGENT: <name>]` prefixes is the point.
 - Don't fan out parallel `TaskCreate` calls in separate messages — group them in a single message so they actually run concurrently.
-- Don't proceed past Step 0 if the OWASP ASVS 5.0.0 skill suite is incomplete — the command halts.
+- Don't proceed past Step 0 if the OWASP ASVS 5.0.0 skill suite, `responsive-design`, the `@tanstack/intent` loader, or React Doctor in a React project is incomplete — the command halts.
 - Don't emit any `git stash` instructions in `SOLUTION` or `VERIFICATION` blocks. Stashing is forbidden — recommend a scratch branch (`git switch -c wip/<topic>`) when work needs to be set aside.
+- **Don't skip the mandatory skill detection step.** Every agent invoked from task-list execution runs `bunx @tanstack/intent@latest list` (or `npx` fallback) and loads matching local skills via `load <package>#<skill>` BEFORE substantial work. Halt with the install command if the loader is unavailable.
+- **Don't claim a validation check passed without running its command.** `PASS` requires actual exit-0 evidence; otherwise mark it `NOT RUN` with the reason.
+- **Don't omit the final REPORT block when the user selects task-list execution.** The canonical `------------------- REPORT -------------------` … `------------------- DONE -------------------` format (Pattern 13) is mandatory and is the last user-facing message of that branch.
+- **Don't bypass TanStack standards in a TanStack project.** Router with automatic code splitting + Query with optimistic updates + DB for local-first state is the default; only deviate when the user explicitly requests otherwise.
+- **Don't ship React work without a clean `npx react-doctor@latest --fail-on warning` run.** The CLI is mandatory for every React/Next/Vite/React Native task. If diagnostics remain unresolved, either fix them in scope or move them to `DEFERRED` with explicit reasoning — never mark VALIDATION `PASS` while warnings exist.
+- **Don't show a rewrite that fails Pattern 14 gates.** Regenerate before output; partial enforcement is a command failure.
 
 ## When NOT to Rewrite
 

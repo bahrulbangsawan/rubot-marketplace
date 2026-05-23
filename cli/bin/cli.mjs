@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+import { normalizeTarget } from '../lib/paths.mjs'
 import { normalizeType } from '../lib/ui.mjs'
 
 function parseArgs(argv) {
@@ -12,6 +13,7 @@ function parseArgs(argv) {
     yes: false,
     all: false,
     help: false,
+    target: process.env.RUBOT_TARGET || 'claude',
   }
   const positional = []
 
@@ -36,6 +38,19 @@ function parseArgs(argv) {
       }
     } else if (arg === '--global' || arg === '-g') {
       flags.global = true
+      i++
+    } else if (arg === '--target') {
+      i++
+      if (!args[i]) {
+        console.error('Missing value for --target. Valid: claude, codex, both')
+        process.exit(1)
+      }
+      try {
+        flags.target = normalizeTarget(args[i])
+      } catch (err) {
+        console.error(err.message)
+        process.exit(1)
+      }
       i++
     } else if (arg === '--yes' || arg === '-y') {
       flags.yes = true
@@ -76,7 +91,8 @@ function showHelp() {
     --type, -t   Component type: skill, command, agent, hook, template
     --skill, -s  Skill name(s) — shorthand for --type skill <names>
     --all        Install/remove all (of specified type, or everything)
-    --global, -g Install/remove globally (~/.claude/)
+    --global, -g Install/remove globally (~/.claude/ or ~/.codex/)
+    --target      Target runtime: claude, codex, or both (default: claude)
     --yes, -y    Skip confirmation prompts
     --help, -h   Show help
     --version, -v Show version
@@ -86,6 +102,8 @@ function showHelp() {
     rubot add --type skill                 Multi-select skills
     rubot add --skill drizzle-orm          Install specific skill
     rubot add --type command --all         Install all commands
+    rubot add --target codex --skill biome Install a Codex skill
+    rubot add --target both --skill biome  Install for Claude Code and Codex
     rubot add --all                        Install everything
     rubot remove                           Interactive remove
     rubot remove --type skill drizzle-orm  Remove specific skill
