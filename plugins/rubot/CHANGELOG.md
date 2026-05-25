@@ -5,6 +5,16 @@ All notable changes to the rubot plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.22.0] - 2026-05-25
+
+### Added
+
+- **`responsive-design` skill (v1.2.0)** — merged the standalone modern-responsive skill into the canonical rubot skill, expanding its scope beyond mobile-first Tailwind breakpoints:
+  - **New reference docs**: `container-queries.md` (`@container` deep dive — containment, container units `cqw`/`cqi`, style queries, Tailwind integration, fallbacks), `fluid-layouts.md` (`clamp()` fluid typography/spacing, CSS Grid `auto-fit`/`minmax`, intrinsic sizing), and `breakpoint-strategies.md` (content-based breakpoints, `@supports` feature queries, `prefers-reduced-motion`/`prefers-contrast`, design-token integration).
+  - **New component patterns** in `component-patterns.md`: Responsive Images (`<picture>` art direction + `srcset`/`sizes`) and Responsive Tables (overflow-scroll + mobile-card fallback; `min-w` converted `px` → `rem`).
+  - **Scope expansion**: the skill now activates for container queries, fluid typography, and CSS Grid auto-fit/minmax (previously excluded). Added an "Advanced & Modern Techniques" index section and updated the container-query constraint to point to the deep-dive doc.
+  - Redundant `details.md` content dropped (overlapped the topic docs and the main SKILL.md).
+
 ## [2.21.0] - 2026-05-25
 
 ### Fixed

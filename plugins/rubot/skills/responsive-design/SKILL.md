@@ -1,10 +1,10 @@
 ---
 name: responsive-design
-version: 1.1.0
+version: 1.2.0
 description: |
-  Mobile-first responsive design system with strict relative unit enforcement for Tailwind CSS. MUST activate for: responsive layout fixes, breakpoint audits, px-to-rem conversion, mobile-first Tailwind patterns, and any UI that must work across xs/sm/md/lg breakpoints. Also activate when: "responsive", "mobile layout", "breakpoint", "overflow on mobile", "cut off on iPhone", "cards cut off", "sideways scroll", "layout broken on phone", "hamburger menu", "drawer menu", "Sheet component for mobile nav", "carousel shows partial cards on mobile", "hero section doesn't fill viewport", "h-screen vs min-h-dvh", "Safari address bar", "convert px to rem", "w-[400px]", "text-[18px]", "p-[20px]", "gap-[15px]", "rounded-[12px]", "rem vs px", "custom Tailwind breakpoints", "touch target too small", "2.75rem minimum", "CTA full-width on mobile", "footer grid columns", "basis-full mobile", or "typography scaling across breakpoints". Do NOT activate for: dark mode/theme/OKLCH, container queries (@container), hydration mismatches, WCAG accessibility audits (alt text, ARIA), OG image generation, Largest Contentful Paint optimization, code splitting, sidebar component setup, or ECharts responsive resizing.
+  Mobile-first responsive design system with strict relative unit enforcement for Tailwind CSS. MUST activate for: responsive layout fixes, breakpoint audits, px-to-rem conversion, mobile-first Tailwind patterns, container queries (`@container`), fluid typography (`clamp()`), CSS Grid auto-fit/minmax layouts, and any UI that must work across xs/sm/md/lg breakpoints. Also activate when: "responsive", "mobile layout", "breakpoint", "overflow on mobile", "cut off on iPhone", "cards cut off", "sideways scroll", "layout broken on phone", "hamburger menu", "drawer menu", "Sheet component for mobile nav", "carousel shows partial cards on mobile", "hero section doesn't fill viewport", "h-screen vs min-h-dvh", "Safari address bar", "convert px to rem", "w-[400px]", "text-[18px]", "p-[20px]", "gap-[15px]", "rounded-[12px]", "rem vs px", "custom Tailwind breakpoints", "touch target too small", "2.75rem minimum", "CTA full-width on mobile", "footer grid columns", "basis-full mobile", or "typography scaling across breakpoints", "container query", "@container", "container units (cqw/cqi)", "style queries", "clamp() fluid type", "fluid spacing", "auto-fit grid", "minmax columns", "intrinsic sizing", "responsive images", "art direction", "srcset/sizes", "picture element", "responsive tables", "@supports feature query", or "prefers-reduced-motion". Do NOT activate for: dark mode/theme/OKLCH, hydration mismatches, WCAG accessibility audits (alt text, ARIA), OG image generation, Largest Contentful Paint optimization, code splitting, sidebar component setup, or ECharts responsive resizing.
 
-  Covers: breakpoint system (xs/sm/md/lg), relative unit rules (rem/vh/dvh/%), mobile-first Tailwind patterns, hero section layouts, mobile drawer/hamburger menus, card radius consistency, carousel per-slide behavior, typography scaling, component sizing, touch targets, and responsive quality validation checklists.
+  Covers: breakpoint system (xs/sm/md/lg), relative unit rules (rem/vh/dvh/%), mobile-first Tailwind patterns, hero section layouts, mobile drawer/hamburger menus, card radius consistency, carousel per-slide behavior, typography scaling, component sizing, touch targets, responsive quality validation checklists, container queries (containment, container units, style queries, Tailwind @container), fluid typography and spacing with clamp(), CSS Grid auto-fit/minmax and named-area layouts, intrinsic sizing, feature queries (@supports), preference queries (prefers-reduced-motion/contrast), responsive images (art direction + srcset/sizes), and responsive tables.
 agents:
   - responsive-master
   - shadcn-ui-designer
@@ -24,6 +24,10 @@ agents:
 - Reviewing Tailwind responsive class usage
 - Implementing hamburger/drawer navigation that replaces desktop nav on mobile
 - Setting up or customizing Tailwind breakpoints for a project
+- Implementing container queries (`@container`) for component-level responsiveness
+- Building fluid typography and spacing with `clamp()` (min/preferred/max)
+- Creating CSS Grid layouts with `auto-fit`/`minmax` and named template areas
+- Adding responsive images (art direction, `srcset`/`sizes`) or responsive tables
 
 ## Quick Reference
 
@@ -160,6 +164,8 @@ For detailed code examples of responsive components, see [references/component-p
 | Carousel | `basis-full` mobile | 1 card, 2 cards (`sm`), 3 cards (`lg`) |
 | Navbar | Sticky, backdrop-blur | Hamburger mobile, inline links `md`+ |
 | Footer | Grid columns | 1 col, 2 col (`sm`), 4 col (`lg`) |
+| Responsive Images | `<picture>` art direction, `srcset`/`sizes` | Different crop/resolution per breakpoint |
+| Responsive Tables | `overflow-x-auto` or stacked cards | Scroll on mobile, or table→cards below `md` |
 
 ## Typography Scale (rem-based)
 
@@ -257,6 +263,26 @@ Use Tailwind's spacing scale consistently:
 </div>
 ```
 
+## Advanced & Modern Techniques
+
+Beyond viewport breakpoints, these modern techniques are documented in depth in the reference docs. Load the relevant doc when the task calls for it.
+
+### Container Queries — component-level responsiveness
+
+Respond to a **parent container's** size, not the viewport — essential for components that appear in multiple layout contexts (sidebar vs. main). Set `container-type: inline-size` on the parent, then `@container (min-width: …)` on children; size with container units (`cqi`/`cqw`). Tailwind: wrap in `@container`, use `@md:`/`@lg:` variants. Full guide, style queries, fallbacks, and performance notes: [references/container-queries.md](references/container-queries.md).
+
+### Fluid Typography & Spacing — `clamp()` instead of stepped breakpoints
+
+Scale type and spacing smoothly between a min and max with `clamp(min, preferred + vw, max)` so there are no jumps at breakpoints. Pair with CSS variables for a fluid scale. Worked formulas, a fluid-scale generator, and fluid spacing: [references/fluid-layouts.md](references/fluid-layouts.md).
+
+### CSS Grid Fluid Layouts — `auto-fit` / `minmax` / named areas
+
+`grid-template-columns: repeat(auto-fit, minmax(min(18rem, 100%), 1fr))` builds responsive card grids with no media queries; named `grid-template-areas` reflow page layouts per breakpoint. Intrinsic sizing and flexbox fluid patterns also covered: [references/fluid-layouts.md](references/fluid-layouts.md).
+
+### Breakpoint Strategy — content-based, feature & preference queries
+
+Choose breakpoints by where content breaks (not device sizes); progressively enhance with `@supports` feature queries; honor `prefers-reduced-motion` and `prefers-contrast`. Design-token integration and per-component breakpoint patterns: [references/breakpoint-strategies.md](references/breakpoint-strategies.md).
+
 ## Common Anti-Patterns to Avoid
 
 | Anti-Pattern | Fix |
@@ -292,7 +318,7 @@ Use Tailwind's spacing scale consistently:
 - **Tailwind breakpoints are min-width only**: Tailwind uses `min-width` media queries exclusively. You cannot target "only small screens" without also affecting larger ones. Base styles always apply to all sizes; prefixed styles add overrides upward. If you need max-width queries, use arbitrary values like `max-sm:hidden`.
 - **dvh/svh browser support**: Dynamic viewport height (`dvh`) and small viewport height (`svh`) are supported in all modern browsers but not in older browsers (pre-2023). For projects requiring legacy support, fall back to `vh` with a JavaScript resize listener to handle mobile browser chrome.
 - **Tailwind JIT purging**: Arbitrary values like `w-[25rem]` or `rounded-[10%]` require Tailwind's JIT compiler. Ensure your `content` paths in `tailwind.config.ts` include all files where classes are used, or the arbitrary values will be purged from production CSS.
-- **Container queries are not breakpoints**: Tailwind v3.3+ supports `@container` queries via the `@container` plugin. These respond to the parent container's size, not the viewport. Use container queries for components that appear in different layout contexts (sidebar vs. main content), but use breakpoints for page-level layout decisions.
+- **Container queries vs. breakpoints**: `@container` queries respond to the parent container's size, not the viewport. Use them for components that appear in different layout contexts (sidebar vs. main content); use viewport breakpoints for page-level layout decisions. See [references/container-queries.md](references/container-queries.md) for the full guide (containment, container units, style queries, Tailwind setup, fallbacks).
 - **px exceptions are narrow**: The `px` exception for borders and shadows does not extend to border-radius, padding, margins, or any spacing. When reviewing code, only `border-width` and `box-shadow` values in `px` pass the unit compliance check.
 - **Touch target minimums are 2.75rem (44px)**: This is the minimum, not the recommendation. For primary CTAs and navigation items, prefer `3rem` (48px) to accommodate users with motor impairments.
 
@@ -333,6 +359,15 @@ After implementing responsive changes, verify across all 4 breakpoints:
 - [ ] Modals/dialogs are properly sized on mobile
 
 ## References
+
+### Reference docs (in this skill)
+
+- [references/component-patterns.md](references/component-patterns.md) — hero, drawer, card, carousel, navbar, footer, responsive images, responsive tables
+- [references/container-queries.md](references/container-queries.md) — `@container` deep dive: containment, units, style queries, Tailwind, fallbacks
+- [references/fluid-layouts.md](references/fluid-layouts.md) — `clamp()` fluid type/spacing, CSS Grid auto-fit/minmax, intrinsic sizing, viewport units
+- [references/breakpoint-strategies.md](references/breakpoint-strategies.md) — content-based breakpoints, `@supports`, preference queries, design-token integration
+
+### External
 
 - Tailwind CSS responsive design: https://tailwindcss.com/docs/responsive-design
 - WCAG 1.4.4 Resize Text: https://www.w3.org/WAI/WCAG21/Understanding/resize-text.html

@@ -10,6 +10,8 @@ Detailed code examples for responsive components. Referenced from the main respo
 - Gallery & Bulletin Carousel
 - Responsive Navbar
 - Responsive Footer
+- Responsive Images (art direction + resolution switching)
+- Responsive Tables (overflow scroll + mobile cards)
 
 ### 1. Hero Section (Mobile Priority)
 
@@ -287,3 +289,77 @@ function GalleryCarousel({ items }: { items: GalleryItem[] }) {
   </div>
 </footer>
 ```
+
+### 7. Responsive Images (Art Direction + Resolution Switching)
+
+Use `<picture>` for **art direction** (a different crop per breakpoint) and `srcset`/`sizes` on a plain `<img>` for **resolution switching** (same crop, browser picks the file).
+
+```tsx
+{/* Art direction — different crops per breakpoint */}
+<picture>
+  <source media="(min-width: 1024px)" srcSet="/hero-wide.webp" type="image/webp" />
+  <source media="(min-width: 768px)" srcSet="/hero-medium.webp" type="image/webp" />
+  <source srcSet="/hero-mobile.webp" type="image/webp" />
+  <img src="/hero-mobile.jpg" alt="Hero description" className="w-full h-auto" loading="eager" fetchPriority="high" />
+</picture>
+
+{/* Resolution switching — one crop, multiple widths */}
+<img
+  src={product.image}
+  srcSet={`${product.image}?w=400 400w, ${product.image}?w=800 800w, ${product.image}?w=1200 1200w`}
+  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+  alt={product.name}
+  className="w-full h-auto object-cover"
+  loading="lazy"
+/>
+```
+
+**Key rules:**
+- `<picture media>` = art direction; `srcset`/`sizes` = resolution switching. Don't conflate them.
+- Always pair with `aspect-[…]` + `object-cover` (or explicit `width`/`height`) to prevent layout shift (CLS).
+- Above the fold: `loading="eager"` + `fetchPriority="high"`. Below the fold: `loading="lazy"`.
+- `media`/`sizes` breakpoints stay in `px` (media-query conditions, like the breakpoint table) — the `rem`-only rule applies to layout utilities, not media queries.
+
+### 8. Responsive Tables (Overflow Scroll + Mobile Cards)
+
+Two strategies — wrap in a horizontal scroll container, or swap the table for stacked cards below `md`.
+
+```tsx
+{/* Strategy A — horizontal scroll (keeps tabular structure) */}
+<div className="w-full overflow-x-auto">
+  <table className="w-full min-w-[37.5rem]">
+    <thead>
+      <tr>{columns.map((col) => <th key={col.key} className="text-left p-3">{col.label}</th>)}</tr>
+    </thead>
+    <tbody>
+      {data.map((row, i) => (
+        <tr key={i} className="border-t">
+          {columns.map((col) => <td key={col.key} className="p-3">{row[col.key]}</td>)}
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+
+{/* Strategy B — table on desktop, stacked labeled cards on mobile */}
+<>
+  <table className="hidden md:table w-full">{/* …standard table… */}</table>
+  <div className="md:hidden space-y-4">
+    {data.map((row, i) => (
+      <div key={i} className="border rounded-lg p-4 space-y-2">
+        {columns.map((col) => (
+          <div key={col.key} className="flex justify-between gap-4">
+            <span className="font-medium text-muted-foreground">{col.label}</span>
+            <span>{row[col.key]}</span>
+          </div>
+        ))}
+      </div>
+    ))}
+  </div>
+</>
+```
+
+**Key rules:**
+- `overflow-x-auto` on the wrapper is the *only* intentional horizontal scroll allowed (per the no-horizontal-scroll rule) — scroll the table, never the page.
+- `min-w-[37.5rem]` (= 600px) keeps columns legible while scrolling — `rem`, not `px`.
+- Prefer Strategy B for dense data on phones: each row becomes a labeled card, no scrolling.
