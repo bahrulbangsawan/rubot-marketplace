@@ -1,12 +1,12 @@
 ---
 name: prompt-fixer
-version: 3.10.0
+version: 3.11.0
 description: |
-  Rewrites vague prompts into a strict task-based execution plan (MAIN PROBLEM / GOALS / CONTEXT / mandatory RULES / numbered TASKs with ID, AGENT, USE, ISSUES, FILE RELATED, SOLUTION / PARALLEL EXECUTION PLAN / VERIFICATION / EXECUTION) that is **OWASP ASVS 5.0.0 compliant**, **mobile-first responsive by default**, **TanStack-standard by default** (Router with automatic code splitting + Query with optimistic UI + DB for local-first state), **React Doctor-gated** (mandatory `npx react-doctor@latest --fail-on warning` scan after every React change), enforces **mandatory skill detection** via the Step 0-verified `@tanstack/intent` loader and `load <package>#<skill>` before substantial work, requires **validation & commit hooks** (lint/typecheck/test/build/format/react-doctor) after every phase, and emits a **canonical final REPORT block** (TITLE / Agent / Skills Loaded / Files Changed / CHANGES / VALIDATION / DEFERRED / DONE) after task-list execution. Runs parallel Explore agents, discovers connected MCPs, installed skills, validation hooks, and available subagents, **matches each discovered skill and MCP to specific task signals**, embeds explicit `Use skills: …` and `Use MCP: …` directives in CONTEXT, and adds a per-task `USE:` field telling the agent exactly which skills/MCPs to load for that task (e.g. "Use Cloudflare skills and MCP"). Analyzes tasks for parallel agent execution, enforces engineering rules from rule banks (Universal + Frontend/Responsive + Backend + TanStack + Security with V1-V17 chapter mappings), applies blocking rewrite gates before output, then asks the user to choose between task-list execution (TaskCreate/TaskUpdate/TaskList, parallel where possible), plan mode (EnterPlanMode), or cancel. Output is a single copy-ready prompt — no preamble, no commentary. The `rubot-fix-prompt` command halts if the OWASP ASVS 5.0.0 skill suite, `responsive-design`, the `@tanstack/intent` loader, or React Doctor in React projects is unavailable.
+  Rewrites vague prompts into a strict task-based execution plan (MAIN PROBLEM / GOALS / CONTEXT / mandatory RULES / numbered TASKs with ID, AGENT, USE, ISSUES, FILE RELATED, SOLUTION / PARALLEL EXECUTION PLAN / VERIFICATION / EXECUTION) that is **OWASP ASVS 5.0.0 compliant**, **mobile-first responsive by default**, **TanStack-standard by default** (Router with automatic code splitting + Query with optimistic UI + DB for local-first state), **React Doctor-gated** (mandatory `npx react-doctor@latest --fail-on warning` scan after every React change), enforces **mandatory skill detection** via the Step 0-verified `@tanstack/intent` loader and `load <package>#<skill>` before substantial work, requires **validation & commit hooks** (lint/typecheck/test/build/format/react-doctor) after every phase, and emits a **canonical final REPORT block** (TITLE / Agent / Skills Loaded / Files Changed / CHANGES / VALIDATION / DEFERRED / DONE) after task-list execution. Runs parallel Explore agents, discovers connected MCPs, installed skills, validation hooks, and available subagents, **matches each discovered skill and MCP to specific task signals**, embeds explicit `Use skills: …` and `Use MCP: …` directives in CONTEXT, and adds a per-task `USE:` field telling the agent exactly which skills/MCPs to load for that task (e.g. "Use Cloudflare skills and MCP"). Analyzes tasks for parallel agent execution, enforces engineering rules from rule banks (Universal + Frontend/Responsive + Backend + TanStack + Security with V1-V17 chapter mappings), applies blocking rewrite gates before output, then asks the user to choose between task-list execution (subagents spawned via Agent/Task, tracked in the TaskCreate/TaskUpdate/TaskList queue, parallel where possible), plan mode (EnterPlanMode), or cancel. Output is a single copy-ready prompt — no preamble, no commentary. The `rubot-fix-prompt` command halts if the OWASP ASVS 5.0.0 skill suite, `responsive-design`, the `@tanstack/intent` loader, or React Doctor in React projects is unavailable.
   MUST activate for: "fix my prompt", "improve this prompt", "rewrite this prompt", "make this prompt better", "this prompt is too vague", "help me write a better prompt", "prompt engineering", "how should I ask Claude to", "rephrase this for Claude", or when the user provides a clearly vague instruction and asks for help making it more specific.
   Also activate when: "Claude keeps doing the wrong thing", "Claude doesn't understand what I want", "how do I get better results", "why does Claude keep failing", or the user references the `/rubot-fix-prompt` command.
   Do NOT activate for: actually executing the rewritten prompt, general coding tasks, SEO audits, design audits, security audits, environment checks, or any task where the user wants implementation rather than prompt improvement.
-  Covers: prompt rewriting, prompt engineering, vague-to-specific transformation, strict task-based output format, mandatory RULES enforcement, OWASP ASVS 5.0.0 V1-V17 chapter rule mapping, mobile-first responsive enforcement, per-task AGENT assignment, parallel agent execution analysis, dependency-aware grouping, verification injection, file path scoping, phased execution, codebase-aware enrichment, skill recommendation, MCP recommendation, subagent recommendation, user-chosen execution (task list / plan mode / cancel), TaskCreate/TaskUpdate/TaskList orchestration with parallel fan-out, terse one-line progress narration.
+  Covers: prompt rewriting, prompt engineering, vague-to-specific transformation, strict task-based output format, mandatory RULES enforcement, OWASP ASVS 5.0.0 V1-V17 chapter rule mapping, mobile-first responsive enforcement, per-task AGENT assignment, parallel agent execution analysis, dependency-aware grouping, verification injection, file path scoping, phased execution, codebase-aware enrichment, skill recommendation, MCP recommendation, subagent recommendation, user-chosen execution (task list / plan mode / cancel), parallel subagent fan-out (Agent/Task) tracked in the TaskCreate/TaskUpdate/TaskList queue, terse one-line progress narration.
 agents:
   - debug-master
   - owasp-asvs-audit
@@ -88,13 +88,16 @@ npx @bahrulbangsawan/rubot add owasp-asvs-audit owasp-encoding-sanitization owas
 
 ### Execution path A — task-list execution (with parallel fan-out)
 
-| Tool | Purpose |
-|------|---------|
-| `TaskCreate` | Spawn one subagent per TASK-NNN with the full task body + RULES; set `description` = `[GROUP N · AGENT: <name>]` so the queue shows the parallel plan; **fan out parallel groups in a single message with multiple `TaskCreate` calls** |
-| `TaskList` | Poll the queue when checking status |
-| `TaskGet` | Inspect a specific task's output or final state |
-| `TaskUpdate` | Adjust task scope or instructions mid-flight (rare) |
-| `TaskStop` | Halt the active task on user interrupt |
+**Two roles, two tools.** The subagent-spawning tool (`Agent` in this runtime, `Task` in others — the one that takes `subagent_type` + `prompt`) *executes* each task. The Task queue (`TaskCreate` & friends) only *tracks* — it has no `subagent_type` field and spawns nothing.
+
+| Tool | Role | Purpose |
+|------|------|---------|
+| `Agent` / `Task` (subagent spawner) | **Execute** | Spawn one subagent per TASK-NNN: `subagent_type` = the per-task `AGENT`, `prompt` = full task body + RULES. **Fan out a parallel group by sending multiple spawn calls in a single message** so they run concurrently. |
+| `TaskCreate` | Track | Register one queue item per TASK-NNN (`subject` = imperative title; `description` = `[GROUP N · AGENT: <name>]` + task body) so the queue shows the parallel plan. Does NOT spawn. |
+| `TaskUpdate` | Track | Encode the `PARALLEL EXECUTION PLAN` as a dependency graph (`addBlockedBy` / `addBlocks`); flip status `pending` → `in_progress` → `completed`. |
+| `TaskList` | Track | Poll the queue when checking status. |
+| `TaskGet` | Track | Inspect a specific task's full state. |
+| `TaskStop` | Halt | Stop a running background subagent by id on user interrupt. |
 
 ### Execution path B — plan mode
 
@@ -218,7 +221,7 @@ AskUserQuestion:
   header: "Prompt Ready"
   options:
     - label: "Create tasks list and execute"
-      description: "Spawn each TASK-NNN as a TaskCreate subagent and run them group-by-group"
+      description: "Spawn each TASK-NNN with the subagent tool (Agent/Task), track it in the Task queue, and run them group-by-group"
     - label: "Create plan using EnterPlanMode"
       description: "Enter plan mode, present the plan, and wait for approval before any code change"
     - label: "Cancel"
@@ -228,14 +231,14 @@ AskUserQuestion:
 
 ### Branch — "Create tasks list and execute"
 
-Track the whole run through the Task queue — `TaskCreate` to spawn, `TaskList`/`TaskGet` to monitor, `TaskUpdate` to adjust, `TaskStop` to halt. Do NOT use `TodoWrite`. Narrate tersely — one short line per phase (see "Progress Narration").
+**Execute** each task with the subagent-spawning tool (`Agent` in this runtime, `Task` in others — the one with `subagent_type` + `prompt`). **Track** the whole run through the Task queue — `TaskCreate` to register, `TaskUpdate` to set dependencies + status, `TaskList`/`TaskGet` to monitor, `TaskStop` to halt a background subagent. `TaskCreate` spawns nothing. Do NOT use `TodoWrite`. Narrate tersely — one short line per phase (see "Progress Narration").
 
-1. Walk the `PARALLEL EXECUTION PLAN` group-by-group, in order. Emit ONE short status line before each group and nothing else: `Execute Group 1 (Parallel)` or `Execute Group 2 (Sequential)`.
-   - For a `(parallel)` group: send **one message containing multiple `TaskCreate` calls** — one per TASK-NNN in the group, each using the per-task `AGENT` value as `subagent_type` and `description` = `[GROUP N · AGENT: <agent>] <imperative title>`. Wait for the entire group to finish before starting the next group.
-   - For a `(sequential)` group or `(sequential after Group N)` group: send `TaskCreate` calls one at a time, each with its per-task `AGENT` value and the same `[GROUP N · AGENT: <agent>]` description prefix.
-   - Each `TaskCreate` prompt = full task body (TASK ID + AGENT + ISSUES + FILE RELATED + SOLUTION) + the global RULES block.
-2. Monitor with `TaskList` (queue overview), `TaskGet` (a specific task's output), and `TaskUpdate` (adjust scope mid-flight). The Task queue is the progress tracker — multiple tasks may run at once during a parallel group; that is the point.
-3. On user interrupt or scope change, call `TaskStop` to halt the active task(s).
+1. Walk the `PARALLEL EXECUTION PLAN` group-by-group, in order. Optionally register all tasks up front with `TaskCreate` (+ `TaskUpdate` `addBlockedBy` to mirror the group dependencies) so the queue shows the plan. Emit ONE short status line before each group and nothing else: `Execute Group 1 (Parallel)` or `Execute Group 2 (Sequential)`.
+   - For a `(parallel)` group: send **one message containing multiple subagent-spawn calls** (`Agent`/`Task`) — one per TASK-NNN in the group, each with `subagent_type` = the per-task `AGENT` value and `prompt` = the task body. Wait for the entire group to finish before starting the next group.
+   - For a `(sequential)` group or `(sequential after Group N)` group: spawn one subagent at a time, each with its per-task `AGENT` value as `subagent_type`.
+   - Each spawn's `prompt` = full task body (TASK ID + AGENT + ISSUES + FILE RELATED + SOLUTION) + the global RULES block. When mirroring in the queue, label each `TaskCreate` `description` with the `[GROUP N · AGENT: <agent>]` prefix.
+2. Monitor with `TaskList` (queue overview), `TaskGet` (a specific task's full state), and `TaskUpdate` (flip status / adjust scope). The Task queue is the progress tracker — multiple subagents may run at once during a parallel group; that is the point.
+3. On user interrupt or scope change, call `TaskStop` to halt the active background subagent(s).
 4. After the final group succeeds, run the `VERIFICATION` checks and report results. This is a blocking completion gate: every discovered validation script, hook, and React Doctor run must be represented in the final REPORT as `PASS`, `FAIL`, or `NOT RUN` with a concrete reason.
 5. Emit the canonical REPORT block from Pattern 13 as the final user-facing message. If the message does not match the canonical structure, rewrite it before sending.
 
@@ -503,7 +506,7 @@ Skip if MCP not connected.
 Always emit the deferred `EXECUTION:` line and the 3-option `AskUserQuestion` decision prompt. Do not auto-enter plan mode and do not auto-create tasks.
 
 The user picks:
-- **Create tasks list and execute** → per-TASK `TaskCreate`, tracked via `TaskList` / `TaskGet` / `TaskUpdate` / `TaskStop`. No `TodoWrite`.
+- **Create tasks list and execute** → spawn per-TASK subagents (`Agent`/`Task`, `subagent_type` = the per-task `AGENT`), tracked via `TaskCreate` / `TaskList` / `TaskGet` / `TaskUpdate` / `TaskStop`. No `TodoWrite`.
 - **Create plan using EnterPlanMode** → `EnterPlanMode` with the rewritten prompt as input.
 - **Cancel** → no execution, prompt remains visible to copy.
 
@@ -567,8 +570,8 @@ When in doubt about independence, default to sequential — false parallelism ca
 
 When the user picks "Create tasks list and execute":
 - Read `PARALLEL EXECUTION PLAN` group-by-group.
-- For a parallel group → fan out TaskCreate in a single message with multiple tool calls.
-- For a sequential group → fire TaskCreate calls one at a time.
+- For a parallel group → fan out subagent spawns (`Agent`/`Task`) in a single message with multiple tool calls.
+- For a sequential group → fire subagent spawns one at a time.
 - Never skip a group boundary — if Group 2 says "sequential after Group 1", wait for every Group 1 task to finish first.
 
 When the user picks plan mode, the plan content must surface the parallel grouping so the user can review fan-out before approving.
@@ -1097,7 +1100,7 @@ EXECUTION: Awaiting user choice — task-list execution (parallel where independ
 - Don't use `ALWAYS` / `NEVER` excessively in `SOLUTION`. State the action.
 - Don't use `TodoWrite` for progress — the Task queue (`TaskCreate` / `TaskList` / `TaskGet` / `TaskUpdate` / `TaskStop`) is the tracker. Keep the `[GROUP N · AGENT: <name>]` prefix in each task's `description` so the parallel plan stays visible.
 - Don't narrate execution verbosely. Status is one short line per phase ("Step 0 passed — all skills present ✅", "Execute Group 1 (Parallel)") — no rationale, no per-agent breakdown.
-- Don't fan out parallel `TaskCreate` calls in separate messages — group them in a single message so they actually run concurrently.
+- Don't fan out parallel subagent spawns (`Agent`/`Task`) in separate messages — group them in a single message so they actually run concurrently. (`TaskCreate` calls only populate the queue; they don't run anything.)
 - Don't proceed past Step 0 if the OWASP ASVS 5.0.0 skill suite, `responsive-design`, the `@tanstack/intent` loader, or React Doctor in a React project is incomplete — the command halts.
 - Don't emit any `git stash` instructions in `SOLUTION` or `VERIFICATION` blocks. Stashing is forbidden — recommend a scratch branch (`git switch -c wip/<topic>`) when work needs to be set aside.
 - **Don't skip the mandatory skill detection step.** Every agent invoked from task-list execution runs `bunx @tanstack/intent@latest list` (or `npx` fallback) and loads matching local skills via `load <package>#<skill>` BEFORE substantial work. Halt with the install command if the loader is unavailable.

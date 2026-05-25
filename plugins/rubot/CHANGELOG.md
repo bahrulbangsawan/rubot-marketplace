@@ -5,6 +5,15 @@ All notable changes to the rubot plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.21.0] - 2026-05-25
+
+### Fixed
+
+- **`prompt-fixer` skill (v3.11.0)** — corrected the task-execution tool model so the skill no longer claims `TaskCreate` spawns subagents (it doesn't — see the [2.20.0] note below, which described the wrong model):
+  - **`TaskCreate` is tracking-only** — it creates a queue item and has no `subagent_type` field, so it cannot launch anything. Subagents are spawned by the dedicated subagent tool (`Agent` in this runtime, `Task` in others — the one that takes `subagent_type` + `prompt`).
+  - **Portable spawn/track split** applied across Execution path A, the "Create tasks list and execute" branch, Pattern 10, Pattern 12 Step D, the decision-prompt option, and the anti-patterns list: spawn with `Agent`/`Task`, track with `TaskCreate`/`TaskUpdate`/`TaskList`. `TaskUpdate`'s `addBlockedBy`/`addBlocks` encodes the `PARALLEL EXECUTION PLAN` dependency graph; parallel groups fan out as multiple spawn calls in a single message.
+  - Synced the tracked `.claude/skills/prompt-fixer/SKILL.md` consumer copy and bumped the `marketplace.json` skill-registry entry to `3.11.0`.
+
 ## [2.20.0] - 2026-05-23
 
 ### Changed
