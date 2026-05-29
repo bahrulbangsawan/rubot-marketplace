@@ -1,6 +1,6 @@
 ---
 name: rubot-fix-prompt
-description: '**Defaults to a Claude Code dynamic workflow** (`.claude/workflows/fix-prompt.js`) — a 4-phase adversarial pipeline (analysis → parallel candidate generation → adversarial cross-review → synthesis) that fans the rewrite across parallel subagents and returns ONE consolidated prompt. Pass `--simple` (or `--no-workflow`) to force the inline turn-by-turn flow for trivial fixes. ⚠️ Dynamic workflows consume meaningfully more tokens than a standard session; requires Claude Code v2.1.154+. Rewrites a vague prompt into a strict task-based execution plan (MAIN PROBLEM / GOALS / CONTEXT / mandatory RULES / numbered TASKs with per-task AGENT + USE / PARALLEL EXECUTION PLAN / VERIFICATION / EXECUTION) that is **OWASP ASVS 5.0.0 compliant** and **mobile-first responsive by default**. Requires the OWASP ASVS 5.0.0 skill suite (`owasp-asvs-audit` + V1-V17 chapter skills), `responsive-design`, a resolvable `@tanstack/intent` skill loader, and `react-doctor` for React projects — halts with install instructions if any blocking gate fails. Discovers connected MCPs, installed skills, validation hooks, and available subagents, **matches each discovered skill and MCP to specific task signals**, embeds explicit `Use skills: …` / `Use MCP: …` directives in CONTEXT, and adds a per-task `USE:` field telling the agent exactly which skills/MCPs to load for that task. Analyzes which tasks can fan out in parallel, maps each security task signal to the matching OWASP chapter(s), enforces TanStack standards when triggered, then asks the user to choose between task-list execution (TaskCreate/TaskUpdate/TaskList, parallel where possible), plan mode (EnterPlanMode), or cancel. Use when the user wants to improve a prompt or transform ambiguous instructions into precise task lists.'
+description: '**Defaults to a Claude Code dynamic workflow** (`.claude/workflows/fix-prompt.js`) — a 4-phase adversarial pipeline (analysis → parallel candidate generation → adversarial cross-review → synthesis) that fans the rewrite across parallel subagents and returns ONE consolidated prompt. Pass `--simple` (or `--no-workflow`) to force the inline turn-by-turn flow for trivial fixes. ⚠️ Dynamic workflows consume meaningfully more tokens than a standard session; requires Claude Code v2.1.154+. Rewrites a vague prompt into a strict task-based execution plan (MAIN PROBLEM / GOALS / CONTEXT / mandatory RULES / numbered TASKs with per-task AGENT + USE / PARALLEL EXECUTION PLAN / VERIFICATION / EXECUTION) that is **OWASP ASVS 5.0.0 compliant** and **mobile-first responsive by default**. Requires the OWASP ASVS 5.0.0 skill suite (`owasp-asvs-audit` + V1-V17 chapter skills), `responsive-design`, a resolvable `@tanstack/intent` skill loader, and `react-doctor` for React projects — halts with install instructions if any blocking gate fails. Discovers connected MCPs, installed skills, validation hooks, and available subagents, **matches each discovered skill and MCP to specific task signals**, embeds explicit `Use skills: …` / `Use MCP: …` directives in CONTEXT, and adds a per-task `USE:` field telling the agent exactly which skills/MCPs to load for that task. Analyzes which tasks can fan out in parallel, maps each security task signal to the matching OWASP chapter(s), enforces TanStack standards when triggered, then — on the user''s go — **creates the task list like before (TaskCreate/TaskUpdate/TaskList) and executes it via a second dynamic workflow** (`.claude/workflows/execute-tasks.js`) that fans each PARALLEL EXECUTION PLAN group across subagents, runs VERIFICATION + React Doctor, and returns the canonical REPORT. The only post-rewrite choices are **execute** or **cancel** — there is **no plan mode**. Use when the user wants to improve a prompt or transform ambiguous instructions into precise task lists.'
 argument-hint: '[--simple | --no-workflow] <your vague prompt here>'
 allowed-tools:
   - Read
@@ -10,7 +10,6 @@ allowed-tools:
   - Skill
   - Agent
   - Workflow
-  - EnterPlanMode
   - ListMcpResourcesTool
   - WebFetch
   - TaskCreate
@@ -39,7 +38,7 @@ Additionally, the `responsive-design` skill **MUST be loaded via the `Skill` too
 
 > ⚠️ **Token-cost notice.** A dynamic workflow spawns many subagents, so a single run consumes **meaningfully more tokens** than a standard turn-by-turn session and counts toward your plan's usage/rate limits. For trivial, single-line fixes use the `--simple` override below.
 
-**Requirements:** Claude Code **v2.1.154 or later** with dynamic workflows enabled (research preview; toggle in `/config`). The runtime allows up to **16 concurrent agents** and **1,000 agents per run**, takes **no mid-run user input** (the task-list / plan-mode / cancel choice happens AFTER the workflow returns), and is **resumable within the same session**.
+**Requirements:** Claude Code **v2.1.154 or later** with dynamic workflows enabled (research preview; toggle in `/config`). The runtime allows up to **16 concurrent agents** and **1,000 agents per run**, takes **no mid-run user input** (the create-tasks-and-execute / cancel choice happens AFTER the rewrite workflow returns — there is no plan mode), and is **resumable within the same session**.
 
 ### Override flags — force the inline (non-workflow) flow
 
@@ -181,11 +180,15 @@ Runs unless `--simple` / `--no-workflow` was passed. After Step 0 passes:
      - **Phase 4 — Synthesis:** converge on ONE final copy-ready prompt.
 3. Emit ONE status line: `Running fix-prompt workflow (4 phases) — track it with /workflows`. Narrate nothing else while it runs.
 4. When the workflow returns, **display its result verbatim** — it is the strict-format prompt in a copyable code block. No preamble, no commentary.
-5. Then run **Step 5 — Next Step** (the 3-option `AskUserQuestion`). The workflow takes no mid-run input, so the execution decision happens here, in the main session, after the workflow returns.
+5. Then run **Step 5 — Next Step** (the 2-option `AskUserQuestion`: execute or cancel). The workflow takes no mid-run input, so the execution decision happens here, in the main session, after the rewrite workflow returns.
 
 **Fallback:** if the `Workflow` tool is unavailable, dynamic workflows are disabled, the Claude Code version is < v2.1.154, or neither the project nor the global `fix-prompt.js` script is present, print `Dynamic workflows unavailable — falling back to inline rewrite.` and continue with Steps 1–5.
 
-**Persisted script:** `.claude/workflows/fix-prompt.js` (project, version-controlled) with `~/.claude/workflows/fix-prompt.js` as the personal/global fallback. It also installs as a standalone `/fix-prompt` slash command. Distributed via the `rubot` CLI as a `workflow`-type component (`rubot add fix-prompt` / `rubot add fix-prompt -g`). To regenerate after editing the script, re-run this command or save a fresh run via `/workflows` → `s`.
+**Persisted scripts:** two version-controlled dynamic workflows back this command:
+- `.claude/workflows/fix-prompt.js` — **the rewrite** (Step W): vague prompt → strict-format plan. Personal/global fallback at `~/.claude/workflows/fix-prompt.js`. Also installs as a standalone `/fix-prompt` slash command.
+- `.claude/workflows/execute-tasks.js` — **the execution** (Step 5): runs the rewritten plan group-by-group, verifies, returns the REPORT. Personal/global fallback at `~/.claude/workflows/execute-tasks.js`.
+
+Both are distributed via the `rubot` CLI as `workflow`-type components (`rubot add fix-prompt execute-tasks` / `-g`). To regenerate after editing a script, re-run this command or save a fresh run via `/workflows` → `s`.
 
 ### Step 1 — Capture
 
@@ -342,7 +345,7 @@ VERIFICATION:
 - <test command / build check / screenshot diff / a11y scan>
 - <metric or condition that confirms done>
 
-EXECUTION: Awaiting user choice — task-list execution (parallel where independent, sequential where dependent), plan mode, or cancel (see prompt below).
+EXECUTION: Awaiting user choice — create the task list, then execute it via the execute-tasks workflow; or cancel (see prompt below).
 ```
 
 **Format rules (non-negotiable):**
@@ -389,7 +392,7 @@ EXECUTION: Awaiting user choice — task-list execution (parallel where independ
 
 ### Step 5 — Next Step
 
-After displaying the rewritten prompt, immediately call `AskUserQuestion` with exactly these three options (no more, no fewer):
+After displaying the rewritten prompt, immediately call `AskUserQuestion` with exactly these two options (no more, no fewer — **there is no plan mode**):
 
 ```
 AskUserQuestion:
@@ -397,9 +400,7 @@ AskUserQuestion:
   header: "Prompt Ready"
   options:
     - label: "Create tasks list and execute"
-      description: "Spawn each TASK-NNN as a TaskCreate subagent and run them group-by-group"
-    - label: "Create plan using EnterPlanMode"
-      description: "Enter plan mode, present the plan, and wait for approval before any code change"
+      description: "Register each TASK-NNN in the Task queue (like before), then execute the plan via the execute-tasks workflow"
     - label: "Cancel"
       description: "Stop here — keep the rewritten prompt only"
   multiSelect: false
@@ -407,24 +408,34 @@ AskUserQuestion:
 
 **By choice:**
 
-- **Create tasks list and execute** → track the run through the Task queue only (`TaskCreate` to spawn, `TaskList`/`TaskGet` to monitor, `TaskUpdate` to adjust, `TaskStop` to halt). Do NOT use `TodoWrite`. Narrate tersely — one short line per phase.
-  1. Walk the `PARALLEL EXECUTION PLAN` group-by-group, in order. Emit ONE short status line before each group and nothing else: `Execute Group 1 (Parallel)` or `Execute Group 2 (Sequential)`.
-     - **Parallel group** — send **one message containing multiple `TaskCreate` calls**, one per TASK-NNN in the group. Each `TaskCreate` uses the per-task `AGENT` value as `subagent_type` and `description` = `[GROUP N · AGENT: <agent>] <imperative title>`. Wait for the entire group to finish before starting the next group.
-     - **Sequential group** (single task or `(sequential after Group N)`) — send `TaskCreate` calls one at a time, each using the per-task `AGENT` value and the same `[GROUP N · AGENT: <agent>]` description prefix.
-     - Each `TaskCreate` prompt = full task body (TASK ID + AGENT + ISSUES + FILE RELATED + SOLUTION) + the global RULES block.
-  2. Monitor with `TaskList` / `TaskGet` / `TaskUpdate`. The Task queue is the progress tracker — multiple tasks may run at once during a parallel group; that's expected.
-  3. On user interrupt, call `TaskStop` to halt the active task(s).
-  4. After the last group finishes, run the `VERIFICATION` checks (lint / typecheck / test / build / format / commit hooks). This is a blocking completion gate: never emit the final REPORT until each discovered validation hook is either executed and recorded as `PASS`/`FAIL`, or explicitly recorded as `NOT RUN` with a concrete reason.
-  5. **React Doctor gate (mandatory for React projects)**: when the project declares `react`, `next`, `vite`, or `react-native` as a dependency, run `npx react-doctor@latest --fail-on warning` (add `--diff <base-branch>` when scoping to a PR). Parse every diagnostic — state & effects, performance, architecture, security, accessibility. Fix in scope and re-run until exit 0. If a finding cannot be safely fixed, move it to the `DEFERRED` section of the REPORT with an explicit Recommended Action. Do NOT skip this step for React-touching work.
-  6. **Emit the canonical REPORT block** (Pattern 13 in `prompt-fixer` skill) — `TITLE`, `Agent`, `Skills Loaded`, `Total Files Changed`, `CHANGES`, `VALIDATION` (including every discovered validation hook and the react-doctor run for React projects), `DEFERRED` (omit if empty), and the `------------------- DONE -------------------` footer. This is a blocking completion gate: if the report does not match the canonical structure, rewrite the final message before sending it. The report is the final user-facing message of the execution branch.
-- **Create plan using EnterPlanMode** → call `EnterPlanMode` and feed the rewritten prompt as plan input. The plan content MUST surface the `PARALLEL EXECUTION PLAN` block so the user can review fan-out before approving. Do not write code until the user approves the plan.
-- **Cancel** → end. Do not call TaskCreate, TaskUpdate, or EnterPlanMode.
+- **Create tasks list and execute** → two steps, in order: (1) **create the task list like before**, then (2) **execute it via the `execute-tasks` dynamic workflow**. Narrate tersely — one short line per step. Do NOT use `TodoWrite`. Do NOT enter plan mode.
+
+  **Step 5a — Create the task list (TaskCreate, like before).** Register one queue item per TASK-NNN so the parallel plan is visible:
+    - One `TaskCreate` per task; `subject` = the imperative title; `description` = `[GROUP N · AGENT: <agent>] ` + the full task body (TASK ID + AGENT + USE + ISSUES + FILE RELATED + SOLUTION).
+    - Mirror the `PARALLEL EXECUTION PLAN` as dependencies with `TaskUpdate` (`addBlockedBy` so each later group waits on the prior group).
+    - Emit ONE status line: `Task list created — N tasks across M groups`.
+
+  **Step 5b — Execute via the workflow.** Invoke the `Workflow` tool to run the execution script:
+    - `scriptPath:` — prefer the project script `.claude/workflows/execute-tasks.js`; if absent, fall back to the global `~/.claude/workflows/execute-tasks.js`. If neither exists, use the inline fallback below.
+    - `args:` — the **full rewritten strict-format prompt** (the exact block shown in Step 4), as a string. The workflow re-parses it into tasks + groups + rules + verification.
+    - The script runs four phases and returns the finished REPORT:
+      - **Parse** — turn the strict-format prompt into a structured plan.
+      - **Execute** — walk the `PARALLEL EXECUTION PLAN` group-by-group; spawn one subagent per TASK-NNN (its per-task `AGENT`), parallel groups concurrently, sequential groups in order. Each subagent loads its `USE:` skills, edits files in scope, runs validation, and runs `npx react-doctor@latest --fail-on warning` for React changes.
+      - **Verify** — run the `VERIFICATION` checks + react-doctor once globally; record each as `PASS` / `FAIL` / `NOT RUN`.
+      - **Report** — assemble the canonical Pattern 13 REPORT.
+    - Emit ONE status line: `Executing tasks via workflow (4 phases) — track it with /workflows`. Narrate nothing else while it runs.
+  **Step 5c — Report back.** When the workflow returns, flip the Task queue to match the result with `TaskUpdate` (`completed` for finished tasks, failed/deferred otherwise), then **display the workflow's REPORT verbatim** as the final user-facing message. It already follows the canonical `------------------- REPORT -------------------` … `------------------- DONE -------------------` structure (Pattern 13). On user interrupt, call `TaskStop` and stop the `/workflows` run to halt.
+
+  **Inline fallback (only when the `Workflow` tool is unavailable, dynamic workflows are disabled, Claude Code < v2.1.154, or neither `execute-tasks.js` script is present):** print `Execution workflow unavailable — running tasks inline.` then walk the `PARALLEL EXECUTION PLAN` group-by-group using the subagent spawner (`Agent`/`Task`) — `subagent_type` = the per-task `AGENT`, `prompt` = full task body + RULES; fan out a parallel group in a single message; run a sequential group one task at a time; track via the Task queue. After the last group, run `VERIFICATION` + react-doctor (blocking completion gate), then emit the canonical REPORT yourself.
+
+- **Cancel** → end. Do not call `TaskCreate`, `TaskUpdate`, or the execution workflow. Leave the rewritten prompt visible to copy.
 
 ## Hard Rules
 
 - **Default to the dynamic workflow.** With no override flag, run Step W (the `.claude/workflows/fix-prompt.js` dynamic workflow). Run the inline flow (Steps 1–5) only when `--simple` / `--no-workflow` is passed, or when dynamic workflows are unavailable (print the fallback notice first).
 - **Token-cost transparency.** The workflow path consumes meaningfully more tokens than the inline flow. Don't silently launch it for a one-line change — surface the `--simple` override when the input is trivial.
-- **No mid-run input inside the workflow.** The 3-option execution decision (task list / plan mode / cancel) is emitted AFTER the workflow returns — never injected mid-run.
+- **No mid-run input inside either workflow.** The 2-option execution decision (create-tasks-and-execute / cancel) is emitted AFTER the rewrite workflow returns and BEFORE the execution workflow launches — never injected mid-run. There is no plan mode.
+- **Execution runs as a workflow.** When the user picks "Create tasks list and execute", create the task list with `TaskCreate` (like before) and then run the `execute-tasks` dynamic workflow (`.claude/workflows/execute-tasks.js`, global fallback `~/.claude/workflows/execute-tasks.js`) with the full rewritten prompt as `args`. Fall back to the inline group-by-group fan-out ONLY when the `Workflow` tool / dynamic workflows / the script are unavailable.
 - **Keep the final prompt copyable.** Whether produced by the workflow or the inline flow, the rewritten prompt is shown verbatim inside a fenced markdown code block.
 - **Step 0 is blocking.** If any OWASP ASVS 5.0.0 skill from `owasp-asvs-audit` + V1-V17, `responsive-design`, the `@tanstack/intent` loader, or React Doctor in a React project is missing, halt and print the install command. Do not proceed.
 - Output the strict template only. No "Original Prompt" / "Issues Identified" / "Why This Is Better".
@@ -444,7 +455,7 @@ AskUserQuestion:
 - Recommend a skill, MCP, or subagent when discovery surfaces a match. Skip when none. For security-touching tasks, the matching OWASP V1-V17 skills MUST be listed in `CONTEXT.Use skills` — they are guaranteed present by Step 0.
 - Default to sequential when independence is unclear — false parallelism causes merge conflicts and broken builds.
 - During execution, parallel groups MUST be fanned out via a single message containing multiple `TaskCreate` calls — never serialize a parallel group across messages.
-- Always emit the Step 5 `AskUserQuestion` (Create tasks list / EnterPlanMode / Cancel). Never auto-enter plan mode and never auto-create tasks without the user choosing.
+- Always emit the Step 5 `AskUserQuestion` (Create tasks list and execute / Cancel — **two options, no plan mode**). Never auto-create-and-execute without the user choosing, and never enter plan mode.
 - **Never use `TodoWrite`.** Task-list execution is tracked entirely through the Task queue (`TaskCreate` / `TaskList` / `TaskGet` / `TaskUpdate` / `TaskStop`); the `[GROUP N · AGENT: <name>]` prefix lives in each task's `description`.
 - **Narrate tersely.** Every status line emitted during Step 0 and execution is one short, informative line — no rationale, no per-agent breakdown. Use `Step 0 passed — all skills present ✅` and `Execute Group 1 (Parallel)` / `Execute Group 2 (Sequential)`. Keep the strict output template and the final REPORT exactly as specified; trim only the conversational text around them.
 - Never emit `git stash` / `git stash push|pop|apply|drop|clear` in any `SOLUTION` or `VERIFICATION` block. If a task needs to set work aside, write `git switch -c wip/<topic>` instead.
@@ -455,5 +466,6 @@ AskUserQuestion:
 ## Related
 
 - Skill: `prompt-fixer`
-- Workflow: `.claude/workflows/fix-prompt.js` (default execution path; also runs as `/fix-prompt`)
+- Workflow (rewrite): `.claude/workflows/fix-prompt.js` (default rewrite path; also runs as `/fix-prompt`)
+- Workflow (execution): `.claude/workflows/execute-tasks.js` (runs the rewritten plan group-by-group → verify → REPORT)
 - Docs: [Dynamic workflows](https://code.claude.com/docs/en/workflows) · [Announcement](https://claude.com/blog/introducing-dynamic-workflows-in-claude-code)

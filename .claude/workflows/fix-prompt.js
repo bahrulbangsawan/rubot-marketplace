@@ -111,7 +111,7 @@ VERIFICATION:
 - <at least one runnable check: test/build/screenshot diff/axe-core/lighthouse>
 - <metric or condition that confirms done>
 
-EXECUTION: Awaiting user choice — task-list execution (parallel where independent, sequential where dependent), plan mode, or cancel (see prompt below).
+EXECUTION: Awaiting user choice — create the task list, then execute it via the execute-tasks workflow; or cancel (see prompt below).
 
 HARD GROUNDING RULES:
 - Real file paths only, taken from discovery. No invented paths.
