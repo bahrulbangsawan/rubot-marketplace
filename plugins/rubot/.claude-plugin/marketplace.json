@@ -2,7 +2,7 @@
   "$schema": "https://claude.ai/schemas/plugin-marketplace.json",
   "name": "rubot",
   "displayName": "Rubot - Multi-Agent Orchestration Governor",
-  "version": "2.22.0",
+  "version": "2.23.0",
   "description": "Strict multi-agent orchestration governor with 37 workflow commands, 16 specialist subagents, and 60 domain skills for full-stack TanStack Start development with comprehensive OWASP ASVS 5.0.0 security auditing, GEO (Generative Engine Optimization) for AI search visibility, design system consistency enforcement, Figma-to-code design implementation, and prompt engineering",
   "longDescription": "Rubot enforces deterministic, mandatory multi-agent consultation for all significant tasks in complex Claude Code projects. It acts as a project manager ensuring no decision is made without consensus from all relevant domain experts.\n\nFeatures:\n- 16 specialist subagents covering backend, frontend, database, deployment, testing, SEO, and more\n- 37 workflow commands including 7 SEO commands, 1 GEO audit command, 5 setup commands, testing/QA, WCAG accessibility, responsive audit, design audit, Figma design implementation, global layout, multilanguage, security scanning, OWASP security audit, prompt fixer, and full git/PR workflow\n- 60 domain-specific skills including prompt fixer for rewriting vague prompts, 12 GEO skills (AI citability, crawler access, llms.txt, brand mentions, platform optimization, schema markup, content quality, technical SEO, report generation, PDF reports), 18 OWASP ASVS 5.0.0 security skills (covering all 17 chapters plus master audit orchestration), 5 SEO skills, responsive design system, design token enforcement, component consistency audit, Figma-to-code slicing, global layout, multilanguage i18n, WCAG accessibility (audit + fix), react-grab element inspection, agent-browser CLI reference, and CF Workers setup\n- GEO (Generative Engine Optimization) suite with 12 skills for AI search engine visibility — optimizes for ChatGPT, Perplexity, Gemini, Google AI Overviews, and Bing Copilot with citability scoring, crawler analysis, llms.txt generation, brand mention scanning, and professional PDF report generation\n- Design system consistency enforcement with design token compliance and component pattern drift detection\n- Comprehensive OWASP ASVS 5.0.0 security auditing with ~350 verification requirements across 17 chapters at 3 assurance levels (L1/L2/L3)\n- ClawSec Suite integration for security advisory monitoring, skill integrity verification, and guarded install checks\n- Frontend ownership model with shadcn-ui-designer as team lead\n- Mandatory registry enforcement for 20 shadcn-compatible registries\n- agent-browser CLI integration for live browser automation and E2E testing",
   "author": {
@@ -400,7 +400,7 @@
         },
         {
           "name": "rubot-fix-prompt",
-          "description": "Rewrite vague prompts into specific, actionable Claude Code instructions with verification criteria and file references",
+          "description": "Rewrite vague prompts into a strict task-based execution plan. Defaults to a dynamic-workflow execution path (4-phase adversarial pipeline: analysis -> parallel generation -> adversarial review -> synthesis); pass --simple/--no-workflow for the inline turn-by-turn flow. OWASP ASVS 5.0.0 compliant + mobile-first responsive. Workflows consume meaningfully more tokens; require Claude Code v2.1.154+.",
           "requires": [
             "prompt-fixer"
           ]
@@ -922,8 +922,8 @@
           "agents": [
             "debug-master"
           ],
-          "description": "Rewrite vague prompts into a strict task-based execution plan (OWASP ASVS 5.0.0 compliant, mobile-first responsive, TanStack-standard, React Doctor-gated) with per-task AGENT + USE directives, parallel execution plan analysis, mandatory validation hooks, a canonical final REPORT block, a hard ban on git stash commands, and a user-chosen execution path (task list / plan mode / cancel)",
-          "version": "3.11.0"
+          "description": "Defaults to a Claude Code dynamic workflow (.claude/workflows/fix-prompt.js) — a 4-phase adversarial pipeline (analysis -> parallel generation -> adversarial review -> synthesis); --simple/--no-workflow forces the inline flow. Workflows cost meaningfully more tokens and require Claude Code v2.1.154+. Rewrites vague prompts into a strict task-based execution plan (OWASP ASVS 5.0.0 compliant, mobile-first responsive, TanStack-standard, React Doctor-gated) with per-task AGENT + USE directives, parallel execution plan analysis, mandatory validation hooks, a canonical final REPORT block, a hard ban on git stash commands, and a user-chosen execution path (task list / plan mode / cancel)",
+          "version": "3.12.0"
         }
       ]
     },
@@ -941,6 +941,18 @@
         "components.json.template",
         "commit-message.template",
         "section-figma.yaml.template"
+      ]
+    },
+    "workflows": {
+      "count": 1,
+      "list": [
+        {
+          "name": "fix-prompt",
+          "description": "Dynamic workflow: rewrite a vague prompt into a strict task-based execution plan via a 4-phase adversarial pipeline (analysis -> parallel generation -> adversarial review -> synthesis). Claude-only; requires Claude Code v2.1.154+.",
+          "requires": [
+            "prompt-fixer"
+          ]
+        }
       ]
     }
   },

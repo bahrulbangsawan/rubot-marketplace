@@ -11,6 +11,7 @@ const COMPONENT_PATHS = {
   agent: 'plugins/rubot/agents',
   hook: 'plugins/rubot/hooks',
   template: 'plugins/rubot/templates',
+  workflow: 'plugins/rubot/workflows',
 }
 
 const MARKETPLACE_PATH = 'plugins/rubot/.claude-plugin/marketplace.json'

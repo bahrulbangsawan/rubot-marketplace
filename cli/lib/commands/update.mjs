@@ -93,11 +93,11 @@ async function updateSkills(global, target, catalog) {
 
 async function updateFiles(type, global, target, catalog) {
   const dir = getComponentDir(type, global, target)
-  if (!existsSync(dir)) return 0
+  if (!dir || !existsSync(dir)) return 0
 
-  const ext = type === 'template' ? '' : '.md'
+  const ext = type === 'template' ? '' : type === 'workflow' ? '.js' : '.md'
   const files = readdirSync(dir).filter((f) =>
-    type === 'template' ? f.includes('.') : f.endsWith('.md')
+    type === 'template' ? f.includes('.') : type === 'workflow' ? f.endsWith('.js') : f.endsWith('.md')
   )
 
   if (files.length === 0) return 0
@@ -239,6 +239,7 @@ export async function run({ flags }) {
   for (const target of targets) {
     for (const global of [false, true]) {
       for (const type of types) {
+        if (type === 'workflow' && target === 'codex') continue // workflows are Claude-only
         if (type === 'skill') totalUpdated += await updateSkills(global, target, catalogs.skill)
         else if (type === 'hook') totalUpdated += await updateHooks(global, target)
         else totalUpdated += await updateFiles(type, global, target, catalogs[type])

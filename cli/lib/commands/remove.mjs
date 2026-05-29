@@ -29,10 +29,12 @@ function getInstalledSkills(global, target) {
 
 function getInstalledFiles(type, global, target) {
   const dir = getComponentDir(type, global, target)
-  if (!existsSync(dir)) return []
-  const ext = type === 'template' ? '' : '.md'
+  if (!dir || !existsSync(dir)) return []
+  const ext = type === 'template' ? '' : type === 'workflow' ? '.js' : '.md'
   return readdirSync(dir)
-    .filter((f) => (type === 'template' ? f.includes('.') : f.endsWith('.md')))
+    .filter((f) =>
+      type === 'template' ? f.includes('.') : type === 'workflow' ? f.endsWith('.js') : f.endsWith('.md')
+    )
     .map((f) => {
       const name = ext ? f.slice(0, -ext.length) : f
       return { name, description: type }
@@ -66,6 +68,7 @@ function getInstalledHooks(global, target) {
 }
 
 function getInstalledComponents(type, global, target) {
+  if (type === 'workflow' && target === 'codex') return [] // workflows are Claude-only
   if (type === 'skill') return getInstalledSkills(global, target)
   if (type === 'hook') return getInstalledHooks(global, target)
   return getInstalledFiles(type, global, target)
@@ -160,7 +163,7 @@ export async function run({ flags, positional }) {
   ${dim('Alias:')} rubot rm
 
   ${dim('Options:')}
-    --type, -t   Component type: skill, command, agent, hook, template
+    --type, -t   Component type: skill, command, agent, hook, template, workflow
     --skill, -s  Skill name(s) — shorthand for --type skill
     --all        Remove all (of specified type, or everything)
     --global, -g Remove globally (~/.claude/ or ~/.codex/)

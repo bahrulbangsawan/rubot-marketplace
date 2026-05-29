@@ -19,11 +19,14 @@ function getInstalledSkills(dir) {
 
 function getInstalledFiles(type, dir) {
   if (!existsSync(dir)) return []
-  const ext = type === 'template' ? '' : '.md'
+  const ext = type === 'template' ? '' : type === 'workflow' ? '.js' : '.md'
   return readdirSync(dir)
-    .filter((f) => (type === 'template' ? f.includes('.') : f.endsWith('.md')))
+    .filter((f) =>
+      type === 'template' ? f.includes('.') : type === 'workflow' ? f.endsWith('.js') : f.endsWith('.md')
+    )
     .map((f) => {
       const name = ext ? f.slice(0, -ext.length) : f
+      if (type === 'workflow') return { name, description: 'Dynamic workflow' }
       const content = readFileSync(join(dir, f), 'utf8')
       const desc = content.match(/^description:\s*(.+)$/m)?.[1]?.trim().slice(0, 55) || ''
       return { name, description: desc }
@@ -53,6 +56,7 @@ function getInstalledHooks(settingsPath) {
 }
 
 function getInstalled(type, global, target) {
+  if (type === 'workflow' && target === 'codex') return [] // workflows are Claude-only
   if (type === 'skill') return getInstalledSkills(getComponentDir('skill', global, target))
   if (type === 'hook') return getInstalledHooks(getSettingsPath(global, target))
   return getInstalledFiles(type, getComponentDir(type, global, target))

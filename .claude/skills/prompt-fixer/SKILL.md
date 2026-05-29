@@ -1,8 +1,8 @@
 ---
 name: prompt-fixer
-version: 3.11.0
+version: 3.12.0
 description: |
-  Rewrites vague prompts into a strict task-based execution plan (MAIN PROBLEM / GOALS / CONTEXT / mandatory RULES / numbered TASKs with ID, AGENT, USE, ISSUES, FILE RELATED, SOLUTION / PARALLEL EXECUTION PLAN / VERIFICATION / EXECUTION) that is **OWASP ASVS 5.0.0 compliant**, **mobile-first responsive by default**, **TanStack-standard by default** (Router with automatic code splitting + Query with optimistic UI + DB for local-first state), **React Doctor-gated** (mandatory `npx react-doctor@latest --fail-on warning` scan after every React change), enforces **mandatory skill detection** via the Step 0-verified `@tanstack/intent` loader and `load <package>#<skill>` before substantial work, requires **validation & commit hooks** (lint/typecheck/test/build/format/react-doctor) after every phase, and emits a **canonical final REPORT block** (TITLE / Agent / Skills Loaded / Files Changed / CHANGES / VALIDATION / DEFERRED / DONE) after task-list execution. Runs parallel Explore agents, discovers connected MCPs, installed skills, validation hooks, and available subagents, **matches each discovered skill and MCP to specific task signals**, embeds explicit `Use skills: …` and `Use MCP: …` directives in CONTEXT, and adds a per-task `USE:` field telling the agent exactly which skills/MCPs to load for that task (e.g. "Use Cloudflare skills and MCP"). Analyzes tasks for parallel agent execution, enforces engineering rules from rule banks (Universal + Frontend/Responsive + Backend + TanStack + Security with V1-V17 chapter mappings), applies blocking rewrite gates before output, then asks the user to choose between task-list execution (subagents spawned via Agent/Task, tracked in the TaskCreate/TaskUpdate/TaskList queue, parallel where possible), plan mode (EnterPlanMode), or cancel. Output is a single copy-ready prompt — no preamble, no commentary. The `rubot-fix-prompt` command halts if the OWASP ASVS 5.0.0 skill suite, `responsive-design`, the `@tanstack/intent` loader, or React Doctor in React projects is unavailable.
+  **Defaults to a Claude Code dynamic workflow** (`.claude/workflows/fix-prompt.js`) — a 4-phase adversarial pipeline (analysis → parallel candidate generation → adversarial cross-review → synthesis) that fans the rewrite across parallel subagents and returns one consolidated prompt; pass `--simple`/`--no-workflow` for the inline turn-by-turn flow. Dynamic workflows consume meaningfully more tokens than a standard session and require Claude Code v2.1.154+. Rewrites vague prompts into a strict task-based execution plan (MAIN PROBLEM / GOALS / CONTEXT / mandatory RULES / numbered TASKs with ID, AGENT, USE, ISSUES, FILE RELATED, SOLUTION / PARALLEL EXECUTION PLAN / VERIFICATION / EXECUTION) that is **OWASP ASVS 5.0.0 compliant**, **mobile-first responsive by default**, **TanStack-standard by default** (Router with automatic code splitting + Query with optimistic UI + DB for local-first state), **React Doctor-gated** (mandatory `npx react-doctor@latest --fail-on warning` scan after every React change), enforces **mandatory skill detection** via the Step 0-verified `@tanstack/intent` loader and `load <package>#<skill>` before substantial work, requires **validation & commit hooks** (lint/typecheck/test/build/format/react-doctor) after every phase, and emits a **canonical final REPORT block** (TITLE / Agent / Skills Loaded / Files Changed / CHANGES / VALIDATION / DEFERRED / DONE) after task-list execution. Runs parallel Explore agents, discovers connected MCPs, installed skills, validation hooks, and available subagents, **matches each discovered skill and MCP to specific task signals**, embeds explicit `Use skills: …` and `Use MCP: …` directives in CONTEXT, and adds a per-task `USE:` field telling the agent exactly which skills/MCPs to load for that task (e.g. "Use Cloudflare skills and MCP"). Analyzes tasks for parallel agent execution, enforces engineering rules from rule banks (Universal + Frontend/Responsive + Backend + TanStack + Security with V1-V17 chapter mappings), applies blocking rewrite gates before output, then asks the user to choose between task-list execution (subagents spawned via Agent/Task, tracked in the TaskCreate/TaskUpdate/TaskList queue, parallel where possible), plan mode (EnterPlanMode), or cancel. Output is a single copy-ready prompt — no preamble, no commentary. The `rubot-fix-prompt` command halts if the OWASP ASVS 5.0.0 skill suite, `responsive-design`, the `@tanstack/intent` loader, or React Doctor in React projects is unavailable.
   MUST activate for: "fix my prompt", "improve this prompt", "rewrite this prompt", "make this prompt better", "this prompt is too vague", "help me write a better prompt", "prompt engineering", "how should I ask Claude to", "rephrase this for Claude", or when the user provides a clearly vague instruction and asks for help making it more specific.
   Also activate when: "Claude keeps doing the wrong thing", "Claude doesn't understand what I want", "how do I get better results", "why does Claude keep failing", or the user references the `/rubot-fix-prompt` command.
   Do NOT activate for: actually executing the rewritten prompt, general coding tasks, SEO audits, design audits, security audits, environment checks, or any task where the user wants implementation rather than prompt improvement.
@@ -29,6 +29,42 @@ Produce a prompt that:
 7. Assigns an AGENT per task, lists the skills + MCPs to invoke via the per-task `USE:` field, and analyzes which tasks can execute in parallel vs. sequentially.
 8. Includes runnable verification.
 9. Defers execution to the user via a 3-option `AskUserQuestion`: task-list execution (parallel where possible, sequential where dependent), plan mode, or cancel.
+
+## Default Execution: Dynamic Workflow
+
+The `rubot-fix-prompt` command runs this skill **as a Claude Code dynamic workflow by default** — a JavaScript orchestration script saved at `.claude/workflows/fix-prompt.js` (project-level, version-controlled). The workflow fans the rewrite out across parallel subagents, keeps every intermediate result in script variables, and returns a single consolidated prompt. It also installs as a standalone `/fix-prompt` slash command.
+
+> ⚠️ **Token-cost notice.** A dynamic workflow spawns many subagents, so a single run consumes **meaningfully more tokens** than a standard turn-by-turn session. Use the `--simple` / `--no-workflow` override for trivial, single-line fixes.
+
+### Why a workflow
+
+Moving the plan into a script lets the rewrite apply a **repeatable quality pattern**, not just run more agents: independent agents generate candidate rewrites from different angles, then other agents adversarially refute and score each candidate before synthesis — a more trustworthy result than a single pass.
+
+### Phases
+
+| Phase | What happens | Fan-out |
+|-------|--------------|---------|
+| 1 — Analysis | Parse intent, target model, constraints, failure modes; discover codebase paths, installed skills, connected MCPs, subagents, validation commands. | parallel (analysis + discovery) |
+| 2 — Generation | Produce N independent candidate rewrites across distinct strategies (minimal / comprehensive / parallel-first / guardrail / reference-led / verification-led). | parallel (one agent per strategy) |
+| 3 — Adversarial Review | Independent agents refute and score each candidate against the analysis criteria; flag hallucinated paths/skills, missing mandatory rules, unsafe parallelism. | pipeline (review starts as each candidate lands) |
+| 4 — Synthesis | Converge on ONE final prompt: strongest base + best grafts from runners-up, every defect removed. Output copy-ready markdown. | single agent |
+
+The final prompt follows the same Strict Output Format below, wrapped in a fenced markdown code block.
+
+### Override — inline (non-workflow) flow
+
+Pass `--simple` (or its alias `--no-workflow`) to skip the workflow and run the inline turn-by-turn rewrite (the command's Steps 1–5) in the current session. Lowest token cost — best for trivial fixes. The command also falls back to the inline flow automatically when dynamic workflows are unavailable (disabled, or Claude Code < v2.1.154).
+
+### Runtime constraints
+
+- Requires **Claude Code v2.1.154 or later**, dynamic workflows enabled (research preview; `/config`).
+- Up to **16 concurrent agents**, **1,000 agents per run**.
+- **No mid-run user input** — the task-list / plan-mode / cancel decision is emitted AFTER the workflow returns, in the main session.
+- **Resumable within the same session.**
+
+### Persistence
+
+The workflow script lives at `.claude/workflows/fix-prompt.js` and is committed with the repo so the orchestration is reusable and reviewable. Editing the script changes the default behavior for everyone who clones the project.
 
 ## Prerequisites
 
@@ -1120,6 +1156,8 @@ EXECUTION: Awaiting user choice — task-list execution (parallel where independ
 
 ## References
 
+- Dynamic Workflows: https://code.claude.com/docs/en/workflows
+- Dynamic Workflows (announcement): https://claude.com/blog/introducing-dynamic-workflows-in-claude-code
 - Tools Reference: https://code.claude.com/docs/en/tools-reference
 - Best Practices: https://code.claude.com/docs/en/best-practices
 - Subagents: https://code.claude.com/docs/en/sub-agents

@@ -15,12 +15,13 @@ const TYPE_KEY = {
   agent: 'agents',
   hook: 'hooks',
   template: 'templates',
+  workflow: 'workflows',
 }
 
 export async function getComponentCatalog(type) {
   const marketplace = await getMarketplace()
   const section = marketplace.components[TYPE_KEY[type]]
-  if (!section) return []
+  if (!section || !Array.isArray(section.list)) return []
 
   // Templates are stored as plain string array
   if (type === 'template') {

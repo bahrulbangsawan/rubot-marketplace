@@ -23,9 +23,11 @@ export const TYPE_LABELS = {
   agent: 'Agents',
   hook: 'Hooks',
   template: 'Templates',
+  workflow: 'Workflows',
 }
 
-export const ALL_TYPES = ['skill', 'command', 'agent', 'hook', 'template']
+// 'workflow' stays LAST so auto-detect prefers other types on any future name clash.
+export const ALL_TYPES = ['skill', 'command', 'agent', 'hook', 'template', 'workflow']
 
 // Normalize user input like "skills" or "commands" to singular form
 const TYPE_MAP = {
@@ -39,12 +41,14 @@ const TYPE_MAP = {
   hooks: 'hook',
   template: 'template',
   templates: 'template',
+  workflow: 'workflow',
+  workflows: 'workflow',
 }
 
 export function normalizeType(raw) {
   const t = TYPE_MAP[raw.toLowerCase().trim()]
   if (!t) {
-    fatal(`Unknown type: ${raw}. Valid: skill, command, agent, hook, template`)
+    fatal(`Unknown type: ${raw}. Valid: skill, command, agent, hook, template, workflow`)
   }
   return t
 }

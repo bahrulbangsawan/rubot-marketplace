@@ -88,7 +88,7 @@ function showHelp() {
     init         Generate CLAUDE.md, AGENTS.md, or SKILL.md template
 
   \x1b[2mOptions:\x1b[0m
-    --type, -t   Component type: skill, command, agent, hook, template
+    --type, -t   Component type: skill, command, agent, hook, template, workflow
     --skill, -s  Skill name(s) — shorthand for --type skill <names>
     --all        Install/remove all (of specified type, or everything)
     --global, -g Install/remove globally (~/.claude/ or ~/.codex/)

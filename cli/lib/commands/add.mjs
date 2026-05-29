@@ -31,6 +31,9 @@ import {
 
 function markInstalled(catalog, type, global, target) {
   if (type === 'hook') return markInstalledHooks(catalog, global, target)
+  if (type === 'workflow' && target === 'codex') {
+    return catalog.map((item) => ({ ...item, disabled: true, disabledReason: 'codex n/a' }))
+  }
   return catalog.map((item) => {
     const dest = getComponentPath(type, item.name, global, target)
     if (existsSync(dest)) {
@@ -127,6 +130,11 @@ function addCodexCommandAdapter(content) {
 }
 
 async function installSingleFile(type, name, global, target) {
+  if (type === 'workflow' && target === 'codex') {
+    console.log(`  ${symbols.bullet} ${dim('workflow install skipped: Codex does not support workflows')}`)
+    return false
+  }
+
   const destPath = getComponentPath(type, name, global, target)
   if (existsSync(destPath)) {
     console.log(`  ${symbols.bullet} ${dim(`${type}/${name} already installed`)}`)
@@ -136,8 +144,13 @@ async function installSingleFile(type, name, global, target) {
   const spinner = createSpinner(`Installing ${type} ${bold(name)}...`)
   spinner.start()
 
-  // Commands/agents: file is name.md; templates: file is name as-is
-  const fileName = type === 'template' ? name : `${name}.md`
+  // Commands/agents: name.md; workflows: name.js; templates: name as-is
+  const fileName =
+    type === 'template'
+      ? name
+      : type === 'workflow'
+        ? (name.endsWith('.js') ? name : `${name}.js`)
+        : `${name}.md`
   let content = await fetchComponentFile(type, fileName)
   if (target === 'codex' && type === 'command') {
     content = addCodexCommandAdapter(content)
@@ -337,7 +350,7 @@ export async function run({ flags, positional }) {
     rubot add --all                        Install everything
 
   ${dim('Options:')}
-    --type, -t   Component type: skill, command, agent, hook, template
+    --type, -t   Component type: skill, command, agent, hook, template, workflow
     --skill, -s  Skill name(s) — shorthand for --type skill <names>
     --all        Install all (of specified type, or everything)
     --global, -g Install globally (~/.claude/ or ~/.codex/)

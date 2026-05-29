@@ -1,7 +1,7 @@
 ---
 name: rubot-fix-prompt
-description: Rewrite a vague prompt into a strict task-based execution plan (MAIN PROBLEM / GOALS / CONTEXT / mandatory RULES / numbered TASKs with per-task AGENT + USE / PARALLEL EXECUTION PLAN / VERIFICATION / EXECUTION) that is **OWASP ASVS 5.0.0 compliant** and **mobile-first responsive by default**. Requires the OWASP ASVS 5.0.0 skill suite (`owasp-asvs-audit` + V1-V17 chapter skills), `responsive-design`, a resolvable `@tanstack/intent` skill loader, and `react-doctor` for React projects — halts with install instructions if any blocking gate fails. Runs parallel Explore agents, discovers connected MCPs, installed skills, validation hooks, and available subagents, **matches each discovered skill and MCP to specific task signals**, embeds explicit `Use skills: …` / `Use MCP: …` directives in CONTEXT, and adds a per-task `USE:` field telling the agent exactly which skills/MCPs to load for that task (e.g. "Use Cloudflare skills and MCP"). Analyzes which tasks can fan out in parallel, maps each security task signal to the matching OWASP chapter(s), enforces TanStack standards when triggered, then asks the user to choose between task-list execution (TaskCreate/TaskUpdate/TaskList, parallel where possible), plan mode (EnterPlanMode), or cancel. Use when the user wants to improve a prompt or transform ambiguous instructions into precise task lists.
-argument-hint: <your vague prompt here>
+description: '**Defaults to a Claude Code dynamic workflow** (`.claude/workflows/fix-prompt.js`) — a 4-phase adversarial pipeline (analysis → parallel candidate generation → adversarial cross-review → synthesis) that fans the rewrite across parallel subagents and returns ONE consolidated prompt. Pass `--simple` (or `--no-workflow`) to force the inline turn-by-turn flow for trivial fixes. ⚠️ Dynamic workflows consume meaningfully more tokens than a standard session; requires Claude Code v2.1.154+. Rewrites a vague prompt into a strict task-based execution plan (MAIN PROBLEM / GOALS / CONTEXT / mandatory RULES / numbered TASKs with per-task AGENT + USE / PARALLEL EXECUTION PLAN / VERIFICATION / EXECUTION) that is **OWASP ASVS 5.0.0 compliant** and **mobile-first responsive by default**. Requires the OWASP ASVS 5.0.0 skill suite (`owasp-asvs-audit` + V1-V17 chapter skills), `responsive-design`, a resolvable `@tanstack/intent` skill loader, and `react-doctor` for React projects — halts with install instructions if any blocking gate fails. Discovers connected MCPs, installed skills, validation hooks, and available subagents, **matches each discovered skill and MCP to specific task signals**, embeds explicit `Use skills: …` / `Use MCP: …` directives in CONTEXT, and adds a per-task `USE:` field telling the agent exactly which skills/MCPs to load for that task. Analyzes which tasks can fan out in parallel, maps each security task signal to the matching OWASP chapter(s), enforces TanStack standards when triggered, then asks the user to choose between task-list execution (TaskCreate/TaskUpdate/TaskList, parallel where possible), plan mode (EnterPlanMode), or cancel. Use when the user wants to improve a prompt or transform ambiguous instructions into precise task lists.'
+argument-hint: '[--simple | --no-workflow] <your vague prompt here>'
 allowed-tools:
   - Read
   - Glob
@@ -9,6 +9,7 @@ allowed-tools:
   - Bash
   - Skill
   - Agent
+  - Workflow
   - EnterPlanMode
   - ListMcpResourcesTool
   - WebFetch
@@ -31,6 +32,30 @@ Load the `prompt-fixer` skill once. Skill owns the rewrite rules + rule banks; t
 The command also requires the **OWASP ASVS 5.0.0 skill suite** (master + V1-V17 chapter skills), the `responsive-design` skill, a resolvable `@tanstack/intent` skill loader (`bunx` preferred, `npx` fallback), and `react-doctor` availability for React projects. These checks are enforced in Step 0 — if any blocking prerequisite fails, the command halts with install instructions.
 
 Additionally, the `responsive-design` skill **MUST be loaded via the `Skill` tool** before Step 2 runs whenever ANY task signal hints at UI work (frontend, components, pages, styles, layout, breakpoints, mobile). Step 0 includes the load instruction; Step 3 enforces that it appears in `CONTEXT.Use skills` for every UI-touching rewrite.
+
+## Execution Mode (default: dynamic workflow)
+
+**By default this command runs as a Claude Code _dynamic workflow_** — a JavaScript orchestration script (`.claude/workflows/fix-prompt.js`, version-controlled with the repo) that fans the rewrite out across parallel subagents in four discrete phases and returns a single consolidated prompt. Workflows keep every intermediate result in script variables and support **adversarial cross-checking** (independent agents refute each other's candidate rewrites before anything is reported), while staying responsive in the background.
+
+> ⚠️ **Token-cost notice.** A dynamic workflow spawns many subagents, so a single run consumes **meaningfully more tokens** than a standard turn-by-turn session and counts toward your plan's usage/rate limits. For trivial, single-line fixes use the `--simple` override below.
+
+**Requirements:** Claude Code **v2.1.154 or later** with dynamic workflows enabled (research preview; toggle in `/config`). The runtime allows up to **16 concurrent agents** and **1,000 agents per run**, takes **no mid-run user input** (the task-list / plan-mode / cancel choice happens AFTER the workflow returns), and is **resumable within the same session**.
+
+### Override flags — force the inline (non-workflow) flow
+
+| Flag | Effect |
+|------|--------|
+| `--simple` | Skip the workflow; run the inline turn-by-turn rewrite (Steps 1–5 below) in the current session. Lowest token cost — best for trivial fixes. |
+| `--no-workflow` | Alias of `--simple`. |
+
+Strip the flag from `$ARGUMENTS` before using the remaining text as the prompt.
+
+### Routing
+
+1. Run **Step 0** (blocking skill prerequisite check) regardless of mode — it guarantees the rewrite can be OWASP/responsive compliant.
+2. Then choose the path:
+   - **No override flag (default)** → **Step W — Dynamic Workflow**. If dynamic workflows are unavailable (disabled, or Claude Code < v2.1.154), emit one notice line and fall back to the inline flow (Steps 1–5).
+   - **`--simple` / `--no-workflow` present** → skip Step W; run the inline flow (Steps 1–5).
 
 ## Execution
 
@@ -140,6 +165,27 @@ The Universal rule bank from the `prompt-fixer` skill also requires:
 Detect React projects during Step 2 discovery (look for `react`, `next`, `vite`, or `react-native` in `package.json`) and, when present, emit `npx react-doctor@latest --fail-on warning` into the rewritten prompt's VERIFICATION block as a hard requirement.
 
 These rules are baked into every emitted RULES block — the executing agent must honor them.
+
+### Step W — Dynamic Workflow (default path)
+
+Runs unless `--simple` / `--no-workflow` was passed. After Step 0 passes:
+
+1. **Capture the prompt** — use `$ARGUMENTS` with any override flag stripped. If empty, `AskUserQuestion` once (`header: "Original Prompt"`, single option `"I'll paste it next"`). Do not loop.
+2. **Launch the workflow** — invoke the `Workflow` tool with the persisted script and the captured prompt as `args`:
+   - `scriptPath:` — prefer the project script `.claude/workflows/fix-prompt.js`; if it is absent, fall back to the global script `~/.claude/workflows/fix-prompt.js`. If neither exists, use the inline fallback below.
+   - `args: "<captured prompt>"` — or `{ "prompt": "<captured prompt>", "variants": <2-6> }` to set the candidate count (default 3).
+   - The script runs four phases and returns the final rewrite already wrapped in a fenced markdown code block:
+     - **Phase 1 — Analysis:** parse intent, target model, constraints, and failure modes; discover codebase paths, installed skills, connected MCPs, subagents, and validation commands — in parallel.
+     - **Phase 2 — Generation:** produce N independent candidate rewrites across distinct strategies (parallel).
+     - **Phase 3 — Adversarial Review:** independent agents refute and score each candidate against the analysis criteria (cross-check).
+     - **Phase 4 — Synthesis:** converge on ONE final copy-ready prompt.
+3. Emit ONE status line: `Running fix-prompt workflow (4 phases) — track it with /workflows`. Narrate nothing else while it runs.
+4. When the workflow returns, **display its result verbatim** — it is the strict-format prompt in a copyable code block. No preamble, no commentary.
+5. Then run **Step 5 — Next Step** (the 3-option `AskUserQuestion`). The workflow takes no mid-run input, so the execution decision happens here, in the main session, after the workflow returns.
+
+**Fallback:** if the `Workflow` tool is unavailable, dynamic workflows are disabled, the Claude Code version is < v2.1.154, or neither the project nor the global `fix-prompt.js` script is present, print `Dynamic workflows unavailable — falling back to inline rewrite.` and continue with Steps 1–5.
+
+**Persisted script:** `.claude/workflows/fix-prompt.js` (project, version-controlled) with `~/.claude/workflows/fix-prompt.js` as the personal/global fallback. It also installs as a standalone `/fix-prompt` slash command. Distributed via the `rubot` CLI as a `workflow`-type component (`rubot add fix-prompt` / `rubot add fix-prompt -g`). To regenerate after editing the script, re-run this command or save a fresh run via `/workflows` → `s`.
 
 ### Step 1 — Capture
 
@@ -376,6 +422,10 @@ AskUserQuestion:
 
 ## Hard Rules
 
+- **Default to the dynamic workflow.** With no override flag, run Step W (the `.claude/workflows/fix-prompt.js` dynamic workflow). Run the inline flow (Steps 1–5) only when `--simple` / `--no-workflow` is passed, or when dynamic workflows are unavailable (print the fallback notice first).
+- **Token-cost transparency.** The workflow path consumes meaningfully more tokens than the inline flow. Don't silently launch it for a one-line change — surface the `--simple` override when the input is trivial.
+- **No mid-run input inside the workflow.** The 3-option execution decision (task list / plan mode / cancel) is emitted AFTER the workflow returns — never injected mid-run.
+- **Keep the final prompt copyable.** Whether produced by the workflow or the inline flow, the rewritten prompt is shown verbatim inside a fenced markdown code block.
 - **Step 0 is blocking.** If any OWASP ASVS 5.0.0 skill from `owasp-asvs-audit` + V1-V17, `responsive-design`, the `@tanstack/intent` loader, or React Doctor in a React project is missing, halt and print the install command. Do not proceed.
 - Output the strict template only. No "Original Prompt" / "Issues Identified" / "Why This Is Better".
 - `RULES` block is **mandatory** in every output. Never empty, never omitted.
@@ -405,3 +455,5 @@ AskUserQuestion:
 ## Related
 
 - Skill: `prompt-fixer`
+- Workflow: `.claude/workflows/fix-prompt.js` (default execution path; also runs as `/fix-prompt`)
+- Docs: [Dynamic workflows](https://code.claude.com/docs/en/workflows) · [Announcement](https://claude.com/blog/introducing-dynamic-workflows-in-claude-code)

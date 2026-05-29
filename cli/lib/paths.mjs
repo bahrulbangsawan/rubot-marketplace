@@ -7,6 +7,7 @@ const COMPONENT_DIRS = {
   agent: 'agents',
   hook: 'hooks',
   template: 'templates',
+  workflow: 'workflows',
 }
 
 const CODEX_COMPONENT_DIRS = {
@@ -46,14 +47,18 @@ export function getComponentDir(type, global = false, target = 'claude') {
   if (normalized === 'both') {
     throw new Error('getComponentDir expects a single target, not "both"')
   }
+  // Workflows are Claude-only; Codex has no equivalent (no-op like hooks).
+  if (normalized === 'codex' && type === 'workflow') return null
   const dirs = normalized === 'codex' ? CODEX_COMPONENT_DIRS : COMPONENT_DIRS
   return join(getTargetBase(type, global, normalized), dirs[type])
 }
 
 export function getComponentPath(type, name, global = false, target = 'claude') {
   const dir = getComponentDir(type, global, target)
+  if (dir === null) return null // workflow + codex: no-op
   if (type === 'skill') return join(dir, name) // directory
   if (type === 'template') return join(dir, name) // keep original filename
+  if (type === 'workflow') return join(dir, name.endsWith('.js') ? name : `${name}.js`) // append .js if missing
   // commands & agents: append .md if not present
   return join(dir, name.endsWith('.md') ? name : `${name}.md`)
 }
