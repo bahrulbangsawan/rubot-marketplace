@@ -109,7 +109,7 @@ RULES:
 
 1. <Imperative Title>
 -> TASK ID: TASK-001
--> AGENT: <most specific discovered subagent; default general-purpose; Explore for read-only>
+-> AGENT: <most specific discovered subagent, or general-purpose / Explore / Plan; default general-purpose; Explore for read-only. MUST be a real AGENT — NEVER a skill name. All skills, including every owasp-* / ASVS chapter, go in USE, never AGENT.>
 -> USE: skill \`<name>\` (purpose), MCP \`<name>\` via \`<tool>\` (purpose) — or "none — <reason>"
 -> ISSUES: <symptom + likely cause + observable trigger; cite line numbers if known>
 -> FILE RELATED: \`<real path>:<line-range>\` or "new file: <path>"
@@ -129,6 +129,7 @@ EXECUTION: Awaiting user choice — create the task list, then execute it via th
 HARD GROUNDING RULES:
 - Real file paths only, taken from discovery. No invented paths.
 - Only skills/MCPs/subagents that appear in discovery. No hallucinated capabilities.
+- AGENT must name a REAL agent (a discovered subagent, or general-purpose / Explore / Plan). A skill in AGENT — especially an owasp-* / ASVS chapter skill — is FATAL; put it in USE instead.
 - If a task touches a security domain, map it to V1-V17 and prefix the rule \`[Vn]\`.
 - If a task touches UI, the FULL responsive ruleset is mandatory (not a summary).
 `.trim()
@@ -271,7 +272,7 @@ function reviewPrompt(ctx, candidate) {
     'CANDIDATE (strategy ' + candidate.strategy + '):',
     '"""', candidate.prompt, '"""',
     '',
-    'Check specifically for: invented file paths or skills/MCPs not in discovery (FATAL);',
+    'Check specifically for: invented file paths or skills/MCPs not in discovery (FATAL); an AGENT field that names a skill (e.g. owasp-*) instead of a real agent (FATAL);',
     'missing mandatory rules (skill detection, validation hooks, React Doctor for React, final REPORT, no git stash) (FATAL);',
     'missing responsive ruleset on a UI task, or security rules without a [Vn] prefix (FATAL);',
     'unsafe parallel grouping of tasks that share files/types/schema; vague or unmeasurable goals;',
@@ -299,7 +300,7 @@ function synthesisPrompt(ctx, reviewed) {
     '',
     'Output requirements:',
     '- Output ONLY the final rewritten prompt, wrapped in a SINGLE fenced markdown code block (```), nothing before or after it.',
-    '- The prompt MUST follow the strict format and pass every gate (no invented paths/skills; mandatory RULES present; OWASP [Vn] prefixes; full responsive ruleset on UI tasks; PARALLEL EXECUTION PLAN groups every TASK once; EXECUTION line defers to the user choice).',
+    '- The prompt MUST follow the strict format and pass every gate (no invented paths/skills; every AGENT names a real agent — a discovered subagent or general-purpose/Explore/Plan — and NEVER a skill name, since owasp-* and all skills belong in USE; mandatory RULES present; OWASP [Vn] prefixes; full responsive ruleset on UI tasks; PARALLEL EXECUTION PLAN groups every TASK once; EXECUTION line defers to the user choice).',
     '- If the original prompt is already fully specific, output exactly: `Prompt is already specific. No rewrite needed.` (no code block).',
     '',
     'Format contract for reference:',

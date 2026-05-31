@@ -301,16 +301,76 @@ function uniq(arr) {
   return Array.from(new Set(arr))
 }
 
+// Standalone agent model: this workflow assumes NO specialist agents are
+// installed. The ONLY agent types guaranteed to be spawnable are the built-ins.
+// Everything else (a rubot specialist like `backend-master`, or a custom agent
+// the user installed) MIGHT exist — we cannot know from a hardcoded list, so we
+// never assume a roster. Two safety layers handle the rest:
+//   1. sanitizeAgent (here)  — proactively fixes the KNOWN error class: a SKILL
+//      name in the AGENT slot (e.g. "owasp-validation-logic" leaked out of USE).
+//      Passing a skill to agent({agentType}) throws "agent type '<name>'".
+//   2. runTask attempt-with-fallback — for any non-built-in name we cannot
+//      verify, we TRY to spawn it; if the runtime rejects it (not installed),
+//      we fall back to general-purpose. This keeps a real installed specialist
+//      OR custom agent working, while degrading gracefully when it is absent.
+const BUILTIN_AGENTS = new Set(['general-purpose', 'Explore', 'Plan'])
+
+// Heuristic: does this AGENT value look like a SKILL that leaked out of USE,
+// rather than an agent? owasp-* / asvs-* are the dominant case (the rewrite is
+// OWASP-saturated) and are never agents. We only PROACTIVELY rewrite these; any
+// other unknown name is left for runTask to attempt (it may be a real agent).
+function looksLikeSkill(name) {
+  return /^(owasp|asvs)-/i.test(name)
+}
+
+function sanitizeAgent(t) {
+  const raw = (t.agent || '').trim()
+  if (!raw || BUILTIN_AGENTS.has(raw)) return t
+  if (looksLikeSkill(raw)) {
+    // Definitely a skill, not an agent — coerce to a built-in and preserve the
+    // skill in USE so its capability is kept.
+    const addition = 'skill `' + raw + '` (moved from AGENT — it is a skill, not an agent)'
+    const cleaned = { ...t, agent: 'general-purpose' }
+    cleaned.use = t.use ? t.use + '; ' + addition : addition
+    log('Coerced skill-in-AGENT "' + raw + '" on ' + (t.id || 'task') + ' -> general-purpose (moved to USE)')
+    return cleaned
+  }
+  // Unknown, but plausibly a real installed agent (rubot specialist or custom).
+  // Leave it; runTask will attempt it and fall back to general-purpose if the
+  // runtime reports it unavailable.
+  return t
+}
+
 async function runTask(t, rules, label) {
+  const safe = sanitizeAgent(t)
+  const model = modelForTask(safe)
+  const requested = safe.agent || 'general-purpose'
   try {
-    return await agent(taskPrompt(t, rules), {
+    return await agent(taskPrompt(safe, rules), {
       label,
       phase: 'Execute',
-      agentType: t.agent || 'general-purpose',
+      agentType: requested,
       schema: TASK_RESULT_SCHEMA,
-      model: modelForTask(t),
+      model,
     })
   } catch (e) {
+    // Standalone fallback: the requested specialist/custom agent is not
+    // installed in this project (agent({agentType}) threw). Retry once on the
+    // always-available general-purpose agent so the task still runs.
+    if (requested !== 'general-purpose') {
+      try {
+        log('Agent "' + requested + '" not installed on ' + (safe.id || 'task') + ' — falling back to general-purpose')
+        return await agent(taskPrompt({ ...safe, agent: 'general-purpose' }, rules), {
+          label: label + ' (fallback)',
+          phase: 'Execute',
+          agentType: 'general-purpose',
+          schema: TASK_RESULT_SCHEMA,
+          model,
+        })
+      } catch (e2) {
+        return null
+      }
+    }
     return null
   }
 }
@@ -447,6 +507,11 @@ const plan = await agent(parsePrompt(planText), { label: 'parse-plan', phase: 'P
 if (!plan || !plan.tasks || !plan.tasks.length) {
   return 'execute-tasks: could not parse any TASK from the plan. Re-run /rubot-fix-prompt, or execute the tasks inline.'
 }
+// Guard every parsed task: rewrite any AGENT that is clearly a SKILL leaked into
+// the AGENT slot (e.g. an owasp-* chapter) back to a built-in + move it to USE,
+// before it ever reaches agent({agentType}). Unknown-but-plausible agent names
+// are left as-is and attempted at spawn time (runTask falls back if absent).
+plan.tasks = plan.tasks.map(sanitizeAgent)
 const tasksById = {}
 for (const t of plan.tasks) tasksById[t.id] = t
 const groups =

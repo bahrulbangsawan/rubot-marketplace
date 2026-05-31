@@ -1,6 +1,6 @@
 ---
 name: prompt-fixer
-version: 3.14.0
+version: 3.15.0
 description: |
   **Defaults to a Claude Code dynamic workflow** (`.claude/workflows/fix-prompt.js`) — a 4-phase adversarial pipeline (analysis → parallel candidate generation → adversarial cross-review → synthesis) that fans the rewrite across parallel subagents and returns one consolidated prompt; pass `--simple`/`--no-workflow` for the inline turn-by-turn flow. Dynamic workflows consume meaningfully more tokens than a standard session and require Claude Code v2.1.154+. Rewrites vague prompts into a strict task-based execution plan (MAIN PROBLEM / GOALS / CONTEXT / mandatory RULES / numbered TASKs with ID, AGENT, USE, ISSUES, FILE RELATED, SOLUTION / PARALLEL EXECUTION PLAN / VERIFICATION / EXECUTION) that is **OWASP ASVS 5.0.0 compliant**, **mobile-first responsive by default**, **TanStack-standard by default** (Router with automatic code splitting + Query with optimistic UI + DB for local-first state), **React Doctor-gated** (mandatory `npx react-doctor@latest --fail-on warning` scan after every React change), enforces **mandatory skill detection** via the Step 0-verified `@tanstack/intent` loader and `load <package>#<skill>` before substantial work, requires **validation & commit hooks** (lint/typecheck/test/build/format/react-doctor) after every phase, and emits a **canonical final REPORT block** (TITLE / Agent / Skills Loaded / Files Changed / CHANGES / VALIDATION / DEFERRED / DONE) after task-list execution. Runs parallel Explore agents, discovers connected MCPs, installed skills, validation hooks, and available subagents, **matches each discovered skill and MCP to specific task signals**, embeds explicit `Use skills: …` and `Use MCP: …` directives in CONTEXT, and adds a per-task `USE:` field telling the agent exactly which skills/MCPs to load for that task (e.g. "Use Cloudflare skills and MCP"). Analyzes tasks for parallel agent execution, enforces engineering rules from rule banks (Universal + Frontend/Responsive + Backend + TanStack + Security with V1-V17 chapter mappings), applies blocking rewrite gates before output, then — on the user's go — **creates the task list like before (TaskCreate/TaskUpdate/TaskList) and executes it via a second dynamic workflow** (`.claude/workflows/execute-tasks.js`) that fans each PARALLEL EXECUTION PLAN group across subagents, runs VERIFICATION + React Doctor, and returns the canonical REPORT. The only post-rewrite choices are **execute** or **cancel** — **there is no plan mode**. Output of the rewrite step is a single copy-ready prompt — no preamble, no commentary. The `rubot-fix-prompt` command halts if the OWASP ASVS 5.0.0 skill suite, `responsive-design`, the `@tanstack/intent` loader, or React Doctor in React projects is unavailable. Now includes: **hallmark-gated visual direction** for greenfield/redesign UI tasks (anti-slop aesthetic quality, activated only when `hallmark` is discovered); a **native goal-keeping execution gate** inside `execute-tasks.js` (evaluates GOALS after verification and dispatches up to 2 rounds of repair tasks until met or deferred); and **model-tiered execution** (haiku for parse/verify/goal-eval, sonnet for standard tasks, opus for security/architecture/debug).
   MUST activate for: "fix my prompt", "improve this prompt", "rewrite this prompt", "make this prompt better", "this prompt is too vague", "help me write a better prompt", "prompt engineering", "how should I ask Claude to", "rephrase this for Claude", or when the user provides a clearly vague instruction and asks for help making it more specific.
@@ -9,7 +9,6 @@ description: |
   Covers: prompt rewriting, prompt engineering, vague-to-specific transformation, strict task-based output format, mandatory RULES enforcement, OWASP ASVS 5.0.0 V1-V17 chapter rule mapping, mobile-first responsive enforcement, per-task AGENT assignment, parallel agent execution analysis, dependency-aware grouping, verification injection, file path scoping, phased execution, codebase-aware enrichment, skill recommendation, MCP recommendation, subagent recommendation, user-chosen execution (create-tasks-and-execute / cancel — no plan mode), task-list creation via the TaskCreate/TaskUpdate/TaskList queue, parallel subagent fan-out via the `execute-tasks` dynamic workflow, terse one-line progress narration.
 agents:
   - debug-master
-  - owasp-asvs-audit
   - responsive-master
 ---
 
@@ -187,7 +186,7 @@ RULES:
 
 1. <Imperative Title>
 -> TASK ID: TASK-001
--> AGENT: <agent-name from discovery, e.g. general-purpose, Explore, frontend-master>
+-> AGENT: <a real agent from "Available subagents" above, or general-purpose / Explore / Plan — NEVER a skill name; owasp-* and all skills go in USE>
 -> USE: skill `<skill-name>` (purpose), MCP `<mcp-name>` via `<tool>` (purpose) — agent must invoke these before SOLUTION steps.
 -> ISSUES: <specific symptom, current state, line numbers if known>
 -> FILE RELATED: `<path>:<line-range>` or "new file: <path>"
@@ -227,7 +226,7 @@ After displaying the block, immediately call `AskUserQuestion` with the 2-option
 | `RULES` | **Mandatory.** Never omitted, never empty. Universal bank always included. Domain banks added by task signal. Minimum 4 rules. |
 | Task numbering | Sequential from 1. |
 | `TASK ID` | `TASK-NNN` zero-padded. Stable across edits. |
-| `AGENT` | **Mandatory per task.** Single agent name from discovery. Default to `general-purpose` if no specialist matches. Use `Explore` for read-only analysis tasks. |
+| `AGENT` | **Mandatory per task.** A single REAL agent from discovery (a `plugins/rubot/agents/` subagent, or the built-in `general-purpose`/`Explore`/`Plan`). Default to `general-purpose` if no specialist matches; `Explore` for read-only analysis. **NEVER a skill name** — every skill, including all `owasp-*` / ASVS chapter skills, goes in `USE:`, never `AGENT:`. |
 | `USE` | **Mandatory per task.** Lists every skill + MCP from `CONTEXT` whose purpose matches this task. Format: `skill \`name\` (purpose), MCP \`mcp\` via \`tool\` (purpose)`. Write `"none"` only when discovery surfaced no relevant skill or MCP for this task. The agent loads these BEFORE running SOLUTION steps. |
 | Title | Imperative form ("Replace arbitrary values", not "Arbitrary values fix"). |
 | `ISSUES` | Specific. Cite line numbers, current state, error text. |
@@ -246,6 +245,7 @@ After displaying the block, immediately call `AskUserQuestion` with the 2-option
 - Empty or missing `RULES` block
 - Empty or missing `PARALLEL EXECUTION PLAN` block
 - Missing `AGENT:` line on any task
+- **A skill name in the `AGENT:` field** — `AGENT:` names a real agent (a discovered subagent, or `general-purpose`/`Explore`/`Plan`); every skill, including all `owasp-*` / ASVS chapters, goes in `USE:`, never `AGENT:`.
 - **Missing `USE:` line on any task** — every task declares `USE:` (skills + MCPs, or `"none"` if discovery surfaced no relevant match).
 - **A skill listed in `CONTEXT.Use skills` but not referenced by any task's `USE:` field** — every CONTEXT-listed skill must be tied to ≥1 task.
 - **An MCP listed in `CONTEXT.Use MCP` but not referenced by any task's `USE:` field** — every CONTEXT-listed MCP must be tied to ≥1 task.
@@ -561,21 +561,23 @@ Every rewrite analyzes which tasks can run in parallel and which must wait. The 
 
 #### Step A — Assign an AGENT per task
 
-Match the task signal to a discovered subagent. Default to `general-purpose` when no specialist matches. Common matches:
+**Standalone by default.** This skill assumes NO specialist agents are installed. The only agents guaranteed to exist are the built-ins `general-purpose`, `Explore`, and `Plan` — every AGENT defaults to one of these. Name a specialist from the table below **only when discovery actually surfaced it** in `plugins/rubot/agents/`, `.claude/agents/`, or `~/.claude/agents/`. If a named specialist turns out not to be installed at execution time, `execute-tasks.js` automatically falls back to `general-purpose`, so the run never breaks. AGENT is always a real agent — never a skill name (skills, including all `owasp-*` chapters, go in `USE:`).
+
+Match the task signal to a discovered subagent. Default to `general-purpose` when no specialist matches. The specialists below are rubot examples — use them only if discovery found them:
 
 | Task signal | AGENT |
 |-------------|-------|
 | Read-only inspection / "find all X" / "where is Y" | `Explore` |
-| UI / component / Tailwind / shadcn / responsive / a11y | `frontend-master` (or `shadcn-ui-designer`, `responsive-master`, `theme-master` — pick the most specific) |
+| UI / component / Tailwind / shadcn / responsive / a11y | `shadcn-ui-designer` (or `responsive-master`, `theme-master` — pick the most specific) |
 | API / route / server / endpoint | `backend-master` |
-| Database / schema / migration / Drizzle | `database-master` |
-| Deployment / CI / Cloudflare / wrangler | `deployment-master` |
-| Tests / Vitest / Playwright | `testing-master` |
+| Database / schema / migration / Neon | `neon-master` |
+| Deployment / CI / Cloudflare / wrangler | `cloudflare` |
+| Tests / Vitest / Playwright / QA | `qa-tester` |
 | SEO / meta / structured data | `seo-master` |
 | Bug hunt / root cause | `debug-master` |
 | Anything else | `general-purpose` |
 
-Only list agents the discovery step actually surfaced. Never invent.
+Only list agents the discovery step actually surfaced. Never invent, and never assume the rubot specialists are installed — when in doubt, use a built-in (`general-purpose` / `Explore` / `Plan`).
 
 #### Step B — Determine parallel-vs-sequential dependency
 
@@ -807,7 +809,7 @@ CONTEXT:
 - Framework: Next.js 15 (App Router) + Tailwind CSS 4
 - Use skills: `design-tokens` (token compliance audit), `responsive-design` (mobile-first breakpoint rules), `component-consistency` (card pattern checks), `wcag-fix` (focus + touch targets) — agent MUST load these before executing matched tasks.
 - Use MCP: `shadcn` via `view_items_in_registries` for card/grid reference patterns.
-- Available subagents: `theme-master`, `responsive-master`, `shadcn-ui-designer`, `frontend-master`, `general-purpose`
+- Available subagents: `theme-master`, `responsive-master`, `shadcn-ui-designer`, `general-purpose`
 - Reference: `src/components/widgets/HotDogWidget.tsx` (token-compliant pattern)
 
 RULES:
@@ -850,7 +852,7 @@ RULES:
 
 3. Normalize typography scale
 -> TASK ID: TASK-003
--> AGENT: frontend-master
+-> AGENT: shadcn-ui-designer
 -> USE: skill `design-tokens` (typography token scale), skill `wcag-fix` (heading-hierarchy rule).
 -> ISSUES: Heading levels jump h1 → h3 → h2 in dashboard sections.
 -> FILE RELATED: `src/pages/dashboard.tsx:24-58`
@@ -884,7 +886,7 @@ GOALS:
 CONTEXT:
 - Framework: Vite + React 19 + TanStack Router
 - Use skills: `owasp-authentication` (V6 auth rules), `owasp-session-management` (V7 cookie/session lifecycle), `owasp-validation-logic` (V2 Zod schemas), `owasp-cryptography` (V11 password hashing), `owasp-configuration-security` (V13 secrets handling), `owasp-security-logging` (V16 structured logs), `responsive-design` (mobile-first login UI) — agent MUST load these before executing matched tasks.
-- Available subagents: `backend-master`, `frontend-master`, `database-master`, `testing-master`, `general-purpose`
+- Available subagents: `backend-master`, `shadcn-ui-designer`, `neon-master`, `qa-tester`, `general-purpose`
 - Reference: `src/routes/index.tsx` (existing route pattern)
 
 RULES:
@@ -920,7 +922,7 @@ RULES:
 
 2. Build /login route + form
 -> TASK ID: TASK-002
--> AGENT: frontend-master
+-> AGENT: shadcn-ui-designer
 -> USE: skill `owasp-authentication` (V6 auth flow), skill `owasp-validation-logic` (V2 Zod), skill `owasp-cryptography` (V11 password compare), skill `responsive-design` (mobile-first login UI).
 -> ISSUES: No login UI.
 -> FILE RELATED: "new file: src/routes/login.tsx"
@@ -931,7 +933,7 @@ RULES:
 
 3. Add route guard for protected paths
 -> TASK ID: TASK-003
--> AGENT: frontend-master
+-> AGENT: shadcn-ui-designer
 -> USE: skill `owasp-authorization` (V8 deny-by-default), skill `owasp-session-management` (V7 expiry check).
 -> ISSUES: All routes accessible without auth.
 -> FILE RELATED: `src/router.tsx:18-44`
@@ -977,7 +979,7 @@ GOALS:
 
 CONTEXT:
 - Framework: <detected>
-- Available subagents: `debug-master`, `testing-master`, `general-purpose`
+- Available subagents: `debug-master`, `qa-tester`, `general-purpose`
 - Reference: `<file>` (likely origin from Explore agent)
 
 RULES:
@@ -989,7 +991,7 @@ RULES:
 
 1. Reproduce
 -> TASK ID: TASK-001
--> AGENT: testing-master
+-> AGENT: qa-tester
 -> USE: none — discovery surfaced no test-framework-specific skill or MCP for this codebase.
 -> ISSUES: Bug is not deterministically reproducible in tests.
 -> FILE RELATED: "new file: <test path matching origin>"
@@ -1071,7 +1073,7 @@ CONTEXT:
 - Framework: Hono on Cloudflare Workers (detected from package.json)
 - Use skills: `cloudflare` (platform overview), `wrangler` (CLI + config schema), `workers-best-practices` (anti-patterns, secrets, observability) — agent MUST load these before executing matched tasks.
 - Use MCP: `cloudflare-docs` via `search_cloudflare_documentation` for current binding/config syntax; `cloudflare-bindings` via auth-required tools for binding inspection.
-- Available subagents: `deployment-master`, `backend-master`, `general-purpose`
+- Available subagents: `cloudflare`, `backend-master`, `general-purpose`
 - Reference: existing `src/index.ts` Hono app entry
 
 RULES:
@@ -1086,7 +1088,7 @@ RULES:
 
 1. Create `wrangler.jsonc` with bindings
 -> TASK ID: TASK-001
--> AGENT: deployment-master
+-> AGENT: cloudflare
 -> USE: skill `wrangler` (config schema), skill `cloudflare` (platform binding semantics), MCP `cloudflare-docs` via `search_cloudflare_documentation` for current binding format.
 -> ISSUES: No `wrangler.jsonc` exists; no bindings declared.
 -> FILE RELATED: "new file: wrangler.jsonc"
@@ -1108,7 +1110,7 @@ RULES:
 
 3. Deploy + verify
 -> TASK ID: TASK-003
--> AGENT: deployment-master
+-> AGENT: cloudflare
 -> USE: skill `wrangler` (deploy + tail commands), skill `workers-best-practices` (smoke-test checklist).
 -> ISSUES: Deployment never run.
 -> FILE RELATED: `package.json` scripts
@@ -1135,6 +1137,7 @@ EXECUTION: Awaiting user choice — create the task list, then execute it via th
 
 - Don't invent file paths.
 - Don't recommend uninstalled skills, unconnected MCPs, or undiscovered subagents.
+- **Don't put a skill name in the `AGENT:` field.** `AGENT:` is the executor (a real agent); skills — including every `owasp-*` chapter — belong in `USE:`. A skill in `AGENT:` makes the executor spawn fail with "agent type '<name>'".
 - Don't enter plan mode or auto-create-and-execute. Always show the 2-option (create-tasks-and-execute / cancel) decision prompt.
 - Don't pad single-line tasks into multi-task plans.
 - Don't include `Original Prompt` / `Issues Identified` / `Why This Is Better` — ever.
