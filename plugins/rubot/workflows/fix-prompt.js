@@ -62,6 +62,19 @@ const STRATEGIES = [
 ].slice(0, VARIANT_COUNT)
 
 // ---------------------------------------------------------------------------
+// Model tiering for token efficiency (Claude 4.x): cheap models for parse/discovery,
+// strong model only for final synthesis.
+//   haiku  — structured intent extraction and read-only repo mapping (Explore)
+//   sonnet — writing candidate rewrites + adversarial scoring (rigor matters)
+//   opus   — final convergence (highest stakes, must produce copy-ready output)
+// ---------------------------------------------------------------------------
+const M_ANALYSIS  = 'haiku'   // structured intent extraction
+const M_DISCOVERY = 'haiku'   // read-only repo mapping (Explore)
+const M_GENERATE  = 'sonnet'  // writing candidate rewrites
+const M_REVIEW    = 'sonnet'  // adversarial scoring (rigor matters)
+const M_SYNTH     = 'opus'    // final convergence — highest stakes
+
+// ---------------------------------------------------------------------------
 // Shared format contract — every generator and the synthesizer emit this exact
 // structure. Kept terse here; agents load the repo `prompt-fixer` skill for the
 // full rule banks when it is installed.
@@ -299,8 +312,8 @@ function synthesisPrompt(ctx, reviewed) {
 // ---------------------------------------------------------------------------
 phase('Analysis')
 const [analysis, discovery] = await parallel([
-  () => agent(analysisPrompt(vague), { label: 'analyze-intent', phase: 'Analysis', schema: ANALYSIS_SCHEMA }),
-  () => agent(discoveryPrompt(vague), { label: 'discover-codebase', phase: 'Analysis', schema: DISCOVERY_SCHEMA, agentType: 'Explore' }),
+  () => agent(analysisPrompt(vague), { label: 'analyze-intent', phase: 'Analysis', schema: ANALYSIS_SCHEMA, model: M_ANALYSIS }),
+  () => agent(discoveryPrompt(vague), { label: 'discover-codebase', phase: 'Analysis', schema: DISCOVERY_SCHEMA, agentType: 'Explore', model: M_DISCOVERY }),
 ])
 if (!analysis) return 'Analysis phase failed — could not parse the prompt intent. Re-run, or use /rubot-fix-prompt --simple.'
 const ctx = { vague, analysis, discovery: discovery || {} }
@@ -314,10 +327,10 @@ phase('Generation')
 log(`Generating ${STRATEGIES.length} candidate rewrites across distinct strategies`)
 const reviewed = await pipeline(
   STRATEGIES,
-  (strat) => agent(generatePrompt(ctx, strat), { label: `gen:${strat.key}`, phase: 'Generation', schema: CANDIDATE_SCHEMA }),
+  (strat) => agent(generatePrompt(ctx, strat), { label: `gen:${strat.key}`, phase: 'Generation', schema: CANDIDATE_SCHEMA, model: M_GENERATE }),
   (candidate, strat) =>
     candidate && candidate.prompt
-      ? agent(reviewPrompt(ctx, candidate), { label: `review:${strat.key}`, phase: 'Adversarial Review', schema: REVIEW_SCHEMA })
+      ? agent(reviewPrompt(ctx, candidate), { label: `review:${strat.key}`, phase: 'Adversarial Review', schema: REVIEW_SCHEMA, model: M_REVIEW })
           .then((review) => ({ candidate, review }))
       : null,
 )
@@ -329,5 +342,5 @@ log(`${valid.length}/${STRATEGIES.length} candidate(s) generated and adversarial
 // Phase 4 — Synthesis (converge on one final copy-ready prompt)
 // ---------------------------------------------------------------------------
 phase('Synthesis')
-const final = await agent(synthesisPrompt(ctx, valid), { label: 'synthesize-final', phase: 'Synthesis' })
+const final = await agent(synthesisPrompt(ctx, valid), { label: 'synthesize-final', phase: 'Synthesis', model: M_SYNTH })
 return final

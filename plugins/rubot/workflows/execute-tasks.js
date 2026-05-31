@@ -55,9 +55,10 @@ if (!planText) {
 const PLAN_SCHEMA = {
   type: 'object',
   additionalProperties: false,
-  required: ['title', 'rules', 'tasks', 'groups', 'verification', 'isReact'],
+  required: ['title', 'goals', 'rules', 'tasks', 'groups', 'verification', 'isReact'],
   properties: {
     title: { type: 'string', description: 'short imperative title for the overall change, derived from MAIN PROBLEM' },
+    goals: { type: 'array', items: { type: 'string' }, description: 'every line of the GOALS block, verbatim (empty array if no GOALS block)' },
     rules: { type: 'array', items: { type: 'string' }, description: 'every line of the RULES block, verbatim' },
     tasks: {
       type: 'array',
@@ -143,6 +144,42 @@ const VALIDATION_SCHEMA = {
   },
 }
 
+// Native goal-keeping gate — reproduces the intent of Claude Code's /goal command
+// ("keep working toward the goal") INSIDE the workflow, because /goal has no
+// programmatic API and cannot be invoked from a skill/command/workflow. After
+// verification, a read-only evaluator judges plan.goals against the results +
+// validation and may propose up to MAX_GOAL_ITERATIONS rounds of repair tasks.
+const MAX_GOAL_ITERATIONS = 2
+
+const GOAL_EVAL_SCHEMA = {
+  type: 'object',
+  additionalProperties: false,
+  required: ['met', 'unmetGoals', 'gaps', 'repairTasks'],
+  properties: {
+    met: { type: 'boolean', description: 'true if every plan goal is satisfied (or there were no goals)' },
+    unmetGoals: { type: 'array', items: { type: 'string' }, description: 'the goals not yet satisfied, verbatim' },
+    gaps: { type: 'array', items: { type: 'string' }, description: 'concrete gaps between the current results and the goals' },
+    repairTasks: {
+      type: 'array',
+      description: 'concrete tasks (same shape as normal tasks) that would close the gap; empty if met',
+      items: {
+        type: 'object',
+        additionalProperties: false,
+        required: ['id', 'title', 'agent', 'use', 'issues', 'files', 'solution'],
+        properties: {
+          id: { type: 'string', description: 'TASK-NNN (use a fresh id, e.g. TASK-R01)' },
+          title: { type: 'string' },
+          agent: { type: 'string', description: 'the AGENT to spawn; default "general-purpose"' },
+          use: { type: 'string', description: 'the full USE: line (skills/MCPs to load)' },
+          issues: { type: 'string' },
+          files: { type: 'string', description: 'real file paths reused from the results' },
+          solution: { type: 'string', description: 'the full SOLUTION text that closes the gap' },
+        },
+      },
+    },
+  },
+}
+
 // ---------------------------------------------------------------------------
 // Prompt builders
 // ---------------------------------------------------------------------------
@@ -153,6 +190,7 @@ function parsePrompt(text) {
     '',
     'Extract:',
     '- title: a short imperative title for the overall change, derived from MAIN PROBLEM.',
+    '- goals: every line of the GOALS block, verbatim (these are the outcomes the change must achieve). Emit an empty array if there is no GOALS block.',
     '- rules: every line of the RULES block, verbatim (these are global and apply to every task).',
     '- tasks: one object per numbered TASK — id (TASK-NNN), title, agent (the AGENT: value; default "general-purpose"), use (the full USE: line), issues (ISSUES:), files (FILE RELATED:), solution (the full SOLUTION text).',
     '- groups: parse the PARALLEL EXECUTION PLAN into ordered groups. One object per group — name ("Group 1"), mode ("parallel" if the line says "(parallel...)", otherwise "sequential"), taskIds (the TASK-NNN ids listed in that group), note (the inline reason). Preserve group order exactly. A "(sequential after Group N)" group has mode "sequential".',
@@ -208,6 +246,54 @@ function verifyPrompt(plan, changedPaths) {
   ].join('\n')
 }
 
+function goalEvalPrompt(plan, results, validation) {
+  const goals = plan.goals || []
+  const resultLines = (results || []).map((r) => {
+    const files = (r.filesChanged || []).map((f) => f.op + ' ' + f.path).join(', ')
+    return '- ' + r.taskId + ' [' + r.status + '] ' + (r.summary || '') + (files ? ' | files: ' + files : '')
+  })
+  const checkLines = ((validation && validation.checks) || []).map((c) => '- ' + c.status + ': ' + c.command)
+  return [
+    'You are the GOAL-GATE evaluator — a READ-ONLY judge. Reproduce the intent of Claude Code\'s /goal command: decide whether the plan GOALS are actually satisfied by the work that was just done.',
+    'Do NOT execute anything, edit any file, or run any command. You only JUDGE and PROPOSE.',
+    '',
+    'GOALS to satisfy:',
+    (goals.length ? goals.map((gl) => '- ' + gl).join('\n') : '- (no GOALS block — treat as already met)'),
+    '',
+    'TASK RESULTS so far:',
+    (resultLines.length ? resultLines.join('\n') : '- (no task results)'),
+    '',
+    'VERIFICATION checks:',
+    (checkLines.length ? checkLines.join('\n') : '- (no checks run)'),
+    '',
+    'If plan.goals is empty, or every goal is satisfied by the results + passing checks, return met:true with empty unmetGoals, gaps, and repairTasks.',
+    'Otherwise return met:false, list the unmetGoals (verbatim) and the concrete gaps, and propose repairTasks that would close the gap. Each repair task uses the SAME shape as a normal task (id, title, agent, use, issues, files, solution) and MUST reuse the REAL file paths from the results above. Keep the repair set minimal — only what is needed to meet the goals. Do NOT propose work for goals that are already met.',
+  ].join('\n')
+}
+
+// ---------------------------------------------------------------------------
+// Model tiering for token efficiency (Claude 4.x): read-only / structured /
+// low-stakes work runs on the cheapest capable model, and the strongest model
+// is reserved for tasks where correctness is hard (security, auth, crypto,
+// migrations, architecture, race conditions, root-cause debugging).
+//   haiku  — parse, verify, goal-eval, and read-only/docs/config/rename tasks
+//   sonnet — standard implementation work (the default)
+//   opus   — security-critical and hard-correctness tasks
+// ---------------------------------------------------------------------------
+function modelForTask(task) {
+  const t = (
+    (task.agent || '') + ' ' + (task.use || '') + ' ' + (task.issues || '') + ' ' + (task.solution || '') + ' ' + (task.title || '')
+  ).toLowerCase()
+  // opus is evaluated first so it wins when both opus and haiku signals match.
+  if ((task.agent || '') === 'debug-master' || /security|owasp|v\d+|\[v\d+\]|auth|crypto|encrypt|token|jwt|oauth|migration|schema change|architect|race condition|root cause/.test(t)) {
+    return 'opus'
+  }
+  if ((task.agent || '') === 'Explore' || /read-only|inspect|find all|list |rename|docs?|comment|typo|config|\.md|changelog/.test(t)) {
+    return 'haiku'
+  }
+  return 'sonnet'
+}
+
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
@@ -222,6 +308,7 @@ async function runTask(t, rules, label) {
       phase: 'Execute',
       agentType: t.agent || 'general-purpose',
       schema: TASK_RESULT_SCHEMA,
+      model: modelForTask(t),
     })
   } catch (e) {
     return null
@@ -249,7 +336,7 @@ function normalizeResult(t, r) {
   }
 }
 
-function buildReport(plan, results, validation) {
+function buildReport(plan, results, validation, goalEval) {
   const changes = []
   for (const r of results) for (const f of r.filesChanged || []) changes.push(f)
   const changedPaths = uniq(changes.map((c) => c.path))
@@ -258,6 +345,9 @@ function buildReport(plan, results, validation) {
   const agentField = agentsUsed.length === 1 ? agentsUsed[0] : 'multiple (per task)'
   const deferred = results.filter((r) => r.status !== 'completed')
   const checks = (validation && validation.checks) || []
+  const goals = plan.goals || []
+  const ge = goalEval || { met: true, unmetGoals: [], gaps: [], repairTasks: [] }
+  const unmetGoals = ge.unmetGoals || []
 
   const L = []
   L.push('------------------- REPORT -------------------')
@@ -296,12 +386,30 @@ function buildReport(plan, results, validation) {
     L.push('  The plan VERIFICATION block produced no runnable checks.')
     L.push('')
   }
-  if (deferred.length) {
+  L.push('------------------- GOAL STATUS -------------------')
+  L.push('')
+  if (!goals.length) {
+    L.push('- (no GOALS block parsed — goal gate skipped)')
+    L.push('')
+  } else {
+    goals.forEach((gl) => {
+      const isUnmet = unmetGoals.some((u) => u === gl)
+      L.push('- ' + (isUnmet ? 'UNMET' : 'MET') + ': ' + gl)
+    })
+    L.push('')
+    if (unmetGoals.length) {
+      L.push('Unmet goals remain after the goal-keeping gate; see DEFERRED for recommended actions.')
+      L.push('')
+    }
+  }
+  if (deferred.length || unmetGoals.length) {
     L.push('------------------- DEFERRED -------------------')
     L.push('')
-    deferred.forEach((r, i) => {
+    let n = 0
+    deferred.forEach((r) => {
+      n++
       const t = plan.tasks.find((x) => x.id === r.taskId) || {}
-      L.push(i + 1 + '. Task:')
+      L.push(n + '. Task:')
       L.push('   ' + (t.title ? r.taskId + ' — ' + t.title : r.taskId))
       L.push('')
       L.push('   Related Files:')
@@ -314,6 +422,18 @@ function buildReport(plan, results, validation) {
       L.push('   Re-run this task in a focused session, or complete it manually.')
       L.push('')
     })
+    unmetGoals.forEach((gl) => {
+      n++
+      L.push(n + '. Goal:')
+      L.push('   ' + gl)
+      L.push('')
+      L.push('   Explanation:')
+      L.push('   Goal not satisfied after ' + MAX_GOAL_ITERATIONS + ' round(s) of repair tasks.')
+      L.push('')
+      L.push('   Recommended Action:')
+      L.push('   Re-run /rubot-fix-prompt focused on this goal, or address it manually.')
+      L.push('')
+    })
   }
   L.push('------------------- DONE -------------------')
   return L.join('\n')
@@ -323,7 +443,7 @@ function buildReport(plan, results, validation) {
 // Phase 1 — Parse the strict-format prompt into a structured plan
 // ---------------------------------------------------------------------------
 phase('Parse')
-const plan = await agent(parsePrompt(planText), { label: 'parse-plan', phase: 'Parse', schema: PLAN_SCHEMA })
+const plan = await agent(parsePrompt(planText), { label: 'parse-plan', phase: 'Parse', schema: PLAN_SCHEMA, model: 'haiku' })
 if (!plan || !plan.tasks || !plan.tasks.length) {
   return 'execute-tasks: could not parse any TASK from the plan. Re-run /rubot-fix-prompt, or execute the tasks inline.'
 }
@@ -364,11 +484,30 @@ for (let gi = 0; gi < groups.length; gi++) {
 // ---------------------------------------------------------------------------
 phase('Verify')
 const changedPaths = uniq(results.flatMap((r) => (r.filesChanged || []).map((f) => f.path)))
-const validation = await agent(verifyPrompt(plan, changedPaths), { label: 'verify', phase: 'Verify', schema: VALIDATION_SCHEMA })
+// `validation` is reassigned by the goal-keeping gate below, so it must be `let`.
+let validation = await agent(verifyPrompt(plan, changedPaths), { label: 'verify', phase: 'Verify', schema: VALIDATION_SCHEMA, model: 'haiku' })
+
+// ---------------------------------------------------------------------------
+// Phase 3.5 — Goal Gate (native goal-keeping; reproduces /goal inside the run)
+// A read-only evaluator judges plan.goals against the results + validation. If
+// goals are unmet, it dispatches up to MAX_GOAL_ITERATIONS rounds of repair
+// tasks, re-verifying after each round. The hard cap guarantees termination.
+// ---------------------------------------------------------------------------
+let goalEval = await agent(goalEvalPrompt(plan, results, validation), { schema: GOAL_EVAL_SCHEMA, model: 'haiku', label: 'goal-gate' })
+let goalIter = 0
+while (!goalEval.met && goalIter < MAX_GOAL_ITERATIONS && (goalEval.repairTasks || []).length) {
+  goalIter++
+  log('Goal gate round ' + goalIter + ' — ' + goalEval.repairTasks.length + ' repair task(s)')
+  const repairResults = await parallel(goalEval.repairTasks.map((rt) => () => runTask(rt, plan.rules, rt.id + ' ' + rt.title)))
+  goalEval.repairTasks.forEach((rt, i) => results.push(normalizeResult(rt, repairResults[i])))
+  const changedPaths2 = uniq(results.flatMap((r) => (r.filesChanged || []).map((f) => f.path)))
+  validation = await agent(verifyPrompt(plan, changedPaths2), { label: 'verify-' + goalIter, phase: 'Verify', schema: VALIDATION_SCHEMA, model: 'haiku' })
+  goalEval = await agent(goalEvalPrompt(plan, results, validation), { schema: GOAL_EVAL_SCHEMA, model: 'haiku', label: 'goal-gate-' + goalIter })
+}
 
 // ---------------------------------------------------------------------------
 // Phase 4 — Report (assemble the canonical Pattern 13 REPORT deterministically)
 // ---------------------------------------------------------------------------
 phase('Report')
 log('Assembling REPORT — ' + results.filter((r) => r.status === 'completed').length + '/' + results.length + ' task(s) completed')
-return buildReport(plan, results, validation)
+return buildReport(plan, results, validation, goalEval)
